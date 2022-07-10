@@ -18,10 +18,13 @@ from .serializer import UserSerializer
 jwt = JWTAuthentication()
 
 # Create your views here.
+def get_csrf(request):
+    csrf = get_token(request)
+    return JsonResponse({'csrf': csrf})
+
 def users(request):
-    token = get_token(request)
     users = UserSerializer(User.objects.all(), many=True)
-    return JsonResponse({'users': list(users.data), 'token': token}, safe=False)
+    return JsonResponse({'users': list(users.data)}, safe=False)
 
 def user_login(request):
     data = json.loads(request.body)

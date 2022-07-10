@@ -1,5 +1,33 @@
-<script setup lang="ts">
+<script lang="ts">
+import { defineComponent } from 'vue'
+import {http} from './assets/http'
 import { RouterLink, RouterView } from 'vue-router'
+
+export default defineComponent({
+  data() {
+    return {
+
+    }
+  },
+  created() {
+    http.get("users/csrf/").then((res) => {
+      http.post('users/login/', {
+        username: 'soga2',
+        password: 'password'
+      }, {
+        headers: {
+          // "Cookie": res.data.csrf,
+          "X-CSRFToken": res.data.csrf
+        },
+        xsrfCookieName: 'csrf',
+        xsrfHeaderName: 'X-Csrftoken'
+      })
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+})
+
 </script>
 
 <template>
