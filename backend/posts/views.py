@@ -5,12 +5,11 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Post
 from .serializer import PostSerializer
-from django.contrib.auth.models import User
 
 import json
 
 jwt = JWTAuthentication()
-# Create your views here.
+
 class Post_Content(APIView):
     permission_classes = [IsAuthenticated]
 
