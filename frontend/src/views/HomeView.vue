@@ -1,18 +1,20 @@
-<script setup lang="ts">
-</script>
+<scrip lang="ts">
+import {defineComponent} from 'vue';
+export default defineComponent({
+  data() {
+    
+  }
+})
+</scrip>
 
 <template>
   <div class="home">
-    <h1>This is a home page</h1>
+    <h1>This is an Home page</h1>
   </div>
 </template>
 
-<script>
-</script>
-
 <style>
 .home {
-  min-height: 100vh;
   display: flex;
   align-items: center;
 }
