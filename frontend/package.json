@@ -11,7 +11,9 @@
   "dependencies": {
     "axios": "^0.27.2",
     "vue": "^3.2.37",
-    "vue-router": "^4.0.16"
+    "vue-axios": "^3.4.1",
+    "vue-router": "^4.0.16",
+    "vue3-cookies": "^1.0.6"
   },
   "devDependencies": {
     "@types/node": "^16.11.41",

@@ -1,14 +1,29 @@
 <script lang="ts">
+import {useCookies} from 'vue3-cookies'
 import { defineComponent } from 'vue';
+import { http } from '@/assets/http';
 
 export default defineComponent({
     data() {
-
+        return {
+        }
+    },
+    setup() {
+        const {cookies} = useCookies()
+        return {cookies}
     },
     methods: {
         register(e: Event) {
-            // console.log(e.target.elements.username.value);
+            http.post('users/register/', {
+                data: {
+
+                }
+            })
         }
+    },
+    created() {
+        // this.cookies.set("myCookies", 'cookies')  
+        this.cookies.set('token', 'cookies')
     }
 })
 </script>

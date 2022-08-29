@@ -36,6 +36,7 @@ def user_login(request):
     return JsonResponse({"loggedIn": False}, safe=False)
 
 def user_register(request):
+    print(request.headers)
     try:
         data = json.loads(request.body)
         user = User.objects.create_user(

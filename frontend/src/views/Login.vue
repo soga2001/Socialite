@@ -1,10 +1,17 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
+import {useCookies} from 'vue3-cookies'
 import { RouterLink, RouterView } from 'vue-router';
 
 export default defineComponent({
     data() {
+        return {
 
+        }
+    },
+    setup() {
+        const {cookies} = useCookies();
+        return {cookies};
     },
     methods: {
         login(e: Event) {
