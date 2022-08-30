@@ -37,11 +37,12 @@ export default defineComponent({
                 this.cookies.set('refresh_token', res.data.refresh_token, res.data.rt_lifetime);
                 this.cookies.set('loggedIn', 'true', res.data.lifetime);
                 window.location.href = '/'
-                console.log(this.cookies.get('theme'))
             }).catch((err) => {
                 console.log(err)
             })
         }
+    },
+    created() {
     }
 })
 </script>

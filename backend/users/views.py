@@ -45,7 +45,7 @@ def user_register(request):
             email=data['email'])
         return JsonResponse({"success": True}, safe=False)
     except: 
-        return JsonResponse({"error": True, "message":" Username already exists"}, safe=False)
+        return JsonResponse({"error": True, "message":" Username or email is taken."}, safe=False)
 
 @api_view(["POST"])
 def user_login(request):

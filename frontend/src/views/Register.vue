@@ -41,15 +41,19 @@ export default defineComponent({
                 username: this.username,
                 password: this.password
             }).then((res) => {
-                console.log(res.data)
+                if(res.data.error) {
+                    this.error = true
+                    this.errMsg = res.data.message
+                }
+                this.error = false
+                this.errMsg = ""
+                window.location.href = "/login"
             }).catch((err) => {
                 console.log(err)
             })
         }
     },
     created() {
-        // this.cookies.set("myCookies", 'cookies')  
-        this.cookies.set('token', 'cookies')
     }
 })
 </script>
