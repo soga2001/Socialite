@@ -1,11 +1,18 @@
 <script lang="ts">
 import {useCookies} from 'vue3-cookies'
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { http } from '@/assets/http';
 
 export default defineComponent({
     data() {
         return {
+            fname: ref(''),
+            lname: ref(''),
+            email: ref(''),
+            username: ref(''),
+            password: ref(''),
+            error: ref(false),
+            errMsg: ref('')
         }
     },
     setup() {
@@ -13,11 +20,30 @@ export default defineComponent({
         return {cookies}
     },
     methods: {
-        register(e: Event) {
+        register() {
+            if(this.username.length === 0 || this.password.length === 0) {
+                this.error = true
+                this.errMsg = "Please don't leave username or password blank!"
+                console.log(this.errMsg)
+                return;
+            }
+            if(!this.email.includes("@")) {
+                this.error = true
+                this.errMsg = "Please enter a valid email!"
+                return;
+            }
+            this.error = false
+            this.errMsg = ""
             http.post('users/register/', {
-                data: {
-
-                }
+                first_name: this.fname,
+                last_name: this.lname,
+                email: this.email,
+                username: this.username,
+                password: this.password
+            }).then((res) => {
+                console.log(res.data)
+            }).catch((err) => {
+                console.log(err)
             })
         }
     },
@@ -35,19 +61,19 @@ export default defineComponent({
         <hr/>
         <form class="register__form" v-on:submit.prevent="register">
             <div class="register__info">
-                <input type="text" name="fname" placeholder="First Name"/>
-                <input type="text" name="lname" placeholder="Last Name"/>
+                <input type="text" placeholder="First Name" v-model="fname"/>
+                <input type="text" placeholder="Last Name" v-model="lname"/>
             </div>
             <div class="register__contact">
-                <input type="email" name="email" defaultValue="" required placeholder="Email*"/>
+                <input type="email" placeholder="Email*" v-model="email" required/>
             </div>
             <div class="register__credentials">
-                <input type="text" name="username" defaultValue=""  required placeholder="Username*"/>
-                <input type="password" name="password" defaultValue="" required placeholder="Password*"/>
+                <input type="text" placeholder="Username*" v-model="username" required />
+                <input type="password" placeholder="Password*" v-model="password" required />
             </div>
-            
             <input type="submit" value="Register"/>
         </form>
+        <span v-if="error">{{errMsg}}</span>
     </div>
 </div>
 </template>
@@ -116,6 +142,8 @@ input[type="submit"] {
     margin: auto;
     color: var(--color-text);
     cursor: pointer;
+    color: var(--color-button);
+    background-color: var(--color-button-background);
 }
 
 ::placeholder {

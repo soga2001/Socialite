@@ -7,7 +7,8 @@ import { RouterLink, RouterView } from 'vue-router';
 export default defineComponent({
   data() {
     return {
-      theme: ''
+      theme: '',
+      loggedIn: false,
     }
   },
   setup() {
@@ -26,6 +27,29 @@ export default defineComponent({
         this.cookies.set('theme', 'dark')
         document.documentElement.setAttribute('data-theme', 'dark')
       }
+    },
+    logout() {
+      console.log(this.cookies.get("access_token"))
+      this.cookies.remove('access_token')
+      this.cookies.remove('refresh_token')
+      this.cookies.set('loggedIn', "false")
+      window.location.href = '/'
+      http.post('users/logout/', {
+        "access_token": this.cookies.get('access_token'),
+        "refresh_token": this.cookies.get('refresh_token')
+      }, {
+        headers: {
+          'Authorization': "Bearer" +  this.cookies.get('access_token')
+        }
+      }).then((res) => {
+        console.log(res.data)
+        this.cookies.remove('access_token')
+        this.cookies.remove('refresh_token')
+        this.cookies.set('loggedIn', "false")
+        window.location.href = '/'
+      }).catch((err) => {
+        console.log(err)
+      })
     }
   },
   created() {
@@ -33,9 +57,13 @@ export default defineComponent({
     this.theme = theme
     document.documentElement.setAttribute('data-theme', theme)
 
-    http.get('users/csrf/').then(((res) => {
-      this.cookies.set('csrf_token', res.data.csrf)
-    }))
+    if(this.cookies.get("loggedIn") === 'true') {
+      this.loggedIn = true
+    }
+
+    // http.get('users/csrf/').then(((res) => {
+    //   this.cookies.set('csrf_token', res.data.csrf)
+    // }))
   }
 })
 
@@ -47,10 +75,14 @@ export default defineComponent({
     <nav class="nav">
       <RouterLink to="/">Home</RouterLink>
       <RouterLink to="/about">Post</RouterLink>
+      <!-- The RouterLink below is for parameters -->
+      <!-- <RouterLink :to="'/about?id=' + loggedIn">Post</RouterLink> -->
+      <RouterLink to="/"></RouterLink>
       <div class="nav__right">
         <button id="theme" v-on:click="switchTheme">Change Theme: {{theme === 'dark' ? 'light' : "dark"}}</button>
-        <RouterLink to="/login">Login</RouterLink>
-        <RouterLink to="/register">Register</RouterLink>
+        <RouterLink v-if="!loggedIn" to="/login">Login</RouterLink>
+        <RouterLink v-if="!loggedIn" to="/register">Register</RouterLink>
+        <RouterLink v-if="loggedIn" to="/" v-on:click="logout">Logout</RouterLink>
       </div>
     </nav>
   </header>

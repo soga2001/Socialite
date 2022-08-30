@@ -9,6 +9,9 @@
   --vt-c-black-mute: #282828;
 
   --vt-c-black: #000000;
+  --vt-c-green: #089e6a;
+  --vt-c-background-green: rgb(12,116,76, .4);
+  --vt-c-green-hover: rgb(12,116,76, .6);
 
   --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
   --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
@@ -33,6 +36,10 @@
 
   --color-heading: var(--vt-c-text-dark-1);
   --color-text: var(--vt-c-text-dark-2);
+
+  --color-button: var(--vt-c-green);
+  --color-button-background: var(--vt-c-background-green);
+  --color-button-hover: var(--vt-c-green-hover);
 }
 
 
@@ -47,7 +54,9 @@
   --color-heading: var(--vt-c-text-light-1);
   --color-text: var(--vt-c-text-light-2);
 
-  --color-button: var();
+  --color-button: var(--vt-c-green);
+  --color-button-background: var(--vt-c-background-green);
+  --color-button-hover: var(--vt-c-green-hover);
 }
 
 *,

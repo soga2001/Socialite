@@ -1,12 +1,16 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, toHandlers } from 'vue';
 import {useCookies} from 'vue3-cookies'
 import { RouterLink, RouterView } from 'vue-router';
+import { http } from '@/assets/http';
 
 export default defineComponent({
     data() {
         return {
-
+            username: ref(''),
+            password: ref(''),
+            error: ref(false),
+            errMsg: ref('')
         }
     },
     setup() {
@@ -14,8 +18,29 @@ export default defineComponent({
         return {cookies};
     },
     methods: {
-        login(e: Event) {
-            // console.log(e.target.elements.username.value);
+        login() {
+            if(this.username.length === 0 || this.password.length === 0) {
+                this.error = true
+                this.errMsg = "Please don't leave username or password blank!"
+                return;
+            }
+            http.post('users/login/', {
+                username: this.username,
+                password: this.password
+            }).then((res) => {
+                if(res.data.loggedIn === false) {
+                    this.error = true
+                    this.errMsg = "Username or Password is incorrect."
+                    return;
+                }
+                this.cookies.set('access_token', res.data.access_token, res.data.at_lifetime);
+                this.cookies.set('refresh_token', res.data.refresh_token, res.data.rt_lifetime);
+                this.cookies.set('loggedIn', 'true', res.data.lifetime);
+                window.location.href = '/'
+                console.log(this.cookies.get('theme'))
+            }).catch((err) => {
+                console.log(err)
+            })
         }
     }
 })
@@ -28,11 +53,14 @@ export default defineComponent({
         <hr/>
         <form class="login__form" v-on:submit.prevent="login">
             <div class="login__credentials">
-                <input type="text" name="username" defaultValue="" placeholder="Username*"/>
-                <input type="password" name="password" defaultValue="" placeholder="Password*"/>
+                <input type="text" placeholder="Username*" v-model="username" required />
+                <input type="password" placeholder="Password*" v-model="password" required />
             </div>
             <div class="login__submit">
                 <input type="submit" value="Login"/>
+            </div>
+            <div class="login__error">
+                <h3 class="login__errMsg">{{errMsg}}</h3>
             </div>
             <div class="login__links">
                 <RouterLink to="/login">Frogot Password?</RouterLink>
@@ -77,6 +105,14 @@ export default defineComponent({
     padding: 20px;
 }
 
+.login__error {
+    background-color: rgb(255, 0, 0, .2);
+}
+
+.login__errMsg {
+    color: rgb(255, 0, 0)
+}
+
 .login__links {
     display: inline-flex;
 }
@@ -100,8 +136,17 @@ input[type="submit"] {
     font-size: 15px;
     padding: 10px;
     margin: auto;
-    color: var(--color-text);
+    color: var(--color-button);
     cursor: pointer;
+    transform: transition 1s;
+    border-radius: 0px !important;
+    border-left: 2px solid var(--vt-c-divider-dark-1);
+    border-right: 2px solid var(--vt-c-divider-dark-1);
+}
+
+input[type="submit"]:hover {
+    background-color: var(--color-button-hover);
+    padding: 10px 7px;
 }
 
 ::placeholder {
