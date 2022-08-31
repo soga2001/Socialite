@@ -64,7 +64,7 @@ export default defineComponent({
                 <h3 class="login__errMsg">{{errMsg}}</h3>
             </div>
             <div class="login__links">
-                <RouterLink to="/login">Frogot Password?</RouterLink>
+                <a disabled>Frogot Password?</a>
                 <RouterLink to="/register">Create an Account</RouterLink>
             </div>
         </form>
@@ -126,7 +126,7 @@ input {
     margin: 10px 20px;
     font-size: 20px;
     padding: 10px;
-    background-color: var(--color-background-mute);
+    background-color: var(--color-background-soft);
     color: var(--color-text);
     border: var(--color-border);
     border-radius: 10px;

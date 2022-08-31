@@ -17,15 +17,15 @@ export default defineComponent({
   },
   methods: {
     switchTheme(e: any) {
-      if(this.theme==='dark'){
-        this.theme = 'light'
-        this.cookies.set('theme', 'light')
-        document.documentElement.setAttribute('data-theme', 'light')
+      if(e.target.checked) {
+        this.theme = 'dark'
+        this.cookies.set('theme', this.theme)
+        document.documentElement.setAttribute('data-theme', 'dark')
       }
       else {
-        this.theme = 'dark'
-        this.cookies.set('theme', 'dark')
-        document.documentElement.setAttribute('data-theme', 'dark')
+        this.theme = 'light'
+        this.cookies.set('theme', this.theme)
+        document.documentElement.setAttribute('data-theme', this.theme)
       }
     },
     logout() {
@@ -46,16 +46,18 @@ export default defineComponent({
         this.cookies.remove('access_token')
         this.cookies.remove('refresh_token')
         this.cookies.set('loggedIn', "false")
-        window.location.href = '/'
+        this.$forceUpdate()
       }).catch((err) => {
         console.log(err)
       })
     }
   },
   created() {
-    const theme = this.cookies.get('theme')
-    this.theme = theme
-    document.documentElement.setAttribute('data-theme', theme)
+    console.log(this.cookies.get('theme'))
+    this.theme = this.cookies.get('theme') || 'dark'
+    console.log(this.theme)
+    document.documentElement.setAttribute('data-theme', this.theme)
+
 
     if(this.cookies.get("loggedIn") === 'true') {
       this.loggedIn = true
@@ -64,7 +66,15 @@ export default defineComponent({
     // http.get('users/csrf/').then(((res) => {
     //   this.cookies.set('csrf_token', res.data.csrf)
     // }))
-  }
+  },
+  mounted() {
+    if(this.theme === 'dark') {
+      (document.getElementById('checkbox') as HTMLInputElement).checked = true
+    }
+    else {
+      (document.getElementById('checkbox') as HTMLInputElement).checked = false
+    }
+  },
 })
 
 </script>
@@ -79,7 +89,14 @@ export default defineComponent({
       <!-- <RouterLink :to="'/about?id=' + loggedIn">Post</RouterLink> -->
       <RouterLink to="/"></RouterLink>
       <div class="nav__right">
-        <button id="theme" v-on:click="switchTheme">Change Theme: {{theme === 'dark' ? 'light' : "dark"}}</button>
+        <!-- <button id="theme" v-on:click="switchTheme">Change Theme: {{theme === 'dark' ? 'light' : "dark"}}</button> -->
+        <div class="nav__switch">
+          <span>Theme: </span>
+          <label class="switch">
+          <input :onclick="switchTheme" type="checkbox" id="checkbox">
+          <span class="slider round"></span>
+        </label>
+        </div>
         <RouterLink v-if="!loggedIn" to="/login">Login</RouterLink>
         <RouterLink v-if="!loggedIn" to="/register">Register</RouterLink>
         <RouterLink v-if="loggedIn" to="/" v-on:click="logout">Logout</RouterLink>
@@ -141,12 +158,74 @@ nav a {
 
 .nav__right {
   float: right;
+  display: flex;
 }
 
-#theme {
-  background-color: transparent;
-  color: var(--color-text);
-  border: none;
+/* Dark Theme */
+/* Reference 1: https://dev.to/ananyaneogi/create-a-dark-light-mode-switch-with-css-variables-34l8 */
+/* Reference 2: https://www.w3schools.com/howto/howto_css_switch.asp */
+.nav__switch {
+  padding: 0px 1em;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 30px;
+  height: 17px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 5px;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  background-color: var(--color-switch-slider);
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 13px;
+  width: 13px;
+  left: 2px;
+  bottom: 2px;
+  background-color: var(--color-switch);
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: var(--color-switch-slider);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--color-border);
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(13px);
+  -ms-transform: translateX(13px);
+  transform: translateX(12px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 17px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }
 
 </style>
