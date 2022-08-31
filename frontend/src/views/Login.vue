@@ -33,7 +33,7 @@ export default defineComponent({
                     this.errMsg = "Username or Password is incorrect."
                     return;
                 }
-                this.cookies.set('access_token', res.data.access_token, res.data.at_lifetime);
+                this.cookies.set('access_token', res.data.access_token,res.data.at_lifetime);
                 this.cookies.set('refresh_token', res.data.refresh_token, res.data.rt_lifetime);
                 this.cookies.set('loggedIn', 'true', res.data.lifetime);
                 window.location.href = '/'

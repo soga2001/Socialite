@@ -29,33 +29,25 @@ export default defineComponent({
       }
     },
     logout() {
-      console.log(this.cookies.get("access_token"))
-      this.cookies.remove('access_token')
-      this.cookies.remove('refresh_token')
-      this.cookies.set('loggedIn', "false")
-      window.location.href = '/'
       http.post('users/logout/', {
         "access_token": this.cookies.get('access_token'),
         "refresh_token": this.cookies.get('refresh_token')
       }, {
         headers: {
-          'Authorization': "Bearer" +  this.cookies.get('access_token')
+          'Authorization': `Bearer ${this.cookies.get('access_token')}`
         }
       }).then((res) => {
         console.log(res.data)
         this.cookies.remove('access_token')
         this.cookies.remove('refresh_token')
         this.cookies.set('loggedIn', "false")
-        this.$forceUpdate()
       }).catch((err) => {
         console.log(err)
       })
     }
   },
   created() {
-    console.log(this.cookies.get('theme'))
     this.theme = this.cookies.get('theme') || 'dark'
-    console.log(this.theme)
     document.documentElement.setAttribute('data-theme', this.theme)
 
 
@@ -81,15 +73,12 @@ export default defineComponent({
 
 <template>
   <header>
-    <!-- <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
+    <!-- <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="20" height="20" /> -->
     <nav class="nav">
       <RouterLink to="/">Home</RouterLink>
       <RouterLink to="/about">Post</RouterLink>
-      <!-- The RouterLink below is for parameters -->
-      <!-- <RouterLink :to="'/about?id=' + loggedIn">Post</RouterLink> -->
       <RouterLink to="/"></RouterLink>
       <div class="nav__right">
-        <!-- <button id="theme" v-on:click="switchTheme">Change Theme: {{theme === 'dark' ? 'light' : "dark"}}</button> -->
         <div class="nav__switch">
           <span>Theme: </span>
           <label class="switch">

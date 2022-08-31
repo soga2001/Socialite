@@ -3,6 +3,8 @@ import HomeView from '../views/HomeView.vue'
 import Post from '../views/Post.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
+import User from '../views/UserViews/User.vue';
+
 import { useCookies } from 'vue3-cookies'
 
 const {cookies}  = useCookies();
@@ -38,6 +40,11 @@ const router = createRouter({
           return {name: 'home'};
         }
       }
+    },
+    {
+      path: '/user',
+      name: 'user',
+      component: User,
     }
   ]
 })

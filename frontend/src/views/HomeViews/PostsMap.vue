@@ -23,13 +23,14 @@ export default defineComponent({
 
 <template>
     <div class="mapping">
-        <RouterLink :to="'user?id='+ id" class="mapping__header">@{{username}}</RouterLink>
+        <RouterLink :to="'user?id='+ user_id" class="mapping__header">@{{username}}</RouterLink>
         <img :src="img_url" />
         <div class="mapping__interact">
             <h3>Like</h3>
             <h3>Comment</h3>
             <h3>Share</h3>
         </div>
+        <hr/>
         <p class="mapping__caption">{{username}}: {{caption}}</p>
     </div>
 </template>

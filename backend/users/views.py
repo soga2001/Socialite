@@ -32,6 +32,15 @@ def users(request):
     users = UserSerializer(User.objects.all(), many=True)
     return JsonResponse({'users': list(users.data)}, safe=False)
 
+@api_view(["GET"])
+def user_by_id(request, user_id):
+    try:
+        user = UserSerializer(User.objects.filter(id=user_id), many=True)
+        return JsonResponse({"success": True, "user": user.data}, safe=False)
+    except:
+        return JsonResponse({"error": True}, safe=False)
+    
+
 
 @api_view(["POST"])
 def user_register(request):
@@ -54,7 +63,6 @@ def user_login(request):
     if(user):
         login(request, user)
         token = RefreshToken.for_user(user)
-        print(token.access_token.lifetime.days)
         return JsonResponse({"access_token": str(token.access_token), 
                             "at_lifetime": str(token.access_token.lifetime.days) + "d",
                             "refresh_token": str(token),
@@ -71,7 +79,6 @@ class LogoutView(APIView):
             data = json.loads(request.body)
             rt_token = RefreshToken(data['refresh_token'])
             rt_token.blacklist()
-            print('potato')
             logout(request)
             return JsonResponse({"success": True}, safe=False)
         except:
