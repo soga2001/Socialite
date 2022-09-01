@@ -13,7 +13,7 @@ export default defineComponent({
     },
     methods: {
         userInfo() {
-            http.get(`users/user/${this.user_id}/`).then((res) => {
+            http.get(`users/user/${(this.user_id)}/`).then((res) => {
                 if (res.data.success) {
                     this.user = res.data.user;
                 }

@@ -42,7 +42,7 @@ export default defineComponent({
         this.cookies.remove('access_token')
         this.cookies.remove('refresh_token')
         this.cookies.set('loggedIn', "false")
-        this.$store.commit('changeLoggedIn', false)
+        this.$store.commit('authenticate', false)
         router.push('/')
       }).catch((err) => {
         console.log(err)
@@ -53,8 +53,7 @@ export default defineComponent({
     this.theme = this.cookies.get('theme') || 'dark'
     document.documentElement.setAttribute('data-theme', this.theme)
 
-    this.$store.commit('changeLoggedIn',JSON.parse(this.cookies.get("loggedIn")) || false)
-    console.log(this.$store.state.loggedIn)
+    this.$store.commit('authenticate',JSON.parse(this.cookies.get("loggedIn")) || false)
     // http.get('users/csrf/').then(((res) => {
     //   this.cookies.set('csrf_token', res.data.csrf)
     // }))
@@ -76,7 +75,7 @@ export default defineComponent({
     <!-- <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="20" height="20" /> -->
     <nav class="nav">
       <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/about">Post</RouterLink>
+      <RouterLink v-if="$store.state.authenticated" to="/about">Post</RouterLink>
       <RouterLink to="/"></RouterLink>
       <div class="nav__right">
         <div class="nav__switch">
@@ -86,9 +85,9 @@ export default defineComponent({
           <span class="slider round"></span>
         </label>
         </div>
-        <RouterLink v-if="!$store.state.loggedIn" to="/login">Login</RouterLink>
-        <RouterLink v-if="!$store.state.loggedIn" to="/register">Register</RouterLink>
-        <RouterLink v-if="$store.state.loggedIn" to="" v-on:click="logout">Logout</RouterLink>
+        <RouterLink v-if="!$store.state.authenticated" to="/login">Login</RouterLink>
+        <RouterLink v-if="!$store.state.authenticated" to="/register">Register</RouterLink>
+        <RouterLink v-if="$store.state.authenticated" to="" v-on:click="logout">Logout</RouterLink>
       </div>
     </nav>
   </header>

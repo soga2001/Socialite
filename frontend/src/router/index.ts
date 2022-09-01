@@ -3,24 +3,31 @@ import HomeView from '../views/HomeView.vue'
 import Post from '../views/Post.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
-import User from '../views/UserViews/User.vue';
+import User from '../views/UserViews/User.vue'
+import PageNotFound from '../views/PageNotFound.vue'
 
 import { useCookies } from 'vue3-cookies'
-import { useStore } from '../store/store'
+import { store } from '../store/store'
 
 const {cookies}  = useCookies();
+const Home = () => import('../views/HomeView.vue')
+
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: Home
     },
     {
       path: '/about',
       name: 'about',
-      component: Post
+      component: Post,
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/login',
@@ -42,15 +49,21 @@ const router = createRouter({
       path: '/user',
       name: 'user',
       component: User,
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      component: PageNotFound
     }
   ]
 })
 
 router.beforeEach((to, from) => {
-  if(to.matched.some(record => record.meta.hideForAuth)) {
-    if(JSON.parse(cookies.get('loggedIn'))) {
+  if(to.matched.some(record => record.meta.hideForAuth) && store.state.authenticated) {
       return {path: '/'}
-    }
+  }
+
+  if(to.matched.some(record => record.meta.auth) && !store.state.authenticated) {
+    return {path: 'login'}
   }
 })
 

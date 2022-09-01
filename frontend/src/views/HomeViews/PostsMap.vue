@@ -23,7 +23,12 @@ export default defineComponent({
 
 <template>
     <div class="mapping">
-        <RouterLink :to="'user?id='+ user_id" class="mapping__header">@{{username}}</RouterLink>
+        <div class="mapping__head__div">
+            <RouterLink :to="'user?id='+ user_id" class="mapping__header">@{{username}}</RouterLink>
+            <select class="mapping__dropdown">
+                <option>Options Here</option>
+            </select>
+        </div>
         <img :src="img_url" />
         <div class="mapping__interact">
             <h3>Like</h3>
@@ -31,13 +36,13 @@ export default defineComponent({
             <h3>Share</h3>
         </div>
         <hr/>
-        <p class="mapping__caption">{{username}}: {{caption}}</p>
+        <span><RouterLink :to="'user?id='+ user_id" class="mapping__caption">{{username}}</RouterLink>: {{caption}}</span>
     </div>
 </template>
 
 <style scoped>
 .mapping {
-    text-align: center;
+    /* text-align: center; */
     border: 2px solid var(--color-border);
     margin: 10px auto;
     width: fit-content;
@@ -46,10 +51,43 @@ export default defineComponent({
     background-color: var(--color-background-soft);
 }
 
+.mapping__head__div {
+    display: flex;
+    position: relative;
+}
 .mapping__header {
     text-align:left;
     color: var(--color-text);
     font-size: 30px;
+    border: 0;
+    border-width: 0px;
+}
+
+.mapping__dropdown {
+    position: absolute;
+    right: 0;
+    /* padding: 20px; */
+    bottom: 0;
+    top: 0;
+    border: 0;
+    border-width: 0px;
+    background-color: var(--color-background-soft);
+    color: var(--color-text)
+}
+
+select:focus {
+    border: 0;
+    border-width: 0px;
+}
+
+select option:checked {
+    border: 0;
+    border-width: 0px;
+}
+
+select:active {
+    border: 0;
+    border-width: 0px;
 }
 
 img {
