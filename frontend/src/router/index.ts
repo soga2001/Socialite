@@ -5,10 +5,9 @@ import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import User from '../views/UserViews/User.vue';
 
-import { useStore } from '../store/store'
 import { useCookies } from 'vue3-cookies'
+import { useStore } from '../store/store'
 
-const store = useStore();
 const {cookies}  = useCookies();
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

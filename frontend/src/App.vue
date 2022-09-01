@@ -4,6 +4,7 @@ import { defineComponent } from 'vue'
 import {http} from './assets/http'
 import { RouterLink, RouterView } from 'vue-router';
 import router from './router';
+import { useStore } from './store/store';
 
 export default defineComponent({
   data() {
@@ -12,6 +13,7 @@ export default defineComponent({
     }
   },
   setup() {
+    const store = useStore()
     const {cookies} = useCookies();
     return {cookies}
   },

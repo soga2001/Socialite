@@ -8,10 +8,10 @@ import {useStore} from '../store/store'
 export default defineComponent({
     data() {
         return {
-            username: ref(''),
-            password: ref(''),
-            error: ref(false),
-            errMsg: ref('')
+            username: '',
+            password: '',
+            error: false,
+            errMsg: ''
         }
     },
     setup() {
