@@ -3,6 +3,7 @@ import { defineComponent, ref, toHandlers } from 'vue';
 import {useCookies} from 'vue3-cookies'
 import { RouterLink, RouterView } from 'vue-router';
 import { http } from '@/assets/http';
+import {useStore} from '../store/store'
 
 export default defineComponent({
     data() {
@@ -14,6 +15,7 @@ export default defineComponent({
         }
     },
     setup() {
+        const store = useStore()
         const {cookies} = useCookies();
         return {cookies};
     },
@@ -36,7 +38,8 @@ export default defineComponent({
                 this.cookies.set('access_token', res.data.access_token,res.data.at_lifetime);
                 this.cookies.set('refresh_token', res.data.refresh_token, res.data.rt_lifetime);
                 this.cookies.set('loggedIn', 'true', res.data.lifetime);
-                window.location.href = '/'
+                this.$store.commit('changeLoggedIn', true)
+                this.$router.push('/')
             }).catch((err) => {
                 console.log(err)
             })

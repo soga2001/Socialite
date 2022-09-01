@@ -5,8 +5,10 @@ import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import User from '../views/UserViews/User.vue';
 
+import { useStore } from '../store/store'
 import { useCookies } from 'vue3-cookies'
 
+const store = useStore();
 const {cookies}  = useCookies();
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,20 +27,16 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login,
-      beforeEnter: (to, from) => {
-        if(cookies.get('loggedIn') === 'true') {
-          return {name: 'home'};
-        }
+      meta: {
+        hideForAuth: true
       }
     },
     {
       path: '/register',
       name: 'register',
       component: Register,
-      beforeEnter: (to, from) => {
-        if(cookies.get('loggedIn') === 'true') {
-          return {name: 'home'};
-        }
+      meta: {
+        hideForAuth: true
       }
     },
     {
@@ -47,6 +45,14 @@ const router = createRouter({
       component: User,
     }
   ]
+})
+
+router.beforeEach((to, from) => {
+  if(to.matched.some(record => record.meta.hideForAuth)) {
+    if(JSON.parse(cookies.get('loggedIn'))) {
+      return {path: '/'}
+    }
+  }
 })
 
 export default router

@@ -3,12 +3,12 @@ import { useCookies } from 'vue3-cookies';
 import { defineComponent } from 'vue'
 import {http} from './assets/http'
 import { RouterLink, RouterView } from 'vue-router';
+import router from './router';
 
 export default defineComponent({
   data() {
     return {
       theme: '',
-      loggedIn: false,
     }
   },
   setup() {
@@ -37,10 +37,11 @@ export default defineComponent({
           'Authorization': `Bearer ${this.cookies.get('access_token')}`
         }
       }).then((res) => {
-        console.log(res.data)
         this.cookies.remove('access_token')
         this.cookies.remove('refresh_token')
         this.cookies.set('loggedIn', "false")
+        this.$store.commit('changeLoggedIn', false)
+        router.push('/')
       }).catch((err) => {
         console.log(err)
       })
@@ -50,11 +51,8 @@ export default defineComponent({
     this.theme = this.cookies.get('theme') || 'dark'
     document.documentElement.setAttribute('data-theme', this.theme)
 
-
-    if(this.cookies.get("loggedIn") === 'true') {
-      this.loggedIn = true
-    }
-
+    this.$store.commit('changeLoggedIn',JSON.parse(this.cookies.get("loggedIn")) || false)
+    console.log(this.$store.state.loggedIn)
     // http.get('users/csrf/').then(((res) => {
     //   this.cookies.set('csrf_token', res.data.csrf)
     // }))
@@ -86,9 +84,9 @@ export default defineComponent({
           <span class="slider round"></span>
         </label>
         </div>
-        <RouterLink v-if="!loggedIn" to="/login">Login</RouterLink>
-        <RouterLink v-if="!loggedIn" to="/register">Register</RouterLink>
-        <RouterLink v-if="loggedIn" to="/" v-on:click="logout">Logout</RouterLink>
+        <RouterLink v-if="!$store.state.loggedIn" to="/login">Login</RouterLink>
+        <RouterLink v-if="!$store.state.loggedIn" to="/register">Register</RouterLink>
+        <RouterLink v-if="$store.state.loggedIn" to="" v-on:click="logout">Logout</RouterLink>
       </div>
     </nav>
   </header>

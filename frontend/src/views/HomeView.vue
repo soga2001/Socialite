@@ -11,11 +11,11 @@ export default defineComponent({
         };
     },
     created() {
-        http.get("posts/view_posts/").then((res) => {
-            this.posts = res.data.posts;
-        }).catch((err) => {
-            console.log(err);
-        });
+      http.get("posts/view_posts/").then((res) => {
+          this.posts = res.data.posts;
+      }).catch((err) => {
+          console.log(err);
+      });
     },
     components: { PostsMap }
 })
