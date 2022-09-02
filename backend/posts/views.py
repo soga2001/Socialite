@@ -25,8 +25,7 @@ class Post_Content(APIView):
                 caption=data['caption']
             )
             post.save()
-            print(PostSerializer(post))
-            return JsonResponse({"success": True}, safe=False)
+            return JsonResponse({"success": True, "post": PostSerializer(post).data}, safe=False)
         except:
             return JsonResponse({"error": True}, safe=False)
 
@@ -35,3 +34,9 @@ class Post_Content(APIView):
 def view_posts(request):
     posts = PostSerializer(Post.objects.all(), many=True)
     return JsonResponse({"posts": list(posts.data)}, safe=False)
+
+
+@api_view(["DELETE"])
+def delete_posts(request):
+    Post.objects.all().delete()
+    return JsonResponse({"success": True}, safe=False)

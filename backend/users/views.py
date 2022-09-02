@@ -93,7 +93,7 @@ class Delete(APIView):
         return JsonResponse({"success": True}, safe=False)
 
 @api_view(["DELETE"])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def delete_all(request):
     User.objects.all().delete()
     return JsonResponse({"success": True}, safe=False)
