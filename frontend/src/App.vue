@@ -75,7 +75,7 @@ export default defineComponent({
     <!-- <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="20" height="20" /> -->
     <nav class="nav">
       <RouterLink to="/">Home</RouterLink>
-      <RouterLink v-if="$store.state.authenticated" to="/about">Post</RouterLink>
+      <!-- <RouterLink v-if="$store.state.authenticated" to="/about">Post</RouterLink> -->
       <RouterLink to="/"></RouterLink>
       <div class="nav__right">
         <div class="nav__switch">
@@ -99,6 +99,7 @@ export default defineComponent({
 @import '@/assets/base.css';
 body {
   place-items: center;
+  position: relative;
 }
 
 header {
@@ -122,11 +123,11 @@ a,
 
 nav {
   width: 100vw;
-  text-align: left;
-  /* margin-left: -1rem; */
   font-size: 1rem;
   padding: 1rem 1rem;
   border-bottom: 2px solid var(--color-border);
+  background-color: var(--color-background);
+  position: sticky;
   /* margin-top: 1rem; */
 }
 

@@ -6,26 +6,36 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Post
 from .serializer import PostSerializer
+from PIL import Image
 
 import json
 
 jwt = JWTAuthentication()
 
 class Post_Content(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
-            user, token = jwt.authenticate(request)
-            data = json.loads(request.body)
-            post = Post(
-                username = user,
-                user_id = user.id,
-                img_url = data['img_url'],
-                caption=data['caption']
-            )
-            post.save()
-            return JsonResponse({"success": True, "post": PostSerializer(post).data}, safe=False)
+            # print(request.POST["image"])
+            image = request.FILES['image']
+            caption = request.POST['caption']
+            print("image file---",image)
+            print("caption---", caption)
+            # The following two lines make sure the file uploaded is actually an image
+            check_image = Image.open(image)
+            check_image.verify()
+            # user, token = jwt.authenticate(request)
+            # data = json.loads(request.body)
+            # post = Post(
+            #     username = user,
+            #     user_id = user.id,
+            #     img_url = data['img_url'],
+            #     caption=data['caption']
+            # )
+            # post.save()
+            # return JsonResponse({"success": True, "post": PostSerializer(post).data}, safe=False)
+            return JsonResponse({"error": False}, safe=False)
         except:
             return JsonResponse({"error": True}, safe=False)
 
