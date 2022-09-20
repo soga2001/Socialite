@@ -1,3 +1,4 @@
+from time import time
 from django.http import JsonResponse
 from django.shortcuts import render
 from rest_framework.decorators import api_view
@@ -40,8 +41,8 @@ class Post_Content(APIView):
 
 
 @api_view(["GET"])
-def view_posts(request):
-    posts = PostSerializer(Post.objects.all(), many=True)
+def view_posts(request, timestamp):
+    posts = PostSerializer(Post.objects.filter(date_posted__lt=timestamp)[:10], many=True)
     return JsonResponse({"posts": list(posts.data)}, safe=False)
 
 

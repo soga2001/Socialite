@@ -10,17 +10,24 @@ export default defineComponent({
     data() {
         return {
             posts: new Array<Post>(),
-            input: ref('')
+            input: ref(''),
+            user_timestap: new Date().toISOString(),
         };
     },
     created() {
-      http.get("posts/view_posts/").then((res) => {
-          this.posts = res.data.posts;
-      }).catch((err) => {
-          console.log(err);
-      });
+      console.log(typeof this.user_timestap)
+      this.getData();
     },
     methods: {
+      async getData() {
+        // users/username/${temp}
+        http.get(`posts/view_posts/${this.user_timestap}`).then((res) => {
+          this.posts = [...this.posts, ...res.data.posts]
+          console.log(this.posts)
+        }).catch((err) => {
+            console.log(err);
+        });
+      },
       async search() {
         
         this.input = ""
@@ -44,6 +51,9 @@ export default defineComponent({
       <div v-if="posts" v-for="post in posts" :key="post.id">
         <PostsMap :post="post" />
       </div>
+      <!-- <div>
+        <button v-on:click="getData">Load More</button>
+      </div> -->
     </div>
     <div class="home__sides">
       <Search />

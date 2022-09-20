@@ -16,7 +16,7 @@ export default defineComponent({
       async search() {
         const temp = this.input
         this.input = ""
-        http.get(`users/username/${(temp)}`).then((res) => {
+        http.get(`users/username/${temp}`).then((res) => {
             if(res.data.success) {
                 this.users = res.data.users
                 console.log(this.users)
