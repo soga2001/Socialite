@@ -13,11 +13,10 @@ import json
 jwt = JWTAuthentication()
 
 class Post_Content(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
-            # print(request.POST["image"])
             image = request.FILES['image']
             caption = request.POST['caption']
             print("image file---",image)
@@ -25,7 +24,7 @@ class Post_Content(APIView):
             # The following two lines make sure the file uploaded is actually an image
             check_image = Image.open(image)
             check_image.verify()
-            # user, token = jwt.authenticate(request)
+            user, token = jwt.authenticate(request)
             # data = json.loads(request.body)
             # post = Post(
             #     username = user,

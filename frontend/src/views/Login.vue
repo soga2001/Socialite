@@ -129,7 +129,7 @@ input {
     margin: 10px 20px;
     font-size: 20px;
     padding: 10px;
-    background-color: var(--color-background-soft);
+    background-color: var(--color-background);
     color: var(--color-text);
     border: var(--color-border);
     border-radius: 10px;

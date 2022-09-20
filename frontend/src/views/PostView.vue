@@ -12,7 +12,7 @@ export default defineComponent({
   },
   setup() {
     const {cookies} = useCookies();
-    return cookies
+    return {cookies}
   },
   methods: {
     uploadFile(e: any) {
@@ -26,7 +26,7 @@ export default defineComponent({
         formData.append('caption', this.caption)
         http.post("posts/post_content/", formData, {
           headers: {
-            // "Authorization": `Bearer ${cookies.get("access_token")}`
+            "Authorization": `Bearer ${this.cookies.get("access_token")}`,
             "Content-Type": "multipart/form-data"
           }
         }).then((res) => {

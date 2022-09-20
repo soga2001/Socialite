@@ -1,14 +1,16 @@
 <script lang="ts">
-import {defineComponent} from 'vue';
+import {defineComponent, ref} from 'vue';
 import  type {Post} from '@/assets/interfaces';
 import { http } from '@/assets/http';
 import PostsMap from './HomeViews/PostsMap.vue';
 import PostView from './PostView.vue';
+import Search from './Search/Search.vue';
 
 export default defineComponent({
     data() {
         return {
-            posts: new Array<Post>()
+            posts: new Array<Post>(),
+            input: ref('')
         };
     },
     created() {
@@ -18,7 +20,13 @@ export default defineComponent({
           console.log(err);
       });
     },
-    components: { PostsMap, PostView }
+    methods: {
+      async search() {
+        
+        this.input = ""
+      }
+    },
+    components: { PostsMap, PostView, Search }
 })
 </script>
 
@@ -26,7 +34,7 @@ export default defineComponent({
   <div class="home">
     <div class="home__sides">
       <div class="home__sides__main">
-        <h1>Stuff</h1>
+        
       </div>
     </div>
     <div class="home__center">
@@ -38,10 +46,7 @@ export default defineComponent({
       </div>
     </div>
     <div class="home__sides">
-      <div class="home__sides__main">
-        <h1>Stuff</h1>
-        <input type="search" placeholder="search"/>
-      </div>
+      <Search />
     </div>
   </div>
 </template>

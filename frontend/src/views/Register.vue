@@ -132,7 +132,7 @@ input {
     margin: 10px 20px;
     font-size: 20px;
     padding: 10px;
-    background-color: var(--color-background-mute);
+    background-color: var(--color-background);
     color: var(--color-text);
     border: var(--color-border);
     border-radius: 10px;
@@ -144,7 +144,7 @@ input[type="submit"] {
     font-size: 15px;
     padding: 10px;
     margin: auto;
-    color: var(--color-text);
+    /* color: var(--color-text); */
     cursor: pointer;
     color: var(--color-button);
     background-color: var(--color-button-background);

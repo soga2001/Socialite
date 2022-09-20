@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import User from '../views/UserViews/User.vue'
@@ -8,7 +7,7 @@ import PageNotFound from '../views/PageNotFound.vue'
 import { useCookies } from 'vue3-cookies'
 import { store } from '../store/store'
 
-const {cookies}  = useCookies();
+const { cookies }  = useCookies();
 const Home = () => import('../views/HomeView.vue')
 
 

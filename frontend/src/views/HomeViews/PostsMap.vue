@@ -64,15 +64,16 @@ export default defineComponent({
 }
 .post__header {
     text-align:left;
-    color: var(--color-text);
-    font-size: 30px;
+    color: var(--color-heading);
+    font-size: 20px;
     border: 0;
     border-width: 0px;
 }
 
 .posted__date {
-    color: var(--color-text);
-    margin-left: 10px;
+    font-size: 20px;
+    color: var(--color- );
+    margin-left: 5px;
 }
 
 .post__dropdown {
