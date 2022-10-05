@@ -1,5 +1,4 @@
 # From Django
-import re
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.contrib.auth.models import User

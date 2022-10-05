@@ -1,3 +1,6 @@
 venv/
 
 .env
+
+google_credential.json
+new_user_credentials.csv
