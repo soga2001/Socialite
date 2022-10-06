@@ -38,7 +38,9 @@ export default defineComponent({
                 this.cookies.set('access_token', res.data.access_token,res.data.at_lifetime);
                 this.cookies.set('refresh_token', res.data.refresh_token, res.data.rt_lifetime);
                 this.cookies.set('loggedIn', 'true', res.data.lifetime);
+                this.cookies.set('user', res.data.user)
                 this.$store.commit('authenticate', true)
+                this.$store.commit('setUser', res.data.user)
                 this.$router.push('/')
             }).catch((err) => {
                 console.log(err)

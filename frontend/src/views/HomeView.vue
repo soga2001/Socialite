@@ -15,15 +15,13 @@ export default defineComponent({
         };
     },
     created() {
-      console.log(typeof this.user_timestap)
       this.getData();
     },
     methods: {
       async getData() {
         // users/username/${temp}
-        http.get(`posts/view_posts/${this.user_timestap}`).then((res) => {
+        http.get(`posts/view_posts/${this.user_timestap}/`).then((res) => {
           this.posts = [...this.posts, ...res.data.posts]
-          console.log(this.posts)
         }).catch((err) => {
             console.log(err);
         });

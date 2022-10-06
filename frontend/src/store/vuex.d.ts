@@ -3,7 +3,25 @@ import { Store } from 'vuex'
 declare module '@vue/runtime-core' {
   // declare your own store states
   interface State {
+[x: string]: any
     authenticated: boolean
+    user: {
+      id: 0,
+      email: '',
+      username: '',
+      first_name: '',
+      last_name: '',
+      last_login: '',
+      is_active: false,
+      is_staff: false,
+      is_superuser: false,
+      profile: {
+        bio: '',
+        avatar: '',
+      },
+      groups: [],
+      user_permissions: [],
+    }
   }
 
   // provide typings for `this.$store`

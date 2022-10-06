@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import type { Post } from '@/assets/interfaces';
+import { http } from '@/assets/http';
 
 export default defineComponent({
     props: {
@@ -14,8 +15,20 @@ export default defineComponent({
             img_url: this.post.img_url,
             caption: this.post.caption,
             date_posted: this.post.date_posted,
-            date_updated: this.post.date_updated
+            date_updated: this.post.date_updated,
+            avatar: '',
         }
+    },
+    // methods: {
+
+    // }
+    created() {
+        // not sure if this works
+        http.get(`user_profile/get_profile/${this.id}/`).then((res) => {
+            this.avatar = res.data.user_profile.avatar
+        }).catch((err) => {
+            console.log(err)
+        })
     }
 })
 </script>

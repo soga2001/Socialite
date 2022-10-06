@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent, toHandlers } from 'vue';
 import type { User } from '@/assets/interfaces';
+import { http } from '@/assets/http';
 
 export default defineComponent({
     props: {
@@ -16,21 +17,23 @@ export default defineComponent({
             is_active: this.user.is_active,
             is_staff: this.user.is_staff,
             is_superuser: this.user.is_superuser,
-            last_login: this.user.last_login
+            last_login: this.user.last_login,
+            bio: this.user.profile.bio,
+            avatar: this.user.profile.avatar
         }
     },
     methods: {
         maskEmail() {
 
         }
-    }
+    },
 })
 </script>
 
 <template>
     <div class="user">
         <div class="user__profile__avatar">
-            <img src="" class="user__avatar" alt="User Profile"/>
+            <img :src="avatar" class="user__avatar" alt="User Profile"/>
         </div>
         <div class="user__profile__info">
             <h1 class="user__username">{{username}}</h1>
@@ -53,7 +56,7 @@ export default defineComponent({
             </div>
             <div class="user__bio">
                 <h3 class="user__name">{{first_name}} {{last_name}}</h3>
-                <h4 class="user__caption">Bio</h4>
+                <h4 class="user__caption">{{bio}}</h4>
             </div>
         </div>
     </div>

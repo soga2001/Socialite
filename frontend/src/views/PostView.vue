@@ -2,12 +2,13 @@
 import { http } from '@/assets/http';
 import { defineComponent } from 'vue';
 import { useCookies } from 'vue3-cookies';
+import type { User } from '../assets/interfaces';
 
 export default defineComponent({
   data() {
     return {
       image: null,
-      caption: ""
+      caption: "",
     }
   },
   setup() {
@@ -16,11 +17,10 @@ export default defineComponent({
   },
   methods: {
     uploadFile(e: any) {
-      this.image = e.target.files[0]
+      this.image = e.target.files[0] || null
     },
     submit() {
       const formData = new FormData()
-      console.log(this.image)
       if(this.image) {
         formData.append('image', this.image)
         formData.append('caption', this.caption)
@@ -39,19 +39,18 @@ export default defineComponent({
     }
   },
   created() {
-
   }
 })
 </script>
 
 <template>
   <div class="post">
-    <img src="" class="post__avatar" />
+    <img :src="$store.state.user.profile.avatar" class="post__avatar" />
     <form class="post__input" v-on:submit.prevent="submit">
-      <input type="file" accept="image/*" @change="uploadFile" ref="file" class="post__file" />
+      <input multiple type="file" accept="image/*" @change="uploadFile" ref="file" class="post__file" />
       <input type="text" placeholder="caption" v-model="caption" class="post__caption"/>
       <div class="post__submit">
-        <input type="submit" value="Post" class="post__submit__btn" />
+        <input type="submit" value="Post" class="post__submit__btn" :disabled="image === null" />
       </div>
     </form>
     <!-- <img v-if="image" :src="image"/> -->
@@ -104,6 +103,9 @@ export default defineComponent({
   background-color: var(--color-border);
   padding: 10px 20px;
   font-size: 15px;
+}
+
+.post__submit__btn:enabled {
   cursor: pointer;
 }
 
@@ -114,15 +116,15 @@ input {
   width: 100%;
 }
 
-input:focus {
+input[type="text"]:focus {
   border-bottom: 2px solid var(--color-border);
   outline: none;
 }
 
-input:active {
+/* input:active {
   border: none;
   border-bottom: 2px solid var(--color-border);
-}
+} */
 
 ::placeholder {
   color: var(--color-heading);

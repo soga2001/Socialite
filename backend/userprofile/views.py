@@ -34,11 +34,8 @@ def update_profile(request):
     return JsonResponse({"success": True}, safe=False)
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def get_profile(request):
-    user_id = User.objects.get(pk=request.user.id)
+def get_profile(request, user_id):
+    user_id = User.objects.get(pk=user_id)
     profile = UserProfileSerializer(user_id.profile)
-    print(profile.data)
 
-    return JsonResponse({"success": True, "data": profile.data}, safe=False)
-        
+    return JsonResponse({"success": True, "user_profile": profile.data}, safe=False)

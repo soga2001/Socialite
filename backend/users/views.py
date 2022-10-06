@@ -1,4 +1,5 @@
 # From Django
+from multiprocessing import managers
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.contrib.auth.models import User
@@ -70,10 +71,12 @@ def user_login(request):
     if(user):
         login(request, user)
         token = RefreshToken.for_user(user)
+        userSerialized = UserSerializer(user)
         return JsonResponse({"access_token": str(token.access_token), 
                             "at_lifetime": str(token.access_token.lifetime.days) + "d",
                             "refresh_token": str(token),
-                            "rt_lifetime": str(token.lifetime.days) + "d"
+                            "rt_lifetime": str(token.lifetime.days) + "d",
+                            "user": userSerialized.data
                             }, safe=False)
     return JsonResponse({"loggedIn": False}, safe=False)
 

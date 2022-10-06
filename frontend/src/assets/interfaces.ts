@@ -9,7 +9,13 @@ export interface User{
     is_superuser: boolean,
     last_login: string,
     groups: string[],
-    user_permissions: string[]
+    user_permissions: string[],
+    profile: UserProfile
+}
+
+export interface UserProfile{
+    bio: string,
+    avatar: string
 }
 
 export interface Post{

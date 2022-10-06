@@ -43,6 +43,7 @@ export default defineComponent({
         this.cookies.remove('refresh_token')
         this.cookies.set('loggedIn', "false")
         this.$store.commit('authenticate', false)
+        this.$store.commit('setUser', null)
         router.push('/')
       }).catch((err) => {
         console.log(err)
@@ -57,6 +58,9 @@ export default defineComponent({
     // http.get('users/csrf/').then(((res) => {
     //   this.cookies.set('csrf_token', res.data.csrf)
     // }))
+    if(this.cookies.get('user')) {
+      this.$store.commit('setUser', this.cookies.get('user'))
+    }
   },
   mounted() {
     if(this.theme === 'dark') {
