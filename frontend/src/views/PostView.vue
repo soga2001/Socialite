@@ -49,9 +49,7 @@ export default defineComponent({
     <form class="post__input" v-on:submit.prevent="submit">
       <input multiple type="file" accept="image/*" @change="uploadFile" ref="file" class="post__file" />
       <input type="text" placeholder="caption" v-model="caption" class="post__caption"/>
-      <div class="post__submit">
-        <input type="submit" value="Post" class="post__submit__btn" :disabled="image === null" />
-      </div>
+      <input type="submit" value="Post" class="post__submit__btn" :disabled="image === null" />
     </form>
     <!-- <img v-if="image" :src="image"/> -->
   </div>
@@ -61,6 +59,7 @@ export default defineComponent({
 .post {
   padding: 20px;
   display: grid;
+  gap: 10px;
   grid-template-columns: 60px 1fr;
   position: relative;
   border-bottom: 2px solid var(--color-border);
@@ -80,26 +79,30 @@ export default defineComponent({
 
 .post__input {
   display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
 }
 
 .post__file {
   width: fit-content;
   cursor: pointer;
+  grid-column: auto / span 5;
 }
 
 .post__caption {
   border-bottom: 2px solid var(--color-border);
   font-size: 30px;
   margin-top: 20px;
+  grid-column: auto / span 5;
 }
 
 .post__submit {
   padding: 10px;
+  
 }
 
 .post__submit__btn {
-  width: fit-content;
-  float: right;
+  grid-column: 4 / span 2;
   background-color: var(--color-border);
   padding: 10px 20px;
   font-size: 15px;
@@ -120,11 +123,6 @@ input[type="text"]:focus {
   border-bottom: 2px solid var(--color-border);
   outline: none;
 }
-
-/* input:active {
-  border: none;
-  border-bottom: 2px solid var(--color-border);
-} */
 
 ::placeholder {
   color: var(--color-heading);

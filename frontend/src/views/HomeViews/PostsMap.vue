@@ -24,7 +24,7 @@ export default defineComponent({
     // }
     created() {
         // not sure if this works
-        http.get(`user_profile/get_profile/${this.id}/`).then((res) => {
+        http.get(`user_profile/get_profile/${this.user_id}/`).then((res) => {
             this.avatar = res.data.user_profile.avatar
         }).catch((err) => {
             console.log(err)

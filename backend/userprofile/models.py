@@ -12,7 +12,7 @@ from django.dispatch import receiver
 # Create your models here.
 class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE, primary_key=True)
-    bio = models.TextField(max_length=500, blank=True, null=True)
+    img_url = models.FileField(upload_to='avatar/', blank=True, null=True)
     avatar = models.URLField(max_length=500, blank=True, null=True)
 
 

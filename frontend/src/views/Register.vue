@@ -11,8 +11,10 @@ export default defineComponent({
             email: ref(''),
             username: ref(''),
             password: ref(''),
+            cPass: ref(''),
+            errMsg: ref(''),
             error: ref(false),
-            errMsg: ref('')
+            domain: ['com', 'net', 'org', 'int', 'edu', 'gov', 'mil']
         }
     },
     setup() {
@@ -20,20 +22,43 @@ export default defineComponent({
         return {cookies}
     },
     methods: {
-        register() {
-            if(this.username.length === 0 || this.password.length === 0) {
-                this.error = true
-                this.errMsg = "Please don't leave username or password blank!"
-                console.log(this.errMsg)
-                return;
+        checkForm() {
+            return this.checkEmail() && this.checkPassword() && this.confirmPassword()
+        },
+        checkUsername() {
+            if(this.username.length > 0) {
+                return true
             }
-            if(!this.email.includes("@")) {
-                this.error = true
-                this.errMsg = "Please enter a valid email!"
+            return false
+        },
+        checkPassword() {
+            if(this.password.length > 0) {
+                return true
+            }
+            return false
+        },
+        confirmPassword() {
+            if(this.password === this.cPass && this.password.length > 0) {
+                return true
+            }
+            return false
+        },
+        checkEmail() {
+            let check = false
+            if(this.email.length > 5) {
+                const emailSplit = this.email.includes('@') ? this.email.split('@') : null
+                const domainSplit = emailSplit ? emailSplit[1].split('.')[1] : null
+                check = domainSplit ? this.domain.includes(domainSplit) : false 
+            }
+            return check
+        },
+        register() {
+            if(!this.checkForm()) {
+                this.error = true;
+                this.errMsg = "Please don't leave required field empty and make sure the password matches.";
                 return;
             }
             this.error = false
-            this.errMsg = ""
             http.post('users/register/', {
                 first_name: this.fname,
                 last_name: this.lname,
@@ -64,36 +89,74 @@ export default defineComponent({
         <h1 class="register__header">Register</h1>
         <hr/>
         <form class="register__form" v-on:submit.prevent="register">
-            <div class="register__info">
-                <input type="text" placeholder="First Name" v-model="fname"/>
-                <input type="text" placeholder="Last Name" v-model="lname"/>
-            </div>
-            <div class="register__contact">
-                <input type="email" placeholder="Email*" v-model="email" required/>
-            </div>
-            <div class="register__credentials">
-                <input type="text" placeholder="Username*" v-model="username" required />
-                <input type="password" placeholder="Password*" v-model="password" required />
-            </div>
-            <input type="submit" value="Register"/>
+            <input type="text" placeholder="First Name" class="fname" v-model="fname"/>
+            <input type="text" placeholder="Last Name" class="lname" v-model="lname"/>
+            <input type="email" placeholder="Email*" class="email" v-model="email" required/>
+            <input type="text" placeholder="Username*" class="username"  :change="checkUsername" v-model="username" required />
+            <input type="password" placeholder="Password*" class="password" v-model="password" required />
+            <input type="password" placeholder="Confirm Password*" class="c_password" v-model="cPass" required />
+            <span v-if="error" class="errMsg">{{errMsg}}</span>
+            <input type="submit" value="Register" class="submit" :disabled="!checkForm()"/>
+            <span class="form__check">Email</span>
+            <span class="valid">{{checkEmail() ? '✅' : '❌'}}</span>
+            <span class="form__check">Username</span>
+            <span class="valid">{{checkUsername() ? '✅' : '❌'}}</span>
+            <span class="form__check">Password</span>
+            <span class="valid">{{checkPassword() ? '✅' : '❌'}}</span>
+            <span class="form__check">Confirm Password</span>
+            <span class="valid">{{confirmPassword() ? '✅' : '❌'}}</span>
         </form>
-        <span v-if="error">{{errMsg}}</span>
+        
     </div>
 </div>
 </template>
 
 <style scoped>
-@import '@/assets/base.css';
-
 .register {
-    padding: 12vh 0;
+    padding: 3vh 0;
+    display: flex;
+    justify-content: center;
+    align-content: center;
     text-align: center;
 }
+.fname, .lname {
+    grid-column: auto / span 3;
+}
+
+.email {
+    grid-column: auto / span 6;
+}
+
+.username {
+    grid-column: auto / span 6;
+}
+
+.password, .c_password {
+    grid-column: auto / span 3;
+}
+
+.errMsg {
+    background-color: rgba(255, 0, 0, 0.566);
+    grid-column: auto / span 6;
+    padding: 10px;
+    border-radius: 10px;
+    color: var(--color-heading);
+}
+
+.submit {
+    grid-column: 3 / span 2;
+}
+
+.form__check {
+    grid-column: 3 / span 2;
+    color: var(--color-heading);
+    font-size: 16px;
+    text-align: left;
+}
+
 
 .register__main {
-    width: 40vw;
     min-width: fit-content;
-    margin: auto;
     border: 2px solid var(--color-border);
     border-radius: 10px;
     padding: 20px;
@@ -102,14 +165,15 @@ export default defineComponent({
 
 .register__header {
     font-size: 70px;
+    color: var(--color-heading);
 }
 
 .register__form {
     display: grid;
-    grid-template-columns: 1fr;
+    gap: 10px;
+    grid-template-columns: repeat(6, 1fr);
     width: 100%;
     margin: auto;
-    position: relative;
     padding: 10px;
 }
 
@@ -129,7 +193,6 @@ export default defineComponent({
 }
 
 input {
-    margin: 10px 20px;
     font-size: 20px;
     padding: 10px;
     background-color: var(--color-background);
@@ -139,11 +202,9 @@ input {
 }
 
 
-input[type="submit"] {
-    width: fit-content;
+input[type="submit"]:enabled {
     font-size: 15px;
     padding: 10px;
-    margin: auto;
     /* color: var(--color-text); */
     cursor: pointer;
     color: var(--color-button);
@@ -154,8 +215,4 @@ input[type="submit"] {
     color: var(--color-text);
 }
 
-hr {
-    width: 50%;
-    margin: auto;
-}
 </style>

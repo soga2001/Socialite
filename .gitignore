@@ -4,3 +4,4 @@ venv/
 
 google_credential.json
 new_user_credentials.csv
+rootkey.csv

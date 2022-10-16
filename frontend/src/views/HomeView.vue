@@ -70,6 +70,7 @@ export default defineComponent({
     border-right: 2px solid var(--color-border);
     border-left: 2px solid var(--color-border);
     position: justify;  
+    min-height: 90vh;
   }
 
   .home__sides {
