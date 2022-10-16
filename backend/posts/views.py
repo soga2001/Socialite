@@ -8,6 +8,8 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Post
 from .serializer import PostSerializer
 from PIL import Image
+import uuid
+import os
 
 import json
 
@@ -24,12 +26,14 @@ class Post_Content(APIView):
             check_image = Image.open(image)
             check_image.verify()
             user, token = jwt.authenticate(request)
+            file, filename = os.path.splitext(image.name)
             post = Post(
                 username = user,
                 user_id = user.id,
                 img_url = image,
                 caption=caption
             )
+            post.img_url
             post.save()
             # return JsonResponse({"success": True, "post": PostSerializer(post).data}, safe=False)
             return JsonResponse({"error": False}, safe=False)

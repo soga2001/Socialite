@@ -12,9 +12,8 @@ from django.dispatch import receiver
 # Create your models here.
 class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE, primary_key=True)
-    img_url = models.FileField(upload_to='avatar/', blank=True, null=True)
-    avatar = models.URLField(max_length=500, blank=True, null=True)
-
+    bio = models.CharField(max_length=300, null=True, blank=True, editable=True)
+    avatar = models.FileField(upload_to='avatar/', blank=True, null=True, editable=True)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
