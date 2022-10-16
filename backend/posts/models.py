@@ -1,3 +1,4 @@
+from calendar import c
 from django.db import models
 from django.contrib.auth.models import User
 import os
@@ -18,6 +19,9 @@ class Post(models.Model):
     caption = models.TextField(max_length=255, null=True, blank=True, editable=True)
     date_posted = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(default=None, blank=True, null=True)
+    
+    class Meta:
+        ordering = ['-date_posted', '-date_updated']
 
 
     
