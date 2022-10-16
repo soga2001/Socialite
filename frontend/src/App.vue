@@ -5,6 +5,8 @@ import {http} from './assets/http'
 import { RouterLink, RouterView } from 'vue-router';
 import router from './router';
 import { useStore } from './store/store';
+import $ from 'jquery'
+
 
 export default defineComponent({
   data() {
@@ -48,7 +50,7 @@ export default defineComponent({
       }).catch((err) => {
         console.log(err)
       })
-    }
+    },
   },
   created() {
     this.theme = this.cookies.get('theme') || 'dark'
@@ -69,6 +71,18 @@ export default defineComponent({
     else {
       (document.getElementById('checkbox') as HTMLInputElement).checked = false
     }
+    $('.dropdown__button').on('click', function() {
+      $('#dropdown').toggleClass('show')
+    })
+
+    $(document).mouseup(function(e: any) {
+      if(!e.target.matches('#dropdown')) {
+        if($("#dropdown").hasClass('show')) {
+          $("#dropdown").removeClass('show');
+        }
+      }
+    });
+
   },
 })
 
@@ -91,7 +105,19 @@ export default defineComponent({
         </div>
         <RouterLink v-if="!$store.state.authenticated" to="/login">Login</RouterLink>
         <RouterLink v-if="!$store.state.authenticated" to="/register">Register</RouterLink>
-        <RouterLink v-if="$store.state.authenticated" to="" v-on:click="logout">Logout</RouterLink>
+        <div v-if="$store.state.authenticated" id="dropdown__main">
+          <div class="dropdown__button">
+            <span>@{{$store.state.user.username}}</span>
+            <img :src="$store.state.user.profile.avatar" id="avatar" />
+          </div>
+          <div id="dropdown" class="dropdown__content">
+            <RouterLink to="">Profile</RouterLink>
+            <RouterLink to="">Setting</RouterLink>
+            <hr/>
+            <RouterLink to="" v-on:click="logout">Logout</RouterLink>
+          </div>
+        </div>
+        
       </div>
     </nav>
   </header>
@@ -131,8 +157,6 @@ nav {
   padding: 1rem 1rem;
   border-bottom: 2px solid var(--color-border);
   background-color: var(--color-background);
-  position: sticky;
-  /* margin-top: 1rem; */
 }
 
 nav a.router-link-exact-active {
@@ -153,6 +177,48 @@ nav a {
   float: right;
   display: flex;
 }
+
+/* Dropdown */
+
+#dropdown__main {
+  border: none;
+}
+
+#dropdown {
+  border: none;
+}
+
+.dropdown__button {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  cursor: pointer;
+  padding: 0px 5px;
+  background-color: var(--color-background-soft);
+}
+
+.dropdown__content {
+  display: none;
+  position: absolute;
+  background-color: var(--color-background);
+  min-width: 160px;
+  overflow: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 999;
+}
+
+.show {display: block;}
+
+#avatar {
+  width:30px;
+  height: 30px;
+  background-color: white;
+  border: none;
+  border-radius: 50px;
+}
+
+
+/* Dropdown End */
 
 /* Dark Theme */
 /* Reference 1: https://dev.to/ananyaneogi/create-a-dark-light-mode-switch-with-css-variables-34l8 */

@@ -6,32 +6,31 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
+from PIL import Image
 
 from .serializer import UserProfileSerializer
 
-
-
-
 jwt = JWTAuthentication()
 
-# Create your views here.
-# def update_profile(request, user_id):
-#     user = User.objects.get(pk=user_id)
-#     user.profile.bio = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit...'
-#     user.save()
 
+class Update_Profile(APIView):
+    permission_classes = [IsAuthenticated]
 
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def update_profile(request):
-    data = json.loads(request.body)
-    bio = data['bio']
-    avatar = data['avatar']
-    u = User.objects.get(pk=request.user.id)
-    u.profile.bio = bio
-    u.profile.avatar = avatar
-    u.save()
-    return JsonResponse({"success": True}, safe=False)
+    def post(self, request):
+        try:
+            avatar = request.FILES['avatar']
+            bio = request.POST['bio']
+            # The following two lines make sure the file uploaded is actually an image
+            check_image = Image.open(avatar)
+            check_image.verify()
+            user = User.objects.get(pk=request.user.id)
+            user.profile.bio = bio
+            user.profile.avatar = avatar
+            user.save()
+            return JsonResponse({"error": False}, safe=False)
+        except:
+            return JsonResponse({"error": True}, safe=False)
+
 
 @api_view(["GET"])
 def get_profile(request, user_id):
