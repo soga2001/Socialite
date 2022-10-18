@@ -45,13 +45,15 @@ export default defineComponent({
 
 <template>
   <div class="post">
-    <img :src="$store.state.user.profile.avatar" class="post__avatar" />
+    <!-- <img :src="$store.state.user.profile.avatar" class="post__avatar" /> -->
+    <q-avatar size="65px">
+      <img :src="$store.state.user.profile.avatar" >
+    </q-avatar>
     <form class="post__input" v-on:submit.prevent="submit">
       <input multiple type="file" accept="image/*" @change="uploadFile" ref="file" class="post__file" />
       <input type="text" placeholder="caption" v-model="caption" class="post__caption"/>
       <input type="submit" value="Post" class="post__submit__btn" :disabled="image === null" />
     </form>
-    <!-- <img v-if="image" :src="image"/> -->
   </div>
 </template>
 
@@ -60,7 +62,7 @@ export default defineComponent({
   padding: 20px;
   display: grid;
   gap: 10px;
-  grid-template-columns: 60px 1fr;
+  grid-template-columns: 70px 1fr;
   position: relative;
   border-bottom: 2px solid var(--color-border);
 }

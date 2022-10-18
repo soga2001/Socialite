@@ -11,7 +11,8 @@ import $ from 'jquery'
 export default defineComponent({
   data() {
     return {
-      theme: '',
+      theme: false,
+      dark_mode: false
     }
   },
   setup() {
@@ -21,15 +22,13 @@ export default defineComponent({
   },
   methods: {
     switchTheme(e: any) {
-      if(e.target.checked) {
-        this.theme = 'dark'
-        this.cookies.set('theme', this.theme)
+      if(this.theme) {
+        this.cookies.set('theme', 'dark')
         document.documentElement.setAttribute('data-theme', 'dark')
       }
       else {
-        this.theme = 'light'
-        this.cookies.set('theme', this.theme)
-        document.documentElement.setAttribute('data-theme', this.theme)
+        this.cookies.set('theme', 'light')
+        document.documentElement.setAttribute('data-theme', 'light')
       }
     },
     logout() {
@@ -51,10 +50,13 @@ export default defineComponent({
         console.log(err)
       })
     },
+    testing() {
+      console.log('clicked')
+    }
   },
   created() {
-    this.theme = this.cookies.get('theme') || 'dark'
-    document.documentElement.setAttribute('data-theme', this.theme)
+    this.theme = this.cookies.get('theme') == 'dark'
+    document.documentElement.setAttribute('data-theme', this.theme ? 'dark': 'light')
 
     this.$store.commit('authenticate',JSON.parse(this.cookies.get("loggedIn")) || false)
     // http.get('users/csrf/').then(((res) => {
@@ -65,20 +67,20 @@ export default defineComponent({
     }
   },
   mounted() {
-    if(this.theme === 'dark') {
-      (document.getElementById('checkbox') as HTMLInputElement).checked = true
-    }
-    else {
-      (document.getElementById('checkbox') as HTMLInputElement).checked = false
-    }
+    // if(this.theme === 'dark') {
+    //   (document.getElementById('checkbox') as HTMLInputElement).checked = true
+    // }
+    // else {
+    //   (document.getElementById('checkbox') as HTMLInputElement).checked = false
+    // }
     $('.dropdown__button').on('click', function() {
       $('#dropdown').toggleClass('show')
     })
 
     $(document).mouseup(function(e: any) {
-      if(!e.target.matches('#dropdown')) {
+      if(!$(e.target).hasClass('dropdown__button')) {
         if($("#dropdown").hasClass('show')) {
-          $("#dropdown").removeClass('show');
+          $('#dropdown').toggleClass('show')
         }
       }
     });
@@ -91,35 +93,85 @@ export default defineComponent({
 <template>
   <header>
     <!-- <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="20" height="20" /> -->
-    <nav class="nav">
+    <!-- <nav class="nav">
       <RouterLink to="/">Home</RouterLink>
-      <!-- <RouterLink v-if="$store.state.authenticated" to="/about">Post</RouterLink> -->
       <RouterLink to="/"></RouterLink>
       <div class="nav__right">
-        <div class="nav__switch">
-          <span>Theme: </span>
-          <label class="switch">
-          <input :onclick="switchTheme" type="checkbox" id="checkbox">
-          <span class="slider round"></span>
-        </label>
-        </div>
+        <q-toggle v-on:click="switchTheme" v-model="theme" checked-icon="nights_stay" color="grey" unchecked-icon="wb_sunny" />
         <RouterLink v-if="!$store.state.authenticated" to="/login">Login</RouterLink>
         <RouterLink v-if="!$store.state.authenticated" to="/register">Register</RouterLink>
-        <div v-if="$store.state.authenticated" id="dropdown__main">
-          <div class="dropdown__button">
-            <span>@{{$store.state.user.username}}</span>
-            <img :src="$store.state.user.profile.avatar" id="avatar" />
-          </div>
-          <div id="dropdown" class="dropdown__content">
-            <RouterLink to="">Profile</RouterLink>
-            <RouterLink to="">Setting</RouterLink>
-            <hr/>
-            <RouterLink to="" v-on:click="logout">Logout</RouterLink>
-          </div>
-        </div>
+        <q-btn-dropdown v-if="$store.state.authenticated" color="primary" :label="$store.state.user.username">
+          <q-list class="dropdown__main">
+            <q-item clickable v-close-popup v-on:click="$router.push('/profile')">
+              <q-item-section>
+                <q-item-label v-on:click="$router.push('/profile')">Profile</q-item-label>
+              </q-item-section>
+              <RouterLink to="/profile" class="nav__link">Profile</RouterLink>
+            </q-item>
+
+            <q-item clickable v-close-popup v-on:click="$router.push('/settings')">
+              <RouterLink to="/settings" class="nav__link">Settings</RouterLink>
+            </q-item>
+            <q-separator color="green" inset />
+            <q-item clickable v-close-popup>
+              <q-item-section>
+                <q-item-label v-on:click="logout">Logout</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
+
         
       </div>
-    </nav>
+    </nav> -->
+    <q-toolbar class="nav shadow-2">
+      <!-- <q-btn flat round dense icon="menu" class="q-mr-sm" /> -->
+      <q-separator dark vertical inset />
+      <q-btn stretch flat label="Based-Book" />
+
+      <q-space />
+      <q-toggle v-on:click="switchTheme" v-model="theme" checked-icon="nights_stay" color="grey" unchecked-icon="wb_sunny" />
+      <q-separator dark vertical />
+      <q-btn stretch flat v-on:click="$router.push('/')"><RouterLink to="/" class="nav__link">Home</RouterLink></q-btn>
+      <q-separator dark vertical />
+      <q-btn stretch flat v-on:click="$router.push('/login')"><RouterLink to="/login" class="nav__link">Login</RouterLink></q-btn>
+      <q-separator dark vertical />
+      <q-btn stretch flat v-on:click="$router.push('/register')"><RouterLink to="/register" class="nav__link">Register</RouterLink></q-btn>
+      <!-- <RouterLink to="/" class="nav__link">Home</RouterLink> -->
+      <!-- <RouterLink to="/home" class="nav__link">Home</RouterLink> -->
+      <q-btn-dropdown stretch flat label="Dropdown" v-if="$store.state.authenticated">
+        <q-list class="dropdown__main">
+          <q-item clickable v-close-popup tabindex="0" v-on:click="$router.push('/profile')">
+            <q-item-section avatar>
+              <q-avatar icon="account_circle" color="secondary" text-color="white" />
+            </q-item-section>
+            <q-item-section>
+              <!-- <q-item-label>Profile</q-item-label> -->
+              <RouterLink to="/profile" class="nav__link">Profile</RouterLink>
+            </q-item-section>
+          </q-item>
+          <q-item clickable v-close-popup tabindex="0" v-on:click="$router.push('/profile')">
+            <q-item-section avatar>
+              <q-avatar icon="settings" color="secondary" text-color="white" />
+            </q-item-section>
+            <q-item-section>
+              <!-- <q-item-label>Settings</q-item-label> -->
+              <RouterLink to="/settings" class="nav__link">Settings</RouterLink>
+            </q-item-section>
+          </q-item>
+          <q-separator inset spaced />
+          <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
+            <q-item-section avatar>
+              <q-avatar icon="logout" color="primary" text-color="white" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Logout</q-item-label>
+              <!-- <q-item-label caption>February 22, 2016</q-item-label> -->
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-btn-dropdown>
+    </q-toolbar>
   </header>
 
   <RouterView />
@@ -143,6 +195,7 @@ a,
   text-decoration: none;
   color: hsla(160, 100%, 37%, 1);
   transition: 0.4s;
+  line-height: 2;
 }
 
 @media (hover: hover) {
@@ -155,22 +208,20 @@ nav {
   width: 100vw;
   font-size: 1rem;
   padding: 1rem 1rem;
-  border-bottom: 2px solid var(--color-border);
-  background-color: var(--color-background);
 }
 
-nav a.router-link-exact-active {
+.nav a.router-link-exact-active {
   color: var(--color-text);
 }
 
-nav a.router-link-exact-active:hover {
+.nav a.router-link-exact-active:hover {
   background-color: transparent;
+  color: rgb(59, 206, 59);
 }
 
-nav a {
+.nav a {
   display: inline-block;
   padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
 }
 
 .nav__right {
@@ -180,41 +231,17 @@ nav a {
 
 /* Dropdown */
 
-#dropdown__main {
-  border: none;
+.divider {
+  color: var(--color-text) !important;
 }
 
-#dropdown {
-  border: none;
+.dropdown__main {
+  background-color: var(--color-background-mute) !important;
 }
 
-.dropdown__button {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  cursor: pointer;
-  padding: 0px 5px;
-  background-color: var(--color-background-soft);
-}
 
-.dropdown__content {
-  display: none;
-  position: absolute;
-  background-color: var(--color-background);
-  min-width: 160px;
-  overflow: auto;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 999;
-}
-
-.show {display: block;}
-
-#avatar {
-  width:30px;
-  height: 30px;
-  background-color: white;
-  border: none;
-  border-radius: 50px;
+.nav__link:hover {
+  background-color: transparent;
 }
 
 

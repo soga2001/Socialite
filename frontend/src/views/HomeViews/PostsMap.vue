@@ -43,15 +43,20 @@ export default defineComponent({
                 <timeago :datetime="date_posted"/>
                 {{date_updated ? "&#x2022 (edited)" : ""}}
             </span>
-            <select class="post__dropdown">
-                <option>Options Here</option>
-            </select>
+            <!-- <el-dropdown class="post__dropdown">
+                <el-icon ><MoreFilled /></el-icon>
+                <template #dropdown>
+                    <el-dropdown-menu>
+                    <el-dropdown-item>Report Post</el-dropdown-item>
+                    </el-dropdown-menu>
+                </template>
+            </el-dropdown> -->
         </div>
         <img :src="img_url" />
         <div class="post__interact">
-            <h3>Like</h3>
-            <h3>Comment</h3>
-            <h3>Share</h3>
+            <button disabled>Like</button>
+            <button disabled>Comment</button>
+            <button disabled>Share</button>
         </div>
         <hr/>
         <span><RouterLink :to="'user?id='+ user_id" class="post__caption">{{username}}</RouterLink>: {{caption}}</span>

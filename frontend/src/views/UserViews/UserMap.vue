@@ -33,7 +33,10 @@ export default defineComponent({
 <template>
     <div class="user">
         <div class="user__profile__avatar">
-            <img :src="avatar" class="user__avatar" alt="User Profile"/>
+            <!-- <img :src="avatar" class="user__avatar" alt="User Profile"/> -->
+            <el-avatar :size="80">
+                <img :src="$store.state.user.profile.avatar" class="user__avatar"/>
+            </el-avatar>
         </div>
         <div class="user__profile__info">
             <h1 class="user__username">{{username}}</h1>
@@ -59,7 +62,7 @@ export default defineComponent({
                 <h4 class="user__caption">{{bio}}</h4>
             </div>
         </div>
-    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -81,16 +84,7 @@ export default defineComponent({
 } */
 
 .user__avatar {
-    float: right;
-    margin: 5px;
-    border-radius: 50%;
-    background-color: var(--color-text);
-    max-width: 200px;
-    max-height: 200px;
-    width: 100%;
-    height: 100%;
-    min-width: 100px;
-    min-width: 100px;
+    display: flex;
 }
 
 .user__profile__info {

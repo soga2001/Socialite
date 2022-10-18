@@ -48,7 +48,7 @@ export default defineComponent({
         }
     },
     created() {
-        console.log(import.meta.env)
+        // console.log(import.meta.env)
     }
 })
 </script>
