@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue';
 import type { Post } from '@/assets/interfaces';
 import { http } from '@/assets/http';
+import type { date } from 'quasar';
 
 export default defineComponent({
     props: {
@@ -17,11 +18,14 @@ export default defineComponent({
             date_posted: this.post.date_posted,
             date_updated: this.post.date_updated,
             avatar: '',
+            dropdown: false
         }
     },
-    // methods: {
-
-    // }
+    methods: {
+        report() {
+            console.log('potato')
+        }
+    },
     created() {
         // not sure if this works
         http.get(`user_profile/get_profile/${this.user_id}/`).then((res) => {
@@ -29,6 +33,7 @@ export default defineComponent({
         }).catch((err) => {
             console.log(err)
         })
+        console.log(this.$store.state.user)
     }
 })
 </script>
@@ -36,94 +41,134 @@ export default defineComponent({
 <template>
     <div class="post">
         <div class="post__head__div">
-            <RouterLink :to="'user?id='+ user_id" class="post__header">
+            <!-- <RouterLink :to="'profile/user?id='+ user_id" class="post__header">
                 @{{username}}
-            </RouterLink>
-            <span class="posted__date">&#x2022
-                <timeago :datetime="date_posted"/>
-                {{date_updated ? "&#x2022 (edited)" : ""}}
-            </span>
-            <!-- <el-dropdown class="post__dropdown">
-                <el-icon ><MoreFilled /></el-icon>
-                <template #dropdown>
-                    <el-dropdown-menu>
-                    <el-dropdown-item>Report Post</el-dropdown-item>
-                    </el-dropdown-menu>
-                </template>
-            </el-dropdown> -->
+            </RouterLink> -->
+            <div class="post__main">
+                <q-item clickable class="post__info" v-on:click="$router.push(`profile/user?id=${user_id}`)">
+                    <q-item-section avatar>
+                        <q-avatar color="secondary" text-color="white">
+                            <img :src="avatar" />
+                        </q-avatar>
+                    </q-item-section>
+                    <q-item-section>
+                        <q-item-label class="username">@{{username}}</q-item-label>
+                        <q-item-label caption class="date__posted"><timeago :datetime="date_posted"/></q-item-label>
+                    </q-item-section>
+                </q-item>
+                <div class="dropdown__div">
+                    <q-icon class="more__vert" name="more_vert"/>
+                    <q-menu v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
+                        <q-list class="more__option">
+                            <q-item clickable v-close-popup v-if="!$store.state.authenticated && username !== $store.state.user.username">
+                                <q-item-section avatar>
+                                    <q-icon class="danger__icon" name="report_problem"/>
+                                </q-item-section>
+                                <q-item-section>
+                                    <q-item-label>Report Post</q-item-label>
+                                </q-item-section>
+                            </q-item>
+                            <q-item clickable v-close-popup v-if="username === $store.state.user.username">
+                                <q-item-section avatar>
+                                    <q-icon class="danger__icon" name="delete"/>
+                                </q-item-section>
+                                <q-item-section>
+                                    <q-item-label>Delete</q-item-label>
+                                </q-item-section>
+                            </q-item>
+
+                            <q-item clickable v-close-popup v-if="username === $store.state.user.username">
+                                <q-item-section avatar>
+                                    <q-icon class="" name="edit"/>
+                                </q-item-section>
+                                <q-item-section>
+                                    <q-item-label>Edit</q-item-label>
+                                </q-item-section>
+                            </q-item>
+                        </q-list>
+                    </q-menu>
+                </div>
+            </div>
         </div>
         <img :src="img_url" />
-        <div class="post__interact">
-            <button disabled>Like</button>
-            <button disabled>Comment</button>
-            <button disabled>Share</button>
+        <div class="footer">
+            <div class="post__interact">
+                <button disabled>Like</button>
+                <button disabled>Comment</button>
+                <button disabled>Share</button>
+            </div>
+            <hr/>
+            <span><RouterLink :to="'profile/user?id='+ user_id" class="post__caption">{{username}}</RouterLink>: {{caption}}</span>
         </div>
-        <hr/>
-        <span><RouterLink :to="'user?id='+ user_id" class="post__caption">{{username}}</RouterLink>: {{caption}}</span>
     </div>
 </template>
 
 <style scoped>
 .post {
-    /* text-align: center; */
-    border-top: 2px solid var(--color-border);
-    border-bottom: 2px solid var(--color-border);
-    margin: 10px auto;
-    /* width: fit-content; */
-    padding: 20px;
+    margin: 60px auto;
     display: grid;
     background-color: var(--color-background-soft);
     position: relative;
+    min-width: 500px;
+    max-width: 600px;
 }
 
 .post__head__div {
     display: flex, table-cell;
     position: relative;
 }
-.post__header {
-    text-align:left;
+
+.post__main {
+    display: grid;
+    grid-template-columns: 1fr auto;
+
+}
+.post__info {
+    padding: 5px 10px;
+    background-color: transparent;
+}
+
+.username {
+    font-size: 20px;
     color: var(--color-heading);
+}
+
+.date__posted {
+    font-size: 12px;
+    color: var(--color-text);
+}
+
+.more__vert {
+    color: var(--color-heading);
+    width: fit-content;
     font-size: 20px;
-    border: 0;
-    border-width: 0px;
+    height: 100%;
+    background-color: transparent;
+    box-shadow: none !important;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    align-items: center;
+    cursor: pointer;
 }
 
-.posted__date {
-    font-size: 20px;
-    color: var(--color- );
-    margin-left: 5px;
+.more__option {
+    background-color: var(--color-background-mute);
+    color: var(--color-heading);
 }
 
-.post__dropdown {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    border: 0;
-    border-width: 0px;
-    background-color: var(--color-background-soft);
-    color: var(--color-text)
-}
-
-select:focus {
-    border: 0;
-    border-width: 0px;
-}
-
-select option:checked {
-    border: 0;
-    border-width: 0px;
-}
-
-select:active {
-    border: 0;
-    border-width: 0px;
+.danger__icon {
+    color: rgb(244, 106, 106);
 }
 
 img {
-    max-width: 100%;
+    width: 100%;
 }
 
+
+.footer {
+    padding: 15px 20px;
+}
 .post__interact {
     display: flex;
 }

@@ -6,6 +6,7 @@ import { RouterLink, RouterView } from 'vue-router';
 import router from './router';
 import { useStore } from './store/store';
 import $ from 'jquery'
+import Search from './views/Search/Search.vue'
 
 
 export default defineComponent({
@@ -30,6 +31,7 @@ export default defineComponent({
         this.cookies.set('theme', 'light')
         document.documentElement.setAttribute('data-theme', 'light')
       }
+      this.$store.commit('setTheme', !this.$store.state.dark)
     },
     logout() {
       http.post('users/logout/', {
@@ -43,8 +45,9 @@ export default defineComponent({
         this.cookies.remove('access_token')
         this.cookies.remove('refresh_token')
         this.cookies.set('loggedIn', "false")
+        this.cookies.remove('user')
         this.$store.commit('authenticate', false)
-        this.$store.commit('setUser', null)
+        this.$store.commit('setUser', this.$store.state.defaultUser)
         router.push('/')
       }).catch((err) => {
         console.log(err)
@@ -56,12 +59,10 @@ export default defineComponent({
   },
   created() {
     this.theme = this.cookies.get('theme') == 'dark'
+    this.$store.commit('setTheme', this.theme)
     document.documentElement.setAttribute('data-theme', this.theme ? 'dark': 'light')
 
     this.$store.commit('authenticate',JSON.parse(this.cookies.get("loggedIn")) || false)
-    // http.get('users/csrf/').then(((res) => {
-    //   this.cookies.set('csrf_token', res.data.csrf)
-    // }))
     if(this.cookies.get('user')) {
       this.$store.commit('setUser', this.cookies.get('user'))
     }
@@ -86,68 +87,41 @@ export default defineComponent({
     });
 
   },
+  components: {Search}
 })
 
 </script>
 
 <template>
   <header>
-    <!-- <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="20" height="20" /> -->
-    <!-- <nav class="nav">
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/"></RouterLink>
-      <div class="nav__right">
-        <q-toggle v-on:click="switchTheme" v-model="theme" checked-icon="nights_stay" color="grey" unchecked-icon="wb_sunny" />
-        <RouterLink v-if="!$store.state.authenticated" to="/login">Login</RouterLink>
-        <RouterLink v-if="!$store.state.authenticated" to="/register">Register</RouterLink>
-        <q-btn-dropdown v-if="$store.state.authenticated" color="primary" :label="$store.state.user.username">
-          <q-list class="dropdown__main">
-            <q-item clickable v-close-popup v-on:click="$router.push('/profile')">
-              <q-item-section>
-                <q-item-label v-on:click="$router.push('/profile')">Profile</q-item-label>
-              </q-item-section>
-              <RouterLink to="/profile" class="nav__link">Profile</RouterLink>
-            </q-item>
-
-            <q-item clickable v-close-popup v-on:click="$router.push('/settings')">
-              <RouterLink to="/settings" class="nav__link">Settings</RouterLink>
-            </q-item>
-            <q-separator color="green" inset />
-            <q-item clickable v-close-popup>
-              <q-item-section>
-                <q-item-label v-on:click="logout">Logout</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
-
-        
-      </div>
-    </nav> -->
-    <q-toolbar class="nav shadow-2">
+    <q-toolbar class="nav">
       <!-- <q-btn flat round dense icon="menu" class="q-mr-sm" /> -->
-      <q-separator dark vertical inset />
-      <q-btn stretch flat label="Based-Book" />
+      <q-btn stretch flat class="brand" label="Based-Book" v-on:click="$router.push('/')" />
 
       <q-space />
+      <!-- <Search /> -->
+      <!-- <q-space /> -->
       <q-toggle v-on:click="switchTheme" v-model="theme" checked-icon="nights_stay" color="grey" unchecked-icon="wb_sunny" />
-      <q-separator dark vertical />
+      <q-separator v-if="theme" dark vertical />
+      <q-separator v-if="!theme" light vertical />
       <q-btn stretch flat v-on:click="$router.push('/')"><RouterLink to="/" class="nav__link">Home</RouterLink></q-btn>
-      <q-separator dark vertical />
-      <q-btn stretch flat v-on:click="$router.push('/login')"><RouterLink to="/login" class="nav__link">Login</RouterLink></q-btn>
-      <q-separator dark vertical />
-      <q-btn stretch flat v-on:click="$router.push('/register')"><RouterLink to="/register" class="nav__link">Register</RouterLink></q-btn>
+      <q-separator v-if="theme" dark vertical />
+      <q-separator v-if="!theme" light vertical />
+      <q-btn v-if="!$store.state.authenticated"  stretch flat v-on:click="$router.push('/login')"><RouterLink to="/login" class="nav__link">Login</RouterLink></q-btn>
+      <q-separator v-if="!$store.state.authenticated && theme" dark vertical />
+      <q-separator v-if="!$store.state.authenticated && !theme" light vertical />
+      <q-btn v-if="!$store.state.authenticated" stretch flat v-on:click="$router.push('/register')"><RouterLink to="/register" class="nav__link">Register</RouterLink></q-btn>
       <!-- <RouterLink to="/" class="nav__link">Home</RouterLink> -->
       <!-- <RouterLink to="/home" class="nav__link">Home</RouterLink> -->
-      <q-btn-dropdown stretch flat label="Dropdown" v-if="$store.state.authenticated">
+      <q-btn-dropdown stretch flat :label="$store.state.user.username" v-if="$store.state.authenticated">
         <q-list class="dropdown__main">
-          <q-item clickable v-close-popup tabindex="0" v-on:click="$router.push('/profile')">
+          <q-item clickable v-close-popup tabindex="0" v-on:click="$router.push(`/profile/user?id=${$store.state.user.id}`)">
             <q-item-section avatar>
               <q-avatar icon="account_circle" color="secondary" text-color="white" />
             </q-item-section>
             <q-item-section>
               <!-- <q-item-label>Profile</q-item-label> -->
-              <RouterLink to="/profile" class="nav__link">Profile</RouterLink>
+              <RouterLink :to="'/profile/user?id=' + $store.state.user.id" class="nav__link">Profile</RouterLink>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup tabindex="0" v-on:click="$router.push('/profile')">
@@ -159,7 +133,8 @@ export default defineComponent({
               <RouterLink to="/settings" class="nav__link">Settings</RouterLink>
             </q-item-section>
           </q-item>
-          <q-separator inset spaced />
+          <q-separator v-if="theme" dark spaced />
+          <q-separator v-if="!theme" light spaced />
           <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
             <q-item-section avatar>
               <q-avatar icon="logout" color="primary" text-color="white" />
@@ -190,6 +165,12 @@ header {
   /* padding-right: calc(var(--section-gap) / 2); */
 }
 
+.nav {
+  background-color: var(--color-background);
+  box-shadow: 0px .5px 10px var(--color-text);
+  z-index: 999;
+}
+
 a,
 .green {
   text-decoration: none;
@@ -204,14 +185,13 @@ a,
   }
 }
 
-nav {
-  width: 100vw;
-  font-size: 1rem;
-  padding: 1rem 1rem;
+.nav .brand {
+  width: fit-content;
 }
 
 .nav a.router-link-exact-active {
-  color: var(--color-text);
+  color: var(--color-heading);
+  font-weight: bolder;
 }
 
 .nav a.router-link-exact-active:hover {
@@ -236,7 +216,8 @@ nav {
 }
 
 .dropdown__main {
-  background-color: var(--color-background-mute) !important;
+  background-color: var(--color-background) !important;
+  color: var(--color-text);
 }
 
 

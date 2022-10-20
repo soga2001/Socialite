@@ -16,6 +16,7 @@ export default defineComponent({
     },
     created() {
       this.getData();
+      console.log(window.innerWidth);
     },
     methods: {
       async getData() {
@@ -37,10 +38,8 @@ export default defineComponent({
 
 <template>
   <div class="home">
-    <div class="home__sides">
-      <div class="home__sides__main">
-        
-      </div>
+    <div class="home__sides left">
+      
     </div>
     <div class="home__center">
       <div v-if="$store.state.authenticated">
@@ -49,60 +48,51 @@ export default defineComponent({
       <div v-if="posts" v-for="post in posts" :key="post.id">
         <PostsMap :post="post" />
       </div>
-      <!-- <div>
-        <button v-on:click="getData">Load More</button>
-      </div> -->
     </div>
-    <div class="home__sides">
-      <Search />
+    <div class="home__sides right">
+      
     </div>
   </div>
 </template>
 
 <style>
-@media screen and (min-width: 768px){
+@media screen and (min-width: 1220px){
   .home {
     display: grid;
-    grid-template-columns: auto 40% auto;
+    grid-template-columns: auto minmax(500px, 600px) auto;
     align-items: center;
-  }
-  .home__center {
-    border-right: 2px solid var(--color-border);
-    border-left: 2px solid var(--color-border);
-    position: justify;  
-    min-height: 90vh;
   }
 
   .home__sides {
     height: 100%;
     position: sticky;
-    float: right;
-  }
-
-  .home__sides__main {
-    width: 100%;
-    text-align: center;
   }
 }
 
 
-@media screen and (min-width: 400px) and (max-width: 768px){
+@media screen and (min-width: 860px) and (max-width: 1220px){
   .home {
     display: grid;
-    align-items: center;
+    grid-template-columns: minmax(500px, 600px) auto;
+    justify-content: center;
   }
-  .home__center {
-    border-right: 2px solid var(--color-border);
-    border-left: 2px solid var(--color-border);
-    position: justify;
+
+  .home__sides.left {
+    display: none;
+  }
+
+}
+
+@media screen and (min-width: 400px) and (max-width: 859px){
+  .home {
+    display: grid;
+    grid-template-columns: minmax(500px, 600px) auto;
+    justify-content: center;
   }
 
   .home__sides {
     display: none;
   }
 
-  .home__sides__main {
-    display: none;
-  }
 }
 </style>

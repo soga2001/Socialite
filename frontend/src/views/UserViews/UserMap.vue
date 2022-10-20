@@ -32,34 +32,35 @@ export default defineComponent({
 
 <template>
     <div class="user">
-        <div class="user__profile__avatar">
-            <!-- <img :src="avatar" class="user__avatar" alt="User Profile"/> -->
-            <el-avatar :size="80">
-                <img :src="$store.state.user.profile.avatar" class="user__avatar"/>
-            </el-avatar>
-        </div>
-        <div class="user__profile__info">
-            <h1 class="user__username">{{username}}</h1>
-            <div class="user__social">
-                <div class="user__following">
-                    <h5>Following</h5> 
-                    <h6>10</h6>
-                </div>
-                <div class="user__followers">
-                    <h5>Followers</h5>
-                    <h6>10</h6>
-                </div>
-                <div class="user__posts">
-                    <h5>Posts</h5>
-                    <h6>10</h6>
-                </div>
+        <div class="user__container">
+            <div class="user__profile__avatar">
+                <q-avatar size="200px">
+                    <img :src="avatar">
+                </q-avatar>
             </div>
-            <div>
-                <button class="user__follow__btn">Follow</button>
-            </div>
-            <div class="user__bio">
-                <h3 class="user__name">{{first_name}} {{last_name}}</h3>
-                <h4 class="user__caption">{{bio}}</h4>
+            <div class="user__profile__info">
+                <h2 class="user__username">@{{username}}</h2>
+                <div class="user__social">
+                    <div class="user__following">
+                        <h6>Following</h6> 
+                        <h6>10</h6>
+                    </div>
+                    <div class="user__followers">
+                        <h6>Followers</h6>
+                        <h6>10</h6>
+                    </div>
+                    <div class="user__posts">
+                        <h6>Posts</h6>
+                        <h6>10</h6>
+                    </div>
+                </div>
+                <div>
+                    <button class="user__follow__btn">Follow</button>
+                </div>
+                <div class="user__bio">
+                    <h3 class="user__name">{{first_name}} {{last_name}}</h3>
+                    <h4 class="user__caption">{{bio}}</h4>
+                </div>
             </div>
         </div>
   </div>
@@ -68,27 +69,35 @@ export default defineComponent({
 <style scoped>
 
 .user {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+.user__container {
     position: relative;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    max-width: 1000px;
+    gap: 10px;
+    grid-template-columns: 1fr;
+    max-width: 600px;
     min-width: 300px;
     width: 100%;
-    margin: auto;
-    padding: 40px;
+    text-align: center;
 }
 
 
-/* .user__profile__avatar {
-    left: 50%;
-} */
+.user__profile__avatar {
+    display: flex;
+    justify-content: center;
+}
 
 .user__avatar {
     display: flex;
 }
 
 .user__profile__info {
-    padding: 0 30px;
+    /* padding: 0 30px; */
+    display: grid;
+    
 }
 
 .user__social {

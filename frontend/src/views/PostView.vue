@@ -39,32 +39,45 @@ export default defineComponent({
     }
   },
   created() {
+  },
+  mounted() {
   }
 })
 </script>
 
 <template>
   <div class="post">
-    <!-- <img :src="$store.state.user.profile.avatar" class="post__avatar" /> -->
-    <q-avatar size="65px">
-      <img :src="$store.state.user.profile.avatar" >
-    </q-avatar>
-    <form class="post__input" v-on:submit.prevent="submit">
-      <input multiple type="file" accept="image/*" @change="uploadFile" ref="file" class="post__file" />
-      <input type="text" placeholder="caption" v-model="caption" class="post__caption"/>
-      <input type="submit" value="Post" class="post__submit__btn" :disabled="image === null" />
-    </form>
+    <div class="post__container">
+      <q-avatar size="65px">
+        <img :src="$store.state.user.profile.avatar" >
+      </q-avatar>
+      <form class="post__input" v-on:submit.prevent="submit">
+        <input multiple type="file" accept="image/*" @change="uploadFile" ref="file" class="post__file" />
+        <input type="text" placeholder="caption" v-model="caption" class="post__caption"/>
+        <input type="submit" value="Post" class="post__submit__btn" :disabled="image === null" />
+      </form>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .post {
+  margin: 0px auto;
+  display: grid;
+  background-color: var(--color-background-soft);
+  position: relative;
+  min-width: 500px;
+  max-width: 600px;
+}
+.post__container {
   padding: 20px;
   display: grid;
   gap: 10px;
   grid-template-columns: 70px 1fr;
   position: relative;
-  border-bottom: 2px solid var(--color-border);
+  border: .5px solid var(--color-heading);
+  min-width: 500px;
+  max-width: 600px;
 }
 
 /* textarea {
