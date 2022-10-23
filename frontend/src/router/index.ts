@@ -3,6 +3,7 @@ import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import User from '../views/UserViews/User.vue'
 import PageNotFound from '../views/PageNotFound.vue'
+import Settings from '@/views/Settings/Settings.vue'
 
 import { useCookies } from 'vue3-cookies'
 import { store } from '../store/store'
@@ -36,9 +37,17 @@ const router = createRouter({
       }
     },
     {
-      path: '/profile/user',
-      name: 'user',
+      path: '/profile/user/:id',
+      name: 'user-profile',
       component: User,
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: Settings,
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/:pathMatch(.*)*',
@@ -53,7 +62,7 @@ router.beforeEach((to, from) => {
   }
 
   if(to.matched.some(record => record.meta.auth) && !store.state.authenticated) {
-    return {path: 'login'}
+    return {path: '/login'}
   }
 })
 

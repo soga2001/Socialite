@@ -2,7 +2,6 @@
 import { defineComponent } from 'vue';
 import type { Post } from '@/assets/interfaces';
 import { http } from '@/assets/http';
-import type { date } from 'quasar';
 
 export default defineComponent({
     props: {
@@ -18,12 +17,18 @@ export default defineComponent({
             date_posted: this.post.date_posted,
             date_updated: this.post.date_updated,
             avatar: '',
-            dropdown: false
+            dropdown: false,
+            liked: false,
+            comments: [],
         }
     },
     methods: {
         report() {
             console.log('potato')
+        },
+        like() {
+            console.log(this.liked)
+            this.liked = !this.liked
         }
     },
     created() {
@@ -41,11 +46,8 @@ export default defineComponent({
 <template>
     <div class="post">
         <div class="post__head__div">
-            <!-- <RouterLink :to="'profile/user?id='+ user_id" class="post__header">
-                @{{username}}
-            </RouterLink> -->
             <div class="post__main">
-                <q-item clickable class="post__info" v-on:click="$router.push(`profile/user?id=${user_id}`)">
+                <q-item class="post__info" :to="'profile/user/' + user_id">
                     <q-item-section avatar>
                         <q-avatar color="secondary" text-color="white">
                             <img :src="avatar" />
@@ -57,7 +59,7 @@ export default defineComponent({
                     </q-item-section>
                 </q-item>
                 <div class="dropdown__div">
-                    <q-icon class="more__vert" name="more_vert"/>
+                    <q-btn size="12px" class="more__vert" flat dense round icon="more_vert" />
                     <q-menu v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
                         <q-list class="more__option">
                             <q-item clickable v-close-popup v-if="!$store.state.authenticated && username !== $store.state.user.username">
@@ -93,9 +95,27 @@ export default defineComponent({
         <img :src="img_url" />
         <div class="footer">
             <div class="post__interact">
-                <button disabled>Like</button>
-                <button disabled>Comment</button>
-                <button disabled>Share</button>
+                <q-item class="">
+                    <q-item-section avatar>
+                        <q-btn :icon="liked ? 'favorite' : 'favorite_border'" round v-on:click="like" />
+                    </q-item-section>
+                    <q-item-section>
+                        <q-item-label class="">{{}}</q-item-label>
+                    </q-item-section>
+                </q-item>
+                <q-item class="">
+                    <q-item-section avatar>
+                        <q-btn :icon="comments.length > 0 ? 'chat' : 'chat'" round />
+                    </q-item-section>
+                    <q-item-section>
+                        <q-item-label class="">{{}}</q-item-label>
+                    </q-item-section>
+                </q-item>
+                <q-item class="">
+                    <q-item-section avatar>
+                        <q-btn icon="share" round />
+                    </q-item-section>
+                </q-item>
             </div>
             <hr/>
             <span><RouterLink :to="'profile/user?id='+ user_id" class="post__caption">{{username}}</RouterLink>: {{caption}}</span>
@@ -138,15 +158,21 @@ export default defineComponent({
     color: var(--color-text);
 }
 
+
+.dropdown__div {
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
+}
+
 .more__vert {
     color: var(--color-heading);
-    width: fit-content;
-    font-size: 20px;
-    height: 100%;
     background-color: transparent;
     box-shadow: none !important;
-    border-radius: 0;
     display: flex;
+    float: right;
     align-items: center;
     align-items: center;
     cursor: pointer;

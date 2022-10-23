@@ -7,7 +7,7 @@ import type { User } from '@/assets/interfaces';
 export default defineComponent({
     data() {
         return {
-            user_id: this.$route.query.id,
+            user_id: this.$route.params.id,
             user: new Array<User>(),
         };
     },
