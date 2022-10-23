@@ -38,7 +38,6 @@ export default defineComponent({
         }).catch((err) => {
             console.log(err)
         })
-        console.log(this.$store.state.user)
     }
 })
 </script>
@@ -49,7 +48,7 @@ export default defineComponent({
             <div class="post__main">
                 <q-item class="post__info" :to="'profile/user/' + user_id">
                     <q-item-section avatar>
-                        <q-avatar color="secondary" text-color="white">
+                        <q-avatar color="secondary" size="50px" >
                             <img :src="avatar" />
                         </q-avatar>
                     </q-item-section>
@@ -95,25 +94,39 @@ export default defineComponent({
         <img :src="img_url" />
         <div class="footer">
             <div class="post__interact">
-                <q-item class="">
+                <q-item>
                     <q-item-section avatar>
-                        <q-btn :icon="liked ? 'favorite' : 'favorite_border'" round v-on:click="like" />
+                        <q-btn class="like__btn" :icon="liked ? 'favorite' : 'favorite_border'" round flat v-on:click="like">
+                            <q-tooltip :offset="[0,0]">
+                                Like
+                            </q-tooltip>
+                        </q-btn>
                     </q-item-section>
                     <q-item-section>
-                        <q-item-label class="">{{}}</q-item-label>
+                        <!-- <q-item-label class="">{{}}</q-item-label> -->
+                        <q-skeleton type="text" width="30px" />
                     </q-item-section>
                 </q-item>
                 <q-item class="">
                     <q-item-section avatar>
-                        <q-btn :icon="comments.length > 0 ? 'chat' : 'chat'" round />
+                        <q-btn :icon="comments.length > 0 ? 'chat' : 'chat'" round flat>
+                            <q-tooltip :offset="[0,0]">
+                                Comment
+                            </q-tooltip>
+                        </q-btn>
                     </q-item-section>
                     <q-item-section>
                         <q-item-label class="">{{}}</q-item-label>
+                        <q-skeleton type="text" width="30px" />
                     </q-item-section>
                 </q-item>
                 <q-item class="">
                     <q-item-section avatar>
-                        <q-btn icon="share" round />
+                        <q-btn icon="share" round flat>
+                            <q-tooltip :offset="[0,0]">
+                                Copy Link
+                            </q-tooltip>
+                        </q-btn> 
                     </q-item-section>
                 </q-item>
             </div>
@@ -198,6 +211,11 @@ img {
 .post__interact {
     display: flex;
 }
+
+.like__btn {
+    color: red;
+}
+
 
 .post__interact h3 {
     padding: 10px;

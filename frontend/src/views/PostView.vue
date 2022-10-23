@@ -9,6 +9,7 @@ export default defineComponent({
     return {
       image: null,
       caption: "",
+      submitting: false,
     }
   },
   setup() {
@@ -20,21 +21,23 @@ export default defineComponent({
       this.image = e.target.files[0] || null
     },
     submit() {
-      const formData = new FormData()
-      if(this.image) {
-        formData.append('image', this.image)
-        formData.append('caption', this.caption)
-        http.post("posts/post_content/", formData, {
-          headers: {
-            "Authorization": `Bearer ${this.cookies.get("access_token")}`,
-            "Content-Type": "multipart/form-data"
-          }
-        }).then((res) => {
-          console.log(res.data)
-        }).catch((err) => {
-          console.log(err)
-        })
-      }
+      this.submitting = true
+      setTimeout(() => {this.submitting = false}, 5000)
+      // const formData = new FormData()
+      // if(this.image) {
+      //   formData.append('image', this.image)
+      //   formData.append('caption', this.caption)
+      //   http.post("posts/post_content/", formData, {
+      //     headers: {
+      //       "Authorization": `Bearer ${this.cookies.get("access_token")}`,
+      //       "Content-Type": "multipart/form-data"
+      //     }
+      //   }).then((res) => {
+      //     console.log(res.data)
+      //   }).catch((err) => {
+      //     console.log(err)
+      //   })
+      // }
 
     }
   },
@@ -51,10 +54,16 @@ export default defineComponent({
       <q-avatar size="65px">
         <img :src="$store.state.user.profile.avatar" >
       </q-avatar>
-      <form class="post__input" v-on:submit.prevent="submit">
+      <form class="post__input" @submit.prevent="submit">
         <input multiple type="file" accept="image/*" @change="uploadFile" ref="file" class="post__file" />
         <input type="text" placeholder="caption" v-model="caption" class="post__caption"/>
-        <input type="submit" value="Post" class="post__submit__btn" :disabled="image === null" />
+        <q-btn class="post__submit__btn" :loading="submitting" type="submit"  icon-right="send" push label="Post" :disable="image === null">
+          <template v-slot:loading>
+            <q-spinner-puff
+              class="loading"
+            />
+          </template>
+        </q-btn> 
       </form>
     </div>
   </div>
@@ -111,20 +120,20 @@ export default defineComponent({
   grid-column: auto / span 5;
 }
 
-.post__submit {
-  padding: 10px;
-  
-}
 
 .post__submit__btn {
   grid-column: 4 / span 2;
   background-color: var(--color-border);
-  padding: 10px 20px;
+  /* padding: 10px 20px; */
   font-size: 15px;
 }
 
 .post__submit__btn:enabled {
   cursor: pointer;
+}
+
+.loading {
+  color: var(--color-heading);
 }
 
 input {

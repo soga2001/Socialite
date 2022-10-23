@@ -1,15 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from '../views/Login.vue'
-import Register from '../views/Register.vue'
-import User from '../views/UserViews/User.vue'
-import PageNotFound from '../views/PageNotFound.vue'
-import Settings from '@/views/Settings/Settings.vue'
-
 import { useCookies } from 'vue3-cookies'
 import { store } from '../store/store'
 
 const { cookies }  = useCookies();
-const Home = () => import('../views/HomeView.vue')
 
 
 const router = createRouter({
@@ -18,12 +11,12 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: () => import('../views/HomeView.vue')
     },
     {
       path: '/login',
       name: 'login',
-      component: Login,
+      component: () => import('../views/Login.vue'),
       meta: {
         hideForAuth: true
       }
@@ -31,7 +24,7 @@ const router = createRouter({
     {
       path: '/register',
       name: 'register',
-      component: Register,
+      component: () => import('../views/Register.vue'),
       meta: {
         hideForAuth: true
       }
@@ -39,19 +32,19 @@ const router = createRouter({
     {
       path: '/profile/user/:id',
       name: 'user-profile',
-      component: User,
+      component: () => import('../views/UserViews/User.vue'),
     },
     {
       path: '/settings',
       name: 'settings',
-      component: Settings,
+      component: () => import('@/views/Settings/Settings.vue'),
       meta: {
         auth: true
       }
     },
     {
       path: '/:pathMatch(.*)*',
-      component: PageNotFound
+      component: () => import('../views/PageNotFound.vue'),
     }
   ]
 })

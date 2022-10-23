@@ -43,15 +43,15 @@ export default defineComponent({
                 <div class="user__social">
                     <div class="user__following">
                         <h6>Following</h6> 
-                        <h6>10</h6>
+                        <q-skeleton type="text" width="30px" />
                     </div>
                     <div class="user__followers">
                         <h6>Followers</h6>
-                        <h6>10</h6>
+                        <q-skeleton type="text" width="30px" />
                     </div>
                     <div class="user__posts">
                         <h6>Posts</h6>
-                        <h6>10</h6>
+                        <q-skeleton type="text" width="30px" />
                     </div>
                 </div>
                 <div>
@@ -81,7 +81,6 @@ export default defineComponent({
     max-width: 600px;
     min-width: 300px;
     width: 100%;
-    text-align: center;
 }
 
 
@@ -92,6 +91,10 @@ export default defineComponent({
 
 .user__avatar {
     display: flex;
+}
+
+.user__username {
+    text-align: center;
 }
 
 .user__profile__info {
@@ -109,12 +112,12 @@ export default defineComponent({
     padding-left: 10px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    text-align: center;
     max-width: 100%;
 }
 
 .user__social .user__following, .user__followers, .user__posts {
     display: grid;
+    justify-content: center;
 }
 
 .user__follow__btn {

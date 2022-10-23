@@ -68,26 +68,6 @@ export default defineComponent({
     }
   },
   mounted() {
-    // if(this.theme === 'dark') {
-    //   (document.getElementById('checkbox') as HTMLInputElement).checked = true
-    // }
-    // else {
-    //   (document.getElementById('checkbox') as HTMLInputElement).checked = false
-    // }
-    $('.dropdown__button').on('click', function() {
-      $('#dropdown').toggleClass('show')
-    })
-
-    $(document).mouseup(function(e: any) {
-      if(!$(e.target).hasClass('dropdown__button')) {
-        if($("#dropdown").hasClass('show')) {
-          $('#dropdown').toggleClass('show')
-        }
-      }
-    });
-
-
-
   },
   components: {Search}
 })
@@ -99,24 +79,45 @@ export default defineComponent({
     <q-toolbar class="nav">
       <!-- <q-btn flat round dense icon="menu" class="q-mr-sm" /> -->
       <q-btn stretch flat class="brand" v-on:click="$router.push('/')">Based<span class="logo">Book</span></q-btn>
-
-      <q-space />
-      <!-- <Search /> -->
-      <!-- <q-space /> -->
+      <q-space/>
       <q-toggle v-on:click="switchTheme" v-model="theme" color="grey" keep-color checked-icon="nights_stay" unchecked-icon="wb_sunny" />
-      <q-separator v-if="theme" dark vertical />
-      <q-separator v-if="!theme" light vertical />
-      <q-btn stretch flat v-on:click="$router.push('/')" icon="home"><RouterLink to="/" class="nav__link">Home</RouterLink></q-btn>
-      <q-separator v-if="theme" dark vertical />
-      <q-separator v-if="!theme" light vertical />
-      <q-btn v-if="!$store.state.authenticated"  stretch flat v-on:click="$router.push('/login')" icon="login"><RouterLink to="/login" class="nav__link">Login</RouterLink></q-btn>
-      <q-separator v-if="!$store.state.authenticated && theme" dark vertical />
-      <q-separator v-if="!$store.state.authenticated && !theme" light vertical />
-      <q-btn v-if="!$store.state.authenticated" stretch flat v-on:click="$router.push('/register')" icon="app_registration"><RouterLink to="/register" class="nav__link">Register</RouterLink></q-btn>
-      <q-btn-dropdown class="dropdown" stretch flat v-if="$store.state.authenticated">
+      <q-tabs shrink >
+        <q-separator :dark="theme" vertical />
+        <q-route-tab
+          icon="cottage"
+          :to="{name: 'home'}"
+          class="nav__link"
+          active-class="active"
+        >
+          <q-tooltip :offset="[0,0]">Home</q-tooltip>
+        </q-route-tab>
+        <q-separator :dark="theme" vertical />
+        <q-route-tab
+          icon="login"
+          to="/login"
+          exact
+          v-if="!$store.state.authenticated"
+          class="nav__link"
+          active-class="active"
+        >
+          <q-tooltip :offset="[0,0]">Login</q-tooltip>
+        </q-route-tab>
+        <q-separator :dark="theme" vertical />
+        <q-route-tab
+          icon="app_registration"
+          to="/register"
+          exact
+          v-if="!$store.state.authenticated"
+          class="nav__link"
+          active-class="active"
+        >
+          <q-tooltip :offset="[0,0]">Register</q-tooltip>
+        </q-route-tab>
+      </q-tabs>
+      <q-btn-dropdown class="dropdown" stretch flat v-if="$store.state.authenticated" no-caps>
         <template v-slot:label>
           <div class="row items-center no-wrap">
-            <q-avatar text-color="white" >
+            <q-avatar class="avatar">
               <img :src="$store.state.user.profile.avatar"/>
             </q-avatar>
             <div class="text-center">
@@ -124,28 +125,28 @@ export default defineComponent({
             </div>
           </div>
         </template>
-        <q-list class="dropdown__main">
-          <q-item clickable v-close-popup tabindex="0" :to="{name: 'user-profile', params: {id: $store.state.user.id}}">
+        <q-list class="dropdown__main" dense>
+          <q-item clickable v-close-popup tabindex="0" class="nav__link" active-class="active" :to="{name: 'user-profile', params: {id: $store.state.user.id}}">
             <q-item-section avatar>
-              <q-avatar icon="account_circle" text-color="white" />
+              <q-avatar icon="account_circle"/>
             </q-item-section>
             <q-item-section>
-              <RouterLink :to="'/profile/user/' + $store.state.user.id" class="nav__link">Profile</RouterLink>
+              Profile
             </q-item-section>
           </q-item>
-          <q-item clickable v-close-popup tabindex="0" v-on:click="$router.push('/settings')">
+          <q-item clickable v-close-popup tabindex="0" to="/settings" class="nav__link" active-class="active">
             <q-item-section avatar>
-              <q-avatar icon="settings" text-color="white" />
+              <q-avatar icon="manage_accounts" />
             </q-item-section>
             <q-item-section>
-              <RouterLink to="/settings" class="nav__link">Settings</RouterLink>
+              Setting
             </q-item-section>
           </q-item>
           <q-separator v-if="theme" dark spaced />
           <q-separator v-if="!theme" light spaced />
           <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
             <q-item-section avatar>
-              <q-avatar icon="logout" text-color="white" />
+              <q-avatar icon="logout" />
             </q-item-section>
             <q-item-section>
               <q-item-label>Logout</q-item-label>
@@ -179,12 +180,11 @@ header {
   z-index: 999;
 }
 
-a,
-.green {
+a {
   text-decoration: none;
   color: hsla(160, 100%, 37%, 1);
   transition: 0.4s;
-  line-height: 2;
+  /* line-height: 2; */
 }
 
 @media (hover: hover) {
@@ -209,45 +209,23 @@ a,
   color: var(--color-heading);
 }
 
-a.router-link-exact-active {
-  color: var(--color-heading);
+/* .nav__link.router-link-exact-active {
+  color: var(--color-heading) !important;
   font-weight: 900;
-}
+} */
 
-.nav__link.router-link-exact-active:hover {
+.nav__link.active {
   background-color: transparent;
-  color: rgb(59, 206, 59);
-}
-
-.nav a {
-  display: inline-block;
-  padding: 0 1rem;
-}
-
-.nav__right {
-  float: right;
-  display: flex;
-}
-
-.dropdown a.router-link-exact-active {
-  color: var(--color-heading);
-  font-weight: bolder;
-}
-
-/* Dropdown */
-
-.divider {
-  color: var(--color-text) !important;
+  color: rgb(193, 50, 50);
 }
 
 .dropdown__main {
-  background-color: var(--color-background) !important;
-  color: var(--color-text);
+  background-color: var(--color-background);
+  color: var(--text-heading);
 }
 
-
-.nav__link:hover {
-  background-color: transparent;
+.avatar {
+  margin: 0 10px;
 }
 
 

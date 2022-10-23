@@ -98,13 +98,13 @@ export default defineComponent({
             <span v-if="error" class="errMsg">{{errMsg}}</span>
             <input type="submit" value="Register" class="submit" :disabled="!checkForm()"/>
             <span class="form__check">Email</span>
-            <span class="valid">{{checkEmail() ? '✅' : '❌'}}</span>
+            <span class=""><q-icon size="20px" :class="checkEmail() ? 'valid' : 'invalid'" :name="checkEmail() ? 'check' : 'error'" /></span>
             <span class="form__check">Username</span>
-            <span class="valid">{{checkUsername() ? '✅' : '❌'}}</span>
+            <span class=""><q-icon size="20px" :class="checkUsername() ? 'valid' : 'invalid'" :name="checkUsername() ? 'check' : 'error'" /></span>
             <span class="form__check">Password</span>
-            <span class="valid">{{checkPassword() ? '✅' : '❌'}}</span>
+            <span class=""><q-icon size="20px" :class="checkPassword() ? 'valid' : 'invalid'" :name="checkPassword() ? 'check' : 'error'" /></span>
             <span class="form__check">Confirm Password</span>
-            <span class="valid">{{confirmPassword() ? '✅' : '❌'}}</span>
+            <span class=""><q-icon size="20px" :class="confirmPassword() ? 'valid' : 'invalid'" :name="confirmPassword() ? 'check' : 'error'" /></span>
         </form>
         
     </div>
@@ -213,6 +213,14 @@ input[type="submit"]:enabled {
 
 ::placeholder {
     color: var(--color-text);
+}
+
+.valid {
+    color: green;
+}
+
+.invalid {
+    color: red;
 }
 
 </style>
