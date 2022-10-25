@@ -117,7 +117,8 @@ export default defineComponent({
 }
 
 .login__errMsg {
-    color: rgb(255, 0, 0)
+    color: rgb(255, 0, 0);
+    font-size: 20px;
 }
 
 .login__links {

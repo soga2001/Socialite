@@ -1,9 +1,12 @@
 from calendar import c
+from socket import send_fds
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_delete
 import os
 import uuid
-import random
+
+from django.dispatch import receiver
 
 def rename_file(instance, filename):
     file, file_extension = os.path.splitext(filename)
@@ -22,6 +25,16 @@ class Post(models.Model):
     
     class Meta:
         ordering = ['-date_posted', '-date_updated']
+
+
+# @receiver(post_delete, sender=Post)
+# def remove_file_from_s3(sender, instance, using):
+#     print(instance)
+#     instance.img_url.delete(save=False)
+
+@receiver(models.signals.pre_delete, sender=Post)
+def remove_file_from_s3(sender, instance, using, **kwargs):
+    instance.img_url.delete(save=False)
 
 
     

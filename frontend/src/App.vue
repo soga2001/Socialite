@@ -52,9 +52,6 @@ export default defineComponent({
       }).catch((err) => {
         console.log(err)
       })
-    },
-    testing() {
-      console.log('clicked')
     }
   },
   created() {
@@ -77,8 +74,7 @@ export default defineComponent({
 <template>
   <header>
     <q-toolbar class="nav">
-      <!-- <q-btn flat round dense icon="menu" class="q-mr-sm" /> -->
-      <q-btn stretch flat class="brand" v-on:click="$router.push('/')">Based<span class="logo">Book</span></q-btn>
+      <q-btn stretch flat class="brand" to="/" >Based<span class="logo">Book</span></q-btn>
       <q-space/>
       <q-toggle v-on:click="switchTheme" v-model="theme" color="grey" keep-color checked-icon="nights_stay" unchecked-icon="wb_sunny" />
       <q-tabs shrink >
@@ -157,8 +153,11 @@ export default defineComponent({
       </q-btn-dropdown>
     </q-toolbar>
   </header>
-
-  <RouterView />
+  <RouterView v-slot="{Component}">
+    <KeepAlive include="home">
+      <component :is="Component"/>
+    </KeepAlive>
+  </RouterView>
 </template>
 
 <style>
@@ -178,6 +177,9 @@ header {
   background-color: var(--color-background);
   box-shadow: 0px .5px 10px var(--color-text);
   z-index: 999;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
 }
 
 a {
@@ -187,12 +189,6 @@ a {
   /* line-height: 2; */
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
 .nav .brand {
   width: fit-content;
   font-size: large;
@@ -200,12 +196,12 @@ a {
 }
 
 .brand:hover {
-  background-color: transparent;
+  background-color: transparent !important;
 }
 
 
 .nav .logo {
-  font-weight: bolder;
+  font-weight: 900;
   color: var(--color-heading);
 }
 
@@ -214,9 +210,15 @@ a {
   font-weight: 900;
 } */
 
+.nav__link {
+  color: var(--color-text);
+}
+
 .nav__link.active {
-  background-color: transparent;
-  color: rgb(193, 50, 50);
+  /* background-color: rgba(255, 0, 0, .2); */
+  /* color: rgb(193, 50, 50); */
+  color: var(--color-heading);
+  background-color: hsla(0, 0%, 57%, 0.2);
 }
 
 .dropdown__main {

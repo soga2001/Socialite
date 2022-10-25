@@ -5,24 +5,27 @@ import { http } from '@/assets/http';
 import PostsMap from './HomeViews/PostsMap.vue';
 import PostView from './PostView.vue';
 import Search from './Search/Search.vue';
+import { useStore } from '@/store/store';
 
 export default defineComponent({
     data() {
         return {
-            posts: new Array<Post>(),
             input: ref(''),
             user_timestap: new Date().toISOString(),
         };
     },
+    setup() {
+      const store = useStore()
+    },
     created() {
-      this.getData();
-      console.log(window.innerWidth);
+      if(Object.keys(this.$store.state.posts_main).length === 0) {
+        this.getData();
+      }
     },
     methods: {
       async getData() {
-        // users/username/${temp}
         http.get(`posts/view_posts/${this.user_timestap}/`).then((res) => {
-          this.posts = [...this.posts, ...res.data.posts]
+          this.$store.commit('setMainPosts', res.data.posts)
         }).catch((err) => {
             console.log(err);
         });
@@ -45,7 +48,7 @@ export default defineComponent({
       <div v-if="$store.state.authenticated">
         <PostView />
       </div>
-      <div v-if="posts" v-for="post in posts" :key="post.id">
+      <div v-if="$store.state.posts_main" v-for="post in $store.state.posts_main" :key="post.id">
         <PostsMap :post="post" />
       </div>
     </div>

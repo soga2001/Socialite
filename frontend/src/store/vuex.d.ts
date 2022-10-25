@@ -1,3 +1,4 @@
+import type { Post } from '@/assets/interfaces'
 import { Store } from 'vuex'
 
 declare module '@vue/runtime-core' {
@@ -38,7 +39,8 @@ declare module '@vue/runtime-core' {
       groups: [],
       user_permissions: [],
     },
-    dark: true
+    dark: true,
+    posts_main: Array<Post>
   }
 
   // provide typings for `this.$store`

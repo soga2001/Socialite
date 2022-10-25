@@ -20,6 +20,8 @@ export default defineComponent({
             dropdown: false,
             liked: false,
             comments: [],
+            img_loading: true,
+            avatar_loading: true
         }
     },
     methods: {
@@ -29,7 +31,13 @@ export default defineComponent({
         like() {
             console.log(this.liked)
             this.liked = !this.liked
-        }
+        },
+        onImgLoad() {
+            this.img_loading = false
+        },
+        onAvatarLoaded() {
+            this.avatar_loading = false
+        },
     },
     created() {
         // not sure if this works
@@ -38,6 +46,7 @@ export default defineComponent({
         }).catch((err) => {
             console.log(err)
         })
+        console.log('potato')
     }
 })
 </script>
@@ -49,7 +58,8 @@ export default defineComponent({
                 <q-item class="post__info" :to="'profile/user/' + user_id">
                     <q-item-section avatar>
                         <q-avatar color="secondary" size="50px" >
-                            <img :src="avatar" />
+                            <img :src="avatar" @load="onAvatarLoaded()"/>
+                            <q-skeleton v-if="avatar_loading" type="QAvatar"/>
                         </q-avatar>
                     </q-item-section>
                     <q-item-section>
@@ -91,7 +101,8 @@ export default defineComponent({
                 </div>
             </div>
         </div>
-        <img :src="img_url" />
+        <img :src="img_url" @load="onImgLoad"/>
+        <q-skeleton v-if="img_loading" height="400px" square />
         <div class="footer">
             <div class="post__interact">
                 <q-item>
@@ -104,7 +115,7 @@ export default defineComponent({
                     </q-item-section>
                     <q-item-section>
                         <!-- <q-item-label class="">{{}}</q-item-label> -->
-                        <q-skeleton type="text" width="30px" />
+                        <q-skeleton class="skeleton" type="text" width="30px" />
                     </q-item-section>
                 </q-item>
                 <q-item class="">
@@ -117,7 +128,7 @@ export default defineComponent({
                     </q-item-section>
                     <q-item-section>
                         <q-item-label class="">{{}}</q-item-label>
-                        <q-skeleton type="text" width="30px" />
+                        <q-skeleton class="skeleton" type="text" width="30px" />
                     </q-item-section>
                 </q-item>
                 <q-item class="">
@@ -131,7 +142,7 @@ export default defineComponent({
                 </q-item>
             </div>
             <hr/>
-            <span><RouterLink :to="'profile/user?id='+ user_id" class="post__caption">{{username}}</RouterLink>: {{caption}}</span>
+            <span><RouterLink :to="'profile/user/'+ user_id" class="post__caption">{{username}}</RouterLink>: {{caption}}</span>
         </div>
     </div>
 </template>
@@ -214,6 +225,10 @@ img {
 
 .like__btn {
     color: red;
+}
+
+.skeleton {
+    color: var(--color-text);
 }
 
 

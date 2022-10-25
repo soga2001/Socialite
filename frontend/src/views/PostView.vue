@@ -22,22 +22,22 @@ export default defineComponent({
     },
     submit() {
       this.submitting = true
-      setTimeout(() => {this.submitting = false}, 5000)
-      // const formData = new FormData()
-      // if(this.image) {
-      //   formData.append('image', this.image)
-      //   formData.append('caption', this.caption)
-      //   http.post("posts/post_content/", formData, {
-      //     headers: {
-      //       "Authorization": `Bearer ${this.cookies.get("access_token")}`,
-      //       "Content-Type": "multipart/form-data"
-      //     }
-      //   }).then((res) => {
-      //     console.log(res.data)
-      //   }).catch((err) => {
-      //     console.log(err)
-      //   })
-      // }
+      const formData = new FormData()
+      if(this.image) {
+        formData.append('image', this.image)
+        formData.append('caption', this.caption)
+        http.post("posts/post_content/", formData, {
+          headers: {
+            "Authorization": `Bearer ${this.cookies.get("access_token")}`,
+            "Content-Type": "multipart/form-data"
+          }
+        }).then((res) => {
+          this.submitting = false
+          console.log(res.data)
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
 
     }
   },

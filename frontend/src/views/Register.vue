@@ -98,13 +98,13 @@ export default defineComponent({
             <span v-if="error" class="errMsg">{{errMsg}}</span>
             <input type="submit" value="Register" class="submit" :disabled="!checkForm()"/>
             <span class="form__check">Email</span>
-            <span class=""><q-icon size="20px" :class="checkEmail() ? 'valid' : 'invalid'" :name="checkEmail() ? 'check' : 'error'" /></span>
+            <span class=""><q-icon size="20px" :class="checkEmail() ? 'valid' : 'invalid'" :name="checkEmail() ? 'check' : 'close'" /></span>
             <span class="form__check">Username</span>
-            <span class=""><q-icon size="20px" :class="checkUsername() ? 'valid' : 'invalid'" :name="checkUsername() ? 'check' : 'error'" /></span>
+            <span class=""><q-icon size="20px" :class="checkUsername() ? 'valid' : 'invalid'" :name="checkUsername() ? 'check' : 'close'" /></span>
             <span class="form__check">Password</span>
-            <span class=""><q-icon size="20px" :class="checkPassword() ? 'valid' : 'invalid'" :name="checkPassword() ? 'check' : 'error'" /></span>
+            <span class=""><q-icon size="20px" :class="checkPassword() ? 'valid' : 'invalid'" :name="checkPassword() ? 'check' : 'close'" /></span>
             <span class="form__check">Confirm Password</span>
-            <span class=""><q-icon size="20px" :class="confirmPassword() ? 'valid' : 'invalid'" :name="confirmPassword() ? 'check' : 'error'" /></span>
+            <span class=""><q-icon size="20px" :class="confirmPassword() ? 'valid' : 'invalid'" :name="confirmPassword() ? 'check' : 'close'" /></span>
         </form>
         
     </div>

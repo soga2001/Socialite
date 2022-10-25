@@ -2,7 +2,7 @@
 // Store reference: https://vuex.vuejs.org/
 import type { InjectionKey } from 'vue'
 import { createStore, Store, useStore as baseUseStore } from 'vuex'
-import type { User } from '@/assets/interfaces'
+import type { Post, User } from '@/assets/interfaces'
 
 // define your typings for the store state
 export interface State {
@@ -10,6 +10,7 @@ export interface State {
   user: User
   defaultUser: User,
   dark: boolean,
+  posts_main: Array<Post>
 }
 
 // define injection key
@@ -19,6 +20,7 @@ export const store = createStore<State>({
   state: {
     authenticated: false,
     dark: false,
+    posts_main: Array<Post>(),
     defaultUser: {
       id: 0,
       email: '',
@@ -59,11 +61,13 @@ export const store = createStore<State>({
         state.authenticated = payload
     },
     setUser(state, payload) {
-      console.log(payload)
       state.user = payload
     },
     setTheme(state, payload) {
       state.dark = payload
+    },
+    setMainPosts(state, payload) {
+      state.posts_main = [...state.posts_main, ...payload]
     }
   }
 })
