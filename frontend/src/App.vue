@@ -7,13 +7,15 @@ import router from './router';
 import { useStore } from './store/store';
 import $ from 'jquery'
 import Search from './views/Search/Search.vue'
+import HomeView from './views/HomeView.vue';
 
 
 export default defineComponent({
   data() {
     return {
       theme: false,
-      dark_mode: false
+      dark_mode: false,
+      include: ['home', 'explore']
     }
   },
   setup() {
@@ -154,7 +156,7 @@ export default defineComponent({
     </q-toolbar>
   </header>
   <RouterView v-slot="{Component}">
-    <KeepAlive include="home">
+    <KeepAlive :max="5">
       <component :is="Component"/>
     </KeepAlive>
   </RouterView>

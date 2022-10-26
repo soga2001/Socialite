@@ -5,6 +5,7 @@ import { store } from '../store/store'
 const { cookies }  = useCookies();
 
 
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [

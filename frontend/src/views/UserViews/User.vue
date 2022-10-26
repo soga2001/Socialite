@@ -75,12 +75,10 @@ export default defineComponent({
     top: 0;
     z-index: 999;
     background-color: var(--color-background-mute);
+    display: flex;
 }
 
 .panels {
-    display: flex;
-    justify-content: center;
-    justify-items: center;
     background-color: transparent;
 }
 </style>
