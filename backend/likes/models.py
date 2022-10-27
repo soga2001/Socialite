@@ -5,8 +5,8 @@ from posts.models import Post
 
 # Create your models here.
 class Likes(models.Model):
-    likes = models.ManyToManyField(Post, on_delete=models.CASCADE, null=False, blank=False)
-    user = models.ManyToManyField(User, on_delete=models.CASCADE, null=False, blank=False)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, null=False, blank=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
 
     class Meta:
-        unique_together = ('likes', 'user')
+        unique_together = ('post', 'user')

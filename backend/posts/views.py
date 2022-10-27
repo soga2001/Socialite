@@ -38,9 +38,13 @@ class Post_Content(APIView):
         except:
             return JsonResponse({"error": True}, safe=False)
 
-    def delete(self, request, post_id):
-        print(post_id)
-        return JsonResponse({"success": True}, safe=False)
+    def delete(self, request):
+        data = json.loads(request.body)
+        try:
+            Post.objects.filter(user_id=request.user.id).filter(id=data["id"]).delete()
+            return JsonResponse({"success": True}, safe=False)
+        except:
+            return JsonResponse({"success": False}, safe=False)
         # try:
         #     user, token = jwt.authenticate(request)
         #     user_id = user.id
@@ -48,10 +52,17 @@ class Post_Content(APIView):
         # except:
         #     return JsonResponse({"success": True}, safe=False)
 
+    
+
 
 @api_view(["GET"])
 def view_posts(request, timestamp):
     posts = PostSerializer(Post.objects.filter(date_posted__lt=timestamp)[:10], many=True)
+    return JsonResponse({"posts": list(posts.data)}, safe=False)
+
+@api_view(["GET"])
+def user_posted(request, timestamp, user_id):
+    posts = PostSerializer(Post.objects.filter(user_id=user_id).filter(date_posted__lt=timestamp)[:10], many=True)
     return JsonResponse({"posts": list(posts.data)}, safe=False)
 
 

@@ -78,7 +78,7 @@ def user_login(request):
                             "rt_lifetime": str(token.lifetime.days) + "d",
                             "user": userSerialized.data
                             }, safe=False)
-    return JsonResponse({"loggedIn": False}, safe=False)
+    return JsonResponse({"error": True}, safe=False)
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
