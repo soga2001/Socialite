@@ -21,6 +21,7 @@ export default defineComponent({
     },
     created() {
         // console.log(import.meta.env)
+        console.log(window.innerHeight)
     }
 })
 </script>

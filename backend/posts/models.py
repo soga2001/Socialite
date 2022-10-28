@@ -24,7 +24,7 @@ class Post(models.Model):
     date_updated = models.DateTimeField(default=None, blank=True, null=True)
     
     class Meta:
-        ordering = ['-date_posted', '-date_updated']
+        ordering = ['-date_posted']
 
 
 # when a post gets deleted

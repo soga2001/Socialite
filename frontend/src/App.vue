@@ -51,7 +51,7 @@ export default defineComponent({
         Cookies.remove('user')
         Cookies.remove('loggedIn')
         this.$store.commit('authenticate', false)
-        this.$store.commit('setUser', null)
+        this.$store.commit('setUser', this.$store.state.defaultUser)
         router.push('/')
       }).catch((err) => {
         console.log(err)
@@ -162,7 +162,7 @@ export default defineComponent({
     </q-toolbar>
   </header>
   <RouterView v-slot="{Component}">
-    <KeepAlive :max="5" >
+    <KeepAlive :max="5" :include="['Home','User']">
       <component :is="Component" :key="$route.fullPath"/>
     </KeepAlive>
   </RouterView>
@@ -174,9 +174,14 @@ export default defineComponent({
   scroll-behavior: smooth;
 }
 
+html {
+  height: 100%;
+}
+
 body {
   place-items: center;
   position: relative;
+  height: 100%;
 }
 
 header {

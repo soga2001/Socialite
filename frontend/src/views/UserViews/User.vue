@@ -39,41 +39,37 @@ export default defineComponent({
 </script>
 
 <template>
-    <div v-for="u in user">
-        <UserProfile :user="u"/>
-    </div>
-    <div>
-        <q-tabs
-        v-model="tab"
-        inline-label
-        outside-arrows
-        mobile-arrows
-        class="tabs"
-        active-class="active"
-      >
-        <q-tab name="posts" icon="grid_view" class="panel__icon">
-            <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">User Posted</q-tooltip>
-        </q-tab>
-        <q-tab name="likes" icon="favorite" class="panel__icon">
-            <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">User Liked</q-tooltip>
-        </q-tab>
-      </q-tabs>
+    <div class="user__main">
+        <div v-for="u in user">
+            <UserProfile :user="u"/>
+        </div>
+        <div>
+            <q-tabs
+            v-model="tab"
+            inline-label
+            outside-arrows
+            mobile-arrows
+            class="tabs"
+            active-class="active"
+        >
+            <q-tab name="posts" icon="grid_view" class="panel__icon">
+                <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">User Posted</q-tooltip>
+            </q-tab>
+            <q-tab name="likes" icon="favorite" class="panel__icon">
+                <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">User Liked</q-tooltip>
+            </q-tab>
+        </q-tabs>
 
-      <q-tab-panels keep-alive :keep-alive-max="2" v-model="tab" animated class="panels" swipeable>
-          <q-tab-panel name="posts" class="panel">
-            <!-- <div v-if="$store.state.posts_main" v-for="post in $store.state.posts_main" :key="post.id">
-                <PostsMap :post="post" />
-            </div> -->
-            <UserPosted :user_avatar="avatar" />
-          </q-tab-panel>
+        <q-tab-panels keep-alive :keep-alive-max="2" v-model="tab" animated class="panels row" swipeable>
+            <q-tab-panel name="posts" class="panel col-4">
+                <UserPosted :user_avatar="avatar" />
+            </q-tab-panel>
 
-          <q-tab-panel name="likes" class="panel">
-            <!-- <div v-if="$store.state.posts_main" v-for="post in $store.state.posts_main" :key="post.id">
-                <PostsMap :post="post" />
-            </div> -->
-            <UserLiked :user_avatar="avatar"/>
-          </q-tab-panel>
+            <q-tab-panel name="likes" class="panel col-4">
+                <UserLiked :user_avatar="avatar"/>
+            </q-tab-panel>
         </q-tab-panels>
+        </div>
     </div>
 </template>
 
@@ -85,19 +81,22 @@ export default defineComponent({
     top: 0;
     z-index: 999;
     background-color: var(--color-background-mute);
-    display: flex;
+    /* display: flex; */
     width: 100%;
 }
 
 .tabs .active {
     color: var(--color-heading);
     background-color: var(--color-background);
-    /* background-color: black !important; */
 }
 
 .panels {
     background-color: transparent;
-    display: flex;
     justify-content: center;
+}
+
+.panels {
+    /* height: 93vh; */
+    height: 100%;
 }
 </style>

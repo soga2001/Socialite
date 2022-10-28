@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue';
 import type { Post } from '@/assets/interfaces';
 import { http } from '@/assets/http';
+import { Cookies } from 'quasar';
 
 export default defineComponent({
     props: {
@@ -31,6 +32,20 @@ export default defineComponent({
         like() {
             console.log(this.liked)
             this.liked = !this.liked
+        },
+        deletePost() {
+            http.delete('posts/delete_post/', {
+                data: {
+                    id: this.id
+                },
+                headers: {
+                'Authorization': `Bearer ${Cookies.get('access_token')}`
+            }
+            }).then((res) => {
+                console.log(res)
+            }).catch((err) => {
+                console.log(err)
+            })
         },
         onImgLoad() {
             this.img_loading = false
@@ -85,7 +100,7 @@ export default defineComponent({
                                     <q-item-label>Report Post</q-item-label>
                                 </q-item-section>
                             </q-item>
-                            <q-item clickable v-close-popup v-if="username === $store.state.user.username">
+                            <q-item clickable v-close-popup v-on:click="deletePost" tabindex="0" v-if="username === $store.state.user.username">
                                 <q-item-section avatar>
                                     <q-icon class="danger__icon" name="delete"/>
                                 </q-item-section>
@@ -93,7 +108,6 @@ export default defineComponent({
                                     <q-item-label>Delete</q-item-label>
                                 </q-item-section>
                             </q-item>
-
                             <q-item clickable v-close-popup v-if="username === $store.state.user.username">
                                 <q-item-section avatar>
                                     <q-icon class="" name="edit"/>

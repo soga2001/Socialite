@@ -36,8 +36,8 @@ export default defineComponent({
 
 <template>
     <div class="user__posted__main">
-        <div class="user__posted">
-            <div class="grid" v-if="user_posted.length > 0" v-for="post in user_posted" :key="post.id">
+        <div class="user__posted row justify-center">
+            <div class="col-12 col-md-auto" v-if="user_posted.length > 0" v-for="post in user_posted" :key="post.id">
                 <UserPostedMap class="post" :post="post" :user_avatar="avatar"/>
             </div>
         </div>
@@ -46,25 +46,8 @@ export default defineComponent({
 
 
 <style scoped>
-.user__posted__main {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-}
-
-.user__posted {
-    grid-column: 4 / span 6;
-    display: grid;
-    gap: 5px !important;
-    grid-template-columns: repeat(4,1fr);
-}
-
-/* .grid {
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-} */
-
 
 .post {
-    grid-column: auto / span 4;
+    padding: 10px;
 }
 </style>

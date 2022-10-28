@@ -34,5 +34,6 @@ export default defineComponent({
 .used__liked__main {
     display: flex;
     justify-content: center;
+    /* height: 100%; */
 }
 </style>
