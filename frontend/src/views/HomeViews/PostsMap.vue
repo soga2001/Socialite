@@ -40,13 +40,11 @@ export default defineComponent({
         },
     },
     created() {
-        // not sure if this works
         http.get(`user_profile/get_profile/${this.user_id}/`).then((res) => {
             this.avatar = res.data.user_profile.avatar
         }).catch((err) => {
             console.log(err)
         })
-        console.log('potato')
     }
 })
 </script>
@@ -55,23 +53,31 @@ export default defineComponent({
     <div class="post">
         <div class="post__head__div">
             <div class="post__main">
-                <q-item class="post__info" :to="'profile/user/' + user_id">
+                <!-- :to="'profile/user/' + user_id" -->
+                <q-item class="post__info" :to="{path: 'profile/user', query: {id: user_id}}">
                     <q-item-section avatar>
-                        <q-avatar color="secondary" size="50px" >
-                            <img :src="avatar" @load="onAvatarLoaded()"/>
-                            <q-skeleton v-if="avatar_loading" type="QAvatar"/>
+                        <q-avatar size="50px" >
+                            <img :src="avatar"/>
                         </q-avatar>
                     </q-item-section>
                     <q-item-section>
                         <q-item-label class="username">@{{username}}</q-item-label>
-                        <q-item-label caption class="date__posted"><timeago :datetime="date_posted"/></q-item-label>
+                        <q-item-label caption class="date__posted">
+                            <timeago :datetime="date_posted" 
+                            auto-update
+                            :converter-options="{
+                                includeSeconds: true,
+                                addSuffix: true,
+                                useStrict: false,
+                            }"/>
+                        </q-item-label>
                     </q-item-section>
                 </q-item>
                 <div class="dropdown__div">
                     <q-btn size="12px" class="more__vert" flat dense round icon="more_vert" />
-                    <q-menu v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
+                    <q-menu class="dropdown" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
                         <q-list class="more__option">
-                            <q-item clickable v-close-popup v-if="!$store.state.authenticated && username !== $store.state.user.username">
+                            <q-item clickable v-close-popup v-if="username !== $store.state.user.username">
                                 <q-item-section avatar>
                                     <q-icon class="danger__icon" name="report_problem"/>
                                 </q-item-section>
@@ -101,7 +107,7 @@ export default defineComponent({
                 </div>
             </div>
         </div>
-        <img :src="img_url" @load="onImgLoad"/>
+        <img :src="img_url" @load="onImgLoad" class="post__img"/>
         <q-skeleton v-if="img_loading" height="400px" square />
         <div class="footer">
             <div class="post__interact">
@@ -120,6 +126,7 @@ export default defineComponent({
                 </q-item>
                 <q-item class="">
                     <q-item-section avatar>
+                        <!-- <ion-icon name="chatbubble-outline"></ion-icon> -->
                         <q-btn :icon="comments.length > 0 ? 'chat' : 'chat'" round flat>
                             <q-tooltip :offset="[0,0]">
                                 Comment
@@ -155,6 +162,7 @@ export default defineComponent({
     position: relative;
     min-width: 500px;
     max-width: 600px;
+    box-shadow:0 4px 20px 0 var(--color-text);
 }
 
 .post__head__div {
@@ -191,6 +199,10 @@ export default defineComponent({
     align-content: center;
 }
 
+/* .dropdown {
+    box-shadow: 0 4px 8px 0 var(--color-heading), 0 6px 20px 0 var(--color-heading);
+} */
+
 .more__vert {
     color: var(--color-heading);
     background-color: transparent;
@@ -205,13 +217,14 @@ export default defineComponent({
 .more__option {
     background-color: var(--color-background-mute);
     color: var(--color-heading);
+    
 }
 
 .danger__icon {
     color: rgb(244, 106, 106);
 }
 
-img {
+.post__img {
     width: 100%;
 }
 

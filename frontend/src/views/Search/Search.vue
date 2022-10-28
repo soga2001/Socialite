@@ -15,6 +15,14 @@ export default defineComponent({
         const store = useStore()
     },
     created() {
+        console.log('potato')
+        // window.scroll({
+        //     top: 0,
+        //     left: 0,
+        //     behavior: 'smooth'
+        // })
+    },
+    mounted() {
     },
     methods: {
       async search() {

@@ -45,19 +45,11 @@ class Post_Content(APIView):
             return JsonResponse({"success": True}, safe=False)
         except:
             return JsonResponse({"success": False}, safe=False)
-        # try:
-        #     user, token = jwt.authenticate(request)
-        #     user_id = user.id
-        #     post = Post.objects.filter(id=post_id).filter(user_id=user_id).delete()
-        # except:
-        #     return JsonResponse({"success": True}, safe=False)
-
-    
-
 
 @api_view(["GET"])
-def view_posts(request, timestamp):
-    posts = PostSerializer(Post.objects.filter(date_posted__lt=timestamp)[:10], many=True)
+def view_posts(request, timestamp, page):
+    offset = int(page) * 5
+    posts = PostSerializer(Post.objects.filter(date_posted__lt=timestamp)[offset:offset+5], many=True)
     return JsonResponse({"posts": list(posts.data)}, safe=False)
 
 @api_view(["GET"])

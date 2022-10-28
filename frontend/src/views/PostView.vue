@@ -51,9 +51,10 @@ export default defineComponent({
 <template>
   <div class="post">
     <div class="post__container">
-      <q-avatar size="65px">
-        <img :src="$store.state.user.profile.avatar" >
-      </q-avatar>
+      <q-avatar size="65px" class="avatar" v-if="$store.state.user.profile.avatar">
+          <img :src="$store.state.user.profile.avatar"/>
+        </q-avatar>
+        <q-avatar class="avatar" v-if="!$store.state.user.profile.avatar" icon="account_circle"/>
       <form class="post__input" @submit.prevent="submit">
         <input multiple type="file" accept="image/*" @change="uploadFile" ref="file" class="post__file" />
         <input type="text" placeholder="caption" v-model="caption" class="post__caption"/>
@@ -79,7 +80,7 @@ export default defineComponent({
   max-width: 600px;
 }
 .post__container {
-  padding: 20px;
+  padding: 10px 0px;
   display: grid;
   gap: 10px;
   grid-template-columns: 70px 1fr;
@@ -105,6 +106,7 @@ export default defineComponent({
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 10px;
+  padding: 0 10px;
 }
 
 .post__file {

@@ -7,7 +7,7 @@ import router from './router';
 import { useStore } from './store/store';
 import $ from 'jquery'
 import Search from './views/Search/Search.vue'
-import HomeView from './views/HomeView.vue';
+import { Cookies } from 'quasar';
 
 
 export default defineComponent({
@@ -26,44 +26,49 @@ export default defineComponent({
   methods: {
     switchTheme(e: any) {
       if(this.theme) {
-        this.cookies.set('theme', 'dark')
+        // this.cookies.set('theme', 'dark')
+        Cookies.set('theme', 'dark')
         document.documentElement.setAttribute('data-theme', 'dark')
       }
       else {
-        this.cookies.set('theme', 'light')
+        // this.cookies.set('theme', 'light')
+        Cookies.set('theme', 'light')
         document.documentElement.setAttribute('data-theme', 'light')
       }
       this.$store.commit('setTheme', !this.$store.state.dark)
     },
     logout() {
       http.post('users/logout/', {
-        "access_token": this.cookies.get('access_token'),
-        "refresh_token": this.cookies.get('refresh_token')
+        "access_token": Cookies.get('access_token'),
+        "refresh_token": Cookies.get('refresh_token')
       }, {
         headers: {
-          'Authorization': `Bearer ${this.cookies.get('access_token')}`
+          'Authorization': `Bearer ${Cookies.get('access_token')}`
         }
       }).then((res) => {
-        this.cookies.remove('access_token')
-        this.cookies.remove('refresh_token')
-        this.cookies.set('loggedIn', "false")
-        this.cookies.remove('user')
+        Cookies.remove('access_token')
+        Cookies.remove('refresh_token')
+        Cookies.remove('user')
+        Cookies.remove('loggedIn')
         this.$store.commit('authenticate', false)
-        this.$store.commit('setUser', this.$store.state.defaultUser)
+        this.$store.commit('setUser', null)
         router.push('/')
       }).catch((err) => {
         console.log(err)
       })
+    },
+    onload(e: any) {
+      console.log(e)
     }
   },
   created() {
-    this.theme = this.cookies.get('theme') == 'dark'
+    this.theme = Cookies.get('theme') === 'dark'
     this.$store.commit('setTheme', this.theme)
     document.documentElement.setAttribute('data-theme', this.theme ? 'dark': 'light')
 
-    this.$store.commit('authenticate',JSON.parse(this.cookies.get("loggedIn")) || false)
-    if(this.cookies.get('user')) {
-      this.$store.commit('setUser', this.cookies.get('user'))
+    this.$store.commit('authenticate',JSON.parse(Cookies.get("loggedIn")) || false)
+    if(Cookies.get('user')) {
+      this.$store.commit('setUser', Cookies.get('user'))
     }
   },
   mounted() {
@@ -83,7 +88,7 @@ export default defineComponent({
         <q-separator :dark="theme" vertical />
         <q-route-tab
           icon="cottage"
-          :to="{name: 'home'}"
+          to="/"
           class="nav__link"
           active-class="active"
         >
@@ -115,16 +120,17 @@ export default defineComponent({
       <q-btn-dropdown class="dropdown" stretch flat v-if="$store.state.authenticated" no-caps>
         <template v-slot:label>
           <div class="row items-center no-wrap">
-            <q-avatar class="avatar">
+            <q-avatar class="avatar" v-if="$store.state.user.profile.avatar">
               <img :src="$store.state.user.profile.avatar"/>
             </q-avatar>
+            <q-avatar class="avatar" v-if="!$store.state.user.profile.avatar" icon="account_circle"/>
             <div class="text-center">
               {{$store.state.user.username}}
             </div>
           </div>
         </template>
         <q-list class="dropdown__main" dense>
-          <q-item clickable v-close-popup tabindex="0" class="nav__link" active-class="active" :to="{name: 'user-profile', params: {id: $store.state.user.id}}">
+          <q-item clickable v-close-popup tabindex="0" class="nav__link" active-class="active" :to="{name: 'user-profile', query: {id: $store.state.user.id}}">
             <q-item-section avatar>
               <q-avatar icon="account_circle"/>
             </q-item-section>
@@ -156,14 +162,18 @@ export default defineComponent({
     </q-toolbar>
   </header>
   <RouterView v-slot="{Component}">
-    <KeepAlive :max="5">
-      <component :is="Component"/>
+    <KeepAlive :max="5" >
+      <component :is="Component" :key="$route.fullPath"/>
     </KeepAlive>
   </RouterView>
 </template>
 
 <style>
 @import '@/assets/base.css';
+* {
+  scroll-behavior: smooth;
+}
+
 body {
   place-items: center;
   position: relative;

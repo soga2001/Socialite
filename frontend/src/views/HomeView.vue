@@ -8,38 +8,49 @@ import Search from './Search/Search.vue';
 import { useStore } from '@/store/store';
 
 export default defineComponent({
-    data() {
-        return {
-          posts: new Array<Post>(),
-          input: ref(''),
-          user_timestap: new Date().toISOString(),
-        };
+  data() {
+      return {
+        posts: new Array<Post>(),
+        input: ref(''),
+        user_timestap: new Date().toISOString(),
+        page: ref(0),
+        hasMore: true,
+      };
+  },
+  name: 'Home',
+  setup() {
+    const store = useStore()
+  },
+  created() {
+    // if(Object.keys(this.$store.state.posts_main).length === 0) {
+    //   this.getData();
+    // }
+    this.getData();
+  },
+  methods: {
+    async getData() {
+      http.get(`posts/view_posts/${this.user_timestap}/${this.page}/`).then((res) => {
+        this.$store.commit('setMainPosts', res.data.posts)
+        if(res.data.posts.length !== 5) {
+          this.hasMore = false
+        }
+        this.posts = [...this.posts, ...res.data.posts]
+      }).catch((err) => {
+          console.log(err);
+      });
     },
-    setup() {
-      const store = useStore()
+    async search() {
+      this.input = ""
     },
-    created() {
-      // if(Object.keys(this.$store.state.posts_main).length === 0) {
-      //   this.getData();
-      // }
-      this.getData();
-      console.log('created')
-    },
-    methods: {
-      async getData() {
-        http.get(`posts/view_posts/${this.user_timestap}/`).then((res) => {
-          // this.$store.commit('setMainPosts', res.data.posts)
-          this.posts = [...this.posts, ...res.data.posts]
-        }).catch((err) => {
-            console.log(err);
-        });
-      },
-      async search() {
-        
-        this.input = ""
+    onLoad(index: any, done: any) {
+      if(this.hasMore) {
+        this.page = this.page + 1
+        this.getData()
       }
-    },
-    components: { PostsMap, PostView, Search }
+      done()
+    }
+  },
+  components: { PostsMap, PostView, Search }
 })
 </script>
 
@@ -55,9 +66,16 @@ export default defineComponent({
       <!-- <div v-if="$store.state.posts_main" v-for="post in $store.state.posts_main" :key="post.id">
         <PostsMap :post="post" />
       </div> -->
-      <div v-if="posts.length > 0" v-for="post in posts" :key="post.id">
-        <PostsMap :post="post" />
-      </div>
+      <q-infinite-scroll @load="onLoad" :offset="250" :disable="!hasMore">
+        <div v-if="posts.length > 0" v-for="(post, index) in posts" :key="post.id">
+          <PostsMap :post="post" />
+        </div>
+        <template v-slot:loading>
+          <div class="row justify-center q-my-md">
+            <q-spinner-oval class="loading" size="40px" />
+          </div>
+        </template>
+      </q-infinite-scroll>
     </div>
     <div class="home__sides right">
       
@@ -104,5 +122,9 @@ export default defineComponent({
     display: none;
   }
 
+}
+
+.loading {
+  color: var(--color-heading);
 }
 </style>

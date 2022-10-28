@@ -4,6 +4,7 @@ import {useCookies} from 'vue3-cookies'
 import { RouterLink, RouterView } from 'vue-router';
 import { http } from '@/assets/http';
 import {useStore} from '../store/store'
+import { Cookies, useQuasar } from 'quasar';
 
 export default defineComponent({
     data() {
@@ -30,25 +31,27 @@ export default defineComponent({
                 username: this.username,
                 password: this.password
             }).then((res) => {
-                if(res.data.loggedIn === false) {
+                if(res.data.error === true) {
                     this.error = true
                     this.errMsg = "Username or Password is incorrect."
-                    return;
                 }
-                this.cookies.set('access_token', res.data.access_token,res.data.at_lifetime);
-                this.cookies.set('refresh_token', res.data.refresh_token, res.data.rt_lifetime);
-                this.cookies.set('loggedIn', 'true', res.data.lifetime);
-                this.cookies.set('user', res.data.user)
-                this.$store.commit('authenticate', true)
-                this.$store.commit('setUser', res.data.user)
-                this.$router.push('/')
+                else{
+                    Cookies.set('access_token', res.data.access_token, {expires: res.data.at_lifetime, secure: true})
+                    Cookies.set('refresh_token', res.data.refresh_token, {expires: res.data.rt_lifetime, secure: true})
+                    Cookies.set('loggedIn', 'true', {expires: res.data.at_lifetime, secure: true})
+                    Cookies.set('user', res.data.user, {expires: res.data.at_lifetime, secure: true})
+                    this.$store.commit('authenticate', true)
+                    this.$store.commit('setUser', res.data.user)
+                    console.log(this.$store.state.user)
+                    this.$router.push('/')
+                }
             }).catch((err) => {
                 console.log(err)
             })
         }
     },
     created() {
-        console.log(import.meta.env)
+        // console.log(import.meta.env)
     }
 })
 </script>

@@ -27,12 +27,8 @@ class Post(models.Model):
         ordering = ['-date_posted', '-date_updated']
 
 
-# @receiver(post_delete, sender=Post)
-# def remove_file_from_s3(sender, instance, using):
-#     print(instance)
-#     instance.img_url.delete(save=False)
-
-@receiver(models.signals.pre_delete, sender=Post)
+# when a post gets deleted
+@receiver(models.signals.post_delete, sender=Post)
 def remove_file_from_s3(sender, instance, using, **kwargs):
     instance.img_url.delete(save=False)
 

@@ -1,0 +1,38 @@
+<script lang="ts">
+import type { Post } from '@/assets/interfaces';
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+    name: 'User',
+    props: {
+        user_avatar: {type: String, required: true}
+    },
+    data() {
+        return {
+            user_id: this.$route.query.id,
+            user_timestap: new Date().toISOString(),
+            user_posted: new Array<Post>(),
+            avatar: this.user_avatar
+        };
+    },
+})
+</script>
+
+<template>
+    <div class="used__liked__main">
+        <div class="user__liked">
+            <!-- <div class="grid" v-if="user_posted.length > 0" v-for="post in user_posted" :key="post.id">
+                <UserPostedMap class="post" :post="post" :user_avatar="avatar"/>
+            </div> -->
+            <q-icon size="100px" name="las la-folder-open" />
+            <h1>User has liked no Posts</h1>
+        </div>
+    </div>
+</template>
+
+<style scoped>
+.used__liked__main {
+    display: flex;
+    justify-content: center;
+}
+</style>

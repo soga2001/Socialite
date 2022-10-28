@@ -4,6 +4,7 @@ import { store } from '../store/store'
 
 const { cookies }  = useCookies();
 
+const Home = () => import('../views/HomeView.vue')
 
 
 const router = createRouter({
@@ -11,8 +12,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: () => import('../views/HomeView.vue')
+      component: Home,
+      name: 'Home'
     },
     {
       path: '/login',
@@ -31,7 +32,7 @@ const router = createRouter({
       }
     },
     {
-      path: '/profile/user/:id',
+      path: '/profile/user',
       name: 'user-profile',
       component: () => import('../views/UserViews/User.vue'),
     },
