@@ -27,8 +27,7 @@ class Post_Content(APIView):
             check_image.verify()
             user, token = jwt.authenticate(request)
             post = Post(
-                username = user,
-                user_id = user.id,
+                user = user,
                 img_url = image,
                 caption=caption
             )
@@ -56,6 +55,13 @@ def view_posts(request, timestamp, page):
 def user_posted(request, timestamp, user_id):
     posts = PostSerializer(Post.objects.filter(user_id=user_id).filter(date_posted__lt=timestamp)[:10], many=True)
     return JsonResponse({"posts": list(posts.data)}, safe=False)
+
+
+@api_view(["GET"])
+def view_post_by_id(request, post_id):
+    post = PostSerializer(Post.objects.get(pk=post_id))
+    print(post.data)
+    return JsonResponse({"post": post.data}, safe=False)
 
 
 @api_view(["DELETE"])

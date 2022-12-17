@@ -17,9 +17,6 @@ export default defineComponent({
     return {cookies}
   },
   methods: {
-    uploadFile(e: any) {
-      this.image = e.target.files[0] || null
-    },
     submit() {
       this.submitting = true
       const formData = new FormData()
@@ -56,8 +53,20 @@ export default defineComponent({
         </q-avatar>
         <q-avatar class="avatar" v-if="!$store.state.user.profile.avatar" icon="account_circle"/>
       <form class="post__input" @submit.prevent="submit">
-        <input multiple type="file" accept="image/*" @change="uploadFile" ref="file" class="post__file" />
-        <input type="text" placeholder="caption" v-model="caption" class="post__caption"/>
+        <q-file v-model="image" label="Pick an image" filled clearable class="post__file" :dark="$store.state.dark" :color="$store.state.dark ? 'white': 'black'">
+          <template v-slot:prepend>
+            <q-icon name="cloud_upload" />
+          </template>
+        </q-file>
+        <q-input
+          clearable
+          :dark="$store.state.dark"
+          clear-icon="close"
+          :color="$store.state.dark ? 'white' : 'black'"
+          class="post__caption"
+          v-model="caption"
+          label="Caption"
+        />
         <q-btn class="post__submit__btn" :loading="submitting" type="submit"  icon-right="send" push label="Post" :disable="image === null">
           <template v-slot:loading>
             <q-spinner-puff
@@ -117,9 +126,14 @@ export default defineComponent({
 
 .post__caption {
   border-bottom: 2px solid var(--color-border);
-  font-size: 30px;
+  font-size: 15px;
   margin-top: 20px;
   grid-column: auto / span 5;
+  color: var(--color-heading);
+}
+
+.post__caption:active {
+  color: var(--color-heading) !important;
 }
 
 

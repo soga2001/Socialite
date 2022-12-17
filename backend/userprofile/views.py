@@ -19,6 +19,7 @@ class Update_Profile(APIView):
     def post(self, request):
         try:
             avatar = request.FILES['avatar']
+            print('potato')
             bio = request.POST['bio']
             # The following two lines make sure the file uploaded is actually an image
             check_image = Image.open(avatar)

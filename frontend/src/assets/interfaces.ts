@@ -21,7 +21,8 @@ export interface UserProfile{
 export interface Post{
     id: number,
     username: string,
-    user_id: number,
+    user_avatar: string,
+    user: number,
     img_url: string,
     caption: string,
     date_posted: string,

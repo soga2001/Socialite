@@ -202,13 +202,9 @@ input {
 }
 
 
-input[type="submit"]:enabled {
-    font-size: 15px;
-    padding: 10px;
-    /* color: var(--color-text); */
-    cursor: pointer;
-    color: var(--color-button);
-    background-color: var(--color-button-background);
+input[type="submit"]:hover {
+    background-color: var(--color-button-hover);
+    padding: 10px 7px;
 }
 
 ::placeholder {

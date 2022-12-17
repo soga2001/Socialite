@@ -14,7 +14,7 @@ export default defineComponent({
         input: ref(''),
         user_timestap: new Date().toISOString(),
         page: ref(0),
-        hasMore: true,
+        hasMore: false,
       };
   },
   name: 'Home',
@@ -31,10 +31,14 @@ export default defineComponent({
     async getData() {
       http.get(`posts/view_posts/${this.user_timestap}/${this.page}/`).then((res) => {
         this.$store.commit('setMainPosts', res.data.posts)
-        if(res.data.posts.length !== 5) {
+        if(res.data.posts.length === 5) {
+          this.hasMore = true
+        }
+        else {
           this.hasMore = false
         }
         this.posts = [...this.posts, ...res.data.posts]
+        // console.log(this.page)x
       }).catch((err) => {
           console.log(err);
       });
@@ -66,7 +70,7 @@ export default defineComponent({
       <!-- <div v-if="$store.state.posts_main" v-for="post in $store.state.posts_main" :key="post.id">
         <PostsMap :post="post" />
       </div> -->
-      <q-infinite-scroll @load="onLoad" :offset="250" :disable="!hasMore">
+      <q-infinite-scroll @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
         <div v-if="posts.length > 0" v-for="(post, index) in posts" :key="post.id">
           <PostsMap :post="post" />
         </div>

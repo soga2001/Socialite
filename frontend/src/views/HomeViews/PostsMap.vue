@@ -1,8 +1,9 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import type { Post } from '@/assets/interfaces';
 import { http } from '@/assets/http';
-import { Cookies } from 'quasar';
+import { Cookies, useQuasar } from 'quasar';
+
 
 export default defineComponent({
     props: {
@@ -12,26 +13,33 @@ export default defineComponent({
         return {
             id: this.post.id,
             username: this.post.username,
-            user_id: this.post.user_id,
+            user_id: this.post.user,
             img_url: this.post.img_url,
             caption: this.post.caption,
             date_posted: this.post.date_posted,
             date_updated: this.post.date_updated,
-            avatar: '',
+            avatar: this.post.user_avatar,
             dropdown: false,
             liked: false,
             comments: [],
             img_loading: true,
-            avatar_loading: true
+            avatar_loading: true,
+            delete: false,
+            persistent: ref(false),
+            report: ref(false),
+            reason: ref('')
         }
     },
     methods: {
-        report() {
-            console.log('potato')
+        reportPost() {
+            console.log(this.reason)
         },
         like() {
             console.log(this.liked)
             this.liked = !this.liked
+        },
+        setDelete() {
+            this.delete = true
         },
         deletePost() {
             http.delete('posts/delete_post/', {
@@ -55,11 +63,11 @@ export default defineComponent({
         },
     },
     created() {
-        http.get(`user_profile/get_profile/${this.user_id}/`).then((res) => {
-            this.avatar = res.data.user_profile.avatar
-        }).catch((err) => {
-            console.log(err)
-        })
+        // http.get(`user_profile/get_profile/${this.user_id}/`).then((res) => {
+        //     this.avatar = res.data.user_profile.avatar
+        // }).catch((err) => {
+        //     console.log(err)
+        // })
     }
 })
 </script>
@@ -89,18 +97,18 @@ export default defineComponent({
                     </q-item-section>
                 </q-item>
                 <div class="dropdown__div">
-                    <q-btn size="12px" class="more__vert" flat dense round icon="more_vert" />
+                    <q-btn size="16px" class="more__vert" flat dense round icon="more_vert" />
                     <q-menu class="dropdown" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
                         <q-list class="more__option">
-                            <q-item clickable v-close-popup v-if="username !== $store.state.user.username">
+                            <q-item clickable v-close-popup @click="report = true" v-if="username !== $store.state.user.username">
                                 <q-item-section avatar>
-                                    <q-icon class="danger__icon" name="report_problem"/>
+                                    <q-icon class="danger__icon" name="flag"/>
                                 </q-item-section>
                                 <q-item-section>
                                     <q-item-label>Report Post</q-item-label>
                                 </q-item-section>
                             </q-item>
-                            <q-item clickable v-close-popup v-on:click="deletePost" tabindex="0" v-if="username === $store.state.user.username">
+                            <q-item clickable v-close-popup @click="persistent = true" tabindex="0" v-if="username === $store.state.user.username">
                                 <q-item-section avatar>
                                     <q-icon class="danger__icon" name="delete"/>
                                 </q-item-section>
@@ -119,6 +127,59 @@ export default defineComponent({
                         </q-list>
                     </q-menu>
                 </div>
+                <!-- Confirm Delete Model -->
+                <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
+                    <q-card class="card">
+                        <q-card-section class="row">
+                            <q-item>
+                                <q-item-section class="title">Are you sure you want to delete this post?</q-item-section>
+                            </q-item>
+                        </q-card-section>
+                        <q-card-section>
+                            <q-item>
+                                <q-item-section avatar>
+                                <q-avatar class="red" icon="warning"/>
+                                </q-item-section>
+                                <q-item-section class="red alert">This action is permanent and irreversible.</q-item-section>
+                            </q-item>
+                        </q-card-section>
+
+                        <q-card-actions align="right" class="buttons">
+                            <q-btn flat label="Cancel"  v-close-popup />
+                            <q-btn flat label="Confirm" @click="deletePost" v-close-popup />
+                        </q-card-actions>
+                    </q-card>
+                </q-dialog>
+                <!-- Report model -->
+                <q-dialog v-model="report" persistent>
+                    <q-card class="card">
+                        <q-card-section>
+                            <!-- <h6 class="title">Report</h6> -->
+                            <q-item>
+                                <q-item-section class="title">Report</q-item-section>
+                                <q-item-section avatar>
+                                <q-avatar class="red" icon="flag"/>
+                                </q-item-section>
+                            </q-item>
+                        </q-card-section>
+                        <q-card-section class="q-pt-none">
+                            <!-- <q-input :dark="$store.state.dark" class="report__reason" placeholder="Reason" dense v-model="reason" /> -->
+                            <q-input
+                                v-model="reason"
+                                filled
+                                clearable
+                                type="textarea"
+                                label="Reason"
+                                :dark="$store.state.dark"                                
+                            />
+                        </q-card-section>
+
+                        <q-card-actions align="right" class="buttons">
+                            <q-btn flat label="Cancel" v-close-popup />
+                            <q-btn flat label="Report" v-close-popup @click="reportPost" />
+                        </q-card-actions>
+                    </q-card>
+                </q-dialog>
             </div>
         </div>
         <img :src="img_url" @load="onImgLoad" class="post__img"/>
@@ -163,7 +224,10 @@ export default defineComponent({
                 </q-item>
             </div>
             <hr/>
-            <span><RouterLink :to="'profile/user/'+ user_id" class="post__caption">{{username}}</RouterLink>: {{caption}}</span>
+            <span v-if="caption"><RouterLink :to="'profile/user/'+ user_id" class="post__caption">{{username}}</RouterLink>: {{caption}}</span>
+            <div class="q-pa-md q-gutter-sm">
+
+  </div>
         </div>
     </div>
 </template>
@@ -176,7 +240,8 @@ export default defineComponent({
     position: relative;
     min-width: 500px;
     max-width: 600px;
-    box-shadow:0 4px 20px 0 var(--color-text);
+    box-shadow:0 4px 20px 0 var(--color-border);
+    height: 100%;
 }
 
 .post__head__div {
@@ -265,5 +330,48 @@ export default defineComponent({
 
 .post__caption {
     text-align: left;
+}
+
+.card {
+    background-color: var(--color-background);
+    box-shadow:0 4px 20px 0 var(--color-border);
+    width: 100%;
+    max-width: 500px;
+}
+
+.title {
+    color: var(--color-heading) !important;
+    font-weight: 900;
+    font-size: 20px;
+}
+
+.confirm__divider {
+    background-color: var(--color-border);
+}
+
+.confirm__text {
+    color: var(--color-heading);
+}
+
+.buttons {
+    color: var(--color-heading);
+}
+
+.red {
+    color: red;
+}
+
+.alert {
+    font-size: 15px;
+}
+
+.report__reason {
+    background-color: var(--color-background);
+    color: var(--color-heading) !important;
+}
+
+::placeholder {
+    /* color: var(--color-heading) !important; */
+    color: red !important;
 }
 </style>

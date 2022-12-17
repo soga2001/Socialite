@@ -16,8 +16,8 @@ def rename_file(instance, filename):
 
 # Create your models here.
 class Post(models.Model):
-    username = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE)
-    user_id = models.IntegerField(default=None)
+    user = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE, related_name="User")
+    # user_id = models.IntegerField(default=None)
     img_url = models.FileField(upload_to=rename_file, blank=False, null=False, editable=True)
     caption = models.TextField(max_length=255, null=True, blank=True, editable=True)
     date_posted = models.DateTimeField(auto_now_add=True)
