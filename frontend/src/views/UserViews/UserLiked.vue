@@ -25,15 +25,10 @@ export default defineComponent({
                 <UserPostedMap class="post" :post="post" :user_avatar="avatar"/>
             </div> -->
             <q-icon size="100px" name="las la-folder-open" />
-            <h1>User has liked no Posts</h1>
+            <h4>User has liked no Posts</h4>
         </div>
     </div>
 </template>
 
 <style scoped>
-.used__liked__main {
-    display: flex;
-    justify-content: center;
-    /* height: 100%; */
-}
 </style>

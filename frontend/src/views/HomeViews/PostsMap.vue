@@ -80,7 +80,9 @@ export default defineComponent({
                 <q-item class="post__info" :to="{path: 'profile/user', query: {id: user_id}}">
                     <q-item-section avatar>
                         <q-avatar size="50px" >
-                            <img :src="avatar"/>
+                            <img v-if="avatar" :src="avatar"/>
+                            <q-icon v-else size="50px" name="face" />
+                            <!-- <q-img :src="avatar" @load="onImgLoad" class="post__img col" /> -->
                         </q-avatar>
                     </q-item-section>
                     <q-item-section>
@@ -182,7 +184,11 @@ export default defineComponent({
                 </q-dialog>
             </div>
         </div>
-        <img :src="img_url" @load="onImgLoad" class="post__img"/>
+        <!-- <img :src="img_url" @load="onImgLoad" class="post__img"/> -->
+        <!-- <q-responsive :ratio="1" class="col">
+            <q-img :src="img_url" @load="onImgLoad" class="post__img col" />
+        </q-responsive> -->
+        <q-img :src="img_url" @load="onImgLoad" class="post__img col"/>
         <q-skeleton v-if="img_loading" height="400px" square />
         <div class="footer">
             <div class="post__interact">
@@ -227,7 +233,7 @@ export default defineComponent({
             <span v-if="caption"><RouterLink :to="'profile/user/'+ user_id" class="post__caption">{{username}}</RouterLink>: {{caption}}</span>
             <div class="q-pa-md q-gutter-sm">
 
-  </div>
+            </div>
         </div>
     </div>
 </template>

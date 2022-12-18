@@ -36,7 +36,7 @@ export default defineComponent({
 
 <template>
     <div class="user__posted__main">
-        <div class="user__posted row justify-center">
+        <div class="user__posted row">
             <div class="col-12 col-md-auto" v-if="user_posted.length > 0" v-for="post in user_posted" :key="post.id">
                 <UserPostedMap class="post" :post="post" :user_avatar="avatar"/>
             </div>
@@ -46,7 +46,9 @@ export default defineComponent({
 
 
 <style scoped>
-
+/* .user__posted__main {
+    justify-content: center;
+} */
 .post {
     padding: 10px;
 }

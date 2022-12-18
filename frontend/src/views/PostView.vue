@@ -48,12 +48,12 @@ export default defineComponent({
 <template>
   <div class="post">
     <div class="post__container">
-      <q-avatar size="65px" class="avatar" v-if="$store.state.user.profile.avatar">
-          <img :src="$store.state.user.profile.avatar"/>
-        </q-avatar>
-        <q-avatar class="avatar" v-if="!$store.state.user.profile.avatar" icon="account_circle"/>
+      <q-avatar class="avatar" size="65px" >
+          <img v-if="$store.state.user.profile.avatar" :src="$store.state.user.profile.avatar"/>
+          <q-icon v-else size="65px" name="face" />
+      </q-avatar>
       <form class="post__input" @submit.prevent="submit">
-        <q-file v-model="image" label="Pick an image" filled clearable class="post__file" :dark="$store.state.dark" :color="$store.state.dark ? 'white': 'black'">
+        <q-file v-model="image" label="Pick an image" outlined clearable class="post__file" :dark="$store.state.dark" :color="$store.state.dark ? 'white': 'black'">
           <template v-slot:prepend>
             <q-icon name="cloud_upload" />
           </template>

@@ -19,6 +19,7 @@ export interface UserProfile{
 }
 
 export interface Post{
+user_id: any
     id: number,
     username: string,
     user_avatar: string,

@@ -162,7 +162,7 @@ export default defineComponent({
     </q-toolbar>
   </header>
   <RouterView v-slot="{Component}">
-    <KeepAlive :max="5" :include="['Home','User']">
+    <KeepAlive :max="2" :include="['Home','User']">
       <component :is="Component" :key="$route.fullPath"/>
     </KeepAlive>
   </RouterView>

@@ -23,8 +23,7 @@ export default defineComponent({
             http.get(`users/user/${(this.user_id)}/`).then((res) => {
                 if (res.data.success) {
                     this.user = res.data.user;
-                    this.avatar = res.data.user[0].profile.avatar
-                    console.log(this.user)
+                    this.avatar = res.data.user[0].profile.avatar || '';
                 }
             }).catch((err) => {
                 console.log(err);
@@ -33,6 +32,7 @@ export default defineComponent({
     },
     created() {
         this.userInfo();
+        console.log(this.$route)
     },
     components: { UserProfile, PostsMap, Search, UserPosted, UserLiked }
 })
@@ -43,32 +43,40 @@ export default defineComponent({
         <div v-for="u in user">
             <UserProfile :user="u"/>
         </div>
-        <div>
-            <q-tabs
-            v-model="tab"
-            inline-label
-            outside-arrows
-            mobile-arrows
-            class="tabs"
-            active-class="active"
-        >
-            <q-tab name="posts" icon="grid_view" class="panel__icon">
-                <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">User Posted</q-tooltip>
-            </q-tab>
-            <q-tab name="likes" icon="favorite" class="panel__icon">
-                <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">User Liked</q-tooltip>
-            </q-tab>
-        </q-tabs>
+        <div class="row">
+            <div class="col-12 col-md-3">
 
-        <q-tab-panels keep-alive :keep-alive-max="2" v-model="tab" animated class="panels row" swipeable>
-            <q-tab-panel name="posts" class="panel col-4">
-                <UserPosted :user_avatar="avatar" />
-            </q-tab-panel>
+            </div>
+            <div class="col-12 col-md-6">
+                <q-tabs
+                v-model="tab"
+                inline-label
+                outside-arrows
+                mobile-arrows
+                class="tabs"
+                active-class="active"
+                >
+                <q-tab name="posts" icon="grid_view" class="panel__icon">
+                    <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">User Posted</q-tooltip>
+                </q-tab>
+                <q-tab name="likes" icon="favorite" class="panel__icon">
+                    <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">User Liked</q-tooltip>
+                </q-tab>
+                </q-tabs>
 
-            <q-tab-panel name="likes" class="panel col-4">
-                <UserLiked :user_avatar="avatar"/>
-            </q-tab-panel>
-        </q-tab-panels>
+                <q-tab-panels keep-alive :keep-alive-max="2" v-model="tab" animated class="panels" swipeable>
+                    <q-tab-panel name="posts" class="panel">
+                        <UserPosted :user_avatar="avatar" />
+                    </q-tab-panel>
+
+                    <q-tab-panel name="likes" class="panel">
+                        <UserLiked :user_avatar="avatar"/>
+                    </q-tab-panel>
+                </q-tab-panels>
+            </div>
+            <div class="col-12 col-md-3">
+
+            </div>
         </div>
     </div>
 </template>
@@ -81,7 +89,10 @@ export default defineComponent({
     top: 0;
     z-index: 999;
     background-color: var(--color-background-mute);
-    /* display: flex; */
+    width: 100%;
+}
+
+.panel__icon {
     width: 100%;
 }
 
@@ -92,11 +103,8 @@ export default defineComponent({
 
 .panels {
     background-color: transparent;
-    justify-content: center;
+    height: 93vh;
+    /* width: 100%; */
 }
 
-.panels {
-    /* height: 93vh; */
-    height: 100%;
-}
 </style>

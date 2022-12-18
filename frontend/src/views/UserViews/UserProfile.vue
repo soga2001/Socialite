@@ -31,11 +31,12 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="user">
-        <div class="user__container">
+    <div class="row justify-center">
+        <div class="user__container col-12 col-md-auto">
             <div class="user__profile__avatar">
                 <q-avatar size="200px">
-                    <img :src="avatar">
+                    <img v-if="avatar" :src="avatar" />
+                    <q-icon v-else size="200px" name="face" />
                 </q-avatar>
             </div>
             <div class="user__profile__info">
@@ -69,17 +70,10 @@ export default defineComponent({
 <style scoped>
 
 .user {
-    display: flex;
-    justify-content: center;
     padding: 20px;
 }
 .user__container {
-    position: relative;
-    display: grid;
-    gap: 10px;
-    grid-template-columns: 1fr;
     max-width: 600px;
-    min-width: 300px;
     width: 100%;
 }
 
@@ -87,10 +81,6 @@ export default defineComponent({
 .user__profile__avatar {
     display: flex;
     justify-content: center;
-}
-
-.user__avatar {
-    display: flex;
 }
 
 .user__username {
@@ -102,11 +92,6 @@ export default defineComponent({
     display: grid;
     
 }
-
-.user__social {
-    display: flex;
-}
-
 .user__social {
     padding-right: 10px;
     padding-left: 10px;

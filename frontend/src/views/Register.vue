@@ -70,9 +70,11 @@ export default defineComponent({
                     this.error = true
                     this.errMsg = res.data.message
                 }
-                this.error = false
-                this.errMsg = ""
-                window.location.href = "/login"
+                else {
+                    this.error = false
+                    this.errMsg = ""
+                    window.location.href = "/login"
+                }
             }).catch((err) => {
                 console.log(err)
             })
@@ -89,22 +91,80 @@ export default defineComponent({
         <h1 class="register__header">Register</h1>
         <hr/>
         <form class="register__form" v-on:submit.prevent="register">
-            <input type="text" placeholder="First Name" class="fname" v-model="fname"/>
-            <input type="text" placeholder="Last Name" class="lname" v-model="lname"/>
-            <input type="email" placeholder="Email*" class="email" v-model="email" required/>
-            <input type="text" placeholder="Username*" class="username"  :change="checkUsername" v-model="username" required />
-            <input type="password" placeholder="Password*" class="password" v-model="password" required />
-            <input type="password" placeholder="Confirm Password*" class="c_password" v-model="cPass" required />
+            <!-- <input type="text" placeholder="First Name" class="fname" v-model="fname"/> -->
+            <q-input
+                clearable
+                clear-icon="close"
+                filled
+                :dark="$store.state.dark"
+                :color="$store.state.dark ? 'white' : 'black'"
+                v-model="fname"
+                label="First Name"
+                class="fname"
+                type="text"
+            />
+            <!-- <input type="text" placeholder="Last Name" class="lname" v-model="lname"/> -->
+            <q-input
+                clearable
+                clear-icon="close"
+                filled
+                :dark="$store.state.dark"
+                :color="$store.state.dark ? 'white' : 'black'"
+                v-model="lname"
+                label="Last Name"
+                class="lname"
+                type="text"
+            />
+            <!-- <input type="email" placeholder="Email*" class="email" v-model="email" required/> -->
+            <q-input
+                clearable
+                clear-icon="close"
+                filled
+                :dark="$store.state.dark"
+                :color="$store.state.dark ? 'white' : 'black'"
+                v-model="email"
+                label="Email*"
+                class="email"
+                type="email"
+                :rules="[val => checkEmail() || 'Please enter a valid email']"
+            />
+            <!-- <input type="text" placeholder="Username*" class="username"  :change="checkUsername" v-model="username" required /> -->
+            <q-input
+                clearable
+                clear-icon="close"
+                filled
+                :dark="$store.state.dark"
+                :color="$store.state.dark ? 'white' : 'black'"
+                v-model="username"
+                label="Username*"
+                class="username"
+                type="text"
+                :rules="[val => checkUsername() || 'Please enter a valid email']"
+            />
+            <!-- <input type="password" placeholder="Password*" class="password" v-model="password" required /> -->
+            <q-input
+                filled
+                :dark="$store.state.dark"
+                :color="$store.state.dark ? 'white' : 'black'"
+                v-model="password"
+                label="Password*"
+                class="password"
+                type="password"
+                :rules="[val => checkPassword() || 'Please Enter a password']"
+            />
+            <!-- <input type="password" placeholder="Confirm Password*" class="c_password" v-model="cPass" required /> -->
+            <q-input
+                filled
+                :dark="$store.state.dark"
+                :color="$store.state.dark ? 'white' : 'black'"
+                v-model="cPass"
+                label="Confirm Password*"
+                class="c_password"
+                type="password"
+                :rules="[val => confirmPassword() || 'Password does not match']"
+            />
             <span v-if="error" class="errMsg">{{errMsg}}</span>
             <input type="submit" value="Register" class="submit" :disabled="!checkForm()"/>
-            <span class="form__check">Email</span>
-            <span class=""><q-icon size="20px" :class="checkEmail() ? 'valid' : 'invalid'" :name="checkEmail() ? 'check' : 'close'" /></span>
-            <span class="form__check">Username</span>
-            <span class=""><q-icon size="20px" :class="checkUsername() ? 'valid' : 'invalid'" :name="checkUsername() ? 'check' : 'close'" /></span>
-            <span class="form__check">Password</span>
-            <span class=""><q-icon size="20px" :class="checkPassword() ? 'valid' : 'invalid'" :name="checkPassword() ? 'check' : 'close'" /></span>
-            <span class="form__check">Confirm Password</span>
-            <span class=""><q-icon size="20px" :class="confirmPassword() ? 'valid' : 'invalid'" :name="confirmPassword() ? 'check' : 'close'" /></span>
         </form>
         
     </div>
@@ -120,31 +180,32 @@ export default defineComponent({
     text-align: center;
 }
 .fname, .lname {
-    grid-column: auto / span 3;
+    grid-column: auto / span 4;
+    color: var(--color-heading) !important;
 }
 
 .email {
-    grid-column: auto / span 6;
+    grid-column: auto / span 8;
 }
 
 .username {
-    grid-column: auto / span 6;
+    grid-column: auto / span 8;
 }
 
 .password, .c_password {
-    grid-column: auto / span 3;
+    grid-column: auto / span 4;
 }
 
 .errMsg {
     background-color: rgba(255, 0, 0, 0.566);
-    grid-column: auto / span 6;
+    grid-column: auto / span 8;
     padding: 10px;
     border-radius: 10px;
     color: var(--color-heading);
 }
 
 .submit {
-    grid-column: 3 / span 2;
+    grid-column: 4 / span 2;
 }
 
 .form__check {
@@ -171,7 +232,7 @@ export default defineComponent({
 .register__form {
     display: grid;
     gap: 10px;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(8, 1fr);
     width: 100%;
     margin: auto;
     padding: 10px;

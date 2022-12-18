@@ -62,7 +62,7 @@ export default defineComponent({
         <h1 class="login__header">Login</h1>
         <hr/>
         <form class="login__form" v-on:submit.prevent="login">
-            <div class="login__credentials">
+            <!-- <div class="login__credentials">
                 <input type="text" placeholder="Username*" v-model="username" required />
                 <input type="password" placeholder="Password*" v-model="password" required />
             </div>
@@ -75,6 +75,41 @@ export default defineComponent({
             <div class="login__links">
                 <a disabled>Frogot Password?</a>
                 <RouterLink to="/register">Create an Account</RouterLink>
+            </div> -->
+            <div class="login__credentials">
+                <q-input
+                    clearable
+                    clear-icon="close"
+                    filled
+                    :dark="$store.state.dark"
+                    :color="$store.state.dark ? 'white' : 'black'"
+                    v-model="username"
+                    label="Username*"
+                    class="username"
+                    type="text"
+                    :rules="[val => !!val || 'Please enter a valid username']"
+                />
+                <!-- <input type="password" placeholder="Password*" class="password" v-model="password" required /> -->
+                <q-input
+                    filled
+                    :dark="$store.state.dark"
+                    :color="$store.state.dark ? 'white' : 'black'"
+                    v-model="password"
+                    label="Password*"
+                    class="password"
+                    type="password"
+                    :rules="[val => !!val || 'Please Enter a password']"
+                />
+            </div>
+            <div class="login__error">
+                <h3 class="login__errMsg">{{errMsg}}</h3>
+            </div>
+            <div class="login__submit">
+                <input type="submit" value="Login"/>
+            </div>
+            <div class="login__links">
+                <a disabled>Forgot Password?</a>
+                <RouterLink to="/register">Create an Account</RouterLink>
             </div>
         </form>
     </div>
@@ -85,14 +120,18 @@ export default defineComponent({
 @import '@/assets/base.css';
 
 .login {
-    padding: 12vh 0;
+    /* padding: 12vh 0;
     text-align: center;
-    position: relative;
+    position: relative; */
+    padding: 12vh 0;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
 }
 
 .login__main {
-    width: 30vw;
-    min-width: fit-content;
+    min-width: 500px;
     margin: auto;
     border: 2px solid var(--color-border);
     border-radius: 10px;
