@@ -47,16 +47,18 @@ export default defineComponent({
 
 <template>
     <div>
-        <img :src="img_url"/>
+        <!-- <img :src="img_url"/> -->
+        <q-responsive :ratio="1" class="images">
+            <img :src="img_url"/>
+      </q-responsive>
     </div>
 </template>
 
 
 <style scoped>
 img {
-    width: 200px;
-    height: 200px;
     /* object-fit: cover; */
-    object-fit:inherit;
+    /* object-fit: fill; */
+    border-radius: 10px;
 }
 </style>

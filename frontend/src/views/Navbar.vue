@@ -67,6 +67,16 @@ export default defineComponent({
     if(Cookies.get('user')) {
       this.$store.commit('setUser', Cookies.get('user'))
     }
+    console.log(window.scrollY)
+    window.onscroll = () => {
+      console.log(window.scrollY)
+      if(window.scrollY > 0) {
+        $('.nav').addClass('fixed')
+      }
+      else {
+        $('.nav').removeClass('fixed')
+      }
+    }
   },
   mounted() {
   },
@@ -76,7 +86,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <header>
+  <header class="header">
     <q-toolbar class="nav">
       <q-btn stretch flat class="brand" to="/" >Based<span class="logo">Book</span></q-btn>
       <q-space/>
@@ -181,19 +191,15 @@ body {
   height: 100%;
 }
 
-header {
-  display: flex;
-  place-items: center;
-  /* padding-right: calc(var(--section-gap) / 2); */
+.fixed {
+  position: fixed;
+  z-index: 999;
 }
 
 .nav {
   background-color: var(--color-background);
   box-shadow: 0px .5px 10px var(--color-text);
   z-index: 999;
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
 }
 
 a {

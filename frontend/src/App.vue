@@ -70,6 +70,14 @@ export default defineComponent({
     if(Cookies.get('user')) {
       this.$store.commit('setUser', Cookies.get('user'))
     }
+    window.onscroll = () => {
+      if(window.scrollY > 0) {
+        $('.nav').addClass('fixed')
+      }
+      else {
+        $('.nav').removeClass('fixed')
+      }
+    }
   },
   mounted() {
   },
@@ -123,7 +131,7 @@ export default defineComponent({
             <q-avatar class="avatar" v-if="$store.state.user.profile.avatar">
               <img :src="$store.state.user.profile.avatar"/>
             </q-avatar>
-            <q-avatar class="avatar" v-if="!$store.state.user.profile.avatar" icon="account_circle"/>
+            <q-avatar class="nav_avatar" v-if="!$store.state.user.profile.avatar" icon="account_circle"/>
             <div class="text-center">
               {{$store.state.user.username}}
             </div>
@@ -241,6 +249,10 @@ a {
 .dropdown__main {
   background-color: var(--color-background);
   color: var(--text-heading);
+}
+
+.nav_avatar {
+  margin: 30px 0;
 }
 
 .avatar {

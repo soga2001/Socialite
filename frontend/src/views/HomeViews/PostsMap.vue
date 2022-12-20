@@ -73,62 +73,54 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="post">
-        <div class="post__head__div">
-            <div class="post__main">
-                <!-- :to="'profile/user/' + user_id" -->
-                <q-item class="post__info" :to="{path: 'profile/user', query: {id: user_id}}">
-                    <q-item-section avatar>
-                        <q-avatar size="50px" >
-                            <img v-if="avatar" :src="avatar"/>
-                            <q-icon v-else size="50px" name="face" />
-                            <!-- <q-img :src="avatar" @load="onImgLoad" class="post__img col" /> -->
-                        </q-avatar>
-                    </q-item-section>
-                    <q-item-section>
-                        <q-item-label class="username">@{{username}}</q-item-label>
-                        <q-item-label caption class="date__posted">
-                            <timeago :datetime="date_posted" 
-                            auto-update
-                            :converter-options="{
-                                includeSeconds: true,
-                                addSuffix: true,
-                                useStrict: false,
-                            }"/>
-                        </q-item-label>
-                    </q-item-section>
-                </q-item>
-                <div class="dropdown__div">
-                    <q-btn size="16px" class="more__vert" flat dense round icon="more_vert" />
-                    <q-menu class="dropdown" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
-                        <q-list class="more__option">
-                            <q-item clickable v-close-popup @click="report = true" v-if="username !== $store.state.user.username">
-                                <q-item-section avatar>
-                                    <q-icon class="danger__icon" name="flag"/>
-                                </q-item-section>
-                                <q-item-section>
-                                    <q-item-label>Report Post</q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item clickable v-close-popup @click="persistent = true" tabindex="0" v-if="username === $store.state.user.username">
-                                <q-item-section avatar>
-                                    <q-icon class="danger__icon" name="delete"/>
-                                </q-item-section>
-                                <q-item-section>
-                                    <q-item-label>Delete</q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item clickable v-close-popup v-if="username === $store.state.user.username">
-                                <q-item-section avatar>
-                                    <q-icon class="" name="edit"/>
-                                </q-item-section>
-                                <q-item-section>
-                                    <q-item-label>Edit</q-item-label>
-                                </q-item-section>
-                            </q-item>
-                        </q-list>
-                    </q-menu>
-                </div>
+    <q-card class="post">
+        <div class="post__main">
+            <q-item class="post__info" :to="{path: 'profile/user', query: {id: user_id}}">
+                <q-item-section avatar>
+                <q-avatar size="50px">
+                    <img v-if="avatar" :src="avatar"/>
+                    <q-icon v-else size="50px" name="face" />
+                </q-avatar>
+                </q-item-section>
+
+                <q-item-section>
+                <q-item-label class="username">@{{username}}</q-item-label>
+                <q-item-label caption class="date__posted">
+                    <timeago :datetime="date_posted"  auto-update :converter-options="{ includeSeconds: true, addSuffix: true, useStrict: false,}"/>
+                </q-item-label>
+                </q-item-section>
+            </q-item>
+
+        <div class="dropdown__div">
+                <q-btn size="16px" class="more__vert" flat dense round icon="more_vert" />
+                <q-menu class="dropdown" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
+                    <q-list class="more__option">
+                        <q-item clickable v-close-popup @click="report = true" v-if="username !== $store.state.user.username">
+                            <q-item-section avatar>
+                                <q-icon class="danger__icon" name="flag"/>
+                            </q-item-section>
+                            <q-item-section>
+                                <q-item-label>Report Post</q-item-label>
+                            </q-item-section>
+                        </q-item>
+                        <q-item clickable v-close-popup @click="persistent = true" tabindex="0" v-if="username === $store.state.user.username">
+                            <q-item-section avatar>
+                                <q-icon class="danger__icon" name="delete_forever"/>
+                            </q-item-section>
+                            <q-item-section>
+                                <q-item-label>Delete</q-item-label>
+                            </q-item-section>
+                        </q-item>
+                        <q-item clickable v-close-popup v-if="username === $store.state.user.username">
+                            <q-item-section avatar>
+                                <q-icon class="" name="edit_note"/>
+                            </q-item-section>
+                            <q-item-section>
+                                <q-item-label>Edit</q-item-label>
+                            </q-item-section>
+                        </q-item>
+                    </q-list>
+                </q-menu>
                 <!-- Confirm Delete Model -->
                 <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
                     <q-card class="card">
@@ -183,70 +175,78 @@ export default defineComponent({
                     </q-card>
                 </q-dialog>
             </div>
-        </div>
-        <!-- <img :src="img_url" @load="onImgLoad" class="post__img"/> -->
-        <!-- <q-responsive :ratio="1" class="col">
-            <q-img :src="img_url" @load="onImgLoad" class="post__img col" />
-        </q-responsive> -->
-        <q-img :src="img_url" @load="onImgLoad" class="post__img col"/>
-        <q-skeleton v-if="img_loading" height="400px" square />
-        <div class="footer">
-            <div class="post__interact">
-                <q-item>
-                    <q-item-section avatar>
-                        <q-btn class="like__btn" :icon="liked ? 'favorite' : 'favorite_border'" round flat v-on:click="like">
-                            <q-tooltip :offset="[0,0]">
-                                Like
-                            </q-tooltip>
-                        </q-btn>
-                    </q-item-section>
-                    <q-item-section>
-                        <!-- <q-item-label class="">{{}}</q-item-label> -->
-                        <q-skeleton class="skeleton" type="text" width="30px" />
-                    </q-item-section>
-                </q-item>
-                <q-item class="">
-                    <q-item-section avatar>
-                        <!-- <ion-icon name="chatbubble-outline"></ion-icon> -->
-                        <q-btn :icon="comments.length > 0 ? 'chat' : 'chat'" round flat>
-                            <q-tooltip :offset="[0,0]">
-                                Comment
-                            </q-tooltip>
-                        </q-btn>
-                    </q-item-section>
-                    <q-item-section>
-                        <q-item-label class="">{{}}</q-item-label>
-                        <q-skeleton class="skeleton" type="text" width="30px" />
-                    </q-item-section>
-                </q-item>
-                <q-item class="">
-                    <q-item-section avatar>
-                        <q-btn icon="share" round flat>
-                            <q-tooltip :offset="[0,0]">
-                                Copy Link
-                            </q-tooltip>
-                        </q-btn> 
-                    </q-item-section>
-                </q-item>
-            </div>
-            <hr/>
-            <span v-if="caption"><RouterLink :to="'profile/user/'+ user_id" class="post__caption">{{username}}</RouterLink>: {{caption}}</span>
-            <div class="q-pa-md q-gutter-sm">
+        </div>  
+        <!-- <div class="caption" v-if="caption">
+            <span class="post__caption">{{ caption }}</span>
+        </div> -->
+        <q-img :src="img_url" />
+        <q-item-section v-if="caption" class="caption">
+            <q-item-label><span class="caption__username">{{ username }}</span></q-item-label>
+            <q-item-label caption class="post__caption">{{caption}}</q-item-label>
+        </q-item-section>
+            
+        <q-card-actions>
+            <!-- <q-btn flat round color="red" :icon="liked ? 'favorite' : 'favorite_border'" /> -->
+            <q-btn class="like__btn" :icon="liked ? 'favorite' : 'favorite_border'" round flat v-on:click="like">
+                <q-tooltip :offset="[0,0]">
+                    Like
+                </q-tooltip>
+            </q-btn>
+            <q-btn icon="chat" round flat>
+                <q-tooltip :offset="[0,0]">
+                    Comment
+                </q-tooltip>
+            </q-btn>
+            <q-btn icon="share" round flat>
+                <q-tooltip :offset="[0,0]">
+                    Copy Link
+                </q-tooltip>
+            </q-btn> 
+        </q-card-actions>
+        <q-separator :dark="$store.state.dark"/>
+        <div class="comments">
+            <p>Comments</p>
+            <q-item v-if="caption">
+                <q-item-section avatar>
+                <q-avatar>
+                    <img :src="avatar">
+                </q-avatar>
+                </q-item-section>
 
-            </div>
+                <q-item-section>
+                <q-item-label><span class="caption__username">{{ username }}</span> <span><timeago :datetime="date_posted"  auto-update :converter-options="{ includeSeconds: true, addSuffix: true, useStrict: false,}"/></span></q-item-label>
+                <!-- <q-item-label caption class="post__caption">{{caption}}</q-item-label> -->
+                <q-item-label caption class="post__caption">Some comment</q-item-label>
+
+                </q-item-section>
+            </q-item>
         </div>
-    </div>
+        <!-- <div>
+            <q-item v-if="caption">
+                <q-item-section avatar>
+                <q-avatar>
+                    <img :src="avatar">
+                </q-avatar>
+                </q-item-section>
+
+                <q-item-section>
+                <q-item-label><span class="caption__username">{{ username }}</span> <span><timeago :datetime="date_posted"  auto-update :converter-options="{ includeSeconds: true, addSuffix: true, useStrict: false,}"/></span></q-item-label>
+                <q-item-label caption class="post__caption">{{caption}}</q-item-label>
+                </q-item-section>
+            </q-item>
+        </div> -->
+    </q-card>
 </template>
 
 <style scoped>
 .post {
-    margin: 60px auto;
+    margin: 30px auto;
     display: grid;
     background-color: var(--color-background-soft);
     position: relative;
     min-width: 500px;
     max-width: 600px;
-    box-shadow:0 4px 20px 0 var(--color-border);
+    box-shadow:0 4px 20px 0 var(--color-text);
     height: 100%;
 }
 
@@ -268,6 +268,7 @@ export default defineComponent({
 .username {
     font-size: 20px;
     color: var(--color-heading);
+    font-weight: bold;
 }
 
 .date__posted {
@@ -334,10 +335,6 @@ export default defineComponent({
     padding: 10px;
 }
 
-.post__caption {
-    text-align: left;
-}
-
 .card {
     background-color: var(--color-background);
     box-shadow:0 4px 20px 0 var(--color-border);
@@ -379,5 +376,24 @@ export default defineComponent({
 ::placeholder {
     /* color: var(--color-heading) !important; */
     color: red !important;
+}
+
+
+.caption {
+    padding: 15px 15px !important;
+}
+
+.caption__username {
+    font-weight: bolder;
+    color: var(--color-heading);
+}
+
+.post__caption {
+    font-weight: 500;
+    color: var(--color-text);
+}
+.comments {
+    padding: 5px 15px;
+    color: var(--color-heading);
 }
 </style>

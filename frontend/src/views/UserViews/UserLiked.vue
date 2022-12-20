@@ -31,4 +31,7 @@ export default defineComponent({
 </template>
 
 <style scoped>
+.user__liked__main {
+    text-align: center;
+}
 </style>

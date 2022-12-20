@@ -31,16 +31,16 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="row justify-center">
+    <div class="user row justify-center">
         <div class="user__container col-12 col-md-auto">
+            <h2 class="user__username">@{{username}}</h2>
             <div class="user__profile__avatar">
-                <q-avatar size="200px">
+                <q-avatar size="200px" class="avatar">
                     <img v-if="avatar" :src="avatar" />
                     <q-icon v-else size="200px" name="face" />
                 </q-avatar>
             </div>
             <div class="user__profile__info">
-                <h2 class="user__username">@{{username}}</h2>
                 <div class="user__social">
                     <div class="user__following">
                         <h6>Following</h6> 
@@ -83,8 +83,19 @@ export default defineComponent({
     justify-content: center;
 }
 
+.avatar {
+    border: 1px solid var(--color-text);
+    /* border-radius: 50%; */
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    margin: 15px 0;
+}
+
 .user__username {
     text-align: center;
+    font-size: 50px;
+    font-weight: bolder;
 }
 
 .user__profile__info {

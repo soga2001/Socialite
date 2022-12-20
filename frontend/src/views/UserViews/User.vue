@@ -86,9 +86,8 @@ export default defineComponent({
 .tabs {
     position: -webkit-sticky;
     position: sticky;
-    top: 0;
+    top: 51px;
     z-index: 999;
-    background-color: var(--color-background-mute);
     width: 100%;
 }
 
@@ -98,12 +97,12 @@ export default defineComponent({
 
 .tabs .active {
     color: var(--color-heading);
-    background-color: var(--color-background);
+    background-color: var(--color-background-soft);
 }
 
 .panels {
     background-color: transparent;
-    height: 93vh;
+    height: 87vh;
     /* width: 100%; */
 }
 

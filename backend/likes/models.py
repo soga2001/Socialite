@@ -7,6 +7,10 @@ from posts.models import Post
 class Likes(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, null=False, blank=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
+    date_liked = models.DateTimeField(auto_now_add=True, null=False, blank=False)
 
     class Meta:
-        unique_together = ('post', 'user')
+        constrains = [
+            models.UniqueConstraint(fields=['post', 'user'], name='unique_likes')
+        ]
+        ordering = ['-date_liked']
