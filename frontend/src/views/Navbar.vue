@@ -68,15 +68,6 @@ export default defineComponent({
       this.$store.commit('setUser', Cookies.get('user'))
     }
     console.log(window.scrollY)
-    window.onscroll = () => {
-      console.log(window.scrollY)
-      if(window.scrollY > 0) {
-        $('.nav').addClass('fixed')
-      }
-      else {
-        $('.nav').removeClass('fixed')
-      }
-    }
   },
   mounted() {
   },

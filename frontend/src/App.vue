@@ -70,25 +70,18 @@ export default defineComponent({
     if(Cookies.get('user')) {
       this.$store.commit('setUser', Cookies.get('user'))
     }
-    window.onscroll = () => {
-      if(window.scrollY > 0) {
-        $('.nav').addClass('fixed')
-      }
-      else {
-        $('.nav').removeClass('fixed')
-      }
-    }
   },
   mounted() {
   },
-  components: {Search}
+  components: {Search},
 })
 
 </script>
 
 <template>
-  <header>
-    <q-toolbar class="nav">
+  <!-- <h1>Potato</h1> -->
+    <header>
+    <q-toolbar class="nav sticky">
       <q-btn stretch flat class="brand" to="/" >Based<span class="logo">Book</span></q-btn>
       <q-space/>
       <q-toggle v-on:click="switchTheme" v-model="theme" color="grey" keep-color checked-icon="nights_stay" unchecked-icon="wb_sunny" />
@@ -182,29 +175,30 @@ export default defineComponent({
   scroll-behavior: smooth;
 }
 
-html {
-  height: 100%;
-}
-
-body {
+/* body {
   place-items: center;
   position: relative;
-  height: 100%;
-}
+} */
 
 header {
-  display: flex;
-  place-items: center;
+  position: -webkit-sticky;
+	position: sticky;
+  width: 100%;
+	top: 0;
+  z-index: 999;
   /* padding-right: calc(var(--section-gap) / 2); */
+}
+
+.sticky {
+  position: sticky;
+  
 }
 
 .nav {
   background-color: var(--color-background);
   box-shadow: 0px .5px 10px var(--color-text);
-  z-index: 999;
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
+  /* z-index: 999;  */
+  
 }
 
 a {

@@ -19,7 +19,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="used__liked__main">
+    <div class="user__liked__main">
         <div class="user__liked">
             <!-- <div class="grid" v-if="user_posted.length > 0" v-for="post in user_posted" :key="post.id">
                 <UserPostedMap class="post" :post="post" :user_avatar="avatar"/>
@@ -33,5 +33,11 @@ export default defineComponent({
 <style scoped>
 .user__liked__main {
     text-align: center;
+    display: flex;
+    justify-content: center;
+    justify-self: center;
+    align-items: center;
+    align-self: center;
+    height: 100%;
 }
 </style>

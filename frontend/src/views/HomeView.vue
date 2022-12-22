@@ -8,6 +8,7 @@ import Search from './Search/Search.vue';
 import { useStore } from '@/store/store';
 
 export default defineComponent({
+  title: 'Home',
   data() {
       return {
         posts: new Array<Post>(),

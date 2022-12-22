@@ -28,13 +28,12 @@ export default defineComponent({
             }).catch((err) => {
                 console.log(err);
             });
-        }
+        },
     },
     created() {
         this.userInfo();
-        console.log(this.$route)
     },
-    components: { UserProfile, PostsMap, Search, UserPosted, UserLiked }
+    components: { UserProfile, PostsMap, Search, UserPosted, UserLiked },
 })
 </script>
 
@@ -93,6 +92,7 @@ export default defineComponent({
 
 .panel__icon {
     width: 100%;
+    z-index: 999;
 }
 
 .tabs .active {
@@ -102,8 +102,8 @@ export default defineComponent({
 
 .panels {
     background-color: transparent;
-    height: 87vh;
-    /* width: 100%; */
+    /* min-height: 87vh; */
+    height: 100%;
 }
 
 </style>

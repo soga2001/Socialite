@@ -2,6 +2,7 @@
 import { defineComponent, toHandlers } from 'vue';
 import type { User } from '@/assets/interfaces';
 import { http } from '@/assets/http';
+import UserLiked from './UserLiked.vue';
 
 export default defineComponent({
     props: {
@@ -19,13 +20,16 @@ export default defineComponent({
             is_superuser: this.user.is_superuser,
             last_login: this.user.last_login,
             bio: this.user.profile.bio,
-            avatar: this.user.profile.avatar
+            avatar: this.user.profile.avatar,
+            posts: this.user.total_posted,
+            followers: this.user.total_followers,
+            following: this.user.total_following,
         }
     },
+    
     methods: {
-        maskEmail() {
-
-        }
+    },
+    created() {
     },
 })
 </script>
@@ -44,23 +48,25 @@ export default defineComponent({
                 <div class="user__social">
                     <div class="user__following">
                         <h6>Following</h6> 
-                        <q-skeleton type="text" width="30px" />
+                        <p class="text-center bold">{{ following }}</p>
+                        <!-- <q-skeleton type="text" width="30px" /> -->
                     </div>
                     <div class="user__followers">
                         <h6>Followers</h6>
-                        <q-skeleton type="text" width="30px" />
+                        <p class="text-center bold">{{ followers }}</p>
+                        <!-- <q-skeleton type="text" width="30px" /> -->
                     </div>
                     <div class="user__posts">
                         <h6>Posts</h6>
-                        <q-skeleton type="text" width="30px" />
+                        <p class="text-center bold">{{ posts }}</p>
                     </div>
                 </div>
                 <div>
                     <button class="user__follow__btn">Follow</button>
                 </div>
                 <div class="user__bio">
-                    <h3 class="user__name">{{first_name}} {{last_name}}</h3>
-                    <h4 class="user__caption">{{bio}}</h4>
+                    <h6 class="user__name">{{first_name}} {{last_name}}</h6>
+                    <h6 class="user__caption">{{bio}}</h6>
                 </div>
             </div>
         </div>

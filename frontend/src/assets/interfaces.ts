@@ -10,7 +10,10 @@ export interface User{
     last_login: string,
     groups: string[],
     user_permissions: string[],
-    profile: UserProfile
+    profile: UserProfile,
+    total_posted: number,
+    total_followers: number,
+    total_following: number,
 }
 
 export interface UserProfile{

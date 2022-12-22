@@ -70,5 +70,12 @@ def delete_all_posts(request):
     return JsonResponse({"success": True}, safe=False)
 
 
+@api_view(["GET"])
+def total_user_posted(request, user_id):
+    posts = Post.objects.filter(user_id=user_id).count()
+    return JsonResponse({"posts": posts}, safe=False)
+
+
+
     
     

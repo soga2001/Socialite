@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('caption', models.TextField(blank=True, max_length=255, null=True)),
                 ('date_posted', models.DateTimeField(auto_now_add=True)),
                 ('date_updated', models.DateTimeField(blank=True, default=None, null=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='User', to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_posted', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'ordering': ['-date_posted'],

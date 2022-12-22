@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+// import Vue from 'vue'
 import { useCookies } from 'vue3-cookies'
 import { store } from '../store/store'
 
@@ -59,6 +60,8 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
+  // document.title = to.meta.title as string
+  // console.log(to.meta.title)
   if(to.matched.some(record => record.meta.hideForAuth) && store.state.authenticated) {
       return {path: '/'}
   }
@@ -66,6 +69,7 @@ router.beforeEach((to, from) => {
   if(to.matched.some(record => record.meta.auth) && !store.state.authenticated) {
     return {path: '/login'}
   }
+
 })
 
 export default router

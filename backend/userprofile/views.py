@@ -35,7 +35,10 @@ class Update_Profile(APIView):
 
 @api_view(["GET"])
 def get_profile(request, user_id):
-    user_id = User.objects.get(pk=user_id)
-    profile = UserProfileSerializer(user_id.profile)
+    try:
+        user_id = User.objects.get(pk=user_id)
+        profile = UserProfileSerializer(user_id.profile)
 
-    return JsonResponse({"success": True, "user_profile": profile.data}, safe=False)
+        return JsonResponse({"success": True, "user_profile": profile.data}, safe=False)
+    except:
+        return JsonResponse({"success": False, "message": "This user doesn't exist"}, safe=False)

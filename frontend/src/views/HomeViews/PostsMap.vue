@@ -35,8 +35,8 @@ export default defineComponent({
             console.log(this.reason)
         },
         like() {
-            console.log(this.liked)
             this.liked = !this.liked
+            if(!this.$store.state.authenticated) return
         },
         setDelete() {
             this.delete = true
@@ -187,7 +187,7 @@ export default defineComponent({
             
         <q-card-actions>
             <!-- <q-btn flat round color="red" :icon="liked ? 'favorite' : 'favorite_border'" /> -->
-            <q-btn class="like__btn" :icon="liked ? 'favorite' : 'favorite_border'" round flat v-on:click="like">
+            <q-btn round flat class="like__btn" :icon="liked ? 'favorite' : 'favorite_border'" :disable="!$store.state.authenticated" v-on:click="like">
                 <q-tooltip :offset="[0,0]">
                     Like
                 </q-tooltip>
