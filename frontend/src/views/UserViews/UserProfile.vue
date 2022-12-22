@@ -3,10 +3,15 @@ import { defineComponent, toHandlers } from 'vue';
 import type { User } from '@/assets/interfaces';
 import { http } from '@/assets/http';
 import UserLiked from './UserLiked.vue';
+import { Cookies, useQuasar } from 'quasar';
 
 export default defineComponent({
     props: {
         user: {type: Object as () => User, required: true}
+    },
+    setup() {
+        // const {cookies} = useCookies();
+        // return {cookies}
     },
     data() {
         return {
@@ -24,12 +29,47 @@ export default defineComponent({
             posts: this.user.total_posted,
             followers: this.user.total_followers,
             following: this.user.total_following,
+            followed: false,
         }
     },
     
     methods: {
+        follow() {
+            // console.log(Cookies.get("access_token"))
+            http.post(`follow/follow_user/${this.id}/`, {}, {
+                headers: {
+                    "Authorization": `Bearer ${Cookies.get("access_token")}`,
+                }}
+            ).then((res) => {
+                if(res.data.error) {
+                    return
+                }
+                this.followed = !this.followed
+                console.log(this.followed)
+                if(!this.followed && this.following != 0) {
+                    this.following -= 1
+                } else {
+                    this.following += 1
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
+        },
+        if_followed() {
+            http.get(`follow/get_if_followed/${this.id}/`, {
+                headers: {
+                    "Authorization": `Bearer ${Cookies.get("access_token")}`,
+                }
+            }).then((res) => {
+                console.log("followed: ", res.data.followed)
+                this.followed = res.data.followed
+            }).catch((err) => {
+                this.followed = false
+            })
+        }
     },
     created() {
+        this.if_followed()
     },
 })
 </script>
@@ -48,12 +88,12 @@ export default defineComponent({
                 <div class="user__social">
                     <div class="user__following">
                         <h6>Following</h6> 
-                        <p class="text-center bold">{{ following }}</p>
+                        <p class="text-center bold">{{ followers }}</p>
                         <!-- <q-skeleton type="text" width="30px" /> -->
                     </div>
                     <div class="user__followers">
                         <h6>Followers</h6>
-                        <p class="text-center bold">{{ followers }}</p>
+                        <p class="text-center bold">{{ following }}</p>
                         <!-- <q-skeleton type="text" width="30px" /> -->
                     </div>
                     <div class="user__posts">
@@ -62,7 +102,7 @@ export default defineComponent({
                     </div>
                 </div>
                 <div>
-                    <button class="user__follow__btn">Follow</button>
+                    <button class="user__follow__btn bold" @click="follow">{{ followed ? 'Unfollow' : 'Follow' }}</button>
                 </div>
                 <div class="user__bio">
                     <h6 class="user__name">{{first_name}} {{last_name}}</h6>
@@ -124,6 +164,10 @@ export default defineComponent({
 
 .user__follow__btn {
     width: 100%;
+    padding: 10px;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    border:none;
 }
 
 .user__bio {

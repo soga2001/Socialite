@@ -3,6 +3,7 @@ import { http } from '@/assets/http';
 import { defineComponent } from 'vue';
 import { useCookies } from 'vue3-cookies';
 import type { User } from '../assets/interfaces';
+import {Cookies} from 'quasar';
 
 export default defineComponent({
   data() {
@@ -25,7 +26,7 @@ export default defineComponent({
         formData.append('caption', this.caption)
         http.post("posts/post_content/", formData, {
           headers: {
-            "Authorization": `Bearer ${this.cookies.get("access_token")}`,
+            "Authorization": `Bearer ${Cookies.get("access_token")}`,
             "Content-Type": "multipart/form-data"
           }
         }).then((res) => {

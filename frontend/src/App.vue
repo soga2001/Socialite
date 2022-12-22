@@ -121,10 +121,10 @@ export default defineComponent({
       <q-btn-dropdown class="dropdown" stretch flat v-if="$store.state.authenticated" no-caps>
         <template v-slot:label>
           <div class="row items-center no-wrap">
-            <q-avatar class="avatar" v-if="$store.state.user.profile.avatar">
-              <img :src="$store.state.user.profile.avatar"/>
+            <q-avatar class="avatar" >
+              <img v-if="$store.state.user.profile.avatar" :src="$store.state.user.profile.avatar"/>
+              <q-icon v-else name="account_circle" class="avatar__icon" />
             </q-avatar>
-            <q-avatar class="nav_avatar" v-if="!$store.state.user.profile.avatar" icon="account_circle"/>
             <div class="text-center">
               {{$store.state.user.username}}
             </div>

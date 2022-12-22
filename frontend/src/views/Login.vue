@@ -15,11 +15,6 @@ export default defineComponent({
             errMsg: ''
         }
     },
-    setup() {
-        const store = useStore()
-        const {cookies} = useCookies();
-        return {cookies};
-    },
     methods: {
         login() {
             if(this.username.length === 0 || this.password.length === 0) {

@@ -60,7 +60,6 @@ def user_posted(request, timestamp, user_id):
 @api_view(["GET"])
 def view_post_by_id(request, post_id):
     post = PostSerializer(Post.objects.get(pk=post_id))
-    print(post.data)
     return JsonResponse({"post": post.data}, safe=False)
 
 

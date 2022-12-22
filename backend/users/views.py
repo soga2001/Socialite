@@ -36,7 +36,6 @@ def users(request):
 def user_by_id(request, user_id):
     try:
         user = UserSerializer(User.objects.filter(id=user_id), many=True)
-        print(user.data)
         return JsonResponse({"success": True, "user": user.data}, safe=False)
     except:
         return JsonResponse({"error": True}, safe=False)
