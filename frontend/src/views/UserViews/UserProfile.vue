@@ -77,13 +77,25 @@ export default defineComponent({
 <template>
     <div class="user row justify-center">
         <div class="user__container col-12 col-md-auto">
-            <h2 class="user__username">@{{username}}</h2>
             <div class="user__profile__avatar">
                 <q-avatar size="200px" class="avatar">
                     <img v-if="avatar" :src="avatar" />
                     <q-icon v-else size="200px" name="face" />
                 </q-avatar>
             </div>
+            <!-- <h3 class="text-center">
+                <span class="user__username">@{{username}}</span>
+                <span> <q-icon name="verified" /></span>
+            </h3> -->
+            <q-item class="user__username">
+                <q-item-section class="">@{{ username }}</q-item-section>
+                <!-- <q-item-section avatar class="right">
+                    <q-icon name="verified" />
+                    <q-icon name="admin_panel_settings" />
+                    <q-icon name="stars" color="" />
+                </q-item-section> -->
+
+            </q-item>
             <div class="user__profile__info">
                 <div class="user__social">
                     <div class="user__following">
@@ -102,7 +114,8 @@ export default defineComponent({
                     </div>
                 </div>
                 <div>
-                    <button class="user__follow__btn bold" @click="follow">{{ followed ? 'Unfollow' : 'Follow' }}</button>
+                    <button class="user__follow__btn bold" :hidden="$store.state.user.id == id" @click="follow" :disabled="!$store.state.authenticated">{{ followed ? 'Unfollow' : 'Follow' }}</button>
+                    <button class="user__follow__btn bold" :hidden="$store.state.user.id != id" @click="" disabled>Edit Profile</button>
                 </div>
                 <div class="user__bio">
                     <h6 class="user__name">{{first_name}} {{last_name}}</h6>
@@ -140,8 +153,17 @@ export default defineComponent({
 
 .user__username {
     text-align: center;
-    font-size: 50px;
+    position: relative;
+    font-size: 40px;
     font-weight: bolder;
+}
+
+.right {
+    position: absolute;
+    display: inline-block;
+    right: 0;
+    top: 0;
+    bottom: 0;
 }
 
 .user__profile__info {
@@ -165,7 +187,7 @@ export default defineComponent({
 .user__follow__btn {
     width: 100%;
     padding: 10px;
-    background-color: var(--color-background);
+    background-color: var(--color-background-mute);
     color: var(--color-text);
     border:none;
 }

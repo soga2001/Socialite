@@ -82,6 +82,7 @@ def user_login(request):
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
+    authentication_classes = (JWTAuthentication,)
 
     def post(self, request):
         try:
@@ -94,16 +95,41 @@ class LogoutView(APIView):
         except:
             return JsonResponse({"error": True}, safe=False)
 
+
+class Become_SuperUser(APIView):
+    permission_classes = [IsAuthenticated,]
+
+    def get(self, request):
+        user = User.objects.get(id=request.user.id)
+        user.is_superuser = True
+        user.save()
+        if user.is_superuser:
+            return JsonResponse({"success": True}, safe=False)
+        return JsonResponse({"error": True}, safe=False)
+
+class Become_Staff(APIView):
+    permission_classes = [IsAuthenticated,]
+
+    def post(self, request):
+        user = User.objects.get(id=request.user.id)
+        user.is_staff = True
+        user.save()
+        if user.is_staff:
+            return JsonResponse({"success": True}, safe=False)
+        return JsonResponse({"error": True}, safe=False)
+
 # Delete Endpoints
-class Delete(APIView):
+class Delete_User(APIView):
     permission_classes= [IsAuthenticated]
     def delete(self, request):
-        # jwt.authenticate(request) returns user object and a token
-        user, token = jwt.authenticate(request)
-        return JsonResponse({"success": True}, safe=False)
+        try:
+            user = User.objects.get(id=request.user.id).delete()
+            return JsonResponse({"success": True}, safe=False)
+        except:
+            return JsonResponse({"error": True}, safe=False)
 
 @api_view(["DELETE"])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def delete_all(request):
     User.objects.all().delete()
     return JsonResponse({"success": True}, safe=False)

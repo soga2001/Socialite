@@ -21,13 +21,14 @@ export default defineComponent({
             avatar: this.post.user_avatar,
             dropdown: false,
             liked: false,
+            total_comments: 0,
             comments: [],
             img_loading: true,
             avatar_loading: true,
             delete: false,
             persistent: ref(false),
             report: ref(false),
-            reason: ref('')
+            reason: ref(''),
         }
     },
     methods: {
@@ -77,17 +78,17 @@ export default defineComponent({
         <div class="post__main">
             <q-item class="post__info" :to="{path: 'profile/user', query: {id: user_id}}">
                 <q-item-section avatar>
-                <q-avatar size="50px">
-                    <img v-if="avatar" :src="avatar"/>
-                    <q-icon v-else size="50px" name="face" />
-                </q-avatar>
+                    <q-avatar size="50px">
+                        <img v-if="avatar" :src="avatar"/>
+                        <q-icon v-else size="50px" name="face" />
+                    </q-avatar>
                 </q-item-section>
 
                 <q-item-section>
-                <q-item-label class="username">@{{username}}</q-item-label>
-                <q-item-label caption class="date__posted">
-                    <timeago :datetime="date_posted"  auto-update :converter-options="{ includeSeconds: true, addSuffix: true, useStrict: false,}"/>
-                </q-item-label>
+                    <q-item-label class="username">@{{username}}</q-item-label>
+                    <q-item-label caption class="date__posted">
+                        <timeago :datetime="date_posted"  auto-update :converter-options="{ includeSeconds: true, addSuffix: true, useStrict: false,}"/>
+                    </q-item-label>
                 </q-item-section>
             </q-item>
 
@@ -192,7 +193,7 @@ export default defineComponent({
                     Like
                 </q-tooltip>
             </q-btn>
-            <q-btn icon="chat" round flat>
+            <q-btn :icon="total_comments == 0 ? 'sym_o_chat_bubble' : 'sym_o_chat'" round flat>
                 <q-tooltip :offset="[0,0]">
                     Comment
                 </q-tooltip>
@@ -244,7 +245,8 @@ export default defineComponent({
     display: grid;
     background-color: var(--color-background-soft);
     position: relative;
-    min-width: 500px;
+    min-width: 400px;
+    width: 100%;
     max-width: 600px;
     box-shadow:0 4px 20px 0 var(--color-text);
     height: 100%;
@@ -263,6 +265,10 @@ export default defineComponent({
 .post__info {
     padding: 5px 10px;
     background-color: transparent;
+}
+
+.post__info:hover {
+    background-color: transparent !important;
 }
 
 .username {

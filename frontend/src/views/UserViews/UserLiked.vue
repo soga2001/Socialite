@@ -3,7 +3,7 @@ import type { Post } from '@/assets/interfaces';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-    name: 'User',
+    name: 'User_Liked',
     props: {
         user_avatar: {type: String, required: true}
     },

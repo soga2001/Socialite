@@ -8,6 +8,7 @@ import { useStore } from './store/store';
 import $ from 'jquery'
 import Search from './views/Search/Search.vue'
 import { Cookies } from 'quasar';
+import HomeView from './views/Main.vue';
 
 
 export default defineComponent({
@@ -73,7 +74,7 @@ export default defineComponent({
   },
   mounted() {
   },
-  components: {Search},
+  components: { Search, HomeView },
 })
 
 </script>
@@ -81,7 +82,8 @@ export default defineComponent({
 <template>
   <!-- <h1>Potato</h1> -->
     <header>
-    <q-toolbar class="nav sticky">
+      <HomeView />
+    <!-- <q-toolbar class="nav sticky">
       <q-btn stretch flat class="brand" to="/" >Based<span class="logo">Book</span></q-btn>
       <q-space/>
       <q-toggle v-on:click="switchTheme" v-model="theme" color="grey" keep-color checked-icon="nights_stay" unchecked-icon="wb_sunny" />
@@ -155,18 +157,13 @@ export default defineComponent({
             </q-item-section>
             <q-item-section>
               <q-item-label>Logout</q-item-label>
-              <!-- <q-item-label caption>February 22, 2016</q-item-label> -->
             </q-item-section>
           </q-item>
         </q-list>
       </q-btn-dropdown>
-    </q-toolbar>
+    </q-toolbar> -->
   </header>
-  <RouterView v-slot="{Component}">
-    <KeepAlive :max="2" :include="['Home','User']">
-      <component :is="Component" :key="$route.fullPath"/>
-    </KeepAlive>
-  </RouterView>
+  
 </template>
 
 <style>
@@ -174,11 +171,6 @@ export default defineComponent({
 * {
   scroll-behavior: smooth;
 }
-
-/* body {
-  place-items: center;
-  position: relative;
-} */
 
 header {
   position: -webkit-sticky;
@@ -192,66 +184,6 @@ header {
 .sticky {
   position: sticky;
   
-}
-
-.nav {
-  background-color: var(--color-background);
-  box-shadow: 0px .5px 10px var(--color-text);
-  /* z-index: 999;  */
-  
-}
-
-a {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.2s;
-  /* line-height: 2; */
-}
-
-.nav .brand {
-  width: fit-content;
-  font-size: large;
-  font-weight: 100;
-}
-
-.brand:hover {
-  background-color: transparent !important;
-}
-
-
-.nav .logo {
-  font-weight: 900;
-  color: var(--color-heading);
-}
-
-/* .nav__link.router-link-exact-active {
-  color: var(--color-heading) !important;
-  font-weight: 900;
-} */
-
-.nav__link {
-  color: var(--color-text);
-}
-
-.nav__link.active {
-  /* background-color: rgba(255, 0, 0, .2); */
-  /* color: rgb(193, 50, 50); */
-  color: var(--color-heading);
-  background-color: hsla(0, 0%, 57%, 0.2);
-}
-
-.dropdown__main {
-  background-color: var(--color-background);
-  color: var(--text-heading);
-}
-
-.nav_avatar {
-  margin: 30px 0;
-}
-
-.avatar {
-  margin: 0 10px;
-}
-
+} 
 
 </style>

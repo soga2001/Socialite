@@ -84,7 +84,8 @@ export default defineComponent({
 .post {
   margin: 0px auto;
   display: grid;
-  background-color: var(--color-background-soft);
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
   position: relative;
   min-width: 500px;
   max-width: 600px;
@@ -95,7 +96,7 @@ export default defineComponent({
   gap: 10px;
   grid-template-columns: 70px 1fr;
   position: relative;
-  border: .5px solid var(--color-heading);
+  /* border: .5px solid var(--color-heading); */
   min-width: 500px;
   max-width: 600px;
 }

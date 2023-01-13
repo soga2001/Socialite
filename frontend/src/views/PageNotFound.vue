@@ -14,7 +14,7 @@ export default defineComponent({
 <template>
     <div class="page__not__found">
         <h1>Page Not Found!</h1>
-        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/home">Home</RouterLink>
     </div>
 </template>
 

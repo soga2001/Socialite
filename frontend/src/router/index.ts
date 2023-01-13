@@ -5,16 +5,21 @@ import { store } from '../store/store'
 
 const { cookies }  = useCookies();
 
-const Home = () => import('../views/HomeView.vue')
+const Main = () => import('../views/Main.vue')
 
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // {
+    //   path: '/',
+    //   component: Main,
+    //   name: 'Main'
+    // },
     {
-      path: '/',
-      component: Home,
-      name: 'Home'
+      path: '/home',
+      name: 'Home',
+      component: () => import('../views/HomeViews/Home.vue')
     },
     {
       path: '/login',
@@ -36,6 +41,18 @@ const router = createRouter({
       path: '/profile/user',
       name: 'user-profile',
       component: () => import('../views/UserViews/User.vue'),
+      children : [
+        {
+          path: '/user_posted',
+          name: 'user-posts',
+          component: () => import('../views/UserViews/UserPosted.vue')
+        },
+        {
+          path: '/user_liked',
+          name: 'user-likes',
+          component: () => import('../views/UserViews/UserLiked.vue')
+        },
+      ]
     },
     {
       path: '/settings',

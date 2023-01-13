@@ -38,7 +38,7 @@ export default defineComponent({
                     this.$store.commit('authenticate', true)
                     this.$store.commit('setUser', res.data.user)
                     console.log(this.$store.state.user)
-                    this.$router.push('/')
+                    this.$router.push('/home')
                 }
             }).catch((err) => {
                 console.log(err)

@@ -15,7 +15,7 @@ export default defineComponent({
             user_id: this.$route.query.id,
             user: new Array<User>(),
             avatar: '',
-            tab: ref('posts')
+            tab: ref('User_Posted')
         };
     },
     methods: {
@@ -42,11 +42,8 @@ export default defineComponent({
         <div v-for="u in user">
             <UserProfile :user="u"/>
         </div>
-        <div class="row">
-            <div class="col-12 col-md-3">
-
-            </div>
-            <div class="col-12 col-md-6">
+        <div class="">
+            <div class="">
                 <q-tabs
                 v-model="tab"
                 inline-label
@@ -55,26 +52,22 @@ export default defineComponent({
                 class="tabs"
                 active-class="active"
                 >
-                <q-tab name="posts" icon="grid_view" class="panel__icon">
+                <q-tab name="User_Posted" icon="grid_view" class="panel__icon">
                     <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">User Posted</q-tooltip>
                 </q-tab>
-                <q-tab name="likes" icon="favorite" class="panel__icon">
+                <q-tab name="User_Liked" icon="favorite" class="panel__icon">
                     <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">User Liked</q-tooltip>
                 </q-tab>
                 </q-tabs>
 
-                <q-tab-panels keep-alive :keep-alive-max="2" v-model="tab" animated class="panels" swipeable>
-                    <q-tab-panel name="posts" class="panel">
+                <q-tab-panels :keep-alive="true" :keep-alive-include="['User_Posted', 'User_Liked']"  :keep-alive-max="5" v-model="tab" class="panels" swipeable>
+                    <q-tab-panel name="User_Posted" class="panel">
                         <UserPosted :user_avatar="avatar" />
                     </q-tab-panel>
-
-                    <q-tab-panel name="likes" class="panel">
+                    <q-tab-panel name="User_Liked" class="panel">
                         <UserLiked :user_avatar="avatar"/>
                     </q-tab-panel>
                 </q-tab-panels>
-            </div>
-            <div class="col-12 col-md-3">
-
             </div>
         </div>
     </div>
@@ -82,10 +75,14 @@ export default defineComponent({
 
 
 <style scoped>
+
+.user__main {
+    height: 100%;
+}
 .tabs {
     position: -webkit-sticky;
     position: sticky;
-    top: 51px;
+    top: 0;
     z-index: 999;
     width: 100%;
 }
@@ -93,17 +90,25 @@ export default defineComponent({
 .panel__icon {
     width: 100%;
     z-index: 999;
+    border-bottom: 1px solid var(--color-border);
 }
 
-.tabs .active {
+.tabs {
+    background-color: var(--color-background);
+}
+
+.active {
     color: var(--color-heading);
-    background-color: var(--color-background-soft);
 }
 
 .panels {
     background-color: transparent;
-    /* min-height: 87vh; */
-    height: 100%;
 }
 
+
+.panel {
+    padding: 10px;
+    height: 95vh;
+    /* height: 100%; */
+}
 </style>

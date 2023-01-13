@@ -2,10 +2,11 @@
 import {defineComponent, ref} from 'vue';
 import  type {Post} from '@/assets/interfaces';
 import { http } from '@/assets/http';
-import PostsMap from './HomeViews/PostsMap.vue';
-import PostView from './PostView.vue';
-import Search from './Search/Search.vue';
+import PostsMap from './PostsMap.vue';
+import PostView from '../PostView.vue';
+import Search from '../Search/Search.vue';
 import { useStore } from '@/store/store';
+import Navbar from '../Navbar.vue';
 
 export default defineComponent({
   title: 'Home',
@@ -16,6 +17,7 @@ export default defineComponent({
         user_timestap: new Date().toISOString(),
         page: ref(0),
         hasMore: false,
+        hideName: false,
       };
   },
   name: 'Home',
@@ -27,6 +29,9 @@ export default defineComponent({
     //   this.getData();
     // }
     this.getData();
+  },
+  mounted() {
+    
   },
   methods: {
     async getData() {
@@ -55,22 +60,19 @@ export default defineComponent({
       done()
     }
   },
-  components: { PostsMap, PostView, Search }
+  components: { PostsMap, PostView, Search, Navbar }
 })
 </script>
 
 <template>
   <div class="home">
-    <div class="home__sides left">
-      
-    </div>
-    <div class="home__center">
+    <div class="home__center col-6">
+      <header >
+        Home
+      </header>
       <div v-if="$store.state.authenticated">
         <PostView />
       </div>
-      <!-- <div v-if="$store.state.posts_main" v-for="post in $store.state.posts_main" :key="post.id">
-        <PostsMap :post="post" />
-      </div> -->
       <q-infinite-scroll @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
         <div v-if="posts.length > 0" v-for="(post, index) in posts" :key="post.id">
           <PostsMap :post="post" />
@@ -82,14 +84,41 @@ export default defineComponent({
         </template>
       </q-infinite-scroll>
     </div>
-    <div class="home__sides right">
-      
-    </div>
   </div>
 </template>
 
-<style>
-@media screen and (min-width: 1220px){
+<style scoped>
+
+
+header {
+  display: relative;
+  position: -webkit-sticky;
+	position: sticky;
+  max-height: 100vh;
+  height: 100%;
+  width: 100%;
+	top: 0;
+  z-index: 999;
+
+  font-size: 30px;
+  font-weight: 900;
+  backdrop-filter: blur(10px);
+  color: var(--color-heading);
+}
+
+/* .home__center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  align-items: center;
+} */
+
+.posts {
+  margin: 20px 0;
+}
+
+/* @media screen and (min-width: 1220px){
   .home {
     display: grid;
     grid-template-columns: auto minmax(500px, 600px) auto;
@@ -110,7 +139,7 @@ export default defineComponent({
     justify-content: center;
   }
 
-  .home__sides.left {
+  .home__sides {
     display: none;
   }
 
@@ -123,7 +152,7 @@ export default defineComponent({
     justify-content: center;
   }
 
-  .home__sides {
+  .home__sides.right {
     display: none;
   }
 
@@ -131,5 +160,5 @@ export default defineComponent({
 
 .loading {
   color: var(--color-heading);
-}
+} */
 </style>
