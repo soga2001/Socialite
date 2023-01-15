@@ -2,17 +2,17 @@
 import { defineComponent, ref } from 'vue';
 import { http } from '@/assets/http';
 import UserProfile from './UserProfile.vue';
-import PostsMap from '../HomeViews/PostsMap.vue';
+// import PostsMap from '../HomeViews/PostsMap.vue';
 import type { User } from '@/assets/interfaces';
 import Search from '../Search/Search.vue';
 import UserPosted from './UserPosted.vue';
 import UserLiked from './UserLiked.vue';
 
 export default defineComponent({
-    name: 'User',
+    name: 'user-profile',
     data() {
         return {
-            user_id: this.$route.query.id,
+            user_id: this.$route.params.id,
             user: new Array<User>(),
             avatar: '',
             tab: ref('User_Posted')
@@ -33,12 +33,12 @@ export default defineComponent({
     created() {
         this.userInfo();
     },
-    components: { UserProfile, PostsMap, Search, UserPosted, UserLiked },
+    components: { UserProfile, Search, UserPosted, UserLiked },
 })
 </script>
 
 <template>
-    <div class="user__main">
+    <div class="user__main" v-if="user.length">
         <div v-for="u in user">
             <UserProfile :user="u"/>
         </div>
@@ -71,6 +71,11 @@ export default defineComponent({
             </div>
         </div>
     </div>
+    <div v-else class="user__not__found">
+        <div class="">
+            <div class="text-h2">User not found</div>
+        </div>
+    </div>
 </template>
 
 
@@ -79,17 +84,25 @@ export default defineComponent({
 .user__main {
     height: 100%;
 }
+
+.user__not__found {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .tabs {
     position: -webkit-sticky;
     position: sticky;
-    top: 0;
-    z-index: 999;
+    top: 5.5vh;
+    z-index: 900;
     width: 100%;
 }
 
 .panel__icon {
     width: 100%;
-    z-index: 999;
+    z-index: 900;
     border-bottom: 1px solid var(--color-border);
 }
 
@@ -108,7 +121,6 @@ export default defineComponent({
 
 .panel {
     padding: 10px;
-    height: 95vh;
-    /* height: 100%; */
+    height: 88vh;
 }
 </style>

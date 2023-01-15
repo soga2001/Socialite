@@ -10,12 +10,19 @@ const Main = () => import('../views/Main.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  linkActiveClass: 'active',
+  linkExactActiveClass: 'exact-active',
   routes: [
     // {
     //   path: '/',
     //   component: Main,
     //   name: 'Main'
     // },
+    {
+      path: '/search',
+      name: 'Search',
+      component: () => import('../views/Search/Search.vue')
+    },
     {
       path: '/home',
       name: 'Home',
@@ -38,17 +45,17 @@ const router = createRouter({
       }
     },
     {
-      path: '/profile/user',
+      path: '/profile/user/:id/',
       name: 'user-profile',
       component: () => import('../views/UserViews/User.vue'),
       children : [
         {
-          path: '/user_posted',
+          path: '/user_posted/:id',
           name: 'user-posts',
           component: () => import('../views/UserViews/UserPosted.vue')
         },
         {
-          path: '/user_liked',
+          path: '/user_liked/:id',
           name: 'user-likes',
           component: () => import('../views/UserViews/UserLiked.vue')
         },

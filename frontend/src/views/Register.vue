@@ -23,7 +23,7 @@ export default defineComponent({
     },
     methods: {
         checkForm() {
-            return this.checkEmail() && this.checkPassword() && this.confirmPassword()
+            return this.checkEmail() && this.checkPassword() && this.confirmPassword() && this.lname.length > 0 && this.fname.length > 0 && this.checkUsername()
         },
         checkUsername() {
             if(this.username.length > 0) {
@@ -59,12 +59,14 @@ export default defineComponent({
                 return;
             }
             this.error = false
+            this.errMsg = ""
             http.post('users/register/', {
                 first_name: this.fname,
                 last_name: this.lname,
                 email: this.email,
                 username: this.username,
-                password: this.password
+                password: this.password,
+                confirm_password: this.cPass
             }).then((res) => {
                 if(res.data.error) {
                     this.error = true
@@ -99,9 +101,10 @@ export default defineComponent({
                 :dark="$store.state.dark"
                 :color="$store.state.dark ? 'white' : 'black'"
                 v-model="fname"
-                label="First Name"
+                label="First Name*"
                 class="fname"
                 type="text"
+                :rules="[val => fname.length > 0 || 'Please enter your first name']"
             />
             <!-- <input type="text" placeholder="Last Name" class="lname" v-model="lname"/> -->
             <q-input
@@ -111,9 +114,10 @@ export default defineComponent({
                 :dark="$store.state.dark"
                 :color="$store.state.dark ? 'white' : 'black'"
                 v-model="lname"
-                label="Last Name"
+                label="Last Name*"
                 class="lname"
                 type="text"
+                :rules="[val => lname.length > 0 || 'Please enter your last name']"
             />
             <!-- <input type="email" placeholder="Email*" class="email" v-model="email" required/> -->
             <q-input
@@ -164,7 +168,10 @@ export default defineComponent({
                 :rules="[val => confirmPassword() || 'Password does not match']"
             />
             <span v-if="error" class="errMsg">{{errMsg}}</span>
-            <input type="submit" value="Register" class="submit" :disabled="!checkForm()"/>
+            <!-- <input type="submit" value="Register" class="submit" :disabled="!checkForm()"/> -->
+            <button type="submit" class="submit" :disabled="!checkForm()">
+                Register
+            </button>
         </form>
         
     </div>
@@ -173,7 +180,7 @@ export default defineComponent({
 
 <style scoped>
 .register {
-    padding: 3vh 0;
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-content: center;
@@ -218,9 +225,7 @@ export default defineComponent({
 
 .register__main {
     min-width: fit-content;
-    border: 2px solid var(--color-border);
     border-radius: 10px;
-    padding: 20px;
     /* background-color: var(--color-background-soft); */
 }
 
@@ -253,19 +258,60 @@ export default defineComponent({
     grid-template-columns: repeat(2, 1fr);
 }
 
-input {
+/* input {
     font-size: 20px;
     padding: 10px;
     background-color: var(--color-background);
     color: var(--color-text);
     border: var(--color-border);
     border-radius: 10px;
+} */
+
+
+button {
+  width: 10em;
+  position: relative;
+  height: 3.5em;
+  border: 3px ridge #149CEA;
+  outline: none;
+  background-color: transparent;
+  color: var(--color-text);
+  transition: 1s;
+  border-radius: 0.3em;
+  font-size: 16px;
+  font-weight: bold;
 }
 
+button::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 3%;
+  width: 95%;
+  height: 40%;
+  background-color: var(--color-background);
+  transition: 0.5s;
+  transform-origin: center;
+}
 
-input[type="submit"]:hover {
-    background-color: var(--color-button-hover);
-    padding: 10px 7px;
+button::before {
+  content: "";
+  transform-origin: center;
+  position: absolute;
+  top: 80%;
+  left: 3%;
+  width: 95%;
+  height: 40%;
+  background-color: var(--color-background);
+  transition: 0.5s;
+}
+
+button:hover::before, button:hover::after {
+  transform: scale(0)
+}
+
+button:hover {
+  box-shadow: inset 0px 0px 25px #1479EA;
 }
 
 ::placeholder {

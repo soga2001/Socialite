@@ -31,6 +31,9 @@ export const store = createStore<State>({
       is_active: false,
       is_staff: false,
       is_superuser: false,
+      total_followers: 0,
+      total_following: 0,
+      total_posted: 0,
       profile: {
         bio: '',
         avatar: '',
@@ -48,6 +51,9 @@ export const store = createStore<State>({
       is_active: false,
       is_staff: false,
       is_superuser: false,
+      total_followers: 0,
+      total_following: 0,
+      total_posted: 0,
       profile: {
         bio: '',
         avatar: '',
@@ -62,6 +68,9 @@ export const store = createStore<State>({
     },
     setUser(state, payload) {
       state.user = payload
+    },
+    setDefaultUser(state) {
+      state.user = state.defaultUser
     },
     setTheme(state, payload) {
       state.dark = payload

@@ -49,8 +49,8 @@ export default defineComponent({
 <template>
   <div class="post">
     <div class="post__container">
-      <q-avatar class="avatar" size="65px" >
-          <img v-if="$store.state.user.profile.avatar" :src="$store.state.user.profile.avatar"/>
+      <q-avatar class="post__avatar" size="65px" >
+          <img class="user__avatar" v-if="$store.state.user.profile.avatar" :src="$store.state.user.profile.avatar"/>
           <q-icon v-else size="65px" name="face" />
       </q-avatar>
       <form class="post__input" @submit.prevent="submit">
@@ -82,13 +82,11 @@ export default defineComponent({
 
 <style scoped>
 .post {
-  margin: 0px auto;
   display: grid;
   background-color: var(--color-background);
   border: 1px solid var(--color-border);
   position: relative;
-  min-width: 500px;
-  max-width: 600px;
+  width: 100%;
 }
 .post__container {
   padding: 10px 0px;
@@ -106,8 +104,17 @@ export default defineComponent({
 } */
 
 .post__avatar {
-  width: 50px;
-  height: 50px;
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+
+}
+
+.user__avatar {
+  width: 65px;
+  height: 65px;
   background-color: var(--color-heading);
   border-radius: 50%;
   border: 0;
@@ -124,6 +131,7 @@ export default defineComponent({
   width: fit-content;
   cursor: pointer;
   grid-column: auto / span 5;
+  max-width: 100%;
 }
 
 .post__caption {

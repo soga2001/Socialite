@@ -11,7 +11,7 @@ export default defineComponent({
     },
     data() {
         return {
-            user_id: this.$route.query.id,
+            user_id: this.$route.params.id,
             user_timestap: new Date().toISOString(),
             user_posted: new Array<Post>(),
             avatar: this.user_avatar

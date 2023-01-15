@@ -15,6 +15,10 @@ export default defineComponent({
             errMsg: ''
         }
     },
+    setup() {
+        const {cookies} = useCookies();
+        return {cookies}
+    },
     methods: {
         login() {
             if(this.username.length === 0 || this.password.length === 0) {
@@ -31,13 +35,12 @@ export default defineComponent({
                     this.errMsg = "Username or Password is incorrect."
                 }
                 else{
-                    Cookies.set('access_token', res.data.access_token, {expires: res.data.at_lifetime, secure: true})
-                    Cookies.set('refresh_token', res.data.refresh_token, {expires: res.data.rt_lifetime, secure: true})
-                    Cookies.set('loggedIn', 'true', {expires: res.data.at_lifetime, secure: true})
-                    Cookies.set('user', res.data.user, {expires: res.data.at_lifetime, secure: true})
+                    this.cookies.set('access_token', res.data.access_token, res.data.at_lifetime)
+                    this.cookies.set('refresh_token', res.data.refresh_token, res.data.rt_lifetime)
+                    this.cookies.set('loggedIn', 'true', res.data.at_lifetime)
+                    this.cookies.set('user', res.data.user, res.data.at_lifetime)
                     this.$store.commit('authenticate', true)
                     this.$store.commit('setUser', res.data.user)
-                    console.log(this.$store.state.user)
                     this.$router.push('/home')
                 }
             }).catch((err) => {
@@ -100,7 +103,9 @@ export default defineComponent({
                 <h3 class="login__errMsg">{{errMsg}}</h3>
             </div>
             <div class="login__submit">
-                <input type="submit" value="Login"/>
+                <button type="submit" class="submit">
+                    Login
+                </button>
             </div>
             <div class="login__links">
                 <a disabled>Forgot Password?</a>
@@ -115,22 +120,18 @@ export default defineComponent({
 @import '@/assets/base.css';
 
 .login {
-    /* padding: 12vh 0;
-    text-align: center;
-    position: relative; */
-    padding: 12vh 0;
+    /* height: 100%; */
     display: flex;
-    justify-content: center;
-    align-content: center;
+    /* justify-content: center; */
+    /* align-content: center; */
     text-align: center;
 }
 
 .login__main {
-    min-width: 500px;
-    margin: auto;
-    border: 2px solid var(--color-border);
+    /* min-width: 500px; */
+    width: 100%;
+    /* margin: auto; */
     border-radius: 10px;
-    /* background-color: var(--color-background-soft); */
 }
 
 .login__header {
@@ -176,22 +177,50 @@ input {
     border-radius: 10px;
 }
 
-input[type="submit"] {
-    width: fit-content;
-    font-size: 15px;
-    padding: 10px;
-    margin: auto;
-    color: var(--color-button);
-    cursor: pointer;
-    transform: transition 1s;
-    border-radius: 0px !important;
-    border-left: 2px solid var(--vt-c-divider-dark-1);
-    border-right: 2px solid var(--vt-c-divider-dark-1);
+button {
+  width: 10em;
+  position: relative;
+  height: 3.5em;
+  border: 3px ridge #149CEA;
+  outline: none;
+  background-color: transparent;
+  color: var(--color-text);
+  transition: 1s;
+  border-radius: 0.3em;
+  font-size: 16px;
+  font-weight: bold;
 }
 
-input[type="submit"]:hover {
-    background-color: var(--color-button-hover);
-    padding: 10px 7px;
+button::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 3%;
+  width: 95%;
+  height: 40%;
+  background-color: var(--color-background);
+  transition: 0.5s;
+  transform-origin: center;
+}
+
+button::before {
+  content: "";
+  transform-origin: center;
+  position: absolute;
+  top: 80%;
+  left: 3%;
+  width: 95%;
+  height: 40%;
+  background-color: var(--color-background);
+  transition: 0.5s;
+}
+
+button:hover::before, button:hover::after {
+  transform: scale(0)
+}
+
+button:hover {
+  box-shadow: inset 0px 0px 25px #1479EA;
 }
 
 ::placeholder {

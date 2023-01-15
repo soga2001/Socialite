@@ -35,7 +35,9 @@ export default defineComponent({
     
     methods: {
         follow() {
-            // console.log(Cookies.get("access_token"))
+            if(!this.$store.state.authenticated) {
+                return
+            }
             http.post(`follow/follow_user/${this.id}/`, {}, {
                 headers: {
                     "Authorization": `Bearer ${Cookies.get("access_token")}`,
@@ -56,6 +58,9 @@ export default defineComponent({
             })
         },
         if_followed() {
+            if(!this.$store.state.authenticated) {
+                return
+            }
             http.get(`follow/get_if_followed/${this.id}/`, {
                 headers: {
                     "Authorization": `Bearer ${Cookies.get("access_token")}`,
@@ -65,6 +70,7 @@ export default defineComponent({
                 this.followed = res.data.followed
             }).catch((err) => {
                 this.followed = false
+                console.log('error')
             })
         }
     },
@@ -75,26 +81,26 @@ export default defineComponent({
 </script>
 
 <template>
+    <div class="user__name">
+        {{ first_name + " " + last_name }}
+        <!-- FirstName LastName -->
+    </div>
     <div class="user row justify-center">
         <div class="user__container col-12 col-md-auto">
             <div class="user__profile__avatar">
+                <!-- https://uiverse.io/igoramos77/silly-fireant-70 -->
                 <q-avatar size="200px" class="avatar">
                     <img v-if="avatar" :src="avatar" />
                     <q-icon v-else size="200px" name="face" />
                 </q-avatar>
             </div>
-            <!-- <h3 class="text-center">
-                <span class="user__username">@{{username}}</span>
-                <span> <q-icon name="verified" /></span>
-            </h3> -->
-            <q-item class="user__username">
-                <q-item-section class="">@{{ username }}</q-item-section>
+            <q-item class="user__username text-center">
+                <q-item-section class="username">@{{ username }}</q-item-section>
                 <!-- <q-item-section avatar class="right">
                     <q-icon name="verified" />
                     <q-icon name="admin_panel_settings" />
                     <q-icon name="stars" color="" />
                 </q-item-section> -->
-
             </q-item>
             <div class="user__profile__info">
                 <div class="user__social">
@@ -118,7 +124,6 @@ export default defineComponent({
                     <button class="user__follow__btn bold" :hidden="$store.state.user.id != id" @click="" disabled>Edit Profile</button>
                 </div>
                 <div class="user__bio">
-                    <h6 class="user__name">{{first_name}} {{last_name}}</h6>
                     <h6 class="user__caption">{{bio}}</h6>
                 </div>
             </div>
@@ -145,17 +150,30 @@ export default defineComponent({
 .avatar {
     border: 1px solid var(--color-text);
     /* border-radius: 50%; */
-    width: 200px;
-    height: 200px;
+    width: 10rem;
+    height: 10rem;
     overflow: hidden;
     margin: 15px 0;
 }
 
-.user__username {
+.user__name {
     text-align: center;
     position: relative;
-    font-size: 40px;
+    font-size: 30px;
     font-weight: bolder;
+
+    display: relative;
+    position: -webkit-sticky;
+    position: sticky;
+    width: 100%;
+    top: 0;
+    z-index: 999;
+    background-color: var(--color-background);
+
+}
+
+.user__username {
+    font-size: 20px;
 }
 
 .right {
@@ -184,12 +202,24 @@ export default defineComponent({
     justify-content: center;
 }
 
+.user__folowers {
+    border-left: 1px solid var(--color-heading) !important;
+    border-right: 1px solid var(--color-heading) !important; 
+}
+
 .user__follow__btn {
     width: 100%;
     padding: 10px;
     background-color: var(--color-background-mute);
     color: var(--color-text);
     border:none;
+}
+
+h6 {
+    font-size: .8rem;
+    font-weight: 900;
+    color: var(--color-text);
+    /* text-align: center; */
 }
 
 .user__bio {

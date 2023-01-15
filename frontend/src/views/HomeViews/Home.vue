@@ -20,7 +20,7 @@ export default defineComponent({
         hideName: false,
       };
   },
-  name: 'Home',
+  name: 'home',
   setup() {
     const store = useStore()
   },
@@ -44,7 +44,6 @@ export default defineComponent({
           this.hasMore = false
         }
         this.posts = [...this.posts, ...res.data.posts]
-        // console.log(this.page)x
       }).catch((err) => {
           console.log(err);
       });
@@ -67,14 +66,14 @@ export default defineComponent({
 <template>
   <div class="home">
     <div class="home__center col-6">
-      <header >
+      <header>
         Home
       </header>
       <div v-if="$store.state.authenticated">
         <PostView />
       </div>
       <q-infinite-scroll @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
-        <div v-if="posts.length > 0" v-for="(post, index) in posts" :key="post.id">
+        <div class="posts" v-if="posts.length > 0" v-for="(post, index) in posts" :key="post.id">
           <PostsMap :post="post" />
         </div>
         <template v-slot:loading>
@@ -89,7 +88,6 @@ export default defineComponent({
 
 <style scoped>
 
-
 header {
   display: relative;
   position: -webkit-sticky;
@@ -99,22 +97,20 @@ header {
   width: 100%;
 	top: 0;
   z-index: 999;
+  padding: 0 10px;
 
   font-size: 30px;
   font-weight: 900;
   backdrop-filter: blur(10px);
   color: var(--color-heading);
+
+  text-shadow: -1px 1px 0 var(--color-background),
+                          1px 1px 0 var(--color-background),
+                         1px -1px 0 var(--color-background),
+                        -1px -1px 0 var(--color-background);
 }
 
-/* .home__center {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 20px;
-  align-items: center;
-} */
-
-.posts {
+.posts:not(:first-child) {
   margin: 20px 0;
 }
 

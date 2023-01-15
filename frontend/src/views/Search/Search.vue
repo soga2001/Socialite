@@ -7,8 +7,11 @@ import { useStore } from '../../store/store';
 export default defineComponent({
     data() {
         return {
+            results: new Array<User>(),
             users: new Array<User>(),
-            input: ref('')
+            input: ref(''),
+            loading: false,
+            noResults: false,
         };
     },
     setup() {
@@ -26,13 +29,32 @@ export default defineComponent({
     },
     methods: {
       async search() {
-        http.get(`users/username/${this.input}`).then((res) => {
+        // bottom 2 line is for whenevver # is used, will come into play at a later date
+        // const re = /\s*(?:#|\s)/;
+        // console.log(this.input.split(re))
+        this.loading = true
+        if(this.input === "") {
+            this.results = []
+            this.loading = false
+            this.noResults = false
+            return
+        }
+        await http.get(`users/username/${this.input}`).then((res) => {
             if(res.data.success) {
-                this.users = res.data.users
-                console.log(this.users)
+                this.results = res.data.users
             }
         })
+        this.loading = false
+        if(this.results.length == 0) {
+            this.noResults = true
+        }
+        else {
+            this.noResults = false
+        }
         // this.users = users.data.users
+      },
+      submit() {
+
       }
     }
 })
@@ -42,28 +64,47 @@ export default defineComponent({
 <template>
     <div class="home__sides__main">
         <form v-on:submit.prevent="">
-            <!-- <div class="search-box">
-                <button class="btn-search" ><q-icon name="search"/></button>
-                <input type="text" class="input-search" placeholder="Search by username">
-            </div> -->
-            <!-- <div class="search-container">
-                <input type="text" name="search" placeholder="Search..." class="search-input">
-                <a href="#" class="search-btn">
-                    <q-icon name="search" class="fas fa-search"/>     
-                </a>
-            </div> -->
             <q-input
                 v-model="input"
                 :dark="$store.state.dark"
-                filled
+                
                 placeholder="Search by username"
                 v-debounce:1s="search"
             >
                 <template v-slot:append>
-                <q-icon name="search" />
+                    <q-icon size="30px" v-if="!loading || input.length == 0" name="search" />
+                    <q-spinner-tail v-else size="30px" color="blue-grey" />
                 </template>
             </q-input>
         </form>
+        <div id="results">
+            <div class="results" v-if="results.length > 0" v-for="u in results">
+                <q-item class="" clickable :to="{name: 'user-profile', params: {id: u.id}}">
+                    <q-item-section avatar>
+                        <img class="avatar" v-if="u.profile.avatar" :src="u.profile.avatar"/>
+                        <q-icon size="50px" v-else name="account_circle" class="avatar__icon" />
+                    </q-item-section>
+
+                    <q-item-section>
+                        <!-- <q-item-label>{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</q-item-label> -->
+                        <q-item-label>Suyogya Poudel</q-item-label>
+                        <q-item-label caption>@{{ u.username }}</q-item-label>
+                    </q-item-section>
+
+                    <!-- <q-item-section side >
+                        <q-icon name="more_horiz"  />
+                    </q-item-section> -->
+                </q-item>
+            </div>
+            <div v-if="noResults">
+                <q-item class="">
+                    <q-item-section>
+                        <q-item-label>No results found</q-item-label>
+                    </q-item-section>
+                </q-item>
+            </div> 
+        </div>
+        
     </div>
 </template>
 
@@ -72,11 +113,9 @@ export default defineComponent({
     color: var(--color-heading) !important;
 }
 .home__sides__main {
-    display: flex;
-    justify-content: center;
     padding: 20px;
     width: 100%;
-    height: 10vh;
+    height: 100%;
 }
 
 .search-box{
@@ -98,7 +137,7 @@ export default defineComponent({
   padding-right: 40px;
   color:white;
 }
-.input-search::placeholder{
+::placeholder{
   color: var(--color-text);
   font-size: 15px;
   font-weight: 500;
@@ -187,8 +226,17 @@ export default defineComponent({
   animation: hoverShake 0.15s linear 3;
 }
 
-.results {
-    background-color: var(--color-background-soft);
+#results {
+    border: 1px solid var(--color-border);
 }
 
+.results:nth-child(even) {
+    background-color: var(--color-background-mute);
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
 </style>

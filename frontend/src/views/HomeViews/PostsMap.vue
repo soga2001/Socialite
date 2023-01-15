@@ -76,7 +76,7 @@ export default defineComponent({
 <template>
     <q-card class="post">
         <div class="post__main">
-            <q-item class="post__info" :to="{path: 'profile/user', query: {id: user_id}}">
+            <q-item class="post__info" :to="{name: 'user-profile', params: {id: user_id}}">
                 <q-item-section avatar>
                     <q-avatar size="50px">
                         <img v-if="avatar" :src="avatar"/>
@@ -241,14 +241,14 @@ export default defineComponent({
 
 <style scoped>
 .post {
-    margin: 30px auto;
     display: grid;
-    background-color: var(--color-background-soft);
+    background-color: transparent;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
     position: relative;
-    min-width: 400px;
     width: 100%;
-    max-width: 600px;
-    box-shadow:0 4px 20px 0 var(--color-text);
+    max-width: 700px;
+    /* box-shadow:0 4px 20px 0 var(--color-text); */
     height: 100%;
 }
 
