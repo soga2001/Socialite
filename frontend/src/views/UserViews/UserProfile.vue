@@ -82,8 +82,8 @@ export default defineComponent({
 
 <template>
     <div class="user__name">
-        {{ first_name + " " + last_name }}
-        <!-- FirstName LastName -->
+        <q-icon @click="$router.go(-1)" class="back" name="arrow_back" />
+        <span class="name">{{ first_name + " " + last_name }}</span>
     </div>
     <div class="user row justify-center">
         <div class="user__container col-12 col-md-auto">
@@ -93,6 +93,15 @@ export default defineComponent({
                     <img v-if="avatar" :src="avatar" />
                     <q-icon v-else size="200px" name="face" />
                 </q-avatar>
+                <!-- https://stackoverflow.com/questions/67104652/hover-effect-change-your-picture-with-icon-on-profile-picture -->
+                <!-- <div class="profilepic">
+                    <img v-if="avatar" class="profilepic__image" :src="avatar" width="150" height="150" alt="Profibild" />
+                    <q-avatar v-else icon="face" class="profilepic__image" size="150px" />
+                    <div class="profilepic__content">
+                        <span class="profilepic__icon"><q-icon size="30px" name="photo_camera"/></span>
+                        <span class="profilepic__text">Edit Profile</span>
+                    </div>
+                </div> -->
             </div>
             <q-item class="user__username text-center">
                 <q-item-section class="username">@{{ username }}</q-item-section>
@@ -145,15 +154,15 @@ export default defineComponent({
 .user__profile__avatar {
     display: flex;
     justify-content: center;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
 }
 
 .avatar {
     border: 1px solid var(--color-text);
-    /* border-radius: 50%; */
     width: 10rem;
     height: 10rem;
-    overflow: hidden;
-    margin: 15px 0;
 }
 
 .user__name {
@@ -170,6 +179,15 @@ export default defineComponent({
     z-index: 999;
     background-color: var(--color-background);
 
+}
+
+.back {
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    cursor: pointer;
 }
 
 .user__username {
@@ -190,8 +208,6 @@ export default defineComponent({
     
 }
 .user__social {
-    padding-right: 10px;
-    padding-left: 10px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     max-width: 100%;
@@ -228,6 +244,62 @@ h6 {
 
 .user__caption {
     color: var(--color-text)
+}
+
+/* Profile Pic */
+.profilepic {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: var(--color-background-mute);
+}
+
+.profilepic:hover .profilepic__content {
+  opacity: 1;
+}
+
+.profilepic:hover .profilepic__image {
+  opacity: .3;
+}
+
+.profilepic__image {
+  object-fit: cover;
+  opacity: 1;
+  transition: opacity .2s ease-in-out;
+}
+
+.profilepic__content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--color-heading);
+  font-weight: bolder;
+  opacity: 0;
+  transition: opacity .2s ease-in-out;
+}
+
+.profilepic__icon {
+  color: var(--color-heading);
+  padding-bottom: 8px;
+}
+
+.fas {
+  font-size: 20px;
+}
+
+.profilepic__text {
+  text-transform: uppercase;
+  font-size: 12px;
+  width: 50%;
+  text-align: center;
 }
     
 </style>

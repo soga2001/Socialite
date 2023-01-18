@@ -1,3 +1,4 @@
+import { scroll } from 'quasar';
 import { createRouter, createWebHistory } from 'vue-router'
 // import Vue from 'vue'
 import { useCookies } from 'vue3-cookies'
@@ -76,7 +77,10 @@ const router = createRouter({
   ],
   scrollBehavior (to, from, savedPosition) {
     if (savedPosition) {
-      return savedPosition
+      return {
+        top: savedPosition.top,
+        behavior: 'auto'
+      }
     } else {
       return { top: 0 }
     }

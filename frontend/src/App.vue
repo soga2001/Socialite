@@ -168,9 +168,9 @@ export default defineComponent({
 
 <style>
 @import '@/assets/base.css';
-* {
+/* * {
   scroll-behavior: smooth;
-}
+} */
 
 header {
   position: -webkit-sticky;

@@ -46,15 +46,6 @@ export default defineComponent({
           'Authorization': `Bearer ${this.cookies.get('access_token')}`
         }
       }).then((res) => {
-
-        /*
-       this.cookies.set('access_token', res.data.access_token, {expires: res.data.at_lifetime, secure: true})
-       this.cookies.set('refresh_token', res.data.refresh_token, {expires: res.data.rt_lifetime, secure: true})
-       this.cookies.set('loggedIn', 'true', {expires: res.data.at_lifetime, secure: true})
-       this.cookies.set('user', res.data.user, {expires: res.data.at_lifetime, secure: true})
-        this.$store.commit('authenticate', true)
-        this.$store.commit('setUser', res.data.user)
-        */
         this.cookies.remove('access_token')
         this.cookies.remove('refresh_token')
         this.cookies.remove('user')
@@ -101,14 +92,14 @@ export default defineComponent({
         <RouterLink to="/home" class="nav__link" active-class="active">
           <q-item class="hide">
             <q-item-section avatar>
-              <q-icon name="cottage" />
+              <q-icon :name="$route.fullPath == '/home' ? 'home' : 'o_home'"/>
             </q-item-section>
 
-            <q-item-section>
+            <q-item-section class="bold">
               Home
             </q-item-section>
           </q-item>
-          <q-avatar size="50px" icon="cottage" class="show">
+          <q-avatar size="50px" :icon="$route.fullPath == '/home' ? 'home' : 'o_home'" class="show">
             <q-tooltip anchor="top middle" self="bottom middle">
               Home
             </q-tooltip>
@@ -118,14 +109,14 @@ export default defineComponent({
         <RouterLink to="/explore" class="nav__link" active-class="active">
           <q-item class="hide">
             <q-item-section avatar>
-              <q-icon name="explore" />
+              <q-icon :name="$route.fullPath == '/explore' ? 'explore' : 'o_explore'" />
             </q-item-section>
 
-            <q-item-section>
+            <q-item-section class="bold">
               Explore
             </q-item-section>
           </q-item>
-          <q-avatar size="50px" icon="explore" class="show">
+          <q-avatar size="50px" :icon="$route.fullPath == '/explore' ? 'explore' : 'o_explore'" class="show">
             <q-tooltip anchor="top middle" self="bottom middle">
               Explore
             </q-tooltip>
@@ -135,14 +126,14 @@ export default defineComponent({
         <RouterLink to="/search" class="nav__link" active-class="active">
           <q-item class="hide">
             <q-item-section avatar>
-              <q-icon name="search" />
+              <q-icon :name="$route.fullPath == '/search' ? 'search' : 'o_search'" />
             </q-item-section>
 
-            <q-item-section>
-              Search User
+            <q-item-section class="bold">
+              Search
             </q-item-section>
           </q-item>
-          <q-avatar size="50px" icon="search" class="show">
+          <q-avatar size="50px" :icon="$route.fullPath == '/search' ? 'fa-solid fa-magnifying-glass' : 'o_search'" class="show">
             <q-tooltip anchor="top middle" self="bottom middle">
               Search
             </q-tooltip>
@@ -152,14 +143,14 @@ export default defineComponent({
         <RouterLink :to="{name: 'user-profile', params: {id: $store.state.user.id}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
           <q-item class="hide">
             <q-item-section avatar>
-              <q-icon name="account_circle" />
+              <q-icon :name="$route.fullPath == `/profile/user/${$store.state.user.id}/` ? 'account_circle' : 'o_account_circle'" />
             </q-item-section>
 
-            <q-item-section>
+            <q-item-section class="bold">
               Profile
             </q-item-section>
           </q-item>
-          <q-avatar size="50px" icon="account_circle" class="show">
+          <q-avatar size="50px" :icon="$route.fullPath == `/profile/user/${$store.state.user.id}/` ? 'account_circle' : 'o_account_circle'" class="show">
             <q-tooltip anchor="top middle" self="bottom middle">
               Profile
             </q-tooltip>
@@ -169,14 +160,14 @@ export default defineComponent({
         <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
           <q-item class="hide">
             <q-item-section avatar>
-              <q-icon name="settings" />
+              <q-icon :name="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" />
             </q-item-section>
 
-            <q-item-section>
-              Setting
+            <q-item-section class="bold">
+              Settings
             </q-item-section>
           </q-item>
-          <q-avatar size="50px" icon="settings" class="show">
+          <q-avatar size="50px" :icon="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" class="show">
             <q-tooltip anchor="top middle" self="bottom middle">
               Settings
             </q-tooltip>
@@ -189,7 +180,7 @@ export default defineComponent({
               <q-icon name="login" />
             </q-item-section>
 
-            <q-item-section>
+            <q-item-section class="bold">
               Login
             </q-item-section>
           </q-item>
@@ -203,10 +194,10 @@ export default defineComponent({
         <RouterLink to="/Register" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
           <q-item class="hide">
             <q-item-section avatar>
-              <q-icon name="app_registration" />
+              <q-icon name="o_app_registration" />
             </q-item-section>
 
-            <q-item-section>
+            <q-item-section class="bold">
               Register
             </q-item-section>
           </q-item>
@@ -220,19 +211,36 @@ export default defineComponent({
         <!-- <q-item class="theme">
           <q-toggle dense size="50px" v-on:click="switchTheme" v-model="theme" color="grey" icon-color="black" checked-icon="nights_stay" unchecked-icon="wb_sunny" />
         </q-item> -->
-      <q-item>
+      <!-- <q-item>
         <label class="switch">
           <input type="checkbox" @click="switchTheme" v-model="theme">
           <span class="slider"></span>
         </label>
+      </q-item> -->
+
+      <q-item class="toggleWrapper">
+        <input type="checkbox" v-model="theme" @click="switchTheme" class="dn" id="dn">
+        <label for="dn" class="toggle">
+            <span class="toggle__handler">
+                <span class="crater crater--1"></span>
+                <span class="crater crater--2"></span>
+                <span class="crater crater--3"></span>
+            </span>
+            <span class="star star--1"></span>
+            <span class="star star--2"></span>
+            <span class="star star--3"></span>
+            <span class="star star--4"></span>
+            <span class="star star--5"></span>
+            <span class="star star--6"></span>
+        </label>
       </q-item>
       
       <q-btn no-caps flat round class="dropdown" v-if="$store.state.authenticated">
-        <!-- <q-icon name="account_circle" /> -->
+        <!-- <q-icon name="o_account_circle" /> -->
         <q-item class="hide">
           <q-item-section avatar>
             <img class="avatar" v-if="$store.state.user.profile.avatar" :src="$store.state.user.profile.avatar"/>
-            <q-icon size="50px" v-else name="account_circle" class="avatar__icon" />
+            <q-icon size="50px" v-else name="o_person" class="avatar__icon" />
           </q-item-section>
 
           <q-item-section>
@@ -241,13 +249,13 @@ export default defineComponent({
           </q-item-section>
 
           <q-item-section side >
-            <q-icon name="more_horiz"  />
+            <q-icon name="o_more_horiz"  />
           </q-item-section>
         </q-item>
 
         <q-avatar class="show">
           <img v-if="$store.state.user.profile.avatar" :src="$store.state.user.profile.avatar"/>
-          <q-icon v-else name="account_circle" class="avatar__icon" />
+          <q-icon v-else name="o_account_circle" class="avatar__icon" />
         </q-avatar> 
       <q-menu fit square self="top left" anchor="bottom left">
         <q-list class="dropdown__main" dense>
@@ -343,6 +351,10 @@ a {
   font-weight: 900;
   /* background-color: var(--color-background-mute); */
   border-radius: 30px;
+}
+
+.nav__link.active .bold {
+  font-weight: 900;
 }
 
 .nav__link.exact-active {
@@ -445,7 +457,8 @@ a {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: white;
+  /* background-color: white; */
+  background-color: rgba(159, 220, 245, .5);
   -webkit-transition: .5s;
   transition: .5s;
   border: 1px solid var(--color-text);
@@ -481,4 +494,186 @@ input:checked + .slider:before {
   box-shadow: inset -8px -3px 0px 0px white;
 }
 
+
+/* Theme toggle */
+
+
+.toggleWrapper input {
+  position: absolute;
+  left: -99em;
+}
+
+.toggle {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  width: 45px;
+  height: 25px;
+  background-color: #83d8ff;
+  border-radius: 84px;
+  transition: background-color 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+.toggle__handler {
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  top: 1.7px;
+  left: 3px;
+  width: 21px;
+  height: 21px;
+  background-color: #ffcf96;
+  border-radius: 50px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
+  transition: all 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transform: rotate(-45deg);
+}
+
+.toggle__handler .crater {
+  position: absolute;
+  background-color: #e8cda5;
+  opacity: 0;
+  transition: opacity 200ms ease-in-out;
+  border-radius: 100%;
+}
+
+.toggle__handler .crater--1 {
+  top: 9px;
+  left: 5px;
+  width: 2px;
+  height: 2px;
+}
+
+.toggle__handler .crater--2 {
+  top: 14px;
+  left: 11px;
+  width: 3px;
+  height: 3px;
+}
+
+.toggle__handler .crater--3 {
+  top: 5px;
+  left: 12.5px;
+  width: 4px;
+  height: 4px;
+}
+
+.star {
+  position: absolute;
+  background-color: #fff;
+  transition: all 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+  border-radius: 50%;
+}
+
+.star--1 {
+  top: 5px;
+  left: 17.5px;
+  z-index: 0;
+  width: 15px;
+  height: 1.5px;
+}
+
+.star--2 {
+  top: 9px;
+  left: 14px;
+  z-index: 1;
+  width: 15px;
+  height: 1.5px;
+}
+
+.star--3 {
+  top: 13.5px;
+  left: 20px;
+  z-index: 0;
+  width: 15px;
+  height: 1.5px;
+}
+
+.star--4, .star--5, .star--6 {
+  opacity: 0;
+  transition: all 300ms 0 cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+.star--4 {
+  top: 8px;
+  left: 5.5px;
+  z-index: 0;
+  width: 1px;
+  height: 1px;
+  transform: translate3d(3px, 0, 0);
+}
+
+.star--5 {
+  top: 16px;
+  left: 8.5px;
+  z-index: 0;
+  width: 1.5px;
+  height: 1.5px;
+  transform: translate3d(3px, 0, 0);
+}
+
+.star--6 {
+  top: 18px;
+  left: 14px;
+  z-index: 0;
+  width: 1px;
+  height: 1px;
+  transform: translate3d(3px, 0, 0);
+}
+
+input:checked + .toggle {
+  background-color: #749dd6;
+}
+
+input:checked + .toggle:before {
+  color: #749ed7;
+}
+
+input:checked + .toggle:after {
+  color: #fff;
+}
+
+input:checked + .toggle .toggle__handler {
+  background-color: #ffe5b5;
+  transform: translate3d(16px, 0, 0) rotate(0);
+}
+
+input:checked + .toggle .toggle__handler .crater {
+  opacity: 1;
+}
+
+input:checked + .toggle .star--1 {
+  width: 1px;
+  height: 1px;
+}
+
+input:checked + .toggle .star--2 {
+  width: 2px;
+  height: 2px;
+  transform: translate3d(-5px, 0, 0);
+}
+
+input:checked + .toggle .star--3 {
+  width: 2px;
+  height: 2px;
+  transform: translate3d(-7px, 0, 0);
+}
+
+input:checked + .toggle .star--4, input:checked + .toggle .star--5, input:checked + .toggle .star--6 {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+input:checked + .toggle .star--4 {
+  transition: all 300ms 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+input:checked + .toggle .star--5 {
+  transition: all 300ms 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+input:checked + .toggle .star--6 {
+  transition: all 300ms 400ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+ 
 </style>

@@ -17,7 +17,7 @@ export default defineComponent({
         user_timestap: new Date().toISOString(),
         page: ref(0),
         hasMore: false,
-        hideName: false,
+        scrollY: 0
       };
   },
   name: 'home',
@@ -25,10 +25,17 @@ export default defineComponent({
     const store = useStore()
   },
   created() {
-    // if(Object.keys(this.$store.state.posts_main).length === 0) {
-    //   this.getData();
-    // }
+    document.addEventListener('scroll' , () => {
+      this.scrollY = window.scrollY
+    })
     this.getData();
+  },
+  activated() {
+    console.log(this.scrollY)
+    window.scrollTo(0, this.scrollY)
+  },
+  deactivated() {
+    
   },
   mounted() {
     
@@ -92,14 +99,13 @@ header {
   display: relative;
   position: -webkit-sticky;
 	position: sticky;
-  max-height: 100vh;
-  height: 100%;
+  
   width: 100%;
 	top: 0;
   z-index: 999;
   padding: 0 10px;
 
-  font-size: 30px;
+  font-size: 25px;
   font-weight: 900;
   backdrop-filter: blur(10px);
   color: var(--color-heading);

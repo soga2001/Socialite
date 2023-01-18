@@ -3,6 +3,7 @@ import { http } from '@/assets/http';
 import { defineComponent, ref, toHandlers } from 'vue';
 import type { User } from '@/assets/interfaces';
 import { useStore } from '../../store/store';
+import { TouchSwipe } from 'quasar';
 
 export default defineComponent({
     data() {
@@ -14,6 +15,7 @@ export default defineComponent({
             noResults: false,
         };
     },
+    name: 'search',
     setup() {
         const store = useStore()
     },
@@ -53,6 +55,11 @@ export default defineComponent({
         }
         // this.users = users.data.users
       },
+      resetInput() {
+        this.input = ""
+        this.results = new Array<User>()
+        this.noResults = false
+      },
       submit() {
 
       }
@@ -62,17 +69,22 @@ export default defineComponent({
 
 
 <template>
-    <div class="home__sides__main">
+    <div class="search">
         <form v-on:submit.prevent="">
             <q-input
                 v-model="input"
+                dense
                 :dark="$store.state.dark"
-                
+                :autofocus="true"
                 placeholder="Search by username"
                 v-debounce:1s="search"
             >
+                <template v-slot:prepend>
+                    <q-icon @click="$router.go(-1)" class="back" name="arrow_back" />
+                </template>
                 <template v-slot:append>
-                    <q-icon size="30px" v-if="!loading || input.length == 0" name="search" />
+                    <q-icon size="30px" v-if="input.length == 0" name="search" />
+                    <q-icon class="close" size="30px" v-else-if="input.length > 0 && !loading" name="close" @click="resetInput" />
                     <q-spinner-tail v-else size="30px" color="blue-grey" />
                 </template>
             </q-input>
@@ -87,7 +99,7 @@ export default defineComponent({
 
                     <q-item-section>
                         <!-- <q-item-label>{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</q-item-label> -->
-                        <q-item-label>Suyogya Poudel</q-item-label>
+                        <q-item-label>{{ u.first_name }} {{ u.last_name }}</q-item-label>
                         <q-item-label caption>@{{ u.username }}</q-item-label>
                     </q-item-section>
 
@@ -112,10 +124,23 @@ export default defineComponent({
 * {
     color: var(--color-heading) !important;
 }
-.home__sides__main {
+.search {
     padding: 20px;
     width: 100%;
     height: 100%;
+    position: -webkit-sticky;
+	position: sticky;
+    top: 0;
+    
+}
+
+.back {
+    cursor: pointer;
+}
+
+#results {
+    max-height: 350px; 
+    overflow: auto;  
 }
 
 .search-box{
@@ -238,5 +263,9 @@ export default defineComponent({
   width: 50px;
   height: 50px;
   border-radius: 50%;
+}
+
+.close {
+    cursor: pointer;
 }
 </style>

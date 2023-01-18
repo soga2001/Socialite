@@ -54,7 +54,7 @@ export default defineComponent({
           <q-icon v-else size="65px" name="face" />
       </q-avatar>
       <form class="post__input" @submit.prevent="submit">
-        <q-file v-model="image" label="Pick an image" outlined clearable class="post__file" :dark="$store.state.dark" :color="$store.state.dark ? 'white': 'black'">
+        <q-file v-model="image" clearable class="post__file" label="Upload an image" :dark="$store.state.dark" :color="$store.state.dark ? 'white': 'black'">
           <template v-slot:prepend>
             <q-icon name="cloud_upload" />
           </template>

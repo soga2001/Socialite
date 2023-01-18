@@ -3,6 +3,7 @@ import { defineComponent, ref } from 'vue';
 import type { Post } from '@/assets/interfaces';
 import { http } from '@/assets/http';
 import { Cookies, useQuasar } from 'quasar';
+import moment from 'moment'
 
 
 export default defineComponent({
@@ -17,11 +18,12 @@ export default defineComponent({
             img_url: this.post.img_url,
             caption: this.post.caption,
             date_posted: this.post.date_posted,
-            date_updated: this.post.date_updated,
+            date_updated: this.post.date_posted,
             avatar: this.post.user_avatar,
             dropdown: false,
             liked: false,
             total_comments: 0,
+            total_likes: 0,
             comments: [],
             img_loading: true,
             avatar_loading: true,
@@ -29,6 +31,7 @@ export default defineComponent({
             persistent: ref(false),
             report: ref(false),
             reason: ref(''),
+            moment: moment,
         }
     },
     methods: {
@@ -62,13 +65,29 @@ export default defineComponent({
         onAvatarLoaded() {
             this.avatar_loading = false
         },
+        formatDate() {
+            var timestamp = new Date(new Date().setDate(new Date().getDate() - 30));
+            const posted_date = new Date(this.date_posted)
+            // console.log(new Date(this.date_posted))
+            // console.log(moment(new Date()).subtract(6, 'days').calendar())
+            if( posted_date.getTime() > timestamp.getTime()){
+                const temp = moment(this.date_posted).fromNow();
+                if(temp.includes('hour') || temp.includes('hours') || temp.includes('minute') || temp.includes('minutes') || temp.includes('second') || temp.includes('seconds')) {
+                    return moment(this.date_posted).calendar()
+                }
+                if((temp.includes('day') || temp.includes('days')) && parseInt(temp.split(' ')[0]) < 7) {
+                    const day = temp.split(' ')[0]
+                    // console.log(parseInt(day))
+                    return moment(this.date_posted).subtract(parseInt(day), 'days').calendar()
+                }
+            }
+            return moment(this.date_posted).format("ddd MMM DD, YYYY [at] hh:mm a")
+        },
+        showComments() {
+
+        }
     },
     created() {
-        // http.get(`user_profile/get_profile/${this.user_id}/`).then((res) => {
-        //     this.avatar = res.data.user_profile.avatar
-        // }).catch((err) => {
-        //     console.log(err)
-        // })
     }
 })
 </script>
@@ -87,7 +106,8 @@ export default defineComponent({
                 <q-item-section>
                     <q-item-label class="username">@{{username}}</q-item-label>
                     <q-item-label caption class="date__posted">
-                        <timeago :datetime="date_posted"  auto-update :converter-options="{ includeSeconds: true, addSuffix: true, useStrict: false,}"/>
+                        {{ formatDate() }}
+                        <!-- <timeago :datetime="date_posted"  auto-update :converter-options="{ includeSeconds: true, addSuffix: true, useStrict: false,}"/> -->
                     </q-item-label>
                 </q-item-section>
             </q-item>
@@ -186,18 +206,39 @@ export default defineComponent({
             <q-item-label caption class="post__caption">{{caption}}</q-item-label>
         </q-item-section>
             
-        <q-card-actions>
+        <q-card-actions class="actions">
             <!-- <q-btn flat round color="red" :icon="liked ? 'favorite' : 'favorite_border'" /> -->
-            <q-btn round flat class="like__btn" :icon="liked ? 'favorite' : 'favorite_border'" :disable="!$store.state.authenticated" v-on:click="like">
+            <div>
+                <q-icon size="30px" :class="'action like__btn ' + (liked ? 'liked' : '')" :name="liked ? 'favorite' : 'favorite_border'" @click="like">
+                    <q-tooltip :offset="[0,0]">
+                        Like
+                    </q-tooltip>
+                </q-icon>
+                <label>{{total_likes}}</label>
+            </div>
+            <!-- <q-btn round flat :class="'like__btn ' + (liked ? 'liked' : '')" :icon="liked ? 'favorite' : 'favorite_border'" :disable="!$store.state.authenticated" v-on:click="like">
                 <q-tooltip :offset="[0,0]">
                     Like
                 </q-tooltip>
-            </q-btn>
-            <q-btn :icon="total_comments == 0 ? 'sym_o_chat_bubble' : 'sym_o_chat'" round flat>
+                <input type="checkbox" :checked="liked" hidden id="favorite" name="favorite-checkbox" value="favorite-button">
+                    <label for="favorite" class="container">
+                 </label>
+            </q-btn> -->
+            <div>
+                <q-icon size="30px" class="action comment" :name="total_comments == 0 ? 'sym_o_chat_bubble' : 'sym_o_chat'" @click="">
+                    <q-tooltip :offset="[0,0]">
+                        Comment
+                    </q-tooltip>
+                </q-icon>
+                <label>{{total_comments}}</label>
+            </div>
+            
+            <!-- <q-btn :icon="total_comments == 0 ? 'sym_o_chat_bubble' : 'sym_o_chat'" round flat>
                 <q-tooltip :offset="[0,0]">
                     Comment
                 </q-tooltip>
-            </q-btn>
+            </q-btn> -->
+
             <q-btn icon="share" round flat>
                 <q-tooltip :offset="[0,0]">
                     Copy Link
@@ -328,8 +369,53 @@ export default defineComponent({
     display: flex;
 }
 
+
 .like__btn {
     color: red;
+}
+
+.like__chip {
+    background-color: transparent;
+    color: var(--color-heading);
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.like__btn.liked {
+    animation: heartButton 1s;
+}
+
+@keyframes heartButton {
+ 0% {
+  transform: scale(1);
+ }
+
+ 25% {
+  transform: scale(1.5);
+ }
+
+ 50% {
+  transform: scale(1);
+ }
+
+ 75% {
+  transform: scale(1.5);
+ }
+
+ 100% {
+  transform: scale(1);
+ }
+}
+
+
+.actions {
+    display: inline-flex;
+    gap: 20px;
+}
+.action {
+    padding: 0px 10px;
+    cursor: pointer;
 }
 
 .skeleton {
@@ -366,9 +452,6 @@ export default defineComponent({
     color: var(--color-heading);
 }
 
-.red {
-    color: red;
-}
 
 .alert {
     font-size: 15px;

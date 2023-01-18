@@ -74,42 +74,36 @@ export default defineComponent({
                 <a disabled>Frogot Password?</a>
                 <RouterLink to="/register">Create an Account</RouterLink>
             </div> -->
-            <div class="login__credentials">
-                <q-input
-                    clearable
-                    clear-icon="close"
-                    filled
-                    :dark="$store.state.dark"
-                    :color="$store.state.dark ? 'white' : 'black'"
-                    v-model="username"
-                    label="Username*"
-                    class="username"
-                    type="text"
-                    :rules="[val => !!val || 'Please enter a valid username']"
-                />
-                <!-- <input type="password" placeholder="Password*" class="password" v-model="password" required /> -->
-                <q-input
-                    filled
-                    :dark="$store.state.dark"
-                    :color="$store.state.dark ? 'white' : 'black'"
-                    v-model="password"
-                    label="Password*"
-                    class="password"
-                    type="password"
-                    :rules="[val => !!val || 'Please Enter a password']"
-                />
-            </div>
-            <div class="login__error">
-                <h3 class="login__errMsg">{{errMsg}}</h3>
-            </div>
-            <div class="login__submit">
-                <button type="submit" class="submit">
-                    Login
-                </button>
-            </div>
+            <q-input
+                clearable
+                clear-icon="close"
+                filled
+                :dark="$store.state.dark"
+                :color="$store.state.dark ? 'white' : 'black'"
+                v-model="username"
+                label="Username*"
+                class="username"
+                type="text"
+                :rules="[val => !!val || 'Please enter a valid username']"
+            />
+            <!-- <input type="password" placeholder="Password*" class="password" v-model="password" required /> -->
+            <q-input
+                filled
+                :dark="$store.state.dark"
+                :color="$store.state.dark ? 'white' : 'black'"
+                v-model="password"
+                label="Password*"
+                class="password"
+                type="password"
+                :rules="[val => !!val || 'Please enter a password']"
+            />
+            <span v-if="error" class="errMsg">{{errMsg}}</span>
+            <button type="submit" class="submit" :disabled="username.length == 0 || password.length == 0">
+                Login
+            </button>
             <div class="login__links">
                 <a disabled>Forgot Password?</a>
-                <RouterLink to="/register">Create an Account</RouterLink>
+                <RouterLink to="/register" class="link">Create an Account</RouterLink>
             </div>
         </form>
     </div>
@@ -120,54 +114,72 @@ export default defineComponent({
 @import '@/assets/base.css';
 
 .login {
-    /* height: 100%; */
+    padding: 20px;
     display: flex;
-    /* justify-content: center; */
-    /* align-content: center; */
+    justify-content: center;
+    align-content: center;
     text-align: center;
 }
 
 .login__main {
-    /* min-width: 500px; */
-    width: 100%;
-    /* margin: auto; */
+    min-width: fit-content;
     border-radius: 10px;
 }
 
 .login__header {
     font-size: 70px;
+    color: var(--color-heading);
 }
 
 .login__form {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(8, 1fr);
     width: 100%;
     margin: auto;
-    position: relative;
     padding: 10px;
 }
 
-.login__credentials {
-    display: grid;
-    padding: 20px;
+.username, .password {
+    grid-column: auto / span 8;
 }
 
-.login__error {
-    background-color: rgb(255, 0, 0, .2);
+.errMsg {
+    background-color: rgba(255, 0, 0, 0.566);
+    grid-column: auto / span 8;
+    padding: 10px;
+    border-radius: 10px;
+    color: var(--color-heading);
 }
 
-.login__errMsg {
-    color: rgb(255, 0, 0);
-    font-size: 20px;
+.submit {
+    grid-column: 4 / span 2;
 }
 
 .login__links {
-    display: inline-flex;
+    grid-column: 2 / span 6;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.login__links a {
+    text-decoration: none;
+    padding: 10px;
+    border: 1px solid var(--color-text);
+    color: var(--color-text);
+}
+
+.login__links a:hover {
+    background-color: var(--color-text);
+    color: var(--color-background);
 }
 
 a {
     padding: 10px;
 }
 
-input {
+/* input {
     margin: 10px 20px;
     font-size: 20px;
     padding: 10px;
@@ -175,7 +187,8 @@ input {
     color: var(--color-text);
     border: var(--color-border);
     border-radius: 10px;
-}
+} */
+
 
 button {
   width: 10em;

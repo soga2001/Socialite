@@ -186,6 +186,26 @@ export default defineComponent({
     align-content: center;
     text-align: center;
 }
+
+.register__main {
+    min-width: fit-content;
+    border-radius: 10px;
+    /* background-color: var(--color-background-soft); */
+}
+
+.register__header {
+    font-size: 70px;
+    color: var(--color-heading);
+}
+
+.register__form {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(8, 1fr);
+    width: 100%;
+    margin: auto;
+    padding: 10px;
+}
 .fname, .lname {
     grid-column: auto / span 4;
     color: var(--color-heading) !important;
@@ -222,26 +242,6 @@ export default defineComponent({
     text-align: left;
 }
 
-
-.register__main {
-    min-width: fit-content;
-    border-radius: 10px;
-    /* background-color: var(--color-background-soft); */
-}
-
-.register__header {
-    font-size: 70px;
-    color: var(--color-heading);
-}
-
-.register__form {
-    display: grid;
-    gap: 10px;
-    grid-template-columns: repeat(8, 1fr);
-    width: 100%;
-    margin: auto;
-    padding: 10px;
-}
 
 .register__info {
     display: grid;

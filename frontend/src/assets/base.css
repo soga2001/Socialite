@@ -92,9 +92,9 @@ body {
 }
 
 
-.bold {
-  font-weight: bold;
-}
+/* .bold {
+  font-weight: 900;
+} */
 
 .text-right {
   text-align: right;

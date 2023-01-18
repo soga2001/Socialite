@@ -40,5 +40,6 @@ div h1 {
 a {
     font-size: 30px;
     text-decoration: none;
+    color: var(--color-heading);
 }
 </style>

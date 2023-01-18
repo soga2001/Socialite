@@ -41,7 +41,7 @@ export default defineComponent({
     </div>
     <div class="main__center col-10 col-lg-5 col-md-5">
       <RouterView v-slot="{Component}">
-        <KeepAlive :max="2" :include="['home','user-profile']">
+        <KeepAlive :max="2" :include="['home','user-profile', 'search']">
           <component :is="Component" :key="$route.fullPath"/>
         </KeepAlive>
       </RouterView>
