@@ -79,13 +79,13 @@ export default defineComponent({
             </div>
         </div>
     </div>
-    <div v-if="!loading" class="user__not__found">
+    <div v-if="!loading && user.length == 0" class="user__not__found">
         <div class="">
             <div class="text-h2">User not found</div>
         </div>
     </div>
-    <div v-else class="loading">
-        <q-spinner-pie size="100px" />
+    <div v-if="loading" class="loading">
+        <q-spinner :thickness="10" size="100px" />
     </div>
 </template>
 

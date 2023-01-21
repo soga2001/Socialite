@@ -4,7 +4,7 @@ import App from './App.vue'
 import router from './router'
 import timeago from 'vue-timeago3'
 import { vue3Debounce } from 'vue-debounce'
-import { Quasar, Cookies, Dialog } from 'quasar'
+import { Quasar, Cookies, Dialog, Notify } from 'quasar'
 // Import icon libraries
 import '@quasar/extras/material-icons/material-icons.css'
 import '@quasar/extras/material-icons-outlined/material-icons-outlined.css'
@@ -33,7 +33,7 @@ app.use(router)
 app.use(store, key)
 app.use(timeago)
 app.use(Quasar, {
-    plugins: {Cookies, Dialog }, // import Quasar plugins and add here
+    plugins: {Cookies, Dialog, Notify }, // import Quasar plugins and add here
     config: {
       extras: [
         'material-icons',

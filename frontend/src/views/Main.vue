@@ -7,12 +7,13 @@ import PostView from '../components/PostView.vue';
 import Search from './Search.vue';
 import { useStore } from '@/store/store';
 import Navbar from '../components/Navbar.vue';
-import { Cookies } from 'quasar';
+import { Cookies, useQuasar } from 'quasar';
 
 export default defineComponent({
   title: 'Main',
   data() {
       return {
+        $q: useQuasar()
       };
   },
   name: 'Main',
@@ -30,7 +31,29 @@ export default defineComponent({
   },
   methods: {
   },
-  components: { PostsMap, PostView, Search, Navbar }
+  components: { PostsMap, PostView, Search, Navbar },
+  watch: {
+    '$store.state.authenticated': function () {
+      if(this.$store.state.authenticated) {
+        this.$q.notify({
+            type: 'positive',
+            message: 'Login successful!',
+            timeout: 1000,
+            position: 'bottom-left'
+            // avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
+        })
+      } else {
+          this.$q.notify({
+              // progress: true,
+              type: 'positive',
+              message: 'Logout successful!',
+              timeout: 1000,
+              position: 'bottom-left'
+              // avatar: 'https://cdn.quasar
+          })
+        }
+    }
+  }
 })
 </script>
 
