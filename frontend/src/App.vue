@@ -81,7 +81,7 @@ export default defineComponent({
 
 <template>
   <!-- <h1>Potato</h1> -->
-    <header>
+    <header class="app">
       <HomeView />
     <!-- <q-toolbar class="nav sticky">
       <q-btn stretch flat class="brand" to="/" >Based<span class="logo">Book</span></q-btn>
@@ -168,22 +168,12 @@ export default defineComponent({
 
 <style>
 @import '@/assets/base.css';
-/* * {
-  scroll-behavior: smooth;
-} */
 
-header {
-  position: -webkit-sticky;
-	position: sticky;
+.app {
+  position: fixed;
   width: 100%;
-	top: 0;
-  z-index: 999;
-  /* padding-right: calc(var(--section-gap) / 2); */
+  max-height: 100%;
+  overflow-y: scroll;
 }
-
-.sticky {
-  position: sticky;
-  
-} 
 
 </style>

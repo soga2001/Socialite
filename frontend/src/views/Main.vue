@@ -77,6 +77,7 @@ export default defineComponent({
 
 <style scoped>
 .home {
+  position: relative;
   height: 100%;
   min-height: 100vh;
 }

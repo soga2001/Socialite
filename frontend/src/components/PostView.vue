@@ -5,6 +5,7 @@ import { useCookies } from 'vue3-cookies';
 import type { User } from '../assets/interfaces';
 import {Cookies} from 'quasar';
 
+
 export default defineComponent({
   data() {
     return {
@@ -12,6 +13,7 @@ export default defineComponent({
       caption: "",
       submitting: false,
       users: new Array<User>(),
+      capt: ''
     }
   },
   setup() {
@@ -39,26 +41,48 @@ export default defineComponent({
       }
     },
     mention() {
-      console.log("mention")
-      if (this.caption) {
-        const regex = /@([a-zA-Z0-9_]+)/g;
-        const matches = this.caption.match(regex);
-        console.log(matches)
-        if (matches !== null) {
-          matches.forEach((match) => {
+      if(this.caption) {
+        const user = this.caption.match(/@\w+/g)
+        const tag = this.caption.match(/#\w+/g)
+        if(user) {
+          user.forEach((match) => {
             const username = match.replace("@", "")
             http.get(`users/username/${username}`).then((res) => {
               if (res.data.success) {
                 console.log(res.data.users)
-                const user = res.data.users
-                // this.caption = this.caption.replace(match, `<a href="/user/${user.username}">${match}</a>`)
+                this.users = res.data.users[0]
+                this.capt = this.caption.replace(match, `<a href="profile/user/${this.users[0].id}/">${match}</a>`)
               }
             }).catch((err) => {
               console.log(err)
             })
-          })
+        })
         }
       }
+      // if (this.caption) {
+      //   const matches = this.caption.match(/@\w+/g);
+      //   if (matches !== null) {
+      //     console.log('matches')
+      //     matches.forEach((match) => {
+      //       const username = match.replace("@", "")
+      //       http.get(`users/username/${username}`).then((res) => {
+      //         if (res.data.success) {
+      //           console.log(res.data.users)
+      //           this.users = res.data.users
+      //           // this.caption = this.caption.replace(match, `<a href="/user/${user.id}">${match}</a>`)
+      //         }
+      //       }).catch((err) => {
+      //         console.log(err)
+      //       })
+      //     })
+      //   }
+      //   else{
+      //     this.users = new Array<User>()
+      //   }
+      // }
+      // else {
+      //   this.users = new Array<User>()
+      // }
     }
   },
   created() {
@@ -95,7 +119,16 @@ export default defineComponent({
           v-model="caption"
           label="Caption"
           @change="mention"
-        />
+          v-html="caption"
+        >
+        </q-input>
+        <div v-html="capt">
+        </div>
+        <!-- <div v-if="users.length > 0" class="results" >
+          <ul v-for="u in users">
+            <li>{{ u.username }}</li>
+          </ul>
+        </div> -->
         <q-btn class="post__submit__btn" :loading="submitting" type="submit"  icon-right="send" push label="Post" :disable="image === null">
           <template v-slot:loading>
             <q-spinner-puff
@@ -168,10 +201,21 @@ export default defineComponent({
   margin-top: 20px;
   grid-column: auto / span 5;
   color: var(--color-heading);
+  position: relative;
 }
 
 .post__caption:active {
   color: var(--color-heading) !important;
+}
+
+.results {
+  background-color: var(--color-background-soft);
+  text-align: center;
+}
+.results ul {
+  list-style: none;
+  padding: 0px 20px;
+  gap: 10px;
 }
 
 

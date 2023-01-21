@@ -70,11 +70,8 @@ export default defineComponent({
   mounted() {
   },
   watch: {
-    '$store.state.authenticated': function() {
-      console.log(this.$store.state.authenticated)
-    }
   },
-  components: {Search},
+  // components: {Search},
 })
 
 </script>
@@ -640,7 +637,7 @@ input:checked + .toggle:after {
 
 input:checked + .toggle .toggle__handler {
   background-color: #ffe5b5;
-  transform: translate3d(16px, 0, 0) rotate(0);
+  transform: translate3d(17px, 0, 0) rotate(0);
 }
 
 input:checked + .toggle .toggle__handler .crater {
