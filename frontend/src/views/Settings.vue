@@ -3,7 +3,7 @@ import { defineComponent, ref, toHandlers } from 'vue';
 import {useCookies} from 'vue3-cookies'
 import { RouterLink, RouterView } from 'vue-router';
 import { http } from '@/assets/http';
-import {useStore} from '../../store/store'
+import {useStore} from '../store/store'
 
 export default defineComponent({
     data() {

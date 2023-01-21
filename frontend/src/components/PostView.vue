@@ -11,6 +11,7 @@ export default defineComponent({
       image: null,
       caption: "",
       submitting: false,
+      users: new Array<User>(),
     }
   },
   setup() {
@@ -36,12 +37,38 @@ export default defineComponent({
           console.log(err)
         })
       }
-
+    },
+    mention() {
+      console.log("mention")
+      if (this.caption) {
+        const regex = /@([a-zA-Z0-9_]+)/g;
+        const matches = this.caption.match(regex);
+        console.log(matches)
+        if (matches !== null) {
+          matches.forEach((match) => {
+            const username = match.replace("@", "")
+            http.get(`users/username/${username}`).then((res) => {
+              if (res.data.success) {
+                console.log(res.data.users)
+                const user = res.data.users
+                // this.caption = this.caption.replace(match, `<a href="/user/${user.username}">${match}</a>`)
+              }
+            }).catch((err) => {
+              console.log(err)
+            })
+          })
+        }
+      }
     }
   },
   created() {
   },
   mounted() {
+  },
+  watch: {
+    caption() {
+      this.mention()
+    }
   }
 })
 </script>
@@ -67,6 +94,7 @@ export default defineComponent({
           class="post__caption"
           v-model="caption"
           label="Caption"
+          @change="mention"
         />
         <q-btn class="post__submit__btn" :loading="submitting" type="submit"  icon-right="send" push label="Post" :disable="image === null">
           <template v-slot:loading>

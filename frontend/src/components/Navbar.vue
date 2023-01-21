@@ -6,7 +6,7 @@ import { RouterLink, RouterView } from 'vue-router';
 import router from '../router';
 import { store, useStore } from '../store/store';
 import $ from 'jquery'
-import Search from '../views/Search/Search.vue'
+import Search from '../views/Search.vue'
 
 
 export default defineComponent({
@@ -68,6 +68,11 @@ export default defineComponent({
 
   },
   mounted() {
+  },
+  watch: {
+    '$store.state.authenticated': function() {
+      console.log(this.$store.state.authenticated)
+    }
   },
   components: {Search},
 })

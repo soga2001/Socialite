@@ -2,11 +2,11 @@
 import {defineComponent, ref} from 'vue';
 import  type {Post} from '@/assets/interfaces';
 import { http } from '@/assets/http';
-import PostsMap from './PostsMap.vue';
-import PostView from '../PostView.vue';
-import Search from '../Search/Search.vue';
+import PostsMap from '../components/PostsMap.vue';
+import PostView from '../components/PostView.vue';
+import Search from './Search.vue';
 import { useStore } from '@/store/store';
-import Navbar from '../Navbar.vue';
+import Navbar from '../components/Navbar.vue';
 
 export default defineComponent({
   title: 'Home',
@@ -30,13 +30,7 @@ export default defineComponent({
     })
     this.getData();
   },
-  activated() {
-    console.log(this.scrollY)
-    window.scrollTo(0, this.scrollY)
-  },
-  deactivated() {
-    
-  },
+  
   mounted() {
     
   },

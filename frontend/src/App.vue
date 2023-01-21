@@ -6,7 +6,7 @@ import { RouterLink, RouterView } from 'vue-router';
 import router from './router';
 import { useStore } from './store/store';
 import $ from 'jquery'
-import Search from './views/Search/Search.vue'
+import Search from './views/Search.vue'
 import { Cookies } from 'quasar';
 import HomeView from './views/Main.vue';
 

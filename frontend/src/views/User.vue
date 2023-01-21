@@ -1,12 +1,12 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { http } from '@/assets/http';
-import UserProfile from './UserProfile.vue';
+import UserProfile from '../components/UserProfile/UserProfile.vue';
 // import PostsMap from '../HomeViews/PostsMap.vue';
 import type { User } from '@/assets/interfaces';
-import Search from '../Search/Search.vue';
-import UserPosted from './UserPosted.vue';
-import UserLiked from './UserLiked.vue';
+import Search from './Search.vue';
+import UserPosted from '../components/UserProfile/UserPosted.vue';
+import UserLiked from '../components/UserProfile/UserLiked.vue';
 
 export default defineComponent({
     name: 'user-profile',
@@ -15,12 +15,14 @@ export default defineComponent({
             user_id: this.$route.params.id,
             user: new Array<User>(),
             avatar: '',
-            tab: ref('User_Posted')
+            tab: ref('User_Posted'),
+            loading: true,
         };
     },
     methods: {
-        userInfo() {
-            http.get(`users/user/${(this.user_id)}/`).then((res) => {
+        async userInfo() {
+            this.loading = true
+            await http.get(`users/user/${(this.user_id)}/`).then((res) => {
                 if (res.data.success) {
                     this.user = res.data.user;
                     this.avatar = res.data.user[0].profile.avatar || '';
@@ -28,10 +30,16 @@ export default defineComponent({
             }).catch((err) => {
                 console.log(err);
             });
+            this.loading = false
         },
     },
     created() {
-        this.userInfo();
+        setTimeout(
+            () => {
+                this.userInfo();
+            }, 3000,
+        )
+        // this.userInfo();
     },
     components: { UserProfile, Search, UserPosted, UserLiked },
 })
@@ -71,10 +79,13 @@ export default defineComponent({
             </div>
         </div>
     </div>
-    <div v-else class="user__not__found">
+    <div v-if="!loading" class="user__not__found">
         <div class="">
             <div class="text-h2">User not found</div>
         </div>
+    </div>
+    <div v-else class="loading">
+        <q-spinner-pie size="100px" />
     </div>
 </template>
 
@@ -85,7 +96,7 @@ export default defineComponent({
     height: 100%;
 }
 
-.user__not__found {
+.user__not__found, .loading {
     height: 100%;
     display: flex;
     justify-content: center;

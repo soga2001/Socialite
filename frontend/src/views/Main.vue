@@ -2,11 +2,11 @@
 import {defineComponent, ref} from 'vue';
 import  type {Post} from '@/assets/interfaces';
 import { http } from '@/assets/http';
-import PostsMap from './HomeViews/PostsMap.vue';
-import PostView from './PostView.vue';
-import Search from './Search/Search.vue';
+import PostsMap from '../components/PostsMap.vue';
+import PostView from '../components/PostView.vue';
+import Search from './Search.vue';
 import { useStore } from '@/store/store';
-import Navbar from './Navbar.vue';
+import Navbar from '../components/Navbar.vue';
 import { Cookies } from 'quasar';
 
 export default defineComponent({
@@ -41,7 +41,7 @@ export default defineComponent({
     </div>
     <div class="main__center col-10 col-lg-5 col-md-5">
       <RouterView v-slot="{Component}">
-        <KeepAlive :max="2" :include="['home','user-profile', 'search']">
+        <KeepAlive :max="3" :include="['home','user-profile', 'search']">
           <component :is="Component" :key="$route.fullPath"/>
         </KeepAlive>
       </RouterView>

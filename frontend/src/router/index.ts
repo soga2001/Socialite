@@ -22,12 +22,12 @@ const router = createRouter({
     {
       path: '/search',
       name: 'Search',
-      component: () => import('../views/Search/Search.vue')
+      component: () => import('../views/Search.vue')
     },
     {
       path: '/home',
       name: 'Home',
-      component: () => import('../views/HomeViews/Home.vue')
+      component: () => import('../views/Home.vue')
     },
     {
       path: '/login',
@@ -48,24 +48,24 @@ const router = createRouter({
     {
       path: '/profile/user/:id/',
       name: 'user-profile',
-      component: () => import('../views/UserViews/User.vue'),
+      component: () => import('../views/User.vue'),
       children : [
         {
           path: '/user_posted/:id',
           name: 'user-posts',
-          component: () => import('../views/UserViews/UserPosted.vue')
+          component: () => import('../components/UserProfile/UserPosted.vue')
         },
         {
           path: '/user_liked/:id',
           name: 'user-likes',
-          component: () => import('../views/UserViews/UserLiked.vue')
+          component: () => import('../components/UserProfile/UserLiked.vue')
         },
       ]
     },
     {
       path: '/settings',
       name: 'settings',
-      component: () => import('@/views/Settings/Settings.vue'),
+      component: () => import('@/views/Settings.vue'),
       meta: {
         auth: true
       }

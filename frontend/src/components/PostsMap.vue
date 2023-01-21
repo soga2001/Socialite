@@ -85,6 +85,8 @@ export default defineComponent({
         },
         showComments() {
 
+        },
+        captionChange() {
         }
     },
     created() {
