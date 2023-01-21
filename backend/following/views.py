@@ -14,6 +14,7 @@ jwt = JWTAuthentication()
 
 # Create your views here.
 
+
 class Follow_User(APIView):
     permission_classes = [IsAuthenticated]
 
