@@ -1,5 +1,6 @@
 # From Django
 from multiprocessing import managers
+from django.db import DatabaseError
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.contrib.auth.models import User
@@ -10,7 +11,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 # From rest_framework
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 
@@ -54,6 +55,19 @@ def user_by_username(request, username):
 def user_register(request):
     try:
         data = json.loads(request.body)
+        if(data['first_name'] == '' or data['last_name'] == ''):
+            raise ValueError('Please enter your name')
+        if(data['username'] == ''):
+            raise ValueError('Please enter your username')
+        if(data['email'] == ''):
+            raise ValueError('Please enter your email')
+        if(data['password'] == ''):
+            raise ValueError('Please enter your password')
+        if(data['confirm_password'] == ''):
+            raise ValueError('Please enter your confirm password')
+        if(data['password'] != data['confirm_password']):
+            raise ValueError('Password and confirm password must match')
+
         user = User.objects.create_user(
             first_name=data['first_name'],
             last_name=data['last_name'],
@@ -61,7 +75,9 @@ def user_register(request):
             password=data['password'], 
             email=data['email'])
         return JsonResponse({"success": True}, safe=False)
-    except: 
+    except ValueError as e:
+        return JsonResponse({"error": True, "message": str(e)}, safe=False)
+    except DatabaseError:
         return JsonResponse({"error": True, "message":" Username or email is taken."}, safe=False)
 
 @api_view(["POST"])
@@ -78,10 +94,11 @@ def user_login(request):
                             "rt_lifetime": str(token.lifetime.days) + "d",
                             "user": userSerialized.data
                             }, safe=False)
-    return JsonResponse({"loggedIn": False}, safe=False)
+    return JsonResponse({"error": True}, safe=False)
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
+    authentication_classes = (JWTAuthentication,)
 
     def post(self, request):
         try:
@@ -94,16 +111,56 @@ class LogoutView(APIView):
         except:
             return JsonResponse({"error": True}, safe=False)
 
+
+class SuperUser(APIView):
+    permission_classes = [IsAuthenticated,]
+
+    def get(self, request):
+        user = User.objects.get(id=request.user.id)
+        if user.is_superuser:
+            return JsonResponse({"message": True}, safe=False)
+        return JsonResponse({"message": False}, safe=False)
+
+    def post(self, request):
+        try:
+            user = User.objects.get(id=request.user.id)
+            user.is_superuser = True
+            user.save()
+            return JsonResponse({"success": True}, safe=False)
+        except:
+            return JsonResponse({"error": True}, safe=False)
+
+class Staff(APIView):
+    permission_classes = [IsAuthenticated,]
+
+    def get(self, request):
+        user = User.objects.get(id=request.user.id)
+        if user.is_staff:
+            return JsonResponse({"message": True}, safe=False)
+        return JsonResponse({"message": False}, safe=False)
+
+    def post(self, request):
+        try:
+            user = User.objects.get(id=request.user.id)
+            user.is_staff = True
+            user.save()
+            return JsonResponse({"success": True}, safe=False)
+        except:
+            return JsonResponse({"error": True}, safe=False)
+
 # Delete Endpoints
-class Delete(APIView):
+class Delete_User(APIView):
     permission_classes= [IsAuthenticated]
+
     def delete(self, request):
-        # jwt.authenticate(request) returns user object and a token
-        user, token = jwt.authenticate(request)
-        return JsonResponse({"success": True}, safe=False)
+        try:
+            user = User.objects.get(id=request.user.id).delete()
+            return JsonResponse({"success": True}, safe=False)
+        except:
+            return JsonResponse({"error": True}, safe=False)
 
 @api_view(["DELETE"])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAdminUser,])
 def delete_all(request):
     User.objects.all().delete()
     return JsonResponse({"success": True}, safe=False)

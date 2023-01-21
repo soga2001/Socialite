@@ -21,4 +21,5 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('user_profile/', include('userprofile.urls')),
     path('posts/', include('posts.urls')),
+    path('follow/', include('following.urls')),
 ]
