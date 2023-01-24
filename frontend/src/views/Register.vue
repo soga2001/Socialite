@@ -2,65 +2,66 @@
 import {useCookies} from 'vue3-cookies'
 import { defineComponent, ref } from 'vue';
 import { http } from '@/assets/http';
+import Input from '@/components/Input.vue';
 
 export default defineComponent({
     data() {
         return {
-            fname: ref(''),
-            lname: ref(''),
-            email: ref(''),
-            username: ref(''),
-            password: ref(''),
-            cPass: ref(''),
-            errMsg: ref(''),
+            fname: ref(""),
+            lname: ref(""),
+            email: ref(""),
+            username: ref(""),
+            password: ref(""),
+            cPass: ref(""),
+            errMsg: ref(""),
             error: ref(false),
-            domain: ['com', 'net', 'org', 'int', 'edu', 'gov', 'mil']
-        }
+            domain: ["com", "net", "org", "int", "edu", "gov", "mil"]
+        };
     },
     setup() {
-        const {cookies} = useCookies()
-        return {cookies}
+        const { cookies } = useCookies();
+        return { cookies };
     },
     methods: {
         checkForm() {
-            return this.checkEmail() && this.checkPassword() && this.confirmPassword() && this.lname.length > 0 && this.fname.length > 0 && this.checkUsername()
+            return this.checkEmail() && this.checkPassword() && this.confirmPassword() && this.lname.length > 0 && this.fname.length > 0 && this.checkUsername();
         },
         checkUsername() {
-            if(this.username.length > 0) {
-                return true
+            if (this.username.length > 0) {
+                return true;
             }
-            return false
+            return false;
         },
         checkPassword() {
-            if(this.password.length > 0) {
-                return true
+            if (this.password.length > 0) {
+                return true;
             }
-            return false
+            return false;
         },
         confirmPassword() {
-            if(this.password === this.cPass && this.password.length > 0) {
-                return true
+            if (this.password === this.cPass && this.password.length > 0) {
+                return true;
             }
-            return false
+            return false;
         },
         checkEmail() {
-            let check = false
-            if(this.email.length > 5) {
-                const emailSplit = this.email.includes('@') ? this.email.split('@') : null
-                const domainSplit = emailSplit ? emailSplit[1].split('.')[1] : null
-                check = domainSplit ? this.domain.includes(domainSplit) : false 
+            let check = false;
+            if (this.email.length > 5) {
+                const emailSplit = this.email.includes("@") ? this.email.split("@") : null;
+                const domainSplit = emailSplit ? emailSplit[1].split(".")[1] : null;
+                check = domainSplit ? this.domain.includes(domainSplit) : false;
             }
-            return check
+            return check;
         },
         register() {
-            if(!this.checkForm()) {
+            if (!this.checkForm()) {
                 this.error = true;
                 this.errMsg = "Please don't leave required field empty and make sure the password matches.";
                 return;
             }
-            this.error = false
-            this.errMsg = ""
-            http.post('users/register/', {
+            this.error = false;
+            this.errMsg = "";
+            http.post("users/register/", {
                 first_name: this.fname,
                 last_name: this.lname,
                 email: this.email,
@@ -68,22 +69,23 @@ export default defineComponent({
                 password: this.password,
                 confirm_password: this.cPass
             }).then((res) => {
-                if(res.data.error) {
-                    this.error = true
-                    this.errMsg = res.data.message
+                if (res.data.error) {
+                    this.error = true;
+                    this.errMsg = res.data.message;
                 }
                 else {
-                    this.error = false
-                    this.errMsg = ""
-                    window.location.href = "/login"
+                    this.error = false;
+                    this.errMsg = "";
+                    window.location.href = "/login";
                 }
             }).catch((err) => {
-                console.log(err)
-            })
+                console.log(err);
+            });
         }
     },
     created() {
-    }
+    },
+    components: { Input }
 })
 </script>
 
@@ -94,7 +96,7 @@ export default defineComponent({
         <hr/>
         <form class="register__form" v-on:submit.prevent="register">
             <!-- <input type="text" placeholder="First Name" class="fname" v-model="fname"/> -->
-            <q-input
+            <!-- <q-input
                 clearable
                 clear-icon="close"
                 filled
@@ -105,9 +107,15 @@ export default defineComponent({
                 class="fname"
                 type="text"
                 :rules="[val => fname.length > 0 || 'Please enter your first name']"
-            />
+            /> -->
+            <Input
+                @update:val="fname = $event"
+                input_label="First Name*"
+                class="fname"
+                input_type="text" required/>
             <!-- <input type="text" placeholder="Last Name" class="lname" v-model="lname"/> -->
-            <q-input
+            <Input @update:val="lname = $event" input_label="Last Name*" class="lname" input_type="text" required/>
+            <!-- <q-input
                 clearable
                 clear-icon="close"
                 filled
@@ -118,9 +126,10 @@ export default defineComponent({
                 class="lname"
                 type="text"
                 :rules="[val => lname.length > 0 || 'Please enter your last name']"
-            />
+            /> -->
             <!-- <input type="email" placeholder="Email*" class="email" v-model="email" required/> -->
-            <q-input
+            <Input @update:val="email = $event" input_label="Email*" class="email" input_type="email" required/>
+            <!-- <q-input
                 clearable
                 clear-icon="close"
                 filled
@@ -131,9 +140,9 @@ export default defineComponent({
                 class="email"
                 type="email"
                 :rules="[val => checkEmail() || 'Please enter a valid email']"
-            />
+            /> -->
             <!-- <input type="text" placeholder="Username*" class="username"  :change="checkUsername" v-model="username" required /> -->
-            <q-input
+            <!-- <q-input
                 clearable
                 clear-icon="close"
                 filled
@@ -144,9 +153,11 @@ export default defineComponent({
                 class="username"
                 type="text"
                 :rules="[val => checkUsername() || 'Please enter a valid email']"
-            />
+            /> -->
+            <Input @update:val="username = $event" input_label="Username*" class="username" input_type="text" required/>
             <!-- <input type="password" placeholder="Password*" class="password" v-model="password" required /> -->
-            <q-input
+            <Input @update:val="password = $event" input_label="Password*" class="password" input_type="password" required/>
+            <!-- <q-input
                 filled
                 :dark="$store.state.dark"
                 :color="$store.state.dark ? 'white' : 'black'"
@@ -155,9 +166,10 @@ export default defineComponent({
                 class="password"
                 type="password"
                 :rules="[val => checkPassword() || 'Please Enter a password']"
-            />
+            /> -->
             <!-- <input type="password" placeholder="Confirm Password*" class="c_password" v-model="cPass" required /> -->
-            <q-input
+            <Input @update:val="cPass = $event" input_label="Confirm Password*" class="c_password" input_type="password" required/>
+            <!-- <q-input
                 filled
                 :dark="$store.state.dark"
                 :color="$store.state.dark ? 'white' : 'black'"
@@ -166,7 +178,7 @@ export default defineComponent({
                 class="c_password"
                 type="password"
                 :rules="[val => confirmPassword() || 'Password does not match']"
-            />
+            /> -->
             <span v-if="error" class="errMsg">{{errMsg}}</span>
             <!-- <input type="submit" value="Register" class="submit" :disabled="!checkForm()"/> -->
             <button type="submit" class="submit" :disabled="!checkForm()">
@@ -200,7 +212,7 @@ export default defineComponent({
 
 .register__form {
     display: grid;
-    gap: 10px;
+    gap: 20px;
     grid-template-columns: repeat(8, 1fr);
     width: 100%;
     margin: auto;

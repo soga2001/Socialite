@@ -66,7 +66,7 @@ export default defineComponent({
 
 <template>
   <div class="home">
-    <div class="home__center col-6">
+    <div class="home__center">
       <header>
         Home
       </header>

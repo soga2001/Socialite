@@ -59,7 +59,7 @@ export default defineComponent({
 
 <template>
   <div class="home row">
-    <div class="nav col-2 col-lg-3 col-md-4">
+    <div class="nav col-2 col-lg-3 col-md-4 col-sm-2">
        <Navbar />
     </div>
     <div class="main__center col-10 col-lg-5 col-md-5">

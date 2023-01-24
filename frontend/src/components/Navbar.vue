@@ -255,7 +255,7 @@ export default defineComponent({
           </q-item-section>
         </q-item>
 
-        <q-avatar class="show">
+        <q-avatar size="50px" class="show">
           <img v-if="$store.state.user.profile.avatar" :src="$store.state.user.profile.avatar"/>
           <q-icon v-else name="o_account_circle" class="avatar__icon" />
         </q-avatar> 
@@ -319,6 +319,7 @@ a {
   width: fit-content;
   font-size: 25px;
   font-weight: 300;
+  width: 100%;
   color: var(--color-heading);
   margin-top: 0 !important;
 }
@@ -361,7 +362,7 @@ a {
 
 .nav__link.exact-active {
   color: var(--color-heading) !important;
-  background-color: var(--color-background-mute);
+  /* background-color: var(--color-background-mute); */
   border-radius: 30px;
 }
 
@@ -416,7 +417,7 @@ a {
   }
 
   .nav__link:hover {
-    background-color: var(--color-background-mute) !important;
+    background-color: transparent !important;
   }
 
   .nav__link {

@@ -5,51 +5,64 @@ import { RouterLink, RouterView } from 'vue-router';
 import { http } from '@/assets/http';
 import {useStore} from '../store/store'
 import { Cookies, useQuasar } from 'quasar';
+import Input from '@/components/Input.vue';
 
 export default defineComponent({
     data() {
         return {
-            username: '',
-            password: '',
+            username: "",
+            password: "",
             error: false,
-            errMsg: ''
-        }
+            errMsg: ""
+        };
     },
     setup() {
-        const {cookies} = useCookies();
-        return {cookies}
+        const { cookies } = useCookies();
+        return { cookies };
     },
     methods: {
         login() {
-            if(this.username.length === 0 || this.password.length === 0) {
-                this.error = true
-                this.errMsg = "Please don't leave username or password blank!"
+            if (this.username.length === 0 || this.password.length === 0) {
+                this.error = true;
+                this.errMsg = "Please don't leave username or password blank!";
                 return;
             }
-            http.post('users/login/', {
+            http.post("users/login/", {
                 username: this.username,
                 password: this.password
             }).then((res) => {
-                if(res.data.error === true) {
-                    this.error = true
-                    this.errMsg = "Username or Password is incorrect."
+                if (res.data.error === true) {
+                    this.error = true;
+                    this.errMsg = "Username or Password is incorrect.";
                 }
-                else{
-                    this.cookies.set('access_token', res.data.access_token, res.data.at_lifetime)
-                    this.cookies.set('refresh_token', res.data.refresh_token, res.data.rt_lifetime)
-                    this.cookies.set('loggedIn', 'true', res.data.at_lifetime)
-                    this.cookies.set('user', res.data.user, res.data.at_lifetime)
-                    this.$store.commit('authenticate', true)
-                    this.$store.commit('setUser', res.data.user)
-                    this.$router.push('/home')
+                else {
+                    this.cookies.set("access_token", res.data.access_token, res.data.at_lifetime);
+                    this.cookies.set("refresh_token", res.data.refresh_token, res.data.rt_lifetime);
+                    this.cookies.set("loggedIn", "true", res.data.at_lifetime);
+                    this.cookies.set("user", res.data.user, res.data.at_lifetime);
+                    this.$store.commit("authenticate", true);
+                    this.$store.commit("setUser", res.data.user);
+                    this.$router.push("/home");
                 }
             }).catch((err) => {
-                console.log(err)
-            })
+                console.log(err);
+            });
+        },
+        changeUsername(val: string) {
+            this.username = val;
         }
     },
     created() {
         // console.log(import.meta.env)
+    },
+    components: { Input },
+    watch: {
+        username() {
+            console.log(this.username)
+        },
+        password() {
+            console.log(this.password)
+        }
     }
 })
 </script>
@@ -74,7 +87,7 @@ export default defineComponent({
                 <a disabled>Frogot Password?</a>
                 <RouterLink to="/register">Create an Account</RouterLink>
             </div> -->
-            <q-input
+            <!-- <q-input
                 clearable
                 clear-icon="close"
                 filled
@@ -85,9 +98,11 @@ export default defineComponent({
                 class="username"
                 type="text"
                 :rules="[val => !!val || 'Please enter a valid username']"
-            />
+            /> -->
+            <Input @update:val="username = $event" required input_type="text" input_label="Username*" class="username" />
             <!-- <input type="password" placeholder="Password*" class="password" v-model="password" required /> -->
-            <q-input
+            <Input @update:val="password = $event" required input_type="password" input_label="Password*" class="password" />
+            <!-- <q-input
                 filled
                 :dark="$store.state.dark"
                 :color="$store.state.dark ? 'white' : 'black'"
@@ -96,9 +111,9 @@ export default defineComponent({
                 class="password"
                 type="password"
                 :rules="[val => !!val || 'Please enter a password']"
-            />
+            /> -->
             <span v-if="error" class="errMsg">{{errMsg}}</span>
-            <button type="submit" class="submit" :disabled="username.length == 0 || password.length == 0">
+            <button type="submit" class="submit" :disabled="username.length < 1 && password.length < 1" >
                 Login
             </button>
             <div class="login__links">
