@@ -21,7 +21,7 @@ export default defineComponent({
     },
     created() {
         // console.log(import.meta.env)
-        console.log(window.innerHeight)
+        // console.log(window.innerHeight)
     }
 })
 </script>
@@ -33,4 +33,8 @@ export default defineComponent({
 </template>
 
 <style scoped>
+div {
+    min-height: 100vh;
+    height: 100%;
+}
 </style>

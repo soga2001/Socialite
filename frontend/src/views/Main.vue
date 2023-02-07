@@ -27,7 +27,6 @@ export default defineComponent({
     // }
   },
   mounted() {
-    
   },
   methods: {
   },
@@ -36,20 +35,31 @@ export default defineComponent({
     '$store.state.authenticated': function () {
       if(this.$store.state.authenticated) {
         this.$q.notify({
-            type: 'positive',
-            message: 'Login successful!',
-            timeout: 1000,
-            position: 'bottom-left'
-            // avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
+          progress: true,
+          type: 'positive',
+          message: 'Login successful!',
+          timeout: 2000,
+          position: 'top-right',
+          actions: [
+            {
+              icon: 'close',
+              color: 'red',
+            }
+          ]
         })
       } else {
           this.$q.notify({
-              // progress: true,
-              type: 'positive',
-              message: 'Logout successful!',
-              timeout: 1000,
-              position: 'bottom-left'
-              // avatar: 'https://cdn.quasar
+            progress: true,
+            type: 'positive',
+            message: 'Logout successful!',
+            timeout: 2000,
+            position: 'top-right',
+            actions: [
+              {
+                icon: 'close',
+                color: 'white',
+              }
+            ]
           })
         }
     }
@@ -59,17 +69,17 @@ export default defineComponent({
 
 <template>
   <div class="home row">
-    <div class="nav col-2 col-lg-3 col-md-4 col-sm-2">
+    <div class="nav col-2 col-lg-3 col-md-4">
        <Navbar />
     </div>
-    <div class="main__center col-10 col-lg-5 col-md-5">
+    <div class="main__center col-10 col-lg-5 col-md-6">
       <RouterView v-slot="{Component}">
         <KeepAlive :max="3" :include="['home','user-profile', 'search']">
           <component :is="Component" :key="$route.fullPath"/>
         </KeepAlive>
       </RouterView>
     </div>
-    <div class="home__sides right col-lg-2">
+    <div class="home__sides right">
     
     </div>
   </div>
@@ -79,7 +89,7 @@ export default defineComponent({
 .home {
   position: relative;
   height: 100%;
-  min-height: 100vh;
+  min-height: 100%;
 }
 .nav {
   z-index: 999;
@@ -91,6 +101,7 @@ export default defineComponent({
   border-left: 2px solid var(--color-border);
   border-right: 2px solid var(--color-border);
   height: 100%;
+  min-height: 100vh;
 }
 
 .posts {

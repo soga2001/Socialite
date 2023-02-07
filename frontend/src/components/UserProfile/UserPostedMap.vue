@@ -6,7 +6,7 @@ import { http } from '@/assets/http';
 export default defineComponent({
     props: {
         post: {type: Object as () => Post, required: true},
-        user_avatar: {type: String, required: true},
+        // user_avatar: {type: String, required: true},
     },
     data() {
         return {

@@ -16,7 +16,8 @@ export default defineComponent({
     return {
       theme: false,
       dark_mode: false,
-      include: ['home', 'explore']
+      include: ['home', 'explore'],
+      class: 'app',
     }
   },
   setup() {
@@ -38,26 +39,6 @@ export default defineComponent({
       }
       this.$store.commit('setTheme', !this.$store.state.dark)
     },
-    logout() {
-      http.post('users/logout/', {
-        "access_token": Cookies.get('access_token'),
-        "refresh_token": Cookies.get('refresh_token')
-      }, {
-        headers: {
-          'Authorization': `Bearer ${Cookies.get('access_token')}`
-        }
-      }).then((res) => {
-        Cookies.remove('access_token')
-        Cookies.remove('refresh_token')
-        Cookies.remove('user')
-        Cookies.remove('loggedIn')
-        this.$store.commit('authenticate', false)
-        this.$store.commit('setUser', this.$store.state.defaultUser)
-        router.push('/')
-      }).catch((err) => {
-        console.log(err)
-      })
-    },
     onload(e: any) {
       console.log(e)
     }
@@ -71,30 +52,38 @@ export default defineComponent({
     if(Cookies.get('user')) {
       this.$store.commit('setUser', Cookies.get('user'))
     }
+
   },
+  components: { HomeView },
   mounted() {
+    // document.getElementById("app")?.addEventListener("scroll", myFunction);
+    // window.addEventListener('scroll', (e) => {
+    //   console.log('scrolling')
+    // })
+    // document.getElementById("app")?.addEventListener("scroll", (e) => {
+    //   console.log('scrolling')
+    // })
   },
-  components: { Search, HomeView },
 })
 
 </script>
 
 <template>
   <!-- <h1>Potato</h1> -->
-    <header class="app">
+  <header id="app">
       <HomeView />
   </header>
-  
 </template>
 
 <style>
 @import '@/assets/base.css';
 
-.app {
-  position: fixed;
+/* #app {
   width: 100%;
-  max-height: 100%;
-  overflow-y: scroll;
-}
+  height: 100%;
+  position:fixed;
+  overflow-y:scroll;
+  overflow-x:hidden;
+} */
 
 </style>

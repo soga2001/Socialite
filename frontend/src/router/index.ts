@@ -1,95 +1,133 @@
+import { nextDay } from 'date-fns';
 import { scroll } from 'quasar';
 import { createRouter, createWebHistory } from 'vue-router'
+import type {RouterScrollBehavior, RouteRecordRaw, Router, NavigationGuard} from 'vue-router' 
+// import type { ScrollPositionNormalized }from 'vue-router'
 // import Vue from 'vue'
 import { useCookies } from 'vue3-cookies'
 import { store } from '../store/store'
 
 const { cookies }  = useCookies();
 
-const Main = () => import('../views/Main.vue')
+type ScrollPositionNormalized = {
+  behavior?: ScrollOptions['behavior']
+  left: number
+  top: number
+}
 
-
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  linkActiveClass: 'active',
-  linkExactActiveClass: 'exact-active',
-  routes: [
-    // {
-    //   path: '/',
-    //   component: Main,
-    //   name: 'Main'
-    // },
-    {
-      path: '/search',
-      name: 'Search',
-      component: () => import('../views/Search.vue')
-    },
-    {
-      path: '/home',
-      name: 'Home',
-      component: () => import('../views/Home.vue')
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('../views/Login.vue'),
-      meta: {
-        hideForAuth: true
-      }
-    },
-    {
-      path: '/register',
-      name: 'register',
-      component: () => import('../views/Register.vue'),
-      meta: {
-        hideForAuth: true
-      }
-    },
-    {
-      path: '/profile/user/:id/',
-      name: 'user-profile',
-      component: () => import('../views/User.vue'),
-      children : [
-        {
-          path: '/user_posted/:id',
-          name: 'user-posts',
-          component: () => import('../components/UserProfile/UserPosted.vue')
-        },
-        {
-          path: '/user_liked/:id',
-          name: 'user-likes',
-          component: () => import('../components/UserProfile/UserLiked.vue')
-        },
-      ]
-    },
-    {
-      path: '/settings',
-      name: 'settings',
-      component: () => import('@/views/Settings.vue'),
-      meta: {
-        auth: true
-      }
-    },
-    {
-      path: '/:pathMatch(.*)*',
-      component: () => import('../views/PageNotFound.vue'),
-    }
-  ],
-  scrollBehavior (to, from, savedPosition) {
-    if (savedPosition) {
-      return {
-        top: savedPosition.top,
-        behavior: 'auto'
-      }
-    } else {
-      return { top: 0 }
-    }
+declare module 'vue-router' {
+  interface RouteMeta {
+    scrollPos?: ScrollPositionNormalized
   }
+}
+
+const routes: RouteRecordRaw[] = [
+  {
+    path: '/search',
+    name: 'Search',
+    component: () => import('../views/Search.vue')
+  },
+  {
+    path: '/home',
+    name: 'Home',
+    component: () => import('../views/Home.vue'),
+    meta: {
+      scrollPos: {
+        top: 0,
+        left: 0
+      }
+    },
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/Login.vue'),
+    meta: {
+      hideForAuth: true
+    }
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('../views/Register.vue'),
+    meta: {
+      hideForAuth: true
+    }
+  },
+  {
+    path: '/profile/user/:username/',
+    name: 'user-profile',
+    component: () => import('../views/User.vue'),
+    // alias: '/user_posted/:id',
+    meta: {
+      scrollPos: {
+        top: 0,
+        left: 0
+      }
+    },
+    children : [
+      {
+        path: '',
+        name: 'user-posted',
+        component: () => import('../components/UserProfile/UserPosted.vue'),
+        // alias: '/user_posted/:id',
+        meta: {
+          scrollPos: {
+            top: 0,
+            left: 0
+          }
+        }
+      },
+      {
+        path: '',
+        name: 'user-liked',
+        component: () => import('../components/UserProfile/UserLiked.vue'),
+        meta: {
+          scrollPos: {
+            top: 0,
+            left: 0
+          }
+        }
+      },
+    ],
+    // redirect: {
+    //   name: 'user-posts'
+    // }
+  },
+  {
+    path: '/settings',
+    name: 'settings',
+    component: () => import('@/views/Settings.vue'),
+    meta: {
+      auth: true
+    }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    component: () => import('../views/PageNotFound.vue'),
+  }
+]
+
+const scrollBehavior: RouterScrollBehavior = (to, from, savedPosition) => {
+  if (to.name === from.name) {
+    to.meta?.scrollPos && (to.meta.scrollPos.top = 0)
+    return { left: 0, top: 0 }
+  }
+  const scrollpos = savedPosition || to.meta?.scrollPos || { left: 0, top: 0 }
+  return new Promise((resolve, reject) => {
+    resolve(scrollpos)
+  })
+}
+
+
+const router: Router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes,
+  scrollBehavior,
 })
 
-router.beforeEach((to, from) => {
-  // document.title = to.meta.title as string
-  // console.log(to.meta.title)
+router.beforeEach((to, from, next) => {
+  from.meta?.scrollPos && (from.meta.scrollPos.top = document.documentElement.scrollTop)
   if(to.matched.some(record => record.meta.hideForAuth) && store.state.authenticated) {
       return {path: '/'}
   }
@@ -97,7 +135,7 @@ router.beforeEach((to, from) => {
   if(to.matched.some(record => record.meta.auth) && !store.state.authenticated) {
     return {path: '/login'}
   }
-
+  return next()
 })
 
 export default router

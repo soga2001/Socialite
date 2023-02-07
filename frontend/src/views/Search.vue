@@ -13,6 +13,7 @@ export default defineComponent({
             input: ref(''),
             loading: false,
             noResults: false,
+            q: this.$route.query.q,
         };
     },
     name: 'search',
@@ -20,7 +21,7 @@ export default defineComponent({
         const store = useStore()
     },
     created() {
-        console.log('potato')
+        console.log(this.q)
         // window.scroll({
         //     top: 0,
         //     left: 0,
@@ -36,23 +37,23 @@ export default defineComponent({
         // console.log(this.input.split(re))
         this.loading = true
         if(this.input === "") {
-            this.results = []
+            this.results = new Array<User>()
             this.loading = false
             this.noResults = false
             return
         }
-        await http.get(`users/username/${this.input}`).then((res) => {
+        http.get(`users/username/${this.input}`).then((res) => {
             if(res.data.success) {
+                this.noResults = false
                 this.results = res.data.users
+            }
+        }).catch((err) => {
+            if(err.response.status === 404) {
+                this.noResults = true
+                this.results = new Array<User>()
             }
         })
         this.loading = false
-        if(this.results.length == 0) {
-            this.noResults = true
-        }
-        else {
-            this.noResults = false
-        }
         // this.users = users.data.users
       },
       resetInput() {
@@ -91,7 +92,7 @@ export default defineComponent({
         </form>
         <div id="results">
             <div class="results" v-if="results.length > 0" v-for="u in results">
-                <q-item class="" clickable :to="{name: 'user-profile', params: {id: u.id}}">
+                <q-item class="" clickable :to="{name: 'user-profile', params: {username: u.username}}">
                     <q-item-section avatar>
                         <img class="avatar" v-if="u.profile.avatar" :src="u.profile.avatar"/>
                         <q-icon size="50px" v-else name="account_circle" class="avatar__icon" />
@@ -102,10 +103,6 @@ export default defineComponent({
                         <q-item-label>{{ u.first_name }} {{ u.last_name }}</q-item-label>
                         <q-item-label caption>@{{ u.username }}</q-item-label>
                     </q-item-section>
-
-                    <!-- <q-item-section side >
-                        <q-icon name="more_horiz"  />
-                    </q-item-section> -->
                 </q-item>
             </div>
             <div v-if="noResults">
@@ -127,9 +124,9 @@ export default defineComponent({
 .search {
     padding: 20px;
     width: 100%;
-    height: 100%;
-    position: -webkit-sticky;
-	position: sticky;
+    height: 100vh;
+    /* position: -webkit-sticky;
+	position: sticky; */
     top: 0;
     
 }

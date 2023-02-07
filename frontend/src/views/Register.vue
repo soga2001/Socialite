@@ -112,9 +112,11 @@ export default defineComponent({
                 @update:val="fname = $event"
                 input_label="First Name*"
                 class="fname"
-                input_type="text" required/>
+                input_type="text" required
+                id="fname"
+                />
             <!-- <input type="text" placeholder="Last Name" class="lname" v-model="lname"/> -->
-            <Input @update:val="lname = $event" input_label="Last Name*" class="lname" input_type="text" required/>
+            <Input @update:val="lname = $event" input_label="Last Name*" id="lname" class="lname" input_type="text" required/>
             <!-- <q-input
                 clearable
                 clear-icon="close"
@@ -128,7 +130,7 @@ export default defineComponent({
                 :rules="[val => lname.length > 0 || 'Please enter your last name']"
             /> -->
             <!-- <input type="email" placeholder="Email*" class="email" v-model="email" required/> -->
-            <Input @update:val="email = $event" input_label="Email*" class="email" input_type="email" required/>
+            <Input @update:val="email = $event" input_label="Email*" id="email" class="email" input_type="email" required/>
             <!-- <q-input
                 clearable
                 clear-icon="close"
@@ -154,9 +156,9 @@ export default defineComponent({
                 type="text"
                 :rules="[val => checkUsername() || 'Please enter a valid email']"
             /> -->
-            <Input @update:val="username = $event" input_label="Username*" class="username" input_type="text" required/>
+            <Input @update:val="username = $event" input_label="Username*" id="username" class="username" input_type="text" required/>
             <!-- <input type="password" placeholder="Password*" class="password" v-model="password" required /> -->
-            <Input @update:val="password = $event" input_label="Password*" class="password" input_type="password" required/>
+            <Input @update:val="password = $event" input_label="Password*" id="password" class="password" input_type="password" required/>
             <!-- <q-input
                 filled
                 :dark="$store.state.dark"
@@ -168,7 +170,7 @@ export default defineComponent({
                 :rules="[val => checkPassword() || 'Please Enter a password']"
             /> -->
             <!-- <input type="password" placeholder="Confirm Password*" class="c_password" v-model="cPass" required /> -->
-            <Input @update:val="cPass = $event" input_label="Confirm Password*" class="c_password" input_type="password" required/>
+            <Input @update:val="cPass = $event" input_label="Confirm Password*" id="c_password" class="c_password" input_type="password" required/>
             <!-- <q-input
                 filled
                 :dark="$store.state.dark"

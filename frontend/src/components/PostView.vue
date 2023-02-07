@@ -4,7 +4,7 @@ import { defineComponent } from 'vue';
 import { useCookies } from 'vue3-cookies';
 import type { User } from '../assets/interfaces';
 import {Cookies} from 'quasar';
-import Input from './Input.vue';
+import Mention from './Mention.vue';
 
 
 export default defineComponent({
@@ -94,11 +94,8 @@ export default defineComponent({
     mounted() {
     },
     watch: {
-        caption() {
-            this.mention();
-        }
     },
-    components: { Input }
+    components: { Mention }
 })
 </script>
 
@@ -128,7 +125,7 @@ export default defineComponent({
         >
         </q-input> -->
         <!-- <Input input_type="text" class="post__caption" @update:val="caption = $event" input_label="Caption"/> -->
-        <Input @update:val="caption = $event" required input_type="text" input_label="Caption" class="post__caption" />
+        <Mention @update:val="caption = $event" required input_type="text" id="caption" input_label="Caption" class="post__caption" />
         <div v-if="users.length > 0" class="results" >
           <ul v-for="u in users">
             <li>{{ u.username }}</li>

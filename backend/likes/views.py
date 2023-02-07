@@ -53,7 +53,7 @@ class UserLiked(APIView):
             return JsonResponse({"error": True, "liked": False}, safe=False)
 
 @api_view(["GET"])
-def get_liked(request, timestamp, page, user_id):
+def get_liked_post(request, timestamp, page, user_id):
     try:
         liked = PostLikesSerializer(PostLikes.objects.filter(user=user_id), many=True).data
         return JsonResponse({"error": False, "followers": list(liked)}, safe=False)

@@ -3,18 +3,23 @@ import { defineComponent, ref } from 'vue';
 import { http } from '@/assets/http';
 import type { Post } from '@/assets/interfaces';
 import UserPostedMap from './UserPostedMap.vue';
+import $j from 'jquery';
+
 
 export default defineComponent({
-    name: 'User_Posted',
+    name: 'user-posted',
     props: {
-        user_avatar: {type: String, required: true}
+        // user_avatar: {type: String, required: true},
+        uid: {type: Number, required: true},
     },
     data() {
         return {
-            user_id: this.$route.params.id,
+            // user_id: this.$route.params.id,
+            user_id: this.uid,
             user_timestap: new Date().toISOString(),
             user_posted: new Array<Post>(),
-            avatar: this.user_avatar
+            // avatar: this.user_avatar,
+            scrollY: 0,
         };
     },
     methods: {
@@ -29,15 +34,15 @@ export default defineComponent({
 
     created() {
         this.getUserPosted();
-        // $(window).scrollTop(0);
-        console.log('potato')
+    },
+    mounted() {
     },
     activated() {
-        console.log('activated')
+        if (this.scrollY > 0) {
+            window.scrollTo(0, this.scrollY)
+        }
     },
     deactivated() {
-        // console.log((document.getElementById('main') as HTMLDivElement).scrollTop)
-        // console.log(data)
     },
     components: { UserPostedMap }
 })
@@ -47,7 +52,12 @@ export default defineComponent({
     <div class="user__posted__main" id="main">
         <div class="user__posted row">
             <div class="col-4" v-if="user_posted.length > 0" v-for="post in user_posted" :key="post.id">
-                <UserPostedMap class="post" :post="post" :user_avatar="avatar"/>
+                <!-- <UserPostedMap class="post" :post="post" :user_avatar="avatar"/> -->
+                <UserPostedMap class="post" :post="post"/>
+
+            </div>
+            <div class="col-12" v-else>
+                <h1 class="text-center">No Posts</h1>
             </div>
         </div>
     </div>
@@ -57,7 +67,7 @@ export default defineComponent({
 <style scoped>
 .user__posted__main {
     height: 100%;
-    overflow: auto;
+    overflow: visible;
 }
 .post {
     padding: 10px;

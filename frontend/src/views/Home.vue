@@ -7,6 +7,7 @@ import PostView from '../components/PostView.vue';
 import Search from './Search.vue';
 import { useStore } from '@/store/store';
 import Navbar from '../components/Navbar.vue';
+import $ from'jquery'
 
 export default defineComponent({
   title: 'Home',
@@ -25,14 +26,15 @@ export default defineComponent({
     const store = useStore()
   },
   created() {
-    document.addEventListener('scroll' , () => {
-      this.scrollY = window.scrollY
-    })
     this.getData();
+    
   },
   
   mounted() {
-    
+    $("#home").on("scroll", (e) => {
+      // this.scrollY = e.target.scrollTop
+      console.log(this.scrollY)
+    })
   },
   methods: {
     async getData() {
@@ -60,12 +62,12 @@ export default defineComponent({
       done()
     }
   },
-  components: { PostsMap, PostView, Search, Navbar }
+  components: { PostsMap, PostView, Search, Navbar },
 })
 </script>
 
 <template>
-  <div class="home">
+  <div class="home" id="home">
     <div class="home__center">
       <header>
         Home
@@ -74,7 +76,7 @@ export default defineComponent({
         <PostView />
       </div>
       <q-infinite-scroll @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
-        <div class="posts" v-if="posts.length > 0" v-for="(post, index) in posts" :key="post.id">
+        <div class="posts" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
           <PostsMap :post="post" />
         </div>
         <template v-slot:loading>
@@ -88,6 +90,11 @@ export default defineComponent({
 </template>
 
 <style scoped>
+/* 
+.home {
+  overflow-y: scroll;
+  height: 100%;
+} */
 
 header {
   display: relative;

@@ -4,11 +4,12 @@ import type { Post } from '@/assets/interfaces';
 import { http } from '@/assets/http';
 import { Cookies, useQuasar } from 'quasar';
 import moment from 'moment'
+import Timeago from './Timeago.vue';
 
 
 export default defineComponent({
     props: {
-        post: {type: Object as () => Post, required: true}
+        post: { type: Object as () => Post, required: true }
     },
     data() {
         return {
@@ -30,74 +31,57 @@ export default defineComponent({
             delete: false,
             persistent: ref(false),
             report: ref(false),
-            reason: ref(''),
+            reason: ref(""),
             moment: moment,
-        }
+        };
     },
     methods: {
         reportPost() {
-            console.log(this.reason)
+            console.log(this.reason);
         },
         like() {
-            this.liked = !this.liked
-            if(!this.$store.state.authenticated) return
+            this.liked = !this.liked;
+            if (!this.$store.state.authenticated)
+                return;
         },
         setDelete() {
-            this.delete = true
+            this.delete = true;
         },
         deletePost() {
-            http.delete('posts/delete_post/', {
+            http.delete("posts/delete_post/", {
                 data: {
                     id: this.id
                 },
                 headers: {
-                'Authorization': `Bearer ${Cookies.get('access_token')}`
-            }
+                    "Authorization": `Bearer ${Cookies.get("access_token")}`
+                }
             }).then((res) => {
-                console.log(res)
+                console.log(res);
             }).catch((err) => {
-                console.log(err)
-            })
+                console.log(err);
+            });
         },
         onImgLoad() {
-            this.img_loading = false
+            this.img_loading = false;
         },
         onAvatarLoaded() {
-            this.avatar_loading = false
-        },
-        formatDate() {
-            var timestamp = new Date(new Date().setDate(new Date().getDate() - 30));
-            const posted_date = new Date(this.date_posted)
-            // console.log(new Date(this.date_posted))
-            // console.log(moment(new Date()).subtract(6, 'days').calendar())
-            if( posted_date.getTime() > timestamp.getTime()){
-                const temp = moment(this.date_posted).fromNow();
-                if(temp.includes('hour') || temp.includes('hours') || temp.includes('minute') || temp.includes('minutes') || temp.includes('second') || temp.includes('seconds')) {
-                    return moment(this.date_posted).calendar()
-                }
-                if((temp.includes('day') || temp.includes('days')) && parseInt(temp.split(' ')[0]) < 7) {
-                    const day = temp.split(' ')[0]
-                    // console.log(parseInt(day))
-                    return moment(this.date_posted).subtract(parseInt(day), 'days').calendar()
-                }
-            }
-            return moment(this.date_posted).format("ddd MMM DD, YYYY [at] hh:mm a")
+            this.avatar_loading = false;
         },
         showComments() {
-
         },
         captionChange() {
         }
     },
     created() {
-    }
+    },
+    components: { Timeago, }
 })
 </script>
 
 <template>
     <q-card class="post">
         <div class="post__main">
-            <q-item class="post__info" :to="{name: 'user-profile', params: {id: user_id}}">
+            <q-item class="post__info" :to="{name: 'user-profile', params: {username: username}}">
                 <q-item-section avatar>
                     <q-avatar size="50px">
                         <img v-if="avatar" :src="avatar"/>
@@ -108,7 +92,8 @@ export default defineComponent({
                 <q-item-section>
                     <q-item-label class="username">@{{username}}</q-item-label>
                     <q-item-label caption class="date__posted">
-                        {{ formatDate() }}
+                        <!-- {{ formatDate() }} -->
+                        <Timeago size="12px" :date="date_posted"/>
                         <!-- <timeago :datetime="date_posted"  auto-update :converter-options="{ includeSeconds: true, addSuffix: true, useStrict: false,}"/> -->
                     </q-item-label>
                 </q-item-section>
@@ -207,7 +192,7 @@ export default defineComponent({
             <q-item-label><span class="caption__username">{{ username }}</span></q-item-label>
             <q-item-label caption class="post__caption">{{caption}}</q-item-label>
         </q-item-section>
-            
+        <hr/>
         <q-card-actions class="actions">
             <!-- <q-btn flat round color="red" :icon="liked ? 'favorite' : 'favorite_border'" /> -->
             <div>
@@ -258,7 +243,7 @@ export default defineComponent({
                 </q-item-section>
 
                 <q-item-section>
-                <q-item-label><span class="caption__username">{{ username }}</span> <span><timeago :datetime="date_posted"  auto-update :converter-options="{ includeSeconds: true, addSuffix: true, useStrict: false,}"/></span></q-item-label>
+                <q-item-label><span class="caption__username">{{ username }}</span> <span></span></q-item-label>
                 <!-- <q-item-label caption class="post__caption">{{caption}}</q-item-label> -->
                 <q-item-label caption class="post__caption">Some comment</q-item-label>
 

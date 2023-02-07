@@ -48,22 +48,11 @@ export default defineComponent({
                 console.log(err);
             });
         },
-        changeUsername(val: string) {
-            this.username = val;
-        }
     },
     created() {
         // console.log(import.meta.env)
     },
     components: { Input },
-    watch: {
-        username() {
-            console.log(this.username)
-        },
-        password() {
-            console.log(this.password)
-        }
-    }
 })
 </script>
 
@@ -99,9 +88,9 @@ export default defineComponent({
                 type="text"
                 :rules="[val => !!val || 'Please enter a valid username']"
             /> -->
-            <Input @update:val="username = $event" required input_type="text" input_label="Username*" class="username" />
+            <Input @update:val="username = $event" required input_type="text" input_label="Username*" id="username" class="username" />
             <!-- <input type="password" placeholder="Password*" class="password" v-model="password" required /> -->
-            <Input @update:val="password = $event" required input_type="password" input_label="Password*" class="password" />
+            <Input @update:val="password = $event" required input_type="password" input_label="Password*" id="password" class="password" />
             <!-- <q-input
                 filled
                 :dark="$store.state.dark"

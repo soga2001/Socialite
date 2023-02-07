@@ -142,10 +142,10 @@ export default defineComponent({
           </q-avatar>
         </RouterLink>
 
-        <RouterLink :to="{name: 'user-profile', params: {id: $store.state.user.id}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
+        <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
           <q-item class="hide">
             <q-item-section avatar>
-              <q-icon :name="$route.fullPath == `/profile/user/${$store.state.user.id}/` ? 'account_circle' : 'o_account_circle'" />
+              <q-icon :name="$route.fullPath == `/profile/user/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" />
             </q-item-section>
 
             <q-item-section class="bold">
@@ -247,7 +247,7 @@ export default defineComponent({
 
           <q-item-section>
             <q-item-label>{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</q-item-label>
-            <q-item-label caption>@{{ $store.state.user.username }}</q-item-label>
+            <q-item-label caption class="username">@{{ $store.state.user.username }}</q-item-label>
           </q-item-section>
 
           <q-item-section side >
@@ -301,12 +301,14 @@ header {
 
 .nav {
   height: 100%;
+  width: 100%;
   display: flex;
   justify-content: center;
   background-color: transparent;
   position: relative;
   
 }
+
 
 a {
   text-decoration: none;
@@ -350,7 +352,7 @@ a {
 
 
 .nav__link.active {
-  /* color: var(--color-heading) !important; */
+  color: var(--color-heading) !important;
   font-weight: 900;
   /* background-color: var(--color-background-mute); */
   border-radius: 30px;
@@ -368,7 +370,13 @@ a {
 
 .nav__link:hover {
   background-color: var(--color-background-mute);
+  color: var(--color-heading);
+  font-weight: 900;
   border-radius: 30px;
+}
+
+.nav__link:hover .bold {
+  font-weight: 900;
 }
 
 
@@ -388,16 +396,23 @@ a {
   border-radius: 50%;
 }
 
+.list {
+  position: relative;
+}
+
 .dropdown {
-  color: var(--color-text);
+  color: var(--color-heading);
   font-weight: 900;
+  min-width: fit-content;
   width: 100%;
-  display: flex;
-  justify-content: center;
+  /* left: 0;
+  bottom: 20px;
+  position: absolute; */
 }
 
 .dropdown:hover {
   background-color: hsla(0, 0%, 57%, 0.2) !important;
+  color: var(--color-heading) !important;
   border-radius: 30px;
 }
 
@@ -436,67 +451,12 @@ a {
 /* Reference: https://uiverse.io/alexruix/splendid-liger-23 */
 /* theme */
 /* The switch - the box around the slider */
-.switch {
-  font-size: 17px;
-  position: relative;
-  display: inline-block;
-  width: 2.5em;
-  height: 1.5em;
-}
 
-/* Hide default HTML checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
 
-/* The slider */
-.slider {
-  --background: #28096b;
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  /* background-color: white; */
-  background-color: rgba(159, 220, 245, .5);
-  -webkit-transition: .5s;
-  transition: .5s;
-  border: 1px solid var(--color-text);
-  border-radius: 30px;
-}
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: .9em;
-  width: 1em;
-  border-radius: 50%;
-  left: 10%;
-  bottom: 15%;
-  -webkit-box-shadow: inset -4px 15px 0px 15px #ffb700;
-          box-shadow: inset -4px 15px 0px 15px #ffb700;
-  background: rgb(92, 92, 92);
-  -webkit-transition: .5s;
-  transition: .5s;
+.username {
+  color: var(--color-text);
 }
-
-input:checked + .slider {
-  background-color: var(--color-background);
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(100%);
-      -ms-transform: translateX(100%);
-          transform: translateX(100%);
-  /* -webkit-box-shadow: inset 15px -4px 0px 15px #fff000;
-          box-shadow: inset 15px -4px 0px 15px #fff000; */
-  -webkit-box-shadow: inset 8px -4px 0px 0px white;
-  box-shadow: inset -8px -3px 0px 0px white;
-}
-
 
 /* Theme toggle */
 
@@ -525,7 +485,7 @@ input:checked + .slider:before {
   left: 3px;
   width: 21px;
   height: 21px;
-  background-color: #ffcf96;
+  background-color: #f5d418;
   border-radius: 50px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
   transition: all 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -563,7 +523,8 @@ input:checked + .slider:before {
 
 .star {
   position: absolute;
-  background-color: #fff;
+  background-color: rgb(255, 255, 255);
+  /* font-weight: 900; */
   transition: all 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
   border-radius: 50%;
 }
@@ -625,11 +586,11 @@ input:checked + .slider:before {
 }
 
 input:checked + .toggle {
-  background-color: #749dd6;
+  background-color: #475668;
 }
 
 input:checked + .toggle:before {
-  color: #749ed7;
+  color: #475668;
 }
 
 input:checked + .toggle:after {

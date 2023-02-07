@@ -2,7 +2,6 @@ import { createApp } from 'vue'
 import {store, key} from './store/store'
 import App from './App.vue'
 import router from './router'
-import timeago from 'vue-timeago3'
 import { vue3Debounce } from 'vue-debounce'
 import { Quasar, Cookies, Dialog, Notify } from 'quasar'
 // Import icon libraries
@@ -23,15 +22,12 @@ import '@quasar/extras/line-awesome/line-awesome.css'
 import '@quasar/extras/bootstrap-icons/bootstrap-icons.css'
 // Import Quasar css
 import 'quasar/dist/quasar.css'
-// import jquery
-import 'jquery'
 
 
 const app = createApp(App)
 
 app.use(router)
 app.use(store, key)
-app.use(timeago)
 app.use(Quasar, {
     plugins: {Cookies, Dialog, Notify }, // import Quasar plugins and add here
     config: {

@@ -14,6 +14,7 @@ export interface User{
     total_posted: number,
     total_followers: number,
     total_following: number,
+    date_joined: string,
 }
 
 export interface UserProfile{

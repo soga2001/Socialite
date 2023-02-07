@@ -1,13 +1,14 @@
 <script lang="ts">
-import { defineComponent, toHandlers } from 'vue';
+import { defineComponent } from 'vue';
+import type {PropType } from 'vue';
 import type { User } from '@/assets/interfaces';
 import { http } from '@/assets/http';
-import UserLiked from './UserLiked.vue';
-import { Cookies, useQuasar } from 'quasar';
+import { Cookies } from 'quasar';
+import Timeago from '../Timeago.vue';
 
 export default defineComponent({
     props: {
-        user: {type: Object as () => User, required: true}
+        user: { type: Object as PropType<User>, required: true }
     },
     setup() {
         // const {cookies} = useCookies();
@@ -30,61 +31,61 @@ export default defineComponent({
             followers: this.user.total_followers,
             following: this.user.total_following,
             followed: false,
-        }
+            date_joined: this.user.date_joined,
+        };
     },
-    
     methods: {
         follow() {
-            if(!this.$store.state.authenticated) {
-                return
+            if (!this.$store.state.authenticated) {
+                return;
             }
             http.post(`follow/follow_user/${this.id}/`, {}, {
                 headers: {
                     "Authorization": `Bearer ${Cookies.get("access_token")}`,
-                }}
-            ).then((res) => {
-                if(res.data.error) {
-                    return
                 }
-                this.followed = !this.followed
-                console.log(this.followed)
-                if(!this.followed && this.following != 0) {
-                    this.following -= 1
-                } else {
-                    this.following += 1
+            }).then((res) => {
+                if (res.data.error) {
+                    return;
+                }
+                this.followed = !this.followed;
+                console.log(this.followed);
+                if (!this.followed && this.following != 0) {
+                    this.following -= 1;
+                }
+                else {
+                    this.following += 1;
                 }
             }).catch((err) => {
-                console.log(err)
-            })
+                console.log(err);
+            });
         },
         if_followed() {
-            if(!this.$store.state.authenticated) {
-                return
+            if (!this.$store.state.authenticated) {
+                return;
             }
             http.get(`follow/get_if_followed/${this.id}/`, {
                 headers: {
                     "Authorization": `Bearer ${Cookies.get("access_token")}`,
                 }
             }).then((res) => {
-                console.log("followed: ", res.data.followed)
-                this.followed = res.data.followed
+                // console.log("followed: ", res.data.followed);
+                this.followed = res.data.followed;
             }).catch((err) => {
-                this.followed = false
-                console.log('error')
-            })
+                this.followed = false;
+                console.log("error");
+            });
         }
     },
     created() {
-        this.if_followed()
+        // console.log(this.date_joined)
+        this.if_followed();
     },
+    components: { Timeago }
 })
 </script>
 
 <template>
-    <div class="user__name">
-        <q-icon @click="$router.go(-1)" class="back" name="arrow_back" />
-        <span class="name">{{ first_name + " " + last_name }}</span>
-    </div>
+    
     <div class="user row justify-center">
         <div class="user__container col-12 col-md-auto">
             <div class="user__profile__avatar">
@@ -133,6 +134,11 @@ export default defineComponent({
                     <button class="user__follow__btn bold" :hidden="$store.state.user.id != id" @click="" disabled>Edit Profile</button>
                 </div>
                 <div class="user__bio">
+                    <!-- <q-icon name="calendar_month"><Timeago :date="date_joined"/></q-icon> -->
+                    <!-- <h6 class="joined"><q-icon size="30px" name="calendar_month" /> <Timeago date_type="relative" :date="date_joined" /></h6> -->
+                    <div>
+                        <span class="joined"><q-icon class="icon" size="15px" name="calendar_month" /> Joined <Timeago class="timeago" size="15px" date_type="relative" :date="date_joined" /></span>
+                    </div>
                     <h6 class="user__caption">{{bio}}</h6>
                 </div>
             </div>
@@ -164,32 +170,6 @@ export default defineComponent({
     width: 10rem;
     height: 10rem;
 }
-
-.user__name {
-    text-align: center;
-    position: relative;
-    font-size: 30px;
-    font-weight: bolder;
-
-    display: relative;
-    position: -webkit-sticky;
-    position: sticky;
-    width: 100%;
-    top: 0;
-    z-index: 999;
-    background-color: var(--color-background);
-
-}
-
-.back {
-    position: absolute;
-    left: 10px;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    cursor: pointer;
-}
-
 .user__username {
     font-size: 20px;
 }
@@ -300,6 +280,21 @@ h6 {
   font-size: 12px;
   width: 50%;
   text-align: center;
+}
+
+.joined {
+    display: inline-flex;
+    line-height: normal;
+    color: var(--color-text);
+    font-size: 15px;
+}
+
+.icon {
+    margin-right: 5px;
+}
+
+.timeago {
+    margin-left: 5px;
 }
     
 </style>

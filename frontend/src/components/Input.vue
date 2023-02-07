@@ -1,5 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { http } from '@/assets/http';
+import type { User } from '@/assets/interfaces';
 
 
 export default defineComponent({
@@ -8,6 +10,8 @@ export default defineComponent({
             type: this.input_type,
             label: this.input_label,
             val: ref(''),
+            users: new Array<User>(),
+            index: null,
             // required: this.required,
         }
     },
@@ -23,36 +27,51 @@ export default defineComponent({
         required: {
             type: Boolean,
             default: false,
+        },
+        id: {
+            type: String,
+            required: true,
         }
     },
     created() {
-        console.log(this.type);
-        console.log(this.label);
+      
     },
     mounted() {
     },
     methods: {
-      handleChange(e: any) {
-        this.$emit('update:input', e.target.value)
-        
-      }
+      
     },
+    watch: {
+      val: function(val: string) {
+        this.$emit('update:input', val)
+      }
+    }
 })
 
 </script>
 
 <template>
+  <div class="main">
     <div class="wave-group">
-        <input :required="required" v-model="val" @input="(e: any) => $emit('update:val', e.target.value)" :type="type" class="input" />
+        <input :required="required" v-model="val" @input="(e: any) => $emit('update:val', e.target.value)" :type="type" :id="id" class="input" />
         <label class="label">
-            <span class="label-char" v-for="(char, index) in label" :key="index" :style="{'--index': index }">{{ char }}</span>
+            <span class="label-char" v-for="(char, index) in label" :key="index" :style="{'--index': index }">{{ char == ' ' ? '&nbsp' : char }}</span>
         </label>
     </div>
+  </div>
 </template>
 
 <style scoped>
+
+.main {
+  overflow: visible;
+  height: 50px;
+  display: grid;
+  grid-template-columns: 1fr;
+}
 .wave-group {
   position: relative;
+  width: 100%;
 }
 
 .wave-group .input {
@@ -134,5 +153,24 @@ span {
   white-space: pre-line;
 }
 
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.username {
+  color: var(--color-text);
+}
+
+.results {
+  background-color: var(--color-background-soft);
+  z-index: 999;
+}
+
+.result__map:nth-child(odd) {
+  background-color: var(--color-background-mute);
+}
 
 </style>
