@@ -5,6 +5,12 @@ class PostSerializer(serializers.ModelSerializer):
     # user_id = serializers.IntegerField()
     username = serializers.CharField(source="user.username")
     user_avatar = serializers.FileField(source="user.profile.avatar")
+    
     class Meta:
         model = Post
         fields = '__all__'
+
+    total_likes = serializers.SerializerMethodField()
+    
+    def get_total_likes(self, obj):
+        return obj.post_likes.count()

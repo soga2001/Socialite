@@ -31,5 +31,6 @@ user_id: any
     img_url: string,
     caption: string,
     date_posted: string,
-    date_updated: string
+    date_updated: string,
+    total_likes: number,
 }

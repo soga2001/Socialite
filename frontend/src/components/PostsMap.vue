@@ -5,11 +5,16 @@ import { http } from '@/assets/http';
 import { Cookies, useQuasar } from 'quasar';
 import moment from 'moment'
 import Timeago from './Timeago.vue';
+import { useCookies } from 'vue3-cookies';
 
 
 export default defineComponent({
     props: {
         post: { type: Object as () => Post, required: true }
+    },
+    setup() {
+        const {cookies} = useCookies();
+        return {cookies}
     },
     data() {
         return {
@@ -22,9 +27,9 @@ export default defineComponent({
             date_updated: this.post.date_posted,
             avatar: this.post.user_avatar,
             dropdown: false,
-            liked: false,
+            liked: this.checkLiked(),
             total_comments: 0,
-            total_likes: 0,
+            total_likes: this.post.total_likes || 0,
             comments: [],
             img_loading: true,
             avatar_loading: true,
@@ -39,10 +44,56 @@ export default defineComponent({
         reportPost() {
             console.log(this.reason);
         },
+        checkLiked() {
+            if(!this.$store.state.authenticated) {
+                return false;
+            }
+            http.get(`like/check_liked/${this.post.id}`, {
+                headers: {
+                    'Authorization': "Bearer " + this.cookies.get("access_token")
+                }
+            }).then((res) => {
+                if(res.data.liked) {
+                    this.liked = res.data.liked;
+                }
+                else {
+                    console.log(res.data)
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
+        },
         like() {
-            this.liked = !this.liked;
-            if (!this.$store.state.authenticated)
+            if (!this.$store.state.authenticated) {
+                this.$q.notify({
+                    message: "You must be logged in to like a post!",
+                    color: "negative",
+                    position: "top-right",
+                    timeout: 1000
+                })
                 return;
+            }
+            this.liked = !this.liked;
+            http.post('like/like_post/', {
+                post_id: this.id
+            }, {
+                headers:  {
+                    "Authorization": "Bearer " + this.cookies.get("access_token")
+                }
+            }).then((res) => {
+                if(res.data.liked) {
+                    this.total_likes += 1;
+                }
+                else if(!res.data.liked) {
+                    this.total_likes -= 1;
+                }
+                else {
+                    console.log(res.data)
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
+            
         },
         setDelete() {
             this.delete = true;
@@ -73,6 +124,15 @@ export default defineComponent({
         }
     },
     created() {
+    },
+    watch: {
+        '$store.state.authenticated': function () {
+            if(this.$store.state.authenticated) {
+                this.checkLiked()
+            } else {
+                this.liked = false;
+            }
+        }
     },
     components: { Timeago, }
 })

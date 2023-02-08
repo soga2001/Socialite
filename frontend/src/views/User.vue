@@ -48,8 +48,6 @@ export default defineComponent({
             await http.get(`users/username/${this.username}/`).then((res) => {
                 if (res.data.success) {
                     this.user = res.data.users;
-                    // console.log(res.data.user)
-
                     this.avatar = res.data.user[0].profile.avatar || '';
                 }
                 console.log(res)
@@ -113,7 +111,7 @@ export default defineComponent({
                         <UserPosted :uid="user[0].id" />
                     </q-tab-panel>
                     <q-tab-panel name="User_Liked" class="panel" id="panel">
-                        <UserLiked :uid="user[0].id" />
+                        <UserLiked  />
                     </q-tab-panel>
                 </q-tab-panels>
                 <!-- <div class="tabs">
@@ -182,7 +180,7 @@ export default defineComponent({
 
 .panel {
     padding: 10px;
-    height: 87vh;
+    /* height: 87vh; */
 }
 
 
