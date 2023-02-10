@@ -10,7 +10,8 @@ export interface State {
   user: User
   defaultUser: User,
   dark: boolean,
-  posts_main: Array<Post>
+  posts_main: Array<Post>,
+  desktop: boolean
 }
 
 // define injection key
@@ -40,6 +41,7 @@ export const store = createStore<State>({
       },
       groups: [],
       user_permissions: [],
+      date_joined: ''
     },
     user: {
       id: 0,
@@ -60,7 +62,10 @@ export const store = createStore<State>({
       },
       groups: [],
       user_permissions: [],
+      date_joined: ''
     },
+    desktop: true
+
   },
   mutations: {
     authenticate(state, payload) {
@@ -77,6 +82,9 @@ export const store = createStore<State>({
     },
     setMainPosts(state, payload) {
       state.posts_main = [...state.posts_main, ...payload]
+    },
+    setDesktop(state, payload) {
+      state.desktop = payload
     }
   }
 })

@@ -27,14 +27,14 @@ export default defineComponent({
   },
   created() {
     this.getData();
+
     
   },
   
   mounted() {
-    $("#home").on("scroll", (e) => {
-      // this.scrollY = e.target.scrollTop
-      console.log(this.scrollY)
-    })
+    (document.getElementById("infinite-scroll") as HTMLDivElement).onscroll = () => {
+      this.scroll()
+    };
   },
   methods: {
     async getData() {
@@ -60,9 +60,23 @@ export default defineComponent({
         this.getData()
       }
       done()
+    },
+    scroll() {
+      const div = (document.getElementById("infinite-scroll") as HTMLDivElement)
+      this.scrollY = div.scrollTop
+      if(this.scrollY >= div.scrollHeight - 1000 && this.hasMore) {
+        this.page += 1
+        this.getData()
+      }
+    },
+    scrollTo() {
+      (document.getElementById("infinite-scroll") as HTMLDivElement).scrollTo(0, this.scrollY)
     }
   },
   components: { PostsMap, PostView, Search, Navbar },
+  activated() {
+    this.scrollTo()
+  }
 })
 </script>
 
@@ -75,7 +89,7 @@ export default defineComponent({
       <div v-if="$store.state.authenticated">
         <PostView />
       </div>
-      <q-infinite-scroll @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
+      <q-infinite-scroll id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
         <div class="posts" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
           <PostsMap :post="post" />
         </div>
@@ -85,16 +99,17 @@ export default defineComponent({
           </div>
         </template>
       </q-infinite-scroll>
-    </div>
+      <!-- <div id="infinite-scroll">
+          <div class="posts" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
+            <PostsMap :post="post" />
+          </div>
+      </div> -->
+      </div>
+      
   </div>
 </template>
 
 <style scoped>
-/* 
-.home {
-  overflow-y: scroll;
-  height: 100%;
-} */
 
 header {
   display: relative;
@@ -117,51 +132,16 @@ header {
                         -1px -1px 0 var(--color-background);
 }
 
+/* #infinite-scroll {
+  height: 100vh;
+  overflow-y: scroll;
+} */
+
 .posts:not(:first-child) {
   margin: 20px 0;
 }
 
-/* @media screen and (min-width: 1220px){
-  .home {
-    display: grid;
-    grid-template-columns: auto minmax(500px, 600px) auto;
-    align-items: center;
-  }
-
-  .home__sides {
-    height: 100%;
-    position: sticky;
-  }
+.posts:is(:last-child) {
+  margin-bottom: 70px;
 }
-
-
-@media screen and (min-width: 860px) and (max-width: 1220px){
-  .home {
-    display: grid;
-    grid-template-columns: minmax(500px, 600px) auto;
-    justify-content: center;
-  }
-
-  .home__sides {
-    display: none;
-  }
-
-}
-
-@media screen and (min-width: 400px) and (max-width: 859px){
-  .home {
-    display: grid;
-    grid-template-columns: minmax(500px, 600px) auto;
-    justify-content: center;
-  }
-
-  .home__sides.right {
-    display: none;
-  }
-
-}
-
-.loading {
-  color: var(--color-heading);
-} */
 </style>

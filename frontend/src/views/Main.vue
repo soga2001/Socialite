@@ -13,7 +13,8 @@ export default defineComponent({
   title: 'Main',
   data() {
       return {
-        $q: useQuasar()
+        $q: useQuasar(),
+
       };
   },
   name: 'Main',
@@ -21,12 +22,16 @@ export default defineComponent({
     const store = useStore()
   },
   created() {
-    // this.$store.commit('authenticate',JSON.parse(Cookies.get("loggedIn")) || false)
-    // if(Cookies.get('user')) {
-    //   this.$store.commit('setUser', Cookies.get('user'))
-    // }
+    
   },
   mounted() {
+    window.onresize = () => {
+      if(window.innerWidth < 768) {
+        this.$store.commit('setDesktop', false)
+      } else {
+        this.$store.commit('setDesktop', true)
+      }
+    }
   },
   methods: {
   },
@@ -68,11 +73,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="home row">
+  <!-- <div class="home row">
     <div class="nav col-2 col-lg-3 col-md-4">
        <Navbar />
     </div>
-    <div class="main__center col-10 col-lg-5 col-md-6">
+    <div class="main--center col-10 col-lg-5 col-md-6">
       <RouterView v-slot="{Component}">
         <KeepAlive :max="3" :include="['home','user-profile', 'search']">
           <component :is="Component" :key="$route.fullPath"/>
@@ -82,73 +87,121 @@ export default defineComponent({
     <div class="home__sides right">
     
     </div>
+  </div> -->
+  <div :class="$store.state.desktop ? 'main' : 'mobile'">
+    <div :class="!$store.state.desktop && 'mobile-' + 'navbar'">
+       <Navbar />
+    </div>
+    <div :class="$store.state.desktop ? 'main--center' : 'mobile-main'">
+      <RouterView v-slot="{Component}">
+        <KeepAlive :max="3" :include="['home','user-profile', 'search']">
+          <component :is="Component" :key="$route.fullPath"/>
+        </KeepAlive>
+      </RouterView>
+    </div>
+    <div v-if="!$store.state.desktop" class="main--right">
+    </div>
   </div>
+
+  <!-- <div class="mobile">
+    <div class="mobile-nav">
+      <Navbar />
+    </div>
+    <div>
+      <RouterView v-slot="{Component}">
+        <KeepAlive :max="3" :include="['home','user-profile', 'search']">
+          <component :is="Component" :key="$route.fullPath"/>
+        </KeepAlive>
+      </RouterView>
+    </div>
+  </div> -->
 </template>
 
 <style scoped>
-.home {
+.main {
   position: relative;
-  height: 100%;
-  min-height: 100%;
-}
-.nav {
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
+  display: grid;
 }
 
-.main__center {
+.mobile {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 12fr;
+}
+
+.mobile-navbar {
+  position: relative;
+  grid-column: 1;
+  grid-row: 10 / span 2;
+  background-color: var(--color-background);
+  border-right: 2px solid var(--color-border);
+}
+
+.navbar {
+  position: relative;
+
+  height: 100%;
+  min-height: 100vh;
+  background-color: var(--color-background);
+  border-right: 2px solid var(--color-border);
+}
+
+.main--center {
   border-left: 2px solid var(--color-border);
   border-right: 2px solid var(--color-border);
   height: 100%;
   min-height: 100vh;
 }
 
-.posts {
-  margin: 20px 0;
+.mobile-main {
+  border-left: 2px solid var(--color-border);
+  border-right: 2px solid var(--color-border);
+  height: 100%;
+  grid-row: 1 / span 9;
 }
 
-/* @media screen and (min-width: 1220px){
-  .home {
-    display: grid;
-    grid-template-columns: auto minmax(500px, 600px) auto;
-    align-items: center;
-  }
+.mobile-nav {
+  overflow: hidden;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 999;
+}
 
-  .home__sides {
-    height: 100%;
-    position: sticky;
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  .main {
+    grid-template-columns: 60px 1fr 0;
   }
 }
 
-
-@media screen and (min-width: 860px) and (max-width: 1220px){
-  .home {
-    display: grid;
-    grid-template-columns: minmax(500px, 600px) auto;
-    justify-content: center;
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  .main {
+    grid-template-columns: auto 1fr 0;
   }
-
-  .home__sides {
-    display: none;
-  }
-
 }
 
-@media screen and (min-width: 400px) and (max-width: 859px){
-  .home {
-    display: grid;
-    grid-template-columns: minmax(500px, 600px) auto;
-    justify-content: center;
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  .main {
+    grid-template-columns: 1fr 600px 1fr;
   }
+} 
 
-  .home__sides.right {
-    display: none;
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  .main {
+    grid-template-columns: 1fr 600px 1fr;
   }
+} 
 
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  .main {
+    grid-template-columns: 1fr 600px 1fr;
+  }
 }
 
-.loading {
-  color: var(--color-heading);
-} */
 </style>

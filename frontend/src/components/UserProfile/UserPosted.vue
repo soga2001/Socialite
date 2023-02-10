@@ -22,6 +22,8 @@ export default defineComponent({
             scrollY: 0,
         };
     },
+    setup() {
+    },
     methods: {
         getUserPosted() {
             http.get(`posts/user_posted/${this.user_timestap}/${(this.user_id)}/`).then((res) => {
@@ -38,9 +40,6 @@ export default defineComponent({
     mounted() {
     },
     activated() {
-        if (this.scrollY > 0) {
-            window.scrollTo(0, this.scrollY)
-        }
     },
     deactivated() {
     },

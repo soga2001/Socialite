@@ -48,9 +48,8 @@ export default defineComponent({
             await http.get(`users/username/${this.username}/`).then((res) => {
                 if (res.data.success) {
                     this.user = res.data.users;
-                    this.avatar = res.data.user[0].profile.avatar || '';
+                    this.avatar = this.user[0].profile.avatar || '';
                 }
-                console.log(res)
             }).catch((err) => {
                 console.log(err);
             });
@@ -65,7 +64,6 @@ export default defineComponent({
         //     }, 3000,
         // )
         this.userInfo();
-        console.log(this.username)
 
     },
     mounted() {

@@ -57,7 +57,7 @@ export default defineComponent({
                     this.liked = res.data.liked;
                 }
                 else {
-                    console.log(res.data)
+                    this.liked = false;
                 }
             }).catch((err) => {
                 console.log(err)
@@ -430,7 +430,7 @@ export default defineComponent({
 }
 
 .like__btn.liked {
-    animation: heartButton 1s;
+    animation: heartButton .5s;
 }
 
 @keyframes heartButton {
@@ -438,16 +438,8 @@ export default defineComponent({
   transform: scale(1);
  }
 
- 25% {
-  transform: scale(1.5);
- }
-
  50% {
-  transform: scale(1);
- }
-
- 75% {
-  transform: scale(1.5);
+  transform: scale(2);
  }
 
  100% {

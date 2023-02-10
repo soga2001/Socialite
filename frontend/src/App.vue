@@ -63,6 +63,7 @@ export default defineComponent({
     // document.getElementById("app")?.addEventListener("scroll", (e) => {
     //   console.log('scrolling')
     // })
+    console.log(navigator.userAgent)
   },
 })
 

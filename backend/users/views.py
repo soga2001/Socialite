@@ -157,6 +157,7 @@ class Delete_User(APIView):
         except:
             return JsonResponse({"error": True}, safe=False)
 
+
 @api_view(["DELETE"])
 @permission_classes([IsAdminUser,])
 def delete_all(request):
