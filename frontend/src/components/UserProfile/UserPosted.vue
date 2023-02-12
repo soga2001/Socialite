@@ -49,8 +49,8 @@ export default defineComponent({
 
 <template>
     <div class="user__posted__main" id="main">
-        <div class="user__posted row">
-            <div class="col-4" v-if="user_posted.length > 0" v-for="post in user_posted" :key="post.id">
+        <div class="user__posted">
+            <div class="posts" v-if="user_posted.length > 0" v-for="post in user_posted" :key="post.id">
                 <!-- <UserPostedMap class="post" :post="post" :user_avatar="avatar"/> -->
                 <UserPostedMap class="post" :post="post"/>
 
@@ -64,11 +64,14 @@ export default defineComponent({
 
 
 <style scoped>
-.user__posted__main {
-    height: 100%;
-    overflow: visible;
+
+.user__posted {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
 }
-.post {
-    padding: 10px;
-}
+
+/* .user__posted__main {
+
+} */
 </style>

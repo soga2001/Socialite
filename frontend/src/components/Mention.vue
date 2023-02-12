@@ -46,10 +46,9 @@ export default defineComponent({
             this.users = new Array<User>();
             return
           }
-          const user = this.val.match(/@\w+/g);
           const at = this.val.lastIndexOf('@')
           const space = this.val.lastIndexOf(' ')
-          console.log(space)
+          const user = this.val.substring(at, space < at ? this.val.length : space).match(/@\w+/g);
           const u = this.val.substring(at + 1, space < at ? this.val.length : space)
           if (user) {
               user.forEach((match) => {
@@ -86,6 +85,7 @@ export default defineComponent({
         const u = this.val.substring(at, space < at ? length : space)
         this.val = this.val.substring(0, at) + this.val.substring(at, space < at ? length : space).replace(u, '@' + username + ' ')
         this.users = new Array<User>();
+        console.log(this.users)
         document.getElementById('input')?.focus()
         this.index = null
       },
@@ -123,7 +123,7 @@ export default defineComponent({
             <span class="label-char" v-for="(char, index) in label" :key="index" :style="{'--index': index }">{{ char == ' ' ? '&nbsp' : char }}</span>
         </label>
     </div>
-    <div class="results">
+    <div class="results" v-if="users.length">
         <div @click="replaceMention(user.username)" class="result__map" v-for="user in users" :key="user.id">
           <q-item>
             <q-item-section avatar>
@@ -247,6 +247,7 @@ span {
 .results {
   background-color: var(--color-background-soft);
   z-index: 999;
+  border: none;
 }
 
 .result__map:nth-child(odd) {

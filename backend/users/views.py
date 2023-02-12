@@ -14,13 +14,33 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
 
 import datetime
 
 import json
 from .serializer import UserSerializer
 
+import environ
+import os
+
+env = environ.Env()
+environ.Env.read_env()
+
 jwt = JWTAuthentication()
+
+
+def encrypt(value):
+    aes = AES.new(env("ENCRYPTION_KEY"), AES.MODE_CBC)
+    print(aes)
+    return aes.encrypt(pad(value.encode("utf8"), style='pkcs7')).decode("utf8")
+
+def decrypt(value):
+    aes = AES.new(env("ENCRYPTION_KEY").encode("utf8"), AES.MODE_CBC)
+    val = aes.decrypt(unpad(value.encode("utf8"), AES.block_size, style='pkcs7'))
+    print(val)
+    return value
 
 # Create your views here.
 @api_view(["GET"])
@@ -81,6 +101,8 @@ def user_register(request):
 @api_view(["POST"])
 def user_login(request):
     data = json.loads(request.body)
+    # username = decrypt(data['username'])
+    # print(username)
     user = authenticate(username=data['username'], password=data['password'])
     if(user):
         login(request, user)

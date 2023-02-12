@@ -6,6 +6,7 @@ import { RouterLink, RouterView } from 'vue-router';
 import router from '../router';
 import { useStore } from '../store/store';
 import Item from './Item.vue';
+import { Crypter } from '@/assets/crypter';
 
 
 export default defineComponent({
@@ -14,7 +15,6 @@ export default defineComponent({
             theme: false,
             dark_mode: false,
             include: ["home", "explore"],
-            hideName: false,
             iconSize: "5rem"
         };
     },
@@ -41,7 +41,7 @@ export default defineComponent({
                 "refresh_token": this.cookies.get("refresh_token")
             }, {
                 headers: {
-                    "Authorization": `Bearer ${this.cookies.get("access_token")}`
+                    "Authorization": "Bearer "  + Crypter.decrypt(this.cookies.get("access_token"))
                 }
             }).then((res) => {
                 this.cookies.remove("access_token");
@@ -87,14 +87,14 @@ export default defineComponent({
         <RouterLink to="/home" class="nav__link" active-class="active">
           <q-item class="hide">
             <q-item-section avatar>
-              <q-icon size="2rem" :name="$route.fullPath == '/home' ? 'home' : 'o_home'"/>
+              <q-icon size="2rem" :name="$route.fullPath == '/home' ? 'house' : 'o_house'"/>
             </q-item-section>
 
             <q-item-section class="bold">
               Home
             </q-item-section>
           </q-item>
-          <q-avatar size="iconSize" :icon="$route.fullPath == '/home' ? 'home' : 'o_home'" class="show">
+          <q-avatar size="iconSize" :icon="$route.fullPath == '/home' ? 'house' : 'o_house'" class="show">
             <q-tooltip anchor="top middle" self="bottom middle">
               Home
             </q-tooltip>
@@ -261,7 +261,7 @@ export default defineComponent({
 
     <nav v-else class="mobile-nav">
       <RouterLink to="/home" class="nav__link" active-class="active">
-        <q-avatar size="iconSize" :icon="$route.fullPath == '/home' ? 'home' : 'o_home'" class="">
+        <q-avatar size="iconSize" :icon="$route.fullPath == '/home' ? 'house' : 'o_house'" class="">
           <q-tooltip anchor="top middle" self="bottom middle">
             Home
           </q-tooltip>
@@ -519,6 +519,10 @@ a {
     display: flex;
     border-radius: 50%;
     /* padding: 10px; */
+  }
+
+  .dropdown {
+    border: 1px solid var(--color-text);
   }
   .dropdown:hover {
     /* background-color: hsla(hue, saturation, lightness, alpha); */

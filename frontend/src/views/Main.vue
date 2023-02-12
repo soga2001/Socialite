@@ -25,13 +25,6 @@ export default defineComponent({
     
   },
   mounted() {
-    window.onresize = () => {
-      if(window.innerWidth < 768) {
-        this.$store.commit('setDesktop', false)
-      } else {
-        this.$store.commit('setDesktop', true)
-      }
-    }
   },
   methods: {
   },

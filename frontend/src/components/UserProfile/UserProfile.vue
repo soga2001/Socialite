@@ -3,16 +3,17 @@ import { defineComponent } from 'vue';
 import type {PropType } from 'vue';
 import type { User } from '@/assets/interfaces';
 import { http } from '@/assets/http';
-import { Cookies } from 'quasar';
 import Timeago from '../Timeago.vue';
+import { useCookies } from 'vue3-cookies';
+import { Crypter } from '@/assets/crypter';
 
 export default defineComponent({
     props: {
         user: { type: Object as PropType<User>, required: true }
     },
     setup() {
-        // const {cookies} = useCookies();
-        // return {cookies}
+        const {cookies} = useCookies();
+        return {cookies}
     },
     data() {
         return {
@@ -41,7 +42,7 @@ export default defineComponent({
             }
             http.post(`follow/follow_user/${this.id}/`, {}, {
                 headers: {
-                    "Authorization": `Bearer ${Cookies.get("access_token")}`,
+                    "Authorization": "Bearer " + Crypter.decrypt(this.cookies.get("access_token")),
                 }
             }).then((res) => {
                 if (res.data.error) {
@@ -65,7 +66,7 @@ export default defineComponent({
             }
             http.get(`follow/get_if_followed/${this.id}/`, {
                 headers: {
-                    "Authorization": `Bearer ${Cookies.get("access_token")}`,
+                    "Authorization": "Bearer " +  Crypter.decrypt(this.cookies.get("access_token")),
                 }
             }).then((res) => {
                 // console.log("followed: ", res.data.followed);

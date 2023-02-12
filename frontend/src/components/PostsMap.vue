@@ -6,6 +6,7 @@ import { Cookies, useQuasar } from 'quasar';
 import moment from 'moment'
 import Timeago from './Timeago.vue';
 import { useCookies } from 'vue3-cookies';
+import { Crypter } from '@/assets/crypter';
 
 
 export default defineComponent({
@@ -50,7 +51,7 @@ export default defineComponent({
             }
             http.get(`like/check_liked/${this.post.id}`, {
                 headers: {
-                    'Authorization': "Bearer " + this.cookies.get("access_token")
+                    'Authorization': "Bearer " + Crypter.decrypt(this.cookies.get("access_token"))
                 }
             }).then((res) => {
                 if(res.data.liked) {
@@ -78,7 +79,7 @@ export default defineComponent({
                 post_id: this.id
             }, {
                 headers:  {
-                    "Authorization": "Bearer " + this.cookies.get("access_token")
+                    "Authorization": "Bearer " + Crypter.decrypt(this.cookies.get("access_token"))
                 }
             }).then((res) => {
                 if(res.data.liked) {
@@ -104,7 +105,7 @@ export default defineComponent({
                     id: this.id
                 },
                 headers: {
-                    "Authorization": `Bearer ${Cookies.get("access_token")}`
+                    "Authorization": "Bearer " + Crypter.decrypt(this.cookies.get("access_token"))
                 }
             }).then((res) => {
                 console.log(res);
@@ -252,7 +253,7 @@ export default defineComponent({
             <q-item-label><span class="caption__username">{{ username }}</span></q-item-label>
             <q-item-label caption class="post__caption">{{caption}}</q-item-label>
         </q-item-section>
-        <hr/>
+        <q-separator :dark="$store.state.dark"/>
         <q-card-actions class="actions">
             <!-- <q-btn flat round color="red" :icon="liked ? 'favorite' : 'favorite_border'" /> -->
             <div>

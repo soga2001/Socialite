@@ -9,6 +9,7 @@ import $ from 'jquery'
 import Search from './views/Search.vue'
 import { Cookies } from 'quasar';
 import HomeView from './views/Main.vue';
+import { Crypter } from './assets/crypter';
 
 
 export default defineComponent({
@@ -49,21 +50,27 @@ export default defineComponent({
     document.documentElement.setAttribute('data-theme', this.theme ? 'dark': 'light')
 
     this.$store.commit('authenticate',JSON.parse(Cookies.get("loggedIn")) || false)
-    if(Cookies.get('user')) {
-      this.$store.commit('setUser', Cookies.get('user'))
+    if(this.cookies.get('user')) {
+      this.$store.commit('setUser', JSON.parse(Crypter.decrypt(this.cookies.get('user'))))
     }
 
   },
   components: { HomeView },
   mounted() {
-    // document.getElementById("app")?.addEventListener("scroll", myFunction);
-    // window.addEventListener('scroll', (e) => {
-    //   console.log('scrolling')
-    // })
-    // document.getElementById("app")?.addEventListener("scroll", (e) => {
-    //   console.log('scrolling')
-    // })
-    console.log(navigator.userAgent)
+    if(navigator.userAgent.includes('Mobile') || window.innerWidth < 768) {
+      this.$store.commit('setDesktop', false)
+    }
+    else {
+      this.$store.commit('setDesktop', true)
+    }
+    window.onresize = () => {
+      if(window.innerWidth < 768) {
+        this.$store.commit('setDesktop', false)
+      }
+      else {
+        this.$store.commit('setDesktop', true)
+      }
+    }
   },
 })
 

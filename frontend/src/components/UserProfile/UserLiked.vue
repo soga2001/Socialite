@@ -43,8 +43,8 @@ export default defineComponent({
 
 <template>
     <div class="user__liked__main">
-        <div class="user__liked row">
-            <div class="col-4" v-if="user_liked.length > 0" v-for="post in user_liked" :key="post.id">
+        <div class="user__liked">
+            <div class="posts" v-if="user_liked.length > 0" v-for="post in user_liked" :key="post.id">
                 <UserPostedMap class="post" :post="post"/>
             </div>
             <div class="loading">
@@ -57,21 +57,10 @@ export default defineComponent({
 </template>
 
 <style scoped>
-/* .user__liked__main {
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    justify-self: center;
-    align-items: center;
-    align-self: center;
-    height: 100%;
-} */
-.user__liked__main {
-    height: 100%;
-    overflow: visible;
-}
-.post {
-    padding: 10px;
+.user__liked {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
 }
 
 .loading {

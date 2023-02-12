@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.15.5",
+    "@types/crypto-js": "^4.1.1",
     "axios": "^0.27.2",
     "core-js": "^3.25.5",
+    "crypto-js": "^4.1.1",
     "date-fns": "^2.29.3",
     "jquery": "^3.6.1",
     "moment": "^2.29.4",
