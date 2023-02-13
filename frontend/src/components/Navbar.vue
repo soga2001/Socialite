@@ -87,14 +87,14 @@ export default defineComponent({
         <RouterLink to="/home" class="nav__link" active-class="active">
           <q-item class="hide">
             <q-item-section avatar>
-              <q-icon size="2rem" :name="$route.fullPath == '/home' ? 'house' : 'o_house'"/>
+              <q-icon class="icon" size="2rem" :name="$route.fullPath == '/home' ? 'house' : 'o_house'"/>
             </q-item-section>
 
             <q-item-section class="bold">
               Home
             </q-item-section>
           </q-item>
-          <q-avatar size="iconSize" :icon="$route.fullPath == '/home' ? 'house' : 'o_house'" class="show">
+          <q-avatar size="iconSize" :icon="$route.fullPath == '/home' ? 'house' : 'o_house'" class="show icon">
             <q-tooltip anchor="top middle" self="bottom middle">
               Home
             </q-tooltip>
@@ -104,14 +104,14 @@ export default defineComponent({
         <RouterLink to="/explore" class="nav__link" active-class="active">
           <q-item class="hide">
             <q-item-section avatar>
-              <q-icon :name="$route.fullPath == '/explore' ? 'explore' : 'o_explore'" />
+              <q-icon class="icon" :name="$route.fullPath == '/explore' ? 'explore' : 'o_explore'" />
             </q-item-section>
 
             <q-item-section class="bold">
               Explore
             </q-item-section>
           </q-item>
-          <q-avatar size="iconSize" :icon="$route.fullPath == '/explore' ? 'explore' : 'o_explore'" class="show">
+          <q-avatar size="iconSize" :icon="$route.fullPath == '/explore' ? 'explore' : 'o_explore'" class="show icon">
             <q-tooltip anchor="top middle" self="bottom middle">
               Explore
             </q-tooltip>
@@ -121,14 +121,14 @@ export default defineComponent({
         <RouterLink to="/search" class="nav__link" active-class="active">
           <q-item class="hide">
             <q-item-section avatar>
-              <q-icon :name="$route.fullPath == '/search' ? 'search' : 'o_search'" />
+              <q-icon class="icon search" :name="$route.fullPath == '/search' ? 'search' : 'o_search'" />
             </q-item-section>
 
             <q-item-section class="bold">
               Search
             </q-item-section>
           </q-item>
-          <q-avatar size="iconSize" :icon="$route.fullPath == '/search' ? 'searcg' : 'o_search'" class="show">
+          <q-avatar size="iconSize" :icon="$route.fullPath == '/search' ? 'search' : 'o_search'" class="show icon search">
             <q-tooltip anchor="top middle" self="bottom middle">
               Search
             </q-tooltip>
@@ -138,14 +138,14 @@ export default defineComponent({
         <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
           <q-item class="hide">
             <q-item-section avatar>
-              <q-icon :name="$route.fullPath == `/profile/user/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" />
+              <q-icon class="icon" :name="$route.fullPath == `/profile/user/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" />
             </q-item-section>
 
             <q-item-section class="bold">
               Profile
             </q-item-section>
           </q-item>
-          <q-avatar size="iconSize" :icon="$route.fullPath == `/profile/user/${$store.state.user.id}/` ? 'account_circle' : 'o_account_circle'" class="show">
+          <q-avatar size="iconSize" :icon="$route.fullPath == `/profile/user/${$store.state.user.id}/` ? 'account_circle' : 'o_account_circle'" class="show icon">
             <q-tooltip anchor="top middle" self="bottom middle">
               Profile
             </q-tooltip>
@@ -155,15 +155,15 @@ export default defineComponent({
         <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
           <q-item class="hide">
             <q-item-section avatar>
-              <q-icon :name="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" />
+              <q-icon class="icon" :name="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" />
             </q-item-section>
 
             <q-item-section class="bold">
               Settings
             </q-item-section>
           </q-item>
-          <q-avatar size="iconSize" :icon="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" class="show">
-            <q-tooltip anchor="top middle" self="bottom middle">
+          <q-avatar size="iconSize" :icon="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" class="show icon">
+            <q-tooltip  anchor="top middle" self="bottom middle">
               Settings
             </q-tooltip>
           </q-avatar>
@@ -172,14 +172,14 @@ export default defineComponent({
         <RouterLink to="/login" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
           <q-item class="hide">
             <q-item-section avatar>
-              <q-icon name="login" />
+              <q-icon class="icon" name="login" />
             </q-item-section>
 
             <q-item-section class="bold">
               Login
             </q-item-section>
           </q-item>
-          <q-avatar size="iconSize" icon="login" class="show">
+          <q-avatar size="iconSize" icon="login" class="show icon">
             <q-tooltip anchor="top middle" self="bottom middle">
               Login
             </q-tooltip>
@@ -189,14 +189,14 @@ export default defineComponent({
         <RouterLink to="/Register" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
           <q-item class="hide">
             <q-item-section avatar>
-              <q-icon name="o_app_registration" />
+              <q-icon class="icon" name="o_app_registration" />
             </q-item-section>
 
             <q-item-section class="bold">
               Register
             </q-item-section>
           </q-item>
-          <q-avatar size="iconSize" icon="app_registration" class="show">
+          <q-avatar size="iconSize" icon="app_registration" class="show icon">
             <q-tooltip anchor="top middle" self="bottom middle">
               Register
             </q-tooltip>
@@ -221,7 +221,7 @@ export default defineComponent({
       </q-item>
       <!-- <Item :avatar="$store.state.user.profile.avatar" :title="$store.state.user.first_name + ' ' + $store.state.user.last_name" :subtitle="$store.state.user.username" icon="more_vert"/> -->
       <div class="dropdown-btn">
-        <q-btn no-caps flat round class="dropdown" v-if="$store.state.authenticated">
+        <q-btn no-caps flat class="dropdown" v-if="$store.state.authenticated">
           <q-item class="hide">
             <q-item-section avatar>
               <img class="avatar" v-if="$store.state.user.profile.avatar" :src="$store.state.user.profile.avatar"/>
@@ -261,28 +261,28 @@ export default defineComponent({
 
     <nav v-else class="mobile-nav">
       <RouterLink to="/home" class="nav__link" active-class="active">
-        <q-avatar size="iconSize" :icon="$route.fullPath == '/home' ? 'house' : 'o_house'" class="">
+        <q-avatar size="iconSize" :icon="$route.fullPath == '/home' ? 'house' : 'o_house'" class="icon">
           <q-tooltip anchor="top middle" self="bottom middle">
             Home
           </q-tooltip>
         </q-avatar>
       </RouterLink>
       <RouterLink to="/explore" class="nav__link" active-class="active">
-        <q-avatar size="iconSize" :icon="$route.fullPath == '/explore' ? 'explore' : 'o_explore'" class="">
+        <q-avatar size="iconSize" :icon="$route.fullPath == '/explore' ? 'explore' : 'o_explore'" class="icon">
           <q-tooltip anchor="top middle" self="bottom middle">
             Explore
           </q-tooltip>
         </q-avatar>
       </RouterLink>
       <RouterLink to="/search" class="nav__link" active-class="active">
-          <q-avatar size="iconSize" :icon="$route.fullPath == '/search' ? 'search' : 'o_search'" class="show">
+          <q-avatar size="iconSize" :icon="$route.fullPath == '/search' ? 'search' : 'o_search'" class="icon search">
             <q-tooltip anchor="top middle" self="bottom middle">
               Search
             </q-tooltip>
           </q-avatar>
         </RouterLink>
         <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
-          <q-avatar size="iconSize" :icon="$route.fullPath == `/profile/user/${$store.state.user.id}/` ? 'account_circle' : 'o_account_circle'" class="">
+          <q-avatar size="iconSize" :icon="$route.fullPath == `/profile/user/${$store.state.user.id}/` ? 'account_circle' : 'o_account_circle'" class="icon">
             <q-tooltip anchor="top middle" self="bottom middle">
               Profile
             </q-tooltip>
@@ -290,7 +290,7 @@ export default defineComponent({
         </RouterLink>
 
         <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
-          <q-avatar size="iconSize" :icon="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" class="">
+          <q-avatar size="iconSize" :icon="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" class="icon">
             <q-tooltip anchor="top middle" self="bottom middle">
               Settings
             </q-tooltip>
@@ -298,7 +298,7 @@ export default defineComponent({
         </RouterLink>
 
         <RouterLink to="/login" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
-          <q-avatar size="iconSize" icon="login" class="">
+          <q-avatar size="iconSize" icon="login" class="icon">
             <q-tooltip anchor="top middle" self="bottom middle">
               Login
             </q-tooltip>
@@ -306,7 +306,7 @@ export default defineComponent({
         </RouterLink>
 
         <RouterLink to="/Register" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
-          <q-avatar size="iconSize" icon="app_registration" class="">
+          <q-avatar size="iconSize" icon="app_registration" class="icon">
             <q-tooltip anchor="top middle" self="bottom middle">
               Register
             </q-tooltip>
@@ -415,7 +415,7 @@ a {
   text-decoration: none;
   transition: 0.2s;
   width: 100%;
-  font-size: 2rem;
+  font-size: calc(.8em + 1vw);;
 }
 
 .nav__link {
@@ -446,6 +446,15 @@ a {
   border-radius: 30px;
 }
 
+
+.nav__link.active .icon {
+  /* color: var(--color-heading); */
+  -webkit-text-stroke: 1px var(--color-text);
+}
+.nav__link.active .icon.search {
+  -webkit-text-stroke: 2px var(--color-text);
+}
+
 .nav__link:hover {
   background-color: var(--color-background-mute);
   color: var(--color-heading);
@@ -453,9 +462,9 @@ a {
   border-radius: 30px;
 }
 
-.nav__link:hover .bold {
+/* .nav__link:hover .bold {
   font-weight: 900;
-}
+} */
 
 .dropdown-btn {
   width: 100%;

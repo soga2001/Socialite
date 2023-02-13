@@ -29,11 +29,15 @@ export default defineComponent({
                 this.errMsg = "Please don't leave username or password blank!";
                 return;
             }
+            const encrypted = Crypter.encrypt(this.username);
+            console.log("encrypted", encrypted)
+            console.log("decrypted", Crypter.decrypt(encrypted))
             http.post("users/login/", {
                 // username: Crypter.encrypt(this.username),
                 // password: Crypter.encrypt(this.password)
                 username: this.username,
-                password: this.password
+                password: this.password,
+                encryptedUsername: Crypter.encrypt(this.username)
             }).then((res) => {
                 if (res.data.error === true) {
                     this.error = true;

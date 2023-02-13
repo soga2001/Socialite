@@ -16,6 +16,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
+from base64 import b64encode, b64decode
 
 import datetime
 
@@ -32,15 +33,17 @@ jwt = JWTAuthentication()
 
 
 def encrypt(value):
-    aes = AES.new(env("ENCRYPTION_KEY"), AES.MODE_CBC)
-    print(aes)
-    return aes.encrypt(pad(value.encode("utf8"), style='pkcs7')).decode("utf8")
+    aes = AES.new(env("ENCRYPTION_KEY").encode("utf8"), AES.MODE_CBC, AES.block_size)
+    return aes.encrypt(value.encode("utf8"))
 
 def decrypt(value):
-    aes = AES.new(env("ENCRYPTION_KEY").encode("utf8"), AES.MODE_CBC)
-    val = aes.decrypt(unpad(value.encode("utf8"), AES.block_size, style='pkcs7'))
-    print(val)
-    return value
+    try:
+        aes = AES.new(env("ENCRYPTION_KEY").encode("utf8"), AES.MODE_CBC, AES.block_size)
+        val = aes.decrypt(b64decode(value))
+        return val
+    except Exception as e:
+        print('here')
+        return value
 
 # Create your views here.
 @api_view(["GET"])
@@ -101,8 +104,11 @@ def user_register(request):
 @api_view(["POST"])
 def user_login(request):
     data = json.loads(request.body)
-    # username = decrypt(data['username'])
+    # username = decrypt(data['encryptedUsername'])
     # print(username)
+    enUser = encrypt(data['username'])
+    print(enUser)
+    print(decrypt(enUser))
     user = authenticate(username=data['username'], password=data['password'])
     if(user):
         login(request, user)
