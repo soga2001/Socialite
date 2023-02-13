@@ -39,11 +39,11 @@ def encrypt(value):
 def decrypt(value):
     try:
         aes = AES.new(env("ENCRYPTION_KEY").encode("utf8"), AES.MODE_CBC)
-        val = aes.decrypt(b64decode(value), AES.block_size)
-        print(unpad(val, AES.block_size).decode("utf8"))
+        print(len(str(b64decode(value))))
+        val = unpad(aes.decrypt(b64decode(value)), AES.block_size)
         return val
     except Exception as e:
-        print('here')
+        print("Reason for error: ", e)
         return value
 
 # Create your views here.
