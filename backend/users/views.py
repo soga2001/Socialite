@@ -33,13 +33,14 @@ jwt = JWTAuthentication()
 
 
 def encrypt(value):
-    aes = AES.new(env("ENCRYPTION_KEY").encode("utf8"), AES.MODE_CBC, AES.block_size)
-    return aes.encrypt(value.encode("utf8"))
+    aes = AES.new(env("ENCRYPTION_KEY").encode("utf8"), AES.MODE_CBC)
+    return aes.encrypt(value.encode("utf8"), AES.block_size)
 
 def decrypt(value):
     try:
-        aes = AES.new(env("ENCRYPTION_KEY").encode("utf8"), AES.MODE_CBC, AES.block_size)
-        val = aes.decrypt(b64decode(value))
+        aes = AES.new(env("ENCRYPTION_KEY").encode("utf8"), AES.MODE_CBC)
+        val = aes.decrypt(b64decode(value), AES.block_size)
+        print(unpad(val, AES.block_size).decode("utf8"))
         return val
     except Exception as e:
         print('here')
@@ -104,11 +105,9 @@ def user_register(request):
 @api_view(["POST"])
 def user_login(request):
     data = json.loads(request.body)
-    # username = decrypt(data['encryptedUsername'])
-    # print(username)
-    enUser = encrypt(data['username'])
-    print(enUser)
-    print(decrypt(enUser))
+    username = decrypt(data['encryptedUsername'])
+    print(username)
+    # enUser = d(data['username'])
     user = authenticate(username=data['username'], password=data['password'])
     if(user):
         login(request, user)

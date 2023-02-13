@@ -12,7 +12,7 @@ export class Crypter{
     public static decrypt(value: string) {
         const decryptedMessage = crypto.AES.decrypt(value, import.meta.env.VITE_ENCRYPTION_KEY, {
             mode: crypto.mode.CBC,
-            padding: crypto.pad.Pkcs7,
+            padding: crypto.pad.Pkcs7,  
         });
         return decryptedMessage.toString(crypto.enc.Utf8);
     }
