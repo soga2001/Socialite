@@ -11,7 +11,7 @@ export default defineComponent({
             label: this.input_label,
             val: ref(''),
             users: new Array<User>(),
-            index: null,
+            index: ref<number>(-1),
             // required: this.required,
         }
     },
@@ -35,49 +35,6 @@ export default defineComponent({
     mounted() {
     },
     methods: {
-      handleChange(e: any) {
-        // this.$emit('update:input', e.target.value)
-        console.log(e.target.selectionStart)
-      },
-      mention() {
-        // console.log(this.val.trim())
-        if (this.val) {
-          if(this.val.substring(this.val.length - 1) == ' ') {
-            this.users = new Array<User>();
-            return
-          }
-          const at = this.val.lastIndexOf('@')
-          const space = this.val.lastIndexOf(' ')
-          const user = this.val.substring(at, space < at ? this.val.length : space).match(/@\w+/g);
-          const u = this.val.substring(at + 1, space < at ? this.val.length : space)
-          if (user) {
-              user.forEach((match) => {
-                  const username = match.replace("@", "");
-                  http.get(`users/username/${username}`).then((res) => {
-                      if (res.data.success) {
-                          // console.log(res.data.users);
-                          this.users = res.data.users;
-                      }
-                  }).catch((err) => {
-                      console.log(err);
-                  });
-              });
-          }
-        //   if(u) {
-        //     http.get(`users/username/${u}`).then((res) => {
-        //         if (res.data.success) {
-        //             // console.log(res.data.users);
-        //             this.users = res.data.users;
-        //         }
-        //     }).catch((err) => {
-        //         console.log(err);
-        //     });
-        //   }
-        }
-        else {
-            this.users = new Array<User>();
-        }
-      },
       replaceMention(username: string) {
         const at = this.val.lastIndexOf('@')
         const space = this.val.lastIndexOf(' ')
@@ -85,30 +42,53 @@ export default defineComponent({
         const u = this.val.substring(at, space < at ? length : space)
         this.val = this.val.substring(0, at) + this.val.substring(at, space < at ? length : space).replace(u, '@' + username + ' ')
         this.users = new Array<User>();
-        console.log(this.users)
+        this.$emit('update:val', this.val)
         document.getElementById('input')?.focus()
-        this.index = null
+        this.index = -1
       },
-      keyup(e: any) {
-        // this.mention();
-        console.log(e.target.selectionStart)
-      }
+      mention(e: any) {
+        // if input is empty
+        if(this.val == "") {
+          this.index = -1
+          this.users = new Array<User>();
+        }
+        else {
+          const sub = this.val.substring(0, e.target.selectionStart)
+          const space = sub.lastIndexOf(' ')
+
+          // if user doesn't space
+          if(sub.lastIndexOf('@') > space) {
+            this.index = sub.lastIndexOf('@')
+          }
+
+          // if user spaces or the @ is removed
+          if(e.key == ' ' || sub.lastIndexOf('@') == -1) {
+            this.index = -1
+            this.users = new Array<User>();
+          }
+
+          // if there is an @ and there is no space between the string connected to @
+          if(this.index != -1 && (space < this.index && (sub.charAt(this.index-1) == '' || sub.charAt(this.index-1) == ' '))) {
+            const user = this.val.substring(this.index, space < this.index ? this.val.length : space).match(/@\w+/g);
+            if(user) {
+              user.forEach((match) => {
+                    const username = match.replace("@", "");
+                    http.get(`users/username/${username}/`).then((res) => {
+                        if (res.data.success) {
+                            this.users = res.data.users;
+                        }
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+                });
+            }
+          } 
+        }
+      },
     },
     watch: {
       val: function(val: any) {
-        if(val.substring(val.length - 1) == '@' || val.substring(val.length - 2) == ' ') {
-          this.index = val.lastIndexOf('@')
-        }
-        if(val.substring(val.length - 1) == ' ') {
-          this.index = null
-          this.users = new Array<User>();
-        }
-        if(this.index != null) {
-          // console.log(this.index)
-          this.mention()
-        }
         this.$emit('update:input', val)
-        
       }
     }
 })
@@ -118,7 +98,7 @@ export default defineComponent({
 <template>
   <div class="main">
     <div class="wave-group">
-        <input :required="required" @keyup="keyup" v-model="val" @input="(e: any) => $emit('update:val', e.target.value)" :type="type" id="input" class="input" />
+        <input :required="required" @mouseup="mention" @keyup="mention" v-model="val"  :type="type" id="input" class="input" />
         <label class="label">
             <span class="label-char" v-for="(char, index) in label" :key="index" :style="{'--index': index }">{{ char == ' ' ? '&nbsp' : char }}</span>
         </label>
