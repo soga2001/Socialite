@@ -9,9 +9,12 @@ export default defineComponent({
         return {
             type: this.input_type,
             label: this.input_label,
-            val: ref(''),
+            val: ref(""),
             users: new Array<User>(),
             index: ref<number>(-1),
+            rows: 1,
+            charsLeft: this.maxChars,
+            savedUsers: new Map<string, Array<User>>(),
             // required: this.required,
         }
     },
@@ -27,6 +30,14 @@ export default defineComponent({
         required: {
             type: Boolean,
             default: false,
+        },
+        numRows: {
+          type: Number,
+          default: 3
+        },
+        maxChars: {
+          type: Number,
+          default: 255,
         }
     },
     created() {
@@ -35,61 +46,122 @@ export default defineComponent({
     mounted() {
     },
     methods: {
-      replaceMention(username: string) {
-        const at = this.val.lastIndexOf('@')
-        const space = this.val.lastIndexOf(' ')
+      async replaceMention(username: string) {
+        const at = this.index
+        const space = this.val.indexOf(" ", this.index)
         const length = this.val.length
         const u = this.val.substring(at, space < at ? length : space)
-        this.val = this.val.substring(0, at) + this.val.substring(at, space < at ? length : space).replace(u, '@' + username + ' ')
-        this.users = new Array<User>();
-        this.$emit('update:val', this.val)
-        document.getElementById('input')?.focus()
+        const beginning  = this.val.substring(0, at)
+        const endIndex = this.index + u.length
+        const ending = this.val.substring(endIndex)
+        this.val = beginning + this.val.substring(at, space < at ? length : space).replace(u, '@' + username + ' ') + ending
+        const input = document.getElementById('input') as HTMLInputElement;
+        this.$emit('update:val', this.val);
+        const data = await this.getUsers(username)
+        await this.savedUsers.set(username, data)
+        this.users = new Array<User>()
+        this.$nextTick(() => {
+          input.setSelectionRange(at + username.length + 2, at + username.length + 2);
+        });
+        input.focus();
         this.index = -1
       },
-      mention(e: any) {
+      async mention(e: any) {
         // if input is empty
-        if(this.val == "") {
+        if(this.val.length == 0) {
+          this.charsLeft = this.maxChars
+          this.savedUsers.clear()
           this.index = -1
           this.users = new Array<User>();
         }
         else {
+          const promise = await this.updateRows()
           const sub = this.val.substring(0, e.target.selectionStart)
-          const space = sub.lastIndexOf(' ')
-
-          // if user doesn't space
-          if(sub.lastIndexOf('@') > space) {
-            this.index = sub.lastIndexOf('@')
+          const at = sub.lastIndexOf('@')
+          const space = sub.lastIndexOf(" ")
+          if(at > space) {
+            this.index = at
           }
 
           // if user spaces or the @ is removed
-          if(e.key == ' ' || sub.lastIndexOf('@') == -1) {
+          if(e.key == ' ' || at == -1 || this.val.charAt(e.target.selectionStart-1) == " " || this.val.charAt(e.target.selectionStart-1) == '\n') {
+            this.savedUsers.set(this.val.substring(this.index, space), this.users)
             this.index = -1
             this.users = new Array<User>();
           }
 
-          // if there is an @ and there is no space between the string connected to @
-          if(this.index != -1 && (space < this.index && (sub.charAt(this.index-1) == '' || sub.charAt(this.index-1) == ' '))) {
+          if(this.index != -1 && (space < this.index && (sub.charAt(this.index-1) == '' || sub.charAt(this.index-1) == ' ' || sub.charAt(this.index-1) == '\n'))) {
             const user = this.val.substring(this.index, space < this.index ? this.val.length : space).match(/@\w+/g);
             if(user) {
-              user.forEach((match) => {
-                    const username = match.replace("@", "");
-                    http.get(`users/username/${username}/`).then((res) => {
-                        if (res.data.success) {
-                            this.users = res.data.users;
-                        }
-                    }).catch((err) => {
-                        console.log(err);
-                    });
-                });
+              user.forEach(async (match) => {
+                const username = match.replace("@", "");
+                const u = this.savedUsers.get(username)
+                if(u) { 
+                  this.users = u
+                  
+                } else {
+                  const tempUsers = await this.getUsers(username)
+                  if( tempUsers)
+                    this.users = tempUsers
+                  // this.getUsers(username)
+                }
+              });
             }
           } 
         }
       },
+      checkSavedUsers(e: any) {
+        if(this.savedUsers.size == 0) {
+          return
+        }
+
+        const sub = this.val.substring(0, e.target.selectionStart)
+        const start = sub.lastIndexOf('@')
+        this.index = start
+        let end = this.val.indexOf(" ", start)
+        if(end < e.target.selectionStart && start < end) {
+          this.users = new Array<User>();
+          return
+        }
+        if(end == -1 || start > end) {
+          end = this.val.length
+        }
+        const username = this.val.substring(start + 1, end)
+        const u = this.savedUsers.get(username.trim())
+        if(u) {
+          this.users = u
+        }
+      },
+      updateRows() {
+        this.rows = Math.min(this.val.split("\n").length, this.numRows);
+        this.charsLeft = this.maxChars - this.val.length
+        this.$emit('update:val', this.val)
+        this.$emit('update:charsLeft', this.charsLeft)
+      },
+      async getUsers(username: String) {
+        let tempUsers = new Array<User>()
+        await http.get(`users/username/${username}/`).then((res) => {
+            if (res.data.success) {
+                tempUsers = res.data.users
+            }
+          }).catch((err) => {
+              console.log(err);
+        });
+        return tempUsers
+      }
+      
     },
     watch: {
-      val: function(val: any) {
-        this.$emit('update:input', val)
+      val(val) { 
+        if(val.length == 0) {
+          this.charsLeft = this.maxChars
+          this.savedUsers.clear()
+          this.index = -1
+          this.users = new Array<User>();
+          this.$emit('update:charsLeft', this.charsLeft)
+        }
       }
+
     }
 })
 
@@ -98,7 +170,8 @@ export default defineComponent({
 <template>
   <div class="main">
     <div class="wave-group">
-        <input :required="required" @mouseup="mention" @keyup="mention" v-model="val"  :type="type" id="input" class="input" />
+        <!-- <input :required="required" @mouseup="mention" @keyup="mention" v-model="val"  :type="type" id="input" class="input" /> -->
+        <textarea :rows="rows" :required="required" :maxlength="maxChars" autocomplete="off" @input="mention" @mouseup="checkSavedUsers"  @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input"></textarea>
         <label class="label">
             <span class="label-char" v-for="(char, index) in label" :key="index" :style="{'--index': index }">{{ char == ' ' ? '&nbsp' : char }}</span>
         </label>
@@ -125,7 +198,7 @@ export default defineComponent({
 
 .main {
   overflow: visible;
-  height: 50px;
+  min-height: 50px;
   display: grid;
   grid-template-columns: 1fr;
 }
@@ -227,7 +300,14 @@ span {
 .results {
   background-color: var(--color-background-soft);
   z-index: 999;
-  border: none;
+  /* border: none;  */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 999;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 100%;
 }
 
 .result__map:nth-child(odd) {
