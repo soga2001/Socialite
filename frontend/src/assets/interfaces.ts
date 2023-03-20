@@ -10,17 +10,14 @@ export interface User{
     last_login: string,
     groups: string[],
     user_permissions: string[],
-    profile: UserProfile,
+    avatar: '',
+    bio: '',
     total_posted: number,
     total_followers: number,
     total_following: number,
     date_joined: string,
 }
 
-export interface UserProfile{
-    bio: string,
-    avatar: string
-}
 
 export interface Post{
 user_id: any

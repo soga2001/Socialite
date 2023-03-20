@@ -1,10 +1,14 @@
 # From Django
-from multiprocessing import managers
+from django.conf import settings
 from django.db import DatabaseError
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
-from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt, csrf_protect, requires_csrf_token
+# from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from django.contrib.sessions.models import Session
+
 
 # From rest_framework_simplejwt
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -14,9 +18,18 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
+
+# from CryptoDome
 from Crypto.Cipher import AES
+from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import pad, unpad
+
+# Others
 from base64 import b64encode, b64decode
+
+
+from users.models import User
+
 
 import datetime
 
@@ -24,27 +37,12 @@ import json
 from .serializer import UserSerializer
 
 import environ
-import os
+from aes import *
 
 env = environ.Env()
 environ.Env.read_env()
 
 jwt = JWTAuthentication()
-
-
-def encrypt(value):
-    aes = AES.new(env("ENCRYPTION_KEY").encode("utf8"), AES.MODE_CBC)
-    return aes.encrypt(value.encode("utf8"), AES.block_size)
-
-def decrypt(value):
-    try:
-        aes = AES.new(env("ENCRYPTION_KEY").encode("utf8"), AES.MODE_CBC)
-        print(len(str(b64decode(value))))
-        val = unpad(aes.decrypt(b64decode(value)), AES.block_size)
-        return val
-    except Exception as e:
-        print("Reason for error: ", e)
-        return value
 
 # Create your views here.
 @api_view(["GET"])
@@ -68,6 +66,10 @@ def user_by_id(request, user_id):
 @api_view(["GET"])
 def user_by_username(request, username):
     try:
+        vector = SearchVector('username')
+        query = SearchQuery(username)
+        user = UserSerializer(User.objects.annotate(rank=SearchRank(vector, query)).order_by('-rank')[0:10])
+        # print(user.data)
         users = UserSerializer(User.objects.filter(username__contains=username), many=True)
         return JsonResponse({"success": True, "users": users.data}, safe=False)
     except:
@@ -102,13 +104,33 @@ def user_register(request):
     except DatabaseError:
         return JsonResponse({"error": True, "message":" Username or email is taken."}, safe=False)
 
+# @api_view(["POST"])
+# @requires_csrf_token
+# def user_login(request):
+#     # data = json.loads(request.data)
+#     print(request.data)
+#     data = request.data
+#     # print(decrypt(data["encryptedUsername"]))
+
+#     # enUser = d(data['username'])
+#     user = authenticate(username=data['username'], password=data['password'])
+#     if(user):
+#         login(request, user)
+#         token = RefreshToken.for_user(user)
+#         userSerialized = UserSerializer(user)
+#         return JsonResponse({"access_token": str(token.access_token), 
+#                             "at_lifetime": str(token.access_token.lifetime.days) + "d",
+#                             "refresh_token": str(token),
+#                             "rt_lifetime": str(token.lifetime.days) + "d",
+#                             "user": userSerialized.data
+#                             }, safe=False)
+#     return JsonResponse({"error": True}, safe=False)
+
 @api_view(["POST"])
 def user_login(request):
     data = json.loads(request.body)
-    username = decrypt(data['encryptedUsername'])
-    print(username)
-    # enUser = d(data['username'])
     user = authenticate(username=data['username'], password=data['password'])
+
     if(user):
         login(request, user)
         token = RefreshToken.for_user(user)
@@ -135,6 +157,37 @@ class LogoutView(APIView):
             return JsonResponse({"success": True}, safe=False)
         except:
             return JsonResponse({"error": True}, safe=False)
+
+    # def delete(self, request):
+    #     session_id = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
+    #     session = Session.objects.get(session_key=session_id)
+    #     session.delete()
+
+
+class AllLogins(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = (JWTAuthentication,)
+
+    def get(self, request):
+        user = request.user
+        userSerialized = UserSerializer(user)
+        print(request.session.get())
+        # print(Session.objects.all().values())
+        # sessions = Session.objects.filter(user_id=user.id)
+        # print(sessions)
+        return JsonResponse({'success': True, 'user': userSerialized.data, 'sessions': list(Session.objects.all().values())})
+        
+
+class LogoutFromAll(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = (JWTAuthentication,)
+
+    def delete(self, request):
+        sessions = Session.objects.filter(expire_date__gte=datetime.timezone.now(), 
+                                       session_key__contains=request.user_id)
+
+        # Delete the sessions
+        sessions.delete()
 
 
 class SuperUser(APIView):
@@ -186,7 +239,7 @@ class Delete_User(APIView):
 
 
 @api_view(["DELETE"])
-@permission_classes([IsAdminUser,])
+# @permission_classes([IsAdminUser,])
 def delete_all(request):
     User.objects.all().delete()
     return JsonResponse({"success": True}, safe=False)

@@ -24,11 +24,8 @@ class Like_Post(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        print('here')
         data = json.loads(request.body)
-        # print(data)
         post_id = data['post_id']
-        # post_id = post['id']
         post = Post.objects.get(pk=post_id)
         user, token = jwt.authenticate(request)
         try:

@@ -180,7 +180,7 @@ export default defineComponent({
         <div @click="replaceMention(user.username)" class="result__map" v-for="user in users" :key="user.id">
           <q-item>
             <q-item-section avatar>
-              <img class="avatar" v-if="user.profile.avatar" :src="user.profile.avatar"/>
+              <img class="avatar" v-if="user.avatar" :src="user.avatar"/>
               <q-icon size="50px" v-else name="o_person" class="avatar__icon" />
             </q-item-section>
 
@@ -282,6 +282,10 @@ input {
   position: relative;
 }
 
+textarea {
+  color: var(--color-heading);
+}
+
 span {
   white-space: pre-line;
 }
@@ -312,6 +316,10 @@ span {
 
 .result__map:nth-child(odd) {
   background-color: var(--color-background-mute);
+}
+
+::placeholder {
+  color: var(--color-heading);
 }
 
 </style>

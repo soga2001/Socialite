@@ -94,7 +94,7 @@ export default defineComponent({
     <div class="register__main">
         <h1 class="register__header">Register</h1>
         <hr/>
-        <form class="register__form" v-on:submit.prevent="register">
+        <form class="register__form" autocomplete="off" v-on:submit.prevent="register">
             <!-- <input type="text" placeholder="First Name" class="fname" v-model="fname"/> -->
             <!-- <q-input
                 clearable

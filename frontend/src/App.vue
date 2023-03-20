@@ -8,7 +8,7 @@ import { useStore } from './store/store';
 import $ from 'jquery'
 import Search from './views/Search.vue'
 import { Cookies } from 'quasar';
-import HomeView from './views/Main.vue';
+import Main from './views/Main.vue';
 import { Crypter } from './assets/crypter';
 
 
@@ -42,6 +42,14 @@ export default defineComponent({
     },
     onload(e: any) {
       console.log(e)
+    },
+    checkOS() {
+      if(navigator.userAgent.includes('Mobile')) {
+        this.$store.commit('setDesktop', false)
+      }
+      else {
+        this.$store.commit('setDesktop', true)
+      }
     }
   },
   created() {
@@ -55,23 +63,12 @@ export default defineComponent({
     }
 
   },
-  components: { HomeView },
+  components: { Main },
   mounted() {
-    if(navigator.userAgent.includes('Mobile') || window.innerWidth < 768) {
-      this.$store.commit('setDesktop', false)
-    }
-    else {
-      this.$store.commit('setDesktop', true)
-    }
-    window.onresize = () => {
-      if(window.innerWidth < 768) {
-        this.$store.commit('setDesktop', false)
-      }
-      else {
-        this.$store.commit('setDesktop', true)
-      }
-    }
-  },
+    // let regexp = /android|iphone|kindle|ipad/i;
+    this.checkOS
+    window.onresize = this.checkOS
+  }
 })
 
 </script>
@@ -79,7 +76,7 @@ export default defineComponent({
 <template>
   <!-- <h1>Potato</h1> -->
   <header id="app">
-      <HomeView />
+      <Main />
   </header>
 </template>
 

@@ -4,10 +4,10 @@ import {useCookies} from 'vue3-cookies'
 import { RouterLink, RouterView } from 'vue-router';
 import { http } from '@/assets/http';
 import {useStore} from '../store/store'
-import { Cookies, useQuasar } from 'quasar';
 import Input from '@/components/Input.vue';
 // import { AES } from 'crypto-ts';
 import {Crypter} from '@/assets/crypter';
+import { get_csrf_token } from '@/assets/csrf';
 
 export default defineComponent({
     data() {
@@ -29,18 +29,25 @@ export default defineComponent({
                 this.errMsg = "Please don't leave username or password blank!";
                 return;
             }
+
+            // Crypter.decryption(dis)
+            // const u = Crypter.encrypter(this.username);
+            // const p = Crypter.encrypter(this.password);
+            // console.log(Crypter.decrypter(u), Crypter.decrypter(p));
+            // console.log()
             http.post("users/login/", {
                 // username: Crypter.encrypt(this.username),
                 // password: Crypter.encrypt(this.password)
                 username: this.username,
                 password: this.password,
-                encryptedUsername: Crypter.encrypt(this.username)
+            }, {
             }).then((res) => {
                 if (res.data.error === true) {
                     this.error = true;
                     this.errMsg = "Username or Password is incorrect.";
                 }
                 else {
+                    // this.$cookie.getCookie()
                     this.cookies.set("access_token", Crypter.encrypt(res.data.access_token), res.data.at_lifetime);
                     this.cookies.set("refresh_token", Crypter.encrypt(res.data.refresh_token), res.data.rt_lifetime);
                     this.cookies.set("loggedIn", "true", res.data.at_lifetime);
@@ -48,6 +55,7 @@ export default defineComponent({
                     this.$store.commit("authenticate", true);
                     this.$store.commit("setUser", res.data.user);
                     this.$router.push("/home");
+                    get_csrf_token();
                 }
             }).catch((err) => {
                 console.log(err);
@@ -66,7 +74,7 @@ export default defineComponent({
     <div class="login__main">
         <h1 class="login__header">Login</h1>
         <hr/>
-        <form class="login__form" v-on:submit.prevent="login">
+        <form class="login__form" autocomplete="off" v-on:submit.prevent="login">
             <!-- <div class="login__credentials">
                 <input type="text" placeholder="Username*" v-model="username" required />
                 <input type="password" placeholder="Password*" v-model="password" required />

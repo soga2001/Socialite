@@ -4,7 +4,7 @@ from .models import Post
 class PostSerializer(serializers.ModelSerializer):
     # user_id = serializers.IntegerField()
     username = serializers.CharField(source="user.username")
-    user_avatar = serializers.FileField(source="user.profile.avatar")
+    user_avatar = serializers.FileField(source="user.avatar")
     
     class Meta:
         model = Post

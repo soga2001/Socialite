@@ -2,11 +2,11 @@
 import { defineComponent, ref } from 'vue';
 import type { Post } from '@/assets/interfaces';
 import { http } from '@/assets/http';
-import { Cookies, useQuasar } from 'quasar';
 import moment from 'moment'
 import Timeago from './Timeago.vue';
 import { useCookies } from 'vue3-cookies';
 import { Crypter } from '@/assets/crypter';
+import Heart from './Heart.vue';
 
 
 export default defineComponent({
@@ -39,6 +39,7 @@ export default defineComponent({
             report: ref(false),
             reason: ref(""),
             moment: moment,
+            showComments: false,
         };
     },
     methods: {
@@ -49,7 +50,7 @@ export default defineComponent({
             if(!this.$store.state.authenticated) {
                 return false;
             }
-            http.get(`like/check_liked/${this.post.id}`, {
+            http.get(`like/check_liked/${this.post.id}/`, {
                 headers: {
                     'Authorization': "Bearer " + Crypter.decrypt(this.cookies.get("access_token"))
                 }
@@ -94,7 +95,6 @@ export default defineComponent({
             }).catch((err) => {
                 console.log(err)
             })
-            
         },
         setDelete() {
             this.delete = true;
@@ -119,10 +119,18 @@ export default defineComponent({
         onAvatarLoaded() {
             this.avatar_loading = false;
         },
-        showComments() {
+        commentToggle() {
+            this.showComments = !this.showComments;
+            alert("clicked")
         },
         captionChange() {
-        }
+
+        },
+        // testing(event: Event) {
+        //     console.log('clicked');
+        //     event.stopPropagation();
+        // }
+        
     },
     created() {
     },
@@ -135,14 +143,14 @@ export default defineComponent({
             }
         }
     },
-    components: { Timeago, }
+    components: { Timeago, Heart }
 })
 </script>
 
 <template>
-    <q-card class="post">
+    <q-card class="post" @click="">
         <div class="post__main">
-            <q-item class="post__info" :to="{name: 'user-profile', params: {username: username}}">
+            <q-item class="post__info z-index-2" @click.stop="" :to="{name: 'user-profile', params: {username: username}}">
                 <q-item-section avatar>
                     <q-avatar size="50px">
                         <img v-if="avatar" :src="avatar"/>
@@ -158,9 +166,13 @@ export default defineComponent({
                         <!-- <timeago :datetime="date_posted"  auto-update :converter-options="{ includeSeconds: true, addSuffix: true, useStrict: false,}"/> -->
                     </q-item-label>
                 </q-item-section>
+
+                <!-- <q-item-section side @click.stop="testing" >
+                    <q-icon name="o_more_horiz"  />
+                </q-item-section> -->
             </q-item>
 
-        <div class="dropdown__div">
+            <div class="dropdown__div z-index-2" @click.stop="">
                 <q-btn size="16px" class="more__vert" flat dense round icon="more_vert" />
                 <q-menu class="dropdown" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
                     <q-list class="more__option">
@@ -244,25 +256,30 @@ export default defineComponent({
                     </q-card>
                 </q-dialog>
             </div>
-        </div>  
+        </div> 
         <!-- <div class="caption" v-if="caption">
             <span class="post__caption">{{ caption }}</span>
         </div> -->
-        <q-img :src="img_url" />
+        <q-img :src="img_url" @click.stop=""/>
         <q-item-section v-if="caption" class="caption">
             <q-item-label><span class="caption__username">{{ username }}</span></q-item-label>
-            <q-item-label caption class="post__caption">{{caption}}</q-item-label>
+            <!-- <q-item-label v-html="caption" caption class="post__caption"></q-item-label> -->
+            <p v-html="caption" class="post__caption"></p>
         </q-item-section>
+
         <q-separator :dark="$store.state.dark"/>
-        <q-card-actions class="actions">
+        <q-card-actions class="actions z-index-2">
             <!-- <q-btn flat round color="red" :icon="liked ? 'favorite' : 'favorite_border'" /> -->
             <div>
-                <q-icon size="30px" :class="'action like__btn ' + (liked ? 'liked' : '')" :name="liked ? 'favorite' : 'favorite_border'" @click="like">
+                <q-icon size="30px" :class="'action like__btn ' + (liked ? 'liked' : '')" :name="liked ? 'favorite' : 'favorite_border'" @click.stop="like">
                     <q-tooltip :offset="[0,0]">
                         Like
                     </q-tooltip>
                 </q-icon>
                 <label>{{total_likes}}</label>
+            </div>
+            <div>
+                <Heart/>
             </div>
             <!-- <q-btn round flat :class="'like__btn ' + (liked ? 'liked' : '')" :icon="liked ? 'favorite' : 'favorite_border'" :disable="!$store.state.authenticated" v-on:click="like">
                 <q-tooltip :offset="[0,0]">
@@ -273,7 +290,7 @@ export default defineComponent({
                  </label>
             </q-btn> -->
             <div>
-                <q-icon size="30px" class="action comment" :name="total_comments == 0 ? 'sym_o_chat_bubble' : 'sym_o_chat'" @click="">
+                <q-icon size="30px" class="action comment" :name="total_comments == 0 ? 'sym_o_chat_bubble' : 'sym_o_chat'" @click="commentToggle">
                     <q-tooltip :offset="[0,0]">
                         Comment
                     </q-tooltip>
@@ -293,7 +310,7 @@ export default defineComponent({
                 </q-tooltip>
             </q-btn> 
         </q-card-actions>
-        <q-separator :dark="$store.state.dark"/>
+        <!-- <q-separator :dark="$store.state.dark"/>
         <div class="comments">
             <p>Comments</p>
             <q-item v-if="caption">
@@ -305,23 +322,9 @@ export default defineComponent({
 
                 <q-item-section>
                 <q-item-label><span class="caption__username">{{ username }}</span> <span></span></q-item-label>
-                <!-- <q-item-label caption class="post__caption">{{caption}}</q-item-label> -->
+                <q-item-label caption class="post__caption">{{caption}}</q-item-label>
                 <q-item-label caption class="post__caption">Some comment</q-item-label>
 
-                </q-item-section>
-            </q-item>
-        </div>
-        <!-- <div>
-            <q-item v-if="caption">
-                <q-item-section avatar>
-                <q-avatar>
-                    <img :src="avatar">
-                </q-avatar>
-                </q-item-section>
-
-                <q-item-section>
-                <q-item-label><span class="caption__username">{{ username }}</span> <span><timeago :datetime="date_posted"  auto-update :converter-options="{ includeSeconds: true, addSuffix: true, useStrict: false,}"/></span></q-item-label>
-                <q-item-label caption class="post__caption">{{caption}}</q-item-label>
                 </q-item-section>
             </q-item>
         </div> -->
@@ -339,6 +342,17 @@ export default defineComponent({
     max-width: 700px;
     /* box-shadow:0 4px 20px 0 var(--color-text); */
     height: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+.post:hover{
+    background-color: var(--color-hover);
+    cursor: pointer;
+}
+
+.z-index-2 {
+    z-index: 2;
 }
 
 .post__head__div {
@@ -353,7 +367,7 @@ export default defineComponent({
 }
 .post__info {
     padding: 5px 10px;
-    background-color: transparent;
+    background-color: transparent !important;
 }
 
 .post__info:hover {
@@ -517,10 +531,24 @@ export default defineComponent({
     color: var(--color-heading);
 }
 
+
 .post__caption {
-    font-weight: 500;
+    font-size: 15px;
     color: var(--color-text);
+    line-height: 1.5;
+    z-index: 3;
 }
+
+.post__caption /deep/ a {
+    text-decoration: none;
+    color: rgba(170, 0, 255, .8);
+}
+
+.post__caption /deep/ a:hover {
+    text-decoration: none;
+    color: rgba(170, 0, 255, 1);
+}
+
 .comments {
     padding: 5px 15px;
     color: var(--color-heading);

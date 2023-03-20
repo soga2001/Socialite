@@ -1,6 +1,6 @@
 from rest_framework import serializers
 # from django.contrib.auth.models import User
-from .models import UserFollowing
+from following.models import UserFollowing
 
 class UserFollowingSerializer(serializers.ModelSerializer):
     class Meta:

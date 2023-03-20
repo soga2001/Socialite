@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     "rest_framework_simplejwt.token_blacklist",
     'users',
-    'userprofile.apps.UserprofileConfig',
+    # 'userprofile.apps.UserprofileConfig',
     'posts.apps.PostsConfig',
     'following.apps.FollowingConfig',
     'likes.apps.LikesConfig',
@@ -61,16 +61,17 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
-    'http://127.0.0.1:3000'
+    'http://127.0.0.1:3000',
 ]
 
 CORS_ALLOW_METHODS = [
@@ -82,9 +83,13 @@ CORS_ALLOW_METHODS = [
     "PUT",
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:3000'
-]
+
+CSRF_HEADER_NAME = 'X-CSRFToken'
+
+# CSRF_TRUSTED_ORIGINS = [
+#     'http://localhost:3000'
+# ]
+
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -135,6 +140,11 @@ DATABASES = {
 
 }
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_NAME = 'sessionid'
+
+
+AUTH_USER_MODEL = "users.User"
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

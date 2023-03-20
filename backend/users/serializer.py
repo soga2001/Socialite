@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
-from userprofile.serializer import UserProfileSerializer
+# from django.contrib.auth.models import User
+from users.models import User
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,7 +8,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs = {'password': {'write_only': True}}
 
-    profile = UserProfileSerializer(read_only=True)
     # user_posted = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     total_posted = serializers.SerializerMethodField()

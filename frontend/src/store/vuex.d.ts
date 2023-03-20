@@ -9,7 +9,8 @@ declare module '@vue/runtime-core' {
     defaultUser: User
     dark: boolean,
     posts_main: Array<Post>,
-    desktop: boolean
+    desktop: boolean,
+    csrf: string,
   }
 
   // provide typings for `this.$store`

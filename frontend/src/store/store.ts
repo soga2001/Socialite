@@ -11,7 +11,8 @@ export interface State {
   defaultUser: User,
   dark: boolean,
   posts_main: Array<Post>,
-  desktop: boolean
+  desktop: boolean,
+  csrf: string
 }
 
 // define injection key
@@ -64,7 +65,8 @@ export const store = createStore<State>({
       user_permissions: [],
       date_joined: ''
     },
-    desktop: true
+    desktop: true,
+    csrf: "",
 
   },
   mutations: {
@@ -85,6 +87,9 @@ export const store = createStore<State>({
     },
     setDesktop(state, payload) {
       state.desktop = payload
+    },
+    setCSRF(state, payload) {
+      state.csrf = payload
     }
   }
 })

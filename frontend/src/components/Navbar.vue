@@ -224,8 +224,8 @@ export default defineComponent({
         <q-btn no-caps flat class="dropdown" v-if="$store.state.authenticated">
           <q-item class="hide">
             <q-item-section avatar>
-              <img class="avatar" v-if="$store.state.user.profile.avatar" :src="$store.state.user.profile.avatar"/>
-              <q-icon size="iconSize" v-else name="o_person" class="avatar__icon" />
+              <img class="avatar" v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
+              <span size="iconSize" v-else class="avatar__icon">{{ $store.state.user.first_name.substring(0,1) + $store.state.user.last_name.substring(0,1) }}</span>
             </q-item-section>
 
             <q-item-section>
@@ -239,8 +239,8 @@ export default defineComponent({
           </q-item>
 
           <q-avatar size="40px" class="show">
-            <img v-if="$store.state.user.profile.avatar" :src="$store.state.user.profile.avatar"/>
-            <q-icon v-else name="o_person" class="avatar__icon" />
+            <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
+            <span size="iconSize" v-else class="avatar__icon">{{ $store.state.user.first_name.substring(0,1) + $store.state.user.last_name.substring(0,1) }}</span>
           </q-avatar> 
           <q-menu fit square self="top left" anchor="bottom left">
             <q-list class="dropdown__main" dense>
@@ -282,7 +282,7 @@ export default defineComponent({
           </q-avatar>
         </RouterLink>
         <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
-          <q-avatar size="iconSize" :icon="$route.fullPath == `/profile/user/${$store.state.user.id}/` ? 'account_circle' : 'o_account_circle'" class="icon">
+          <q-avatar size="iconSize" :icon="$route.fullPath == `/profile/user/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" class="icon">
             <q-tooltip anchor="top middle" self="bottom middle">
               Profile
             </q-tooltip>
@@ -314,11 +314,10 @@ export default defineComponent({
         </RouterLink>
       <!-- <Item :avatar="$store.state.user.profile.avatar" :title="$store.state.user.username" /> -->
       <div class="dropdown-btn">
-
         <q-btn no-caps flat round class="dropdown" v-if="$store.state.authenticated">
           <q-item class="hide">
             <q-item-section avatar>
-              <img class="avatar" v-if="$store.state.user.profile.avatar" :src="$store.state.user.profile.avatar"/>
+              <img class="avatar" v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
               <q-icon size="iconSize" v-else name="o_person" class="avatar__icon" />
             </q-item-section>
 
@@ -333,7 +332,7 @@ export default defineComponent({
           </q-item>
 
           <q-avatar size="40px" class="show">
-            <img v-if="$store.state.user.profile.avatar" :src="$store.state.user.profile.avatar"/>
+            <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
             <q-icon v-else name="o_person" class="avatar__icon" />
           </q-avatar> 
           <q-menu fit square self="top left" anchor="bottom left">
@@ -462,6 +461,7 @@ a {
   border-radius: 30px;
 }
 
+
 /* .nav__link:hover .bold {
   font-weight: 900;
 } */
@@ -529,10 +529,7 @@ a {
     border-radius: 50%;
     /* padding: 10px; */
   }
-
-  .dropdown {
-    border: 1px solid var(--color-text);
-  }
+  
   .dropdown:hover {
     /* background-color: hsla(hue, saturation, lightness, alpha); */
     background-color: transparent !important;

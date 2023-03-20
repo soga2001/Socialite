@@ -24,31 +24,11 @@ export default defineComponent({
     methods: {
         async userInfo() {
             this.loading = true
-            // await http.get(`users/user/${(this.user_id)}/`).then((res) => {
-            //     if (res.data.success) {
-            //         this.user = res.data.user;
-            //         // console.log(res.data.user)
-
-            //         this.avatar = res.data.user[0].profile.avatar || '';
-            //     }
-            // }).catch((err) => {
-            //     console.log(err);
-            // });
-            // await http.get(`users/username/${(this.username)}/`).then((res) => {
-            //     if (res.data.success) {
-            //         this.user = res.data.user;
-            //         // console.log(res.data.user)
-
-            //         this.avatar = res.data.user[0].profile.avatar || '';
-            //     }
-            // }).catch((err) => {
-            //     console.log(err);
-            // });
 
             await http.get(`users/username/${this.username}/`).then((res) => {
                 if (res.data.success) {
                     this.user = res.data.users;
-                    this.avatar = this.user[0].profile.avatar || '';
+                    this.avatar = this.user[0].avatar || '';
                 }
             }).catch((err) => {
                 console.log(err);
@@ -58,27 +38,17 @@ export default defineComponent({
         },
     },
     created() {
-        // setTimeout(
-        //     () => {
-        //         this.userInfo();
-        //     }, 3000,
-        // )
         this.userInfo();
 
     },
     mounted() {
-        // console.log('mounted')
-        // this.userInfo();
-        $j("#panel").on('scroll', function() {
-            console.log('here')
-        });
     },
     components: { UserProfile, Search, UserPosted, UserLiked },
 })
 </script>
 
 <template>
-    <div class="user__main" v-if="user.length">
+    <div :class="'user__main ' + !$store.state.desktop && 'mobile'" v-if="user.length">
         <div class="user__name">
         <q-icon @click="$router.go(-1)" class="back" name="arrow_back" />
         <span class="name">{{ user[0].first_name + " " + user[0].last_name }}</span>
@@ -142,7 +112,12 @@ export default defineComponent({
     height: 100%;
 }
 
+.mobile {
+    margin-bottom: 70px;
+}
+
 .user__not__found, .loading {
+    width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
@@ -173,6 +148,7 @@ export default defineComponent({
 
 .panels {
     background-color: transparent;
+    width: 100%;
 }
 
 

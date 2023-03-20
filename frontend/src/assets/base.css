@@ -22,6 +22,9 @@
   --vt-c-text-light-2: rgba(60, 60, 60, 0.8);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.8);
+
+  --vt-c-hover-dark: hsla(0, 0%, 15%, 0.5);
+  --vt-c-hover-light: hsla(0, 0%, 90%, 0.5);;
 }
 
 /* semantic color variables for this project */
@@ -44,6 +47,8 @@
 
   --color-switch: var(--vt-c-black);
   --color-switch-slider: var(--vt-c-white);
+
+  --color-hover: var(--vt-c-hover-dark);
 }
 
 [data-theme="light"] {
@@ -63,6 +68,9 @@
 
   --color-switch: var(--vt-c-white);
   --color-switch-slider: var(--vt-c-black);
+
+  --color-hover: var(--vt-c-hover-light);
+
 }
 
 *,

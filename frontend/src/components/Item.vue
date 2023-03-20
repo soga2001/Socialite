@@ -3,24 +3,24 @@
 import { defineComponent } from 'vue'
 export default defineComponent({
     name: 'Item',
-    props: {
-        avatar: {
-            type: String,
-            default: ''
-        },
-        title: {
-            type: String,
-            required: true,
-        },
-        subtitle: {
-            type: String,
-            default: ''
-        },
-        icon: {
-            type: String,
-            default: ''
-        }
-    },
+    // props: {
+    //     // avatar: {
+    //     //     type: String,
+    //     //     default: ''
+    //     // },
+    //     // title: {
+    //     //     type: String,
+    //     //     required: true,
+    //     // },
+    //     // subtitle: {
+    //     //     type: String,
+    //     //     default: ''
+    //     // },
+    //     // icon: {
+    //     //     type: String,
+    //     //     default: ''
+    //     // }
+    // },
     data() {
         return {
             // show: false
@@ -35,17 +35,20 @@ export default defineComponent({
 <template>
     <div class="item">
         <div class="avatar">
-            <img class="img" v-if="avatar" :src="avatar" alt="avatar">
-            <q-icon name="avatar" />
+            <slot name="avatar">
+            </slot>
         </div>
         <div class="title">
-            <h6 id="title">{{ title }}</h6>
+            <slot name="title">
+            </slot>
         </div>
         <div class="subtitle">
-            <p id="subtitle">{{ subtitle }}</p>
+            <slot name="subtitle">
+            </slot>
         </div>
         <div class="actions">
-            <q-icon size="20px" :name="icon" />
+            <slot name="actions">
+            </slot>
         </div>
     </div>
 </template>
@@ -54,9 +57,19 @@ export default defineComponent({
 .item {
     display: grid;
     grid-template-columns: 40px auto 30px;
-    grid-template-rows: repeat(auto-fill, 30px);
+    grid-template-rows: repeat(auto-fill, 20px);
     text-align: center;
-    gap: 5px
+    /* gap: 5px; */
+    max-width: 200px;
+}
+
+.avatar :slotted(img) {
+    width: 40px;
+    height: 40px;
+}
+.title :slotted(h1) {
+  font-size: 20px;
+  font-weight: bold;
 }
 
 .avatar {

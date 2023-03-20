@@ -32,9 +32,6 @@ export default defineComponent({
     },
     methods: {
       async search() {
-        // bottom 2 line is for whenevver # is used, will come into play at a later date
-        // const re = /\s*(?:#|\s)/;
-        // console.log(this.input.split(re))
         this.loading = true
         if(this.input === "") {
             this.results = new Array<User>()
@@ -78,7 +75,7 @@ export default defineComponent({
                 :dark="$store.state.dark"
                 :autofocus="true"
                 placeholder="Search by username"
-                v-debounce:1s="search"
+                v-debounce:1ms="search"
             >
                 <template v-slot:prepend>
                     <q-icon @click="$router.go(-1)" class="back" name="arrow_back" />
@@ -94,7 +91,7 @@ export default defineComponent({
             <div class="results" v-if="results.length > 0" v-for="u in results">
                 <q-item class="" clickable :to="{name: 'user-profile', params: {username: u.username}}">
                     <q-item-section avatar>
-                        <img class="avatar" v-if="u.profile.avatar" :src="u.profile.avatar"/>
+                        <img class="avatar" v-if="u.avatar" :src="u.avatar"/>
                         <q-icon size="50px" v-else name="account_circle" class="avatar__icon" />
                     </q-item-section>
 

@@ -1,5 +1,7 @@
+import re
 from time import time
 from django.http import JsonResponse
+from django.utils.html import escape
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -25,6 +27,9 @@ class Post_Content(APIView):
             # The following two lines make sure the file uploaded is actually an image
             check_image = Image.open(image)
             check_image.verify()
+            caption = escape(caption)
+            caption = re.sub(r'@(\w+)', r'<a href="/profile/user/\1/" class="mentioned__user">@\1</a>', caption)
+            print(caption)
             user, token = jwt.authenticate(request)
             post = Post(
                 user = user,

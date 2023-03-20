@@ -3,7 +3,6 @@ import { http } from '@/assets/http';
 import { defineComponent } from 'vue';
 import { useCookies } from 'vue3-cookies';
 import type { User } from '../assets/interfaces';
-import {Cookies} from 'quasar';
 import Mention from './Mention.vue';
 import { Crypter } from '@/assets/crypter';
 
@@ -15,7 +14,8 @@ export default defineComponent({
             caption: "",
             submitting: false,
             users: new Array<User>(),
-            capt: ""
+            capt: "",
+            chars: 255,
         };
     },
     setup() {
@@ -42,53 +42,6 @@ export default defineComponent({
                 });
             }
         },
-        mention() {
-            if (this.caption) {
-                const user = this.caption.match(/@\w+/g);
-                const tag = this.caption.match(/#\w+/g);
-                if (user) {
-                    user.forEach((match) => {
-                        const username = match.replace("@", "");
-                        http.get(`users/username/${username}`).then((res) => {
-                            if (res.data.success) {
-                                console.log(res.data.users);
-                                this.users = res.data.users;
-                                // this.capt = this.caption.replace(match, `<a href="profile/user/${this.users[0].id}/">${match}</a>`)
-                            }
-                        }).catch((err) => {
-                            console.log(err);
-                        });
-                    });
-                }
-            }
-            else {
-                this.users = new Array<User>();
-            }
-            // if (this.caption) {
-            //   const matches = this.caption.match(/@\w+/g);
-            //   if (matches !== null) {
-            //     console.log('matches')
-            //     matches.forEach((match) => {
-            //       const username = match.replace("@", "")
-            //       http.get(`users/username/${username}`).then((res) => {
-            //         if (res.data.success) {
-            //           console.log(res.data.users)
-            //           this.users = res.data.users
-            //           // this.caption = this.caption.replace(match, `<a href="/user/${user.id}">${match}</a>`)
-            //         }
-            //       }).catch((err) => {
-            //         console.log(err)
-            //       })
-            //     })
-            //   }
-            //   else{
-            //     this.users = new Array<User>()
-            //   }
-            // }
-            // else {
-            //   this.users = new Array<User>()
-            // }
-        }
     },
     created() {
     },
@@ -104,34 +57,17 @@ export default defineComponent({
   <div class="post">
     <div class="post__container">
       <q-avatar class="post__avatar" size="65px" >
-          <img class="user__avatar" v-if="$store.state.user.profile.avatar" :src="$store.state.user.profile.avatar"/>
+          <img class="user__avatar" v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
           <q-icon v-else size="65px" name="face" />
       </q-avatar>
-      <form class="post__form" @submit.prevent="submit">
+      <form class="post__form" autocorrect="on" autocomplete="off" @submit.prevent="submit">
         <q-file v-model="image" clearable class="post__file" label="Upload an image" :dark="$store.state.dark" :color="$store.state.dark ? 'white': 'black'">
           <template v-slot:prepend>
             <q-icon name="cloud_upload" />
           </template>
         </q-file>
-        <!-- <q-input
-          clearable
-          :dark="$store.state.dark"
-          clear-icon="close"
-          :color="$store.state.dark ? 'white' : 'black'"
-          class="post__caption"
-          v-model="caption"
-          label="Caption"
-          @change="mention"
-          v-html="caption"
-        >
-        </q-input> -->
-        <!-- <Input input_type="text" class="post__caption" @update:val="caption = $event" input_label="Caption"/> -->
-        <Mention @update:val="caption = $event" required input_type="text" id="caption" input_label="Caption" class="post__caption" />
-        <div v-if="users.length > 0" class="results" >
-          <ul v-for="u in users">
-            <li>{{ u.username }}</li>
-          </ul>
-        </div>
+        <Mention @update:charsLeft="chars = $event" @update:val="caption = $event" :value="caption" required input_type="text" id="caption" input_label="Caption" class="post__caption" />
+        <p>{{ chars }} / 255</p>
         <q-btn class="post__submit__btn" :loading="submitting" type="submit"  icon-right="send" push label="Post" :disable="image === null">
           <template v-slot:loading>
             <q-spinner-puff
@@ -212,8 +148,18 @@ export default defineComponent({
 }
 
 .results {
-  background-color: var(--color-background-soft);
+  /* background-color: var(--color-background-soft);
   text-align: center;
+  position: absolute; */
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  max-height: 100px;
+  background-color: white; /* set the background color to match your design */
+  border: 1px solid #ccc; /* add a border for visual separation */
+  border-top: none; /* remove top border to align with input element */
 }
 .results ul {
   list-style: none;
