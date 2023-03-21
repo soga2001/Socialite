@@ -4,7 +4,8 @@ from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.decorators import api_view, permission_classes
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from users.models import User 
 from .models import UserFollowing
 from rest_framework.views import APIView
 from .serializer import UserFollowingSerializer

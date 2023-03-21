@@ -1,5 +1,6 @@
 import re
 from time import time
+import traceback
 from django.http import JsonResponse
 from django.utils.html import escape
 from django.shortcuts import render
@@ -10,12 +11,42 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Post
 from .serializer import PostSerializer
 from PIL import Image
-import uuid
-import os
+from users.models import User
 
 import json
 
 jwt = JWTAuthentication()
+
+# def replace(val):
+#     u = re.sub(r'@', '', val.group())
+#     try:
+#         user = User.objects.get(username=u)
+#         if(user):
+#             return r'<a href="/profile/user/{0}/">@{0}</a>'.format(u)
+#         else:
+#             return val
+#     except User.DoesNotExist:
+#         return val
+
+def replace(val):
+    u = re.sub(r'@', '', val.group())
+    # return r'<a href="/profile/user/{0}/">@{0}</a>'.format(val)
+    try:
+        user = User.objects.get(username=u)
+        print(user)
+        if user:
+            return r'<a href="/profile/user/{0}/">@{0}</a>'.format(u)
+        else:
+            return val
+    except User.DoesNotExist:
+        return r'{0}'.format(val.group())
+
+    # except Exception as e:
+    #     print(f'Error: {e}')
+    #     print(f'User with username {u} not found')
+    #     print(traceback.format_exc())
+    #     return val
+        # return val
 
 class Post_Content(APIView):
     permission_classes = [IsAuthenticated]
@@ -28,8 +59,9 @@ class Post_Content(APIView):
             check_image = Image.open(image)
             check_image.verify()
             caption = escape(caption)
-            caption = re.sub(r'@(\w+)', r'<a href="/profile/user/\1/" class="mentioned__user">@\1</a>', caption)
-            print(caption)
+            regex = r'@(\w+)'
+            # caption = re.sub(r'@(\w+)', r'<a href="/users/\1/">@\1</a>', caption)
+            caption = re.sub(regex, replace, caption)
             user, token = jwt.authenticate(request)
             post = Post(
                 user = user,

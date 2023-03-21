@@ -539,14 +539,14 @@ export default defineComponent({
     z-index: 3;
 }
 
-.post__caption /deep/ a {
+.post__caption:deep(a) {
     text-decoration: none;
-    color: rgba(170, 0, 255, .8);
+    color: rgba(226, 75, 253, 0.8);
 }
 
-.post__caption /deep/ a:hover {
+.post__caption:deep(a:hover) {
     text-decoration: none;
-    color: rgba(170, 0, 255, 1);
+    color: rgba(226, 75, 253, 1);
 }
 
 .comments {

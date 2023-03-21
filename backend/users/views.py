@@ -64,13 +64,19 @@ def user_by_id(request, user_id):
         return JsonResponse({"error": True}, safe=False)
 
 @api_view(["GET"])
-def user_by_username(request, username):
+def user_by_username(request, username, multiple=True):
     try:
-        vector = SearchVector('username')
-        query = SearchQuery(username)
-        user = UserSerializer(User.objects.annotate(rank=SearchRank(vector, query)).order_by('-rank')[0:10])
-        # print(user.data)
-        users = UserSerializer(User.objects.filter(username__contains=username), many=True)
+        print(multiple)
+        if multiple == True:
+            vector = SearchVector('username')
+            query = SearchQuery(username)
+            # users = UserSerializer(User.objects.annotate(rank=SearchRank(vector, query)).order_by('-rank')[0:10])
+            # print(users.data)
+            # print(user.data)
+            users = UserSerializer(User.objects.filter(username__contains=username), many=True)
+        else:
+            users = UserSerializer(User.objects.get(username=username))
+        print(users.data)
         return JsonResponse({"success": True, "users": users.data}, safe=False)
     except:
         return JsonResponse({"error": True}, safe=False)

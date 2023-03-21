@@ -25,9 +25,9 @@ export default defineComponent({
         async userInfo() {
             this.loading = true
 
-            await http.get(`users/username/${this.username}/`).then((res) => {
+            await http.get(`users/username/${this.username}/${false}/`).then((res) => {
                 if (res.data.success) {
-                    this.user = res.data.users;
+                    this.user = [res.data.users];
                     this.avatar = this.user[0].avatar || '';
                 }
             }).catch((err) => {
