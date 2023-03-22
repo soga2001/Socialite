@@ -109,8 +109,8 @@ export default defineComponent({
                         <!-- <img v-if="u.avatar" :src="u.avatar" alt="John Doe" class="rounded-full" /> -->
                         <!-- <q-icon size="50px" v-else name="account_circle" class="rounded-full" /> -->
                     </template>
-                    <template #name>{{u.first_name + ' ' + u.last_name}}</template>
-                    <template #username>@{{ u.username }}</template>
+                    <template #title>{{u.first_name + ' ' + u.last_name}}</template>
+                    <template #sub-title>@{{ u.username }}</template>
                 </Item>
             </div>
             <div v-if="noResults">

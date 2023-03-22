@@ -4,11 +4,11 @@
         <slot name="avatar" />
       </div>
       <div class="info">
-        <div class="name">
-          <slot name="name" />
+        <div class="title">
+          <slot name="title" />
         </div>
-        <div class="username">
-          <slot name="username" />
+        <div class="sub-title">
+          <slot name="sub-title" />
         </div>
       </div>
       <div class="icon">
@@ -32,7 +32,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1rem;
+    padding: .6rem;
     border: 1px solid #ccc;
     /* border-radius: 0.5rem; */
     cursor: pointer;
@@ -56,12 +56,13 @@
     flex: 1 1 auto;
   }
   
-  .name {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
+  .title {
+    font-weight: 900;
+    font-size: 17px;
+    margin-bottom: 0.3rem;
   }
   
-  .username {
+  .sub-title {
     font-style: italic;
   }
   

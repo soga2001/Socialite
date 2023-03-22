@@ -237,6 +237,15 @@ export default defineComponent({
               <q-icon name="o_more_horiz"  />
             </q-item-section>
           </q-item>
+          <!-- <Item>
+              <template #avatar>
+                  <img src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
+                  <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar" alt="John Doe" class="rounded-full" />
+                  <q-icon size="50px" v-else name="account_circle" class="rounded-full" />
+              </template>
+              <template #name>{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</template>
+              <template #username>@{{ $store.state.user.username }}</template>
+          </Item> -->
 
           <q-avatar size="40px" class="show">
             <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
