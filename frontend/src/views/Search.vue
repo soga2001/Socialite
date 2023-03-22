@@ -4,6 +4,7 @@ import { defineComponent, ref, toHandlers } from 'vue';
 import type { User } from '@/assets/interfaces';
 import { useStore } from '../store/store';
 import { TouchSwipe } from 'quasar';
+import Item from '../components/Item.vue';
 
 export default defineComponent({
     data() {
@@ -61,7 +62,8 @@ export default defineComponent({
       submit() {
 
       }
-    }
+    },
+    components: {Item},
 })
 </script>
 
@@ -89,18 +91,27 @@ export default defineComponent({
         </form>
         <div id="results">
             <div class="results" v-if="results.length > 0" v-for="u in results">
-                <q-item class="" clickable :to="{name: 'user-profile', params: {username: u.username}}">
+                <!-- <q-item class="" clickable :to="{name: 'user-profile', params: {username: u.username}}">
                     <q-item-section avatar>
                         <img class="avatar" v-if="u.avatar" :src="u.avatar"/>
                         <q-icon size="50px" v-else name="account_circle" class="avatar__icon" />
                     </q-item-section>
 
                     <q-item-section>
-                        <!-- <q-item-label>{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</q-item-label> -->
+                        <q-item-label>{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</q-item-label>
                         <q-item-label>{{ u.first_name }} {{ u.last_name }}</q-item-label>
                         <q-item-label caption>@{{ u.username }}</q-item-label>
                     </q-item-section>
-                </q-item>
+                </q-item> -->
+                <Item @click="$router.push({ name: 'user-profile', params: { username: u.username } })" >
+                    <template #avatar>
+                        <img src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
+                        <!-- <img v-if="u.avatar" :src="u.avatar" alt="John Doe" class="rounded-full" /> -->
+                        <!-- <q-icon size="50px" v-else name="account_circle" class="rounded-full" /> -->
+                    </template>
+                    <template #name>{{u.first_name + ' ' + u.last_name}}</template>
+                    <template #username>@{{ u.username }}</template>
+                </Item>
             </div>
             <div v-if="noResults">
                 <q-item class="">

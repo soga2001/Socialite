@@ -166,10 +166,6 @@ export default defineComponent({
                         <!-- <timeago :datetime="date_posted"  auto-update :converter-options="{ includeSeconds: true, addSuffix: true, useStrict: false,}"/> -->
                     </q-item-label>
                 </q-item-section>
-
-                <!-- <q-item-section side @click.stop="testing" >
-                    <q-icon name="o_more_horiz"  />
-                </q-item-section> -->
             </q-item>
 
             <div class="dropdown__div z-index-2" @click.stop="">

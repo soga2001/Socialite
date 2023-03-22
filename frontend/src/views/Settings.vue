@@ -33,17 +33,22 @@ export default defineComponent({
     <div>
         <Item>
             <template #avatar>
-                <img src="http://www.gravatar.com/avatar/{{$cookies.gravatar}}?s=50" class="avatar" />
+                <img :src="$store.state.user.avatar" alt="John Doe" class="rounded-full" />
             </template>
-            <template #title>
-                <h1>Hello</h1>
+            <template #name>{{$store.state.user.first_name + ' ' + $store.state.user.last_name}}</template>
+            <template #username>{{ $store.state.user.username }}</template>
+            <template #icon>
+                <img
+                src="icon1.png"
+                alt="Icon 1"
+                @click="() => {}"
+                />
+                <img
+                src="icon2.png"
+                alt="Icon 2"
+                @click="() => {}"
+                />
             </template>
-            <!-- <template #subtitle>
-                <p>World</p>
-            </template> -->
-            <!-- <template #actions>
-                <RouterLink to="/">Here</RouterLink>
-            </template> -->
         </Item>
         <!-- <Cropper /> -->
     </div>
