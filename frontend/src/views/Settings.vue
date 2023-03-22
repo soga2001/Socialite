@@ -5,6 +5,7 @@ import { RouterLink, RouterView } from 'vue-router';
 import { http } from '@/assets/http';
 import {useStore} from '../store/store'
 import Item from '../components/Item.vue'
+import Cropper from '@/components/Cropper.vue';
 
 export default defineComponent({
     data() {
@@ -24,7 +25,7 @@ export default defineComponent({
         // console.log(import.meta.env)
         // console.log(window.innerHeight)
     },
-    components: {Item}
+    components: { Item, Cropper }
 })
 </script>
 
@@ -44,14 +45,7 @@ export default defineComponent({
                 <RouterLink to="/">Here</RouterLink>
             </template> -->
         </Item>
-        <!-- <q-item>
-            <q-item-section avatar>
-                <q-icon class="danger__icon" name="flag"/>
-            </q-item-section>
-            <q-item-section>
-                <q-item-label>Report Post</q-item-label>
-            </q-item-section>
-        </q-item> -->
+        <!-- <Cropper /> -->
     </div>
 </template>
 

@@ -85,7 +85,8 @@ export default defineComponent({
 
           // if user spaces or the @ is removed
           if(e.key == ' ' || at == -1 || this.val.charAt(e.target.selectionStart-1) == " " || this.val.charAt(e.target.selectionStart-1) == '\n') {
-            this.savedUsers.set(this.val.substring(this.index, space), this.users)
+            this.savedUsers.set(this.val.substring(this.index + 1, space), this.users)
+            console.log(this.savedUsers)
             this.index = -1
             this.users = new Array<User>();
           }
@@ -110,7 +111,7 @@ export default defineComponent({
           } 
         }
       },
-      checkSavedUsers(e: any) {
+      async checkSavedUsers(e: any) {
         if(this.savedUsers.size == 0) {
           return
         }
@@ -127,6 +128,7 @@ export default defineComponent({
           end = this.val.length
         }
         const username = this.val.substring(start + 1, end)
+        console.log(username)
         const u = this.savedUsers.get(username.trim())
         if(u) {
           this.users = u

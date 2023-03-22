@@ -1,5 +1,6 @@
 # From Django
 from django.conf import settings
+from django.core import serializers
 from django.db import DatabaseError
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
@@ -7,6 +8,11 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect, requires_csr
 # from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from django.db.models import F
+
+from django.contrib.postgres.search import TrigramSimilarity, TrigramDistance
+from django.db.models import Q
+
 from django.contrib.sessions.models import Session
 
 
@@ -63,23 +69,44 @@ def user_by_id(request, user_id):
     except:
         return JsonResponse({"error": True}, safe=False)
 
+
+
+
+# @api_view(["GET"])
+# def user_by_username(request, username, multiple=True):
+#     try:
+#         if multiple == True:
+#             query = SearchQuery(username)
+#             vector = SearchVector('search_vector', weight='A')  # 'A' weight is used to indicate a primary search vector
+#             users = User.objects.annotate(similarity=SearchRank(vector, query)).order_by('-similarity')
+#             users_data = UserSerializer(users, many=True).data
+#         else:
+#             user = User.objects.get(username=username)
+#             users_data = UserSerializer(user).data
+#         return JsonResponse({"success": True, "users": users_data})
+#     except User.DoesNotExist:
+#         return JsonResponse({"error": "User does not exist"}, status=404)
+#     except:
+#         return JsonResponse({"error": "An error occurred"}, status=500)
+
 @api_view(["GET"])
 def user_by_username(request, username, multiple=True):
     try:
-        print(multiple)
         if multiple == True:
-            vector = SearchVector('username')
-            query = SearchQuery(username)
-            # users = UserSerializer(User.objects.annotate(rank=SearchRank(vector, query)).order_by('-rank')[0:10])
-            # print(users.data)
-            # print(user.data)
-            users = UserSerializer(User.objects.filter(username__contains=username), many=True)
+            users = User.objects.annotate(similarity=TrigramSimilarity('username', username)).filter(similarity__gte=0.2).order_by('-similarity')
+            users_data = UserSerializer(users, many=True).data
         else:
-            users = UserSerializer(User.objects.get(username=username))
-        print(users.data)
-        return JsonResponse({"success": True, "users": users.data}, safe=False)
+            print('here')
+            user = User.objects.get(username=username)
+            users_data = UserSerializer(user).data
+        return JsonResponse({"success": True, "users": users_data})
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User does not exist"}, status=404)
     except:
-        return JsonResponse({"error": True}, safe=False)
+        return JsonResponse({"error": "An error occurred"}, status=500)
+
+
+
 
 @api_view(["POST"])
 def user_register(request):
@@ -243,6 +270,9 @@ class Delete_User(APIView):
         except:
             return JsonResponse({"error": True}, safe=False)
 
+# users = UserSerializer(User.objects.annotate(rank=SearchRank(F('sv'), SearchQuery(username, search_type='phrase'), weights=[0.1, 0.2, 0.4, 1.0])).order_by("-rank"), many=True)
+# users = UserSerializer(User.objects.filter(sv=username), many=True)
+# print(users.data) 
 
 @api_view(["DELETE"])
 # @permission_classes([IsAdminUser,])

@@ -22,7 +22,7 @@ def rename_file(instance, filename):
 class User(AbstractUser):
     bio = models.CharField(max_length=300, null=True, blank=True, editable=True)
     avatar = models.FileField(upload_to=rename_file, blank=True, null=True, editable=True)
-    sv = SearchVectorField(null=True)
+    # search_vector = SearchVectorField(null=True, blank=True)
 
     groups = models.ManyToManyField(
         'auth.Group', 
@@ -40,8 +40,8 @@ class User(AbstractUser):
         help_text='Specific permissions for this user.'
     )
 
-    class Meta:
-        indexes = [GinIndex(fields=['sv'])]
+    # class Meta:
+    #     indexes = [GinIndex(fields=['search_vector'])]
 
 
 # when a post gets deleted
@@ -56,14 +56,14 @@ def check_name(sender, instance, **kwargs):
         raise ValueError('Please enter your name')
     
 
-@receiver(post_save, sender=User)
-def update_search_vector(sender, instance, created, **kwargs):
-    if created:
-        # Create a new SearchVector object with the fields you want to include
-        search_vector = SearchVector('username', 'first_name', 'last_name', 'email')
-        # Update the sv field with the new SearchVector value
-        instance.sv = search_vector
-        instance.save()
+# @receiver(post_save, sender=User)
+# def update_search_vector(sender, instance, created, **kwargs):
+#     if created:
+#         # Create a new SearchVector object with the fields you want to include
+#         search_vector = SearchVector('username', 'first_name', 'last_name', 'email')
+#         # Update the sv field with the new SearchVector value
+#         instance.search_vector = search_vector
+#         instance.save()
     
 
 

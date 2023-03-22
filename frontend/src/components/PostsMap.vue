@@ -540,13 +540,19 @@ export default defineComponent({
 }
 
 .post__caption:deep(a) {
+    font-weight: 900;
     text-decoration: none;
-    color: rgba(226, 75, 253, 0.8);
+    /* color: #FE4A4A; */
+    color: #FF7373;
+    /* color: rgb(250, 89, 164); */
+    /* color: #b16af4; */
+    /* color: rgb(37, 192, 114) */
+    /* color: rgb(0, 191, 255); */
 }
 
 .post__caption:deep(a:hover) {
     text-decoration: none;
-    color: rgba(226, 75, 253, 1);
+    color: rgb(0, 191, 255);
 }
 
 .comments {

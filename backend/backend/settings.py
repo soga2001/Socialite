@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     'posts.apps.PostsConfig',
     'following.apps.FollowingConfig',
     'likes.apps.LikesConfig',
+    'django.contrib.postgres',
+
 ]
 
 MIDDLEWARE = [
