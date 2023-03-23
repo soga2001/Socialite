@@ -3,6 +3,7 @@ import { defineComponent, ref } from 'vue';
 import { http } from '@/assets/http';
 import type { User } from '@/assets/interfaces';
 import Item from './Item.vue';
+import { roundToNearestMinutesWithOptions } from 'date-fns/fp';
 
 
 export default defineComponent({
@@ -77,16 +78,21 @@ export default defineComponent({
           this.users = new Array<User>();
         }
         else {
-          const promise = await this.updateRows()
+          // const promise = await this.updateRows()
           const sub = this.val.substring(0, e.target.selectionStart)
           const at = sub.lastIndexOf('@')
           const space = sub.lastIndexOf(" ")
+          const enter = sub.lastIndexOf("\n")
           if(at > space) {
             this.index = at
           }
 
+          if(at < enter) {
+            this.index = -1;
+          }
+
           // if user spaces or the @ is removed
-          if(e.key == ' ' || at == -1 || this.val.charAt(e.target.selectionStart-1) == " " || this.val.charAt(e.target.selectionStart-1) == '\n') {
+          if(e.key == ' ' || at == -1 || this.val.charAt(e.target.selectionStart-1) == " " || at < enter) {
             this.savedUsers.set(this.val.substring(this.index + 1, space), this.users)
             this.index = -1
             this.users = new Array<User>();
@@ -116,7 +122,7 @@ export default defineComponent({
         if(this.savedUsers.size == 0) {
           return
         }
-
+        
         const sub = this.val.substring(0, e.target.selectionStart)
         const start = sub.lastIndexOf('@')
         this.index = start
@@ -155,6 +161,7 @@ export default defineComponent({
     },
     watch: {
       val(val) { 
+        this.updateRows()
         if(val.length == 0) {
           this.charsLeft = this.maxChars
           this.savedUsers.clear()
@@ -162,8 +169,10 @@ export default defineComponent({
           this.users = new Array<User>();
           this.$emit('update:charsLeft', this.charsLeft)
         }
+      },
+      rows(rows) {
+        this.users = new Array<User>();
       }
-
     }
 })
 
@@ -180,17 +189,6 @@ export default defineComponent({
     </div>
     <div class="results" v-if="users.length">
         <div @click="replaceMention(user.username)" class="result__map" v-for="user in users" :key="user.id">
-          <!-- <q-item>
-            <q-item-section avatar>
-              <img class="avatar" v-if="user.avatar" :src="user.avatar"/>
-              <q-icon size="50px" v-else name="o_person" class="avatar__icon" />
-            </q-item-section>
-
-            <q-item-section>
-              <q-item-label>{{ user.first_name + ' ' + user.last_name }}</q-item-label>
-              <q-item-label caption class="username">@{{ user.username }}</q-item-label>
-            </q-item-section>
-          </q-item> -->
           <Item>
               <template #avatar>
                   <img src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
@@ -198,7 +196,7 @@ export default defineComponent({
                   <!-- <q-icon size="50px" v-else name="account_circle" class="rounded-full" /> -->
               </template>
               <template #title>{{user.first_name + ' ' + user.last_name}}</template>
-              <template #sub-title>@{{ user.username }}</template>
+              <template #caption>@{{ user.username }}</template>
           </Item>
         </div>
     </div>

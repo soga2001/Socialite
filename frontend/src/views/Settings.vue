@@ -31,23 +31,10 @@ export default defineComponent({
 
 <template>
     <div>
-        <Item>
+        <Item class="item">
             <template #avatar>
-                <img :src="$store.state.user.avatar" alt="John Doe" class="rounded-full" />
-            </template>
-            <template #name>{{$store.state.user.first_name + ' ' + $store.state.user.last_name}}</template>
-            <template #username>{{ $store.state.user.username }}</template>
-            <template #icon>
-                <img
-                src="icon1.png"
-                alt="Icon 1"
-                @click="() => {}"
-                />
-                <img
-                src="icon2.png"
-                alt="Icon 2"
-                @click="() => {}"
-                />
+              <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
+              <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
             </template>
         </Item>
         <!-- <Cropper /> -->
@@ -58,5 +45,14 @@ export default defineComponent({
 /* div {
     min-height: 100vh;
     height: 100%;
+} */
+
+
+
+/* .item:hover {
+    background-color: red;
+    width: fit-content;
+    border-radius: 50%;
+    padding: 0;
 } */
 </style>

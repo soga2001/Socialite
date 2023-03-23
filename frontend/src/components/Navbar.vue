@@ -221,36 +221,29 @@ export default defineComponent({
       </q-item>
       <!-- <Item :avatar="$store.state.user.profile.avatar" :title="$store.state.user.first_name + ' ' + $store.state.user.last_name" :subtitle="$store.state.user.username" icon="more_vert"/> -->
       <div class="dropdown-btn">
-        <q-btn no-caps flat class="dropdown" v-if="$store.state.authenticated">
-          <q-item class="hide">
-            <q-item-section avatar>
-              <img class="avatar" v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
-              <span size="iconSize" v-else class="avatar__icon">{{ $store.state.user.first_name.substring(0,1) + $store.state.user.last_name.substring(0,1) }}</span>
-            </q-item-section>
+        <q-btn no-caps flat round class="dropdown" v-if="$store.state.authenticated">
+          <Item :border="false" class="hide">
+            <template #avatar>
+              <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
+              <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
+            </template>
+            <template #title>
+              <span class="title">{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</span>
+            </template>
+            <template #caption>
+              <span class="subtitle">@{{ $store.state.user.username }}</span>
+            </template>
+            <template #icon>
+              <q-icon name="o_more_vert"/>
+            </template>
+          </Item>
 
-            <q-item-section>
-              <q-item-label>{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</q-item-label>
-              <q-item-label caption class="username">@{{ $store.state.user.username }}</q-item-label>
-            </q-item-section>
-
-            <q-item-section side >
-              <q-icon name="o_more_horiz"  />
-            </q-item-section>
-          </q-item>
-          <!-- <Item>
-              <template #avatar>
-                  <img src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
-                  <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar" alt="John Doe" class="rounded-full" />
-                  <q-icon size="50px" v-else name="account_circle" class="rounded-full" />
-              </template>
-              <template #name>{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</template>
-              <template #username>@{{ $store.state.user.username }}</template>
-          </Item> -->
-
-          <q-avatar size="40px" class="show">
-            <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
-            <span size="iconSize" v-else class="avatar__icon">{{ $store.state.user.first_name.substring(0,1) + $store.state.user.last_name.substring(0,1) }}</span>
-          </q-avatar> 
+          <Item :border="false" class="show">
+            <template #avatar>
+              <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
+              <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
+            </template>
+          </Item>
           <q-menu fit square self="top left" anchor="bottom left">
             <q-list class="dropdown__main" dense>
               <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
@@ -324,26 +317,12 @@ export default defineComponent({
       <!-- <Item :avatar="$store.state.user.profile.avatar" :title="$store.state.user.username" /> -->
       <div class="dropdown-btn">
         <q-btn no-caps flat round class="dropdown" v-if="$store.state.authenticated">
-          <q-item class="hide">
-            <q-item-section avatar>
-              <img class="avatar" v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
-              <q-icon size="iconSize" v-else name="o_person" class="avatar__icon" />
-            </q-item-section>
-
-            <q-item-section>
-              <q-item-label>{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</q-item-label>
-              <q-item-label caption class="username">@{{ $store.state.user.username }}</q-item-label>
-            </q-item-section>
-
-            <q-item-section side >
-              <q-icon name="o_more_horiz"  />
-            </q-item-section>
-          </q-item>
-
-          <q-avatar size="40px" class="show">
-            <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
-            <q-icon v-else name="o_person" class="avatar__icon" />
-          </q-avatar> 
+            <Item class="item">
+                <template #avatar>
+                <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
+                <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
+                </template>
+            </Item>
           <q-menu fit square self="top left" anchor="bottom left">
             <q-list class="dropdown__main" dense>
               <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
@@ -370,12 +349,12 @@ header {
   position: -webkit-sticky;
 	position: sticky;
   max-height: 100vh;
+  max-height: 100dvh;
   height: 100%;
   width: 100%;
 	top: 0;
   z-index: 999;
   overflow-y: scroll;
-  /* padding-right: calc(var(--section-gap) / 2); */
 }
 
 .nav {
@@ -480,11 +459,10 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
+  justify-self: center;
 }
 
 .dropdown:hover {
-  /* background-color: hsla(hue, saturation, lightness, alpha); */
-  /* background-color: var(--color-background-mute); */
   border-radius: 30px;
 }
 
@@ -521,7 +499,7 @@ a {
 
 @media (max-width: 992px) {
   .show {
-    display:block;
+    display:flex;
   }
 
   .hide {
@@ -537,11 +515,6 @@ a {
     display: flex;
     border-radius: 50%;
     /* padding: 10px; */
-  }
-  
-  .dropdown:hover {
-    /* background-color: hsla(hue, saturation, lightness, alpha); */
-    background-color: transparent !important;
   }
 }
 

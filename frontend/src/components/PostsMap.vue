@@ -169,12 +169,13 @@ export default defineComponent({
 
             <Item @click.stop="$router.push({ name: 'user-profile', params: { username: username } })" >
                     <template #avatar>
-                        <img src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
-                        <!-- <img v-if="u.avatar" :src="u.avatar" alt="John Doe" class="rounded-full" /> -->
+                        
+                        <img v-if="avatar" :src="avatar" alt="John Doe" class="rounded-full" />
+                        <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                         <!-- <q-icon size="50px" v-else name="account_circle" class="rounded-full" /> -->
                     </template>
                     <template #title>@{{ username }}</template>
-                    <template #sub-title>
+                    <template #caption>
                         <Timeago size="12px" :date="date_posted"/>
                     </template>
                     <template #icon>
@@ -270,11 +271,19 @@ export default defineComponent({
             <span class="post__caption">{{ caption }}</span>
         </div> -->
         <q-img :src="img_url" @click.stop=""/>
-        <q-item-section v-if="caption" class="caption">
+        <!-- <q-item-section v-if="caption" class="caption">
             <q-item-label><span class="caption__username">{{ username }}</span></q-item-label>
-            <!-- <q-item-label v-html="caption" caption class="post__caption"></q-item-label> -->
+            <q-item-label v-html="caption" caption class="post__caption"></q-item-label>
             <p v-html="caption" class="post__caption"></p>
-        </q-item-section>
+        </q-item-section> -->
+        <Item class="caption">
+            <template #title class="caption__username">
+                {{ username }}
+            </template>
+            <template #caption>
+                <p class="post__caption" v-html="caption"></p>
+            </template>
+        </Item>
 
         <q-separator :dark="$store.state.dark"/>
         <q-card-actions class="actions z-index-2">
