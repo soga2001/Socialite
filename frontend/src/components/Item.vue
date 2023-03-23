@@ -63,12 +63,19 @@
   
   .avatar {
     flex: 0 0 auto;
-    width: 3rem;
+    width: 4rem;
   }
+
+  :slotted(img) {
+    border-radius: 50%;
+    max-width: 50px;
+    max-height: 50px;
+    padding: 0 !important;
+  }
+
   
   .info {
     flex: 1 1 auto;
-    margin-left: .5rem;
   }
   
   .title {
@@ -82,16 +89,31 @@
     align-items: center;
     position: relative;
   }
-  
-  :slotted(img) {
-    border-radius: 50%;
-    max-width: 50px;
-    max-height: 50px;
-    padding: 0 !important;
+
+  /* :slotted(*) {
+    padding: 10px;
+  } */
+
+  :slotted(p:deep(a)) {
+    font-weight: 900;
+    text-decoration: none;
+    color: #FF7373;
   }
 
-  :slotted(*):deep() {
-    padding: 10px;
+  :slotted(p:deep(a:hover)) {
+    text-decoration: none;
+    color: rgb(0, 191, 255);
   }
+
+  /* .post__caption:deep(a) {
+    font-weight: 900;
+    text-decoration: none;
+    color: #FE4A4A;
+    color: #FF7373;
+    color: rgb(250, 89, 164); 
+    color: #b16af4;
+    color: rgb(37, 192, 114);
+    color: rgb(0, 191, 255);
+} */
   </style>
   
