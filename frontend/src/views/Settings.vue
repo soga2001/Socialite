@@ -36,6 +36,12 @@ export default defineComponent({
               <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
               <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
             </template>
+            <template #title>
+                Stuff
+            </template>
+            <template #caption>
+                <p>Hello</p>
+            </template>
         </Item>
         <!-- <Cropper /> -->
     </div>

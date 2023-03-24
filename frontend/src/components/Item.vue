@@ -1,13 +1,13 @@
 <template>
   <div :class="'user-card ' + (isAvatarOnly ? 'circular' : '')">
-    <div class="avatar" v-if="$slots.avatar" :style="avatarStyle">
+    <div class="avatar" v-if="$slots.avatar">
       <slot name="avatar"  />
     </div>
     <div class="info" v-if="!isAvatarOnly">
       <div class="title">
         <slot name="title" v-if="$slots.title" />
       </div>
-      <div class="sub-title">
+      <div class="caption">
         <slot name="caption" v-if="$slots.caption" />
       </div>
     </div>
@@ -27,17 +27,7 @@
       };
     },
     computed: {
-      avatarStyle() {
-        if (this.isAvatarOnly) {
-          return {
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '50%'
-          };
-        }
-        return {};
-      }
+
     },
     mounted() {
       this.isAvatarOnly =  Boolean(this.$slots.avatar && !this.$slots.title && !this.$slots.caption && !this.$slots.icon);
@@ -48,7 +38,7 @@
   <style scoped>
   .user-card {
     display: flex;
-    align-items: center;
+    /* align-items: center; */
     justify-content: space-between;
     padding: 0.6rem;
     cursor: pointer;
@@ -60,10 +50,16 @@
     padding: 0;
     margin: 0;
   }
+
+  .user-card.circular .avatar {
+    width: 100%;
+    display: inline-flex;
+  }
   
   .avatar {
     flex: 0 0 auto;
     width: 4rem;
+
   }
 
   :slotted(img) {
@@ -71,6 +67,10 @@
     max-width: 50px;
     max-height: 50px;
     padding: 0 !important;
+  }
+
+  .user-card.circular .avatar :slotted(img) {
+    border: 2px solid #FF7373;
   }
 
   
@@ -90,14 +90,12 @@
     position: relative;
   }
 
-  /* :slotted(*) {
-    padding: 10px;
-  } */
 
   :slotted(p:deep(a)) {
     font-weight: 900;
     text-decoration: none;
     color: #FF7373;
+    
   }
 
   :slotted(p:deep(a:hover)) {

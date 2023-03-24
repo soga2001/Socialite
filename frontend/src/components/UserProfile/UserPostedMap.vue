@@ -47,7 +47,6 @@ export default defineComponent({
 
 <template>
     <div>
-        <!-- <img :src="img_url"/> -->
         <q-responsive :ratio="1" class="images">
             <img :src="img_url"/>
       </q-responsive>
@@ -58,7 +57,7 @@ export default defineComponent({
 <style scoped>
 img {
     object-fit: cover;
-    border: 1px solid rgb(244, 172, 172);
+    border: 4px double #FF7373;
     border-radius: 5px;
     
 }

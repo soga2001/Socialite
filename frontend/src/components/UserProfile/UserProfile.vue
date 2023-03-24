@@ -92,8 +92,8 @@ export default defineComponent({
             <div class="user__profile__avatar">
                 <!-- https://uiverse.io/igoramos77/silly-fireant-70 -->
                 <q-avatar size="200px" class="avatar">
-                    <img v-if="avatar" :src="avatar" />
-                    <q-icon v-else size="200px" name="face" />
+                    <img v-if="avatar" :src="avatar" alt="John Doe" class="rounded-full" />
+                    <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                 </q-avatar>
                 <!-- https://stackoverflow.com/questions/67104652/hover-effect-change-your-picture-with-icon-on-profile-picture -->
                 <!-- <div class="profilepic">

@@ -169,7 +169,6 @@ export default defineComponent({
 
             <Item @click.stop="$router.push({ name: 'user-profile', params: { username: username } })" >
                     <template #avatar>
-                        
                         <img v-if="avatar" :src="avatar" alt="John Doe" class="rounded-full" />
                         <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                         <!-- <q-icon size="50px" v-else name="account_circle" class="rounded-full" /> -->

@@ -233,7 +233,7 @@ export default defineComponent({
 .wave-group .label {
   color: var(--color-text);
   font-size: 18px;
-  font-weight: normal;
+  font-weight: 900;
   position: absolute;
   pointer-events: none;
   left: 5px;

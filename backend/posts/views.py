@@ -89,8 +89,8 @@ def view_posts(request, timestamp, page):
     return JsonResponse({"posts": list(posts.data)}, safe=False)
 
 @api_view(["GET"])
-def user_posted(request, timestamp, user_id):
-    posts = PostSerializer(Post.objects.filter(user_id=user_id).filter(date_posted__lt=timestamp)[:10], many=True)
+def user_posted(request, timestamp, page, username):
+    posts = PostSerializer(Post.objects.filter(user__username=username).filter(date_posted__lt=timestamp)[:10], many=True)
     return JsonResponse({"posts": list(posts.data)}, safe=False)
 
 

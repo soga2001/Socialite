@@ -3,6 +3,7 @@ import {store, key} from './store/store'
 import App from './App.vue'
 import router from './router'
 import { vue3Debounce } from 'vue-debounce'
+
 import { Quasar, Cookies, Dialog, Notify } from 'quasar'
 // Import icon libraries
 import '@quasar/extras/material-icons/material-icons.css'
@@ -29,7 +30,7 @@ const app = createApp(App)
 app.use(router)
 app.use(store, key)
 app.use(Quasar, {
-    plugins: {Cookies, Dialog, Notify }, // import Quasar plugins and add here
+    plugins: {Dialog, Notify }, // import Quasar plugins and add here
     config: {
       extras: [
         'material-icons',

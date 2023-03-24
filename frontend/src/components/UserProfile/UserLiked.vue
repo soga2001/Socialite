@@ -3,6 +3,7 @@ import { http } from '@/assets/http';
 import type { Post } from '@/assets/interfaces';
 import { defineComponent } from 'vue';
 import UserPostedMap from './UserPostedMap.vue';
+import Loading from '../Loading.vue';
 
 export default defineComponent({
     name: "user-liked",
@@ -37,7 +38,7 @@ export default defineComponent({
         }, 3000);
         // this.getUserPosted();
     },
-    components: { UserPostedMap }
+    components: { UserPostedMap, Loading }
 })
 </script>
 
@@ -47,16 +48,18 @@ export default defineComponent({
             <div class="posts" v-if="user_liked.length > 0" v-for="post in user_liked" :key="post.id">
                 <UserPostedMap class="post" :post="post"/>
             </div>
-            <div class="loading">
-                <q-spinner size="50px" v-if="loading" />
-            </div>
-            <!-- <q-icon size="100px" name="las la-folder-open" />
-            <h4>User has liked no Posts</h4> -->
+        </div>
+        <div class="loading" v-if="loading">
+            <Loading :stroke-width="5"/>
         </div>
     </div>
 </template>
 
 <style scoped>
+
+.user__liked__main {
+    width: 100%;
+}
 .user__liked {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -64,12 +67,10 @@ export default defineComponent({
 }
 
 .loading {
-    display: grid;
     width: 100%;
     height: 100%;
+    display: flex;
     justify-content: center;
-    justify-items: center;
     align-items: center;
-    align-content: center;
 }
 </style>
