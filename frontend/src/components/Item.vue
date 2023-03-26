@@ -5,31 +5,54 @@ import type {RouteLocationRaw} from 'vue-router'
 export default defineComponent({
   data() {
     return {
-      isAvatarOnly: true,
+      isAvatarOnly: false,
       style: {
-        alignItems: this.vertIconCenter ? 'center' : 'normal',
-        cursor: this.to ? 'pointer' : 'normal'
-      },
-      // titleStyle: {} as CSSProperties,
-      // captionStyle: {} as CSSProperties,
+        alignItems: this.alignItems,
+        cursor: this.to ? 'pointer' : 'normal',
+        justifyContent: this.justifyContent
+      } as CSSProperties,
       titleStyle: {
+        fontSize: this.titleSize,
         display: '-webkit-box',
         '-webkit-box-orient': 'vertical',
         '-webkit-line-clamp': this.titleLineClamp,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        color: "var(--color-heading)"
       } as CSSProperties,
       captionStyle: {
+        fontSize: this.captionSize,
         display: '-webkit-box',
         '-webkit-box-orient': 'vertical',
         '-webkit-line-clamp': this.captionLineClamp,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        color: "var(--color-text)"
+      } as CSSProperties,
+      iconStyle: {
+        alignItems: this.iconAlign
+      } as CSSProperties,
+      avatarStyle: {
+        alignItems: this.avatarAlign,
+        width: this.avatarSize,
+        height: this.avatarSize
       } as CSSProperties
     };
   },
   props: {
-    vertIconCenter: {
-      type: Boolean,
-      default: false
+    alignItems: {
+      type: String,
+      default: "center"
+    },
+    justifyContent: {
+      type: String,
+      default: "center"
+    },
+    iconAlign: {
+      type: String,
+      default: "center"
+    },
+    avatarAlign: {
+      type: String,
+      default: "center"
     },
     to: {
       type: [String, Object] as PropType<RouteLocationRaw>,
@@ -46,6 +69,18 @@ export default defineComponent({
     captionLineClamp: {
       type: Number,
       default: 2
+    },
+    avatarSize: {
+      type: String,
+      default: "3rem"
+    },
+    titleSize: {
+      type: String,
+      default: "20px"
+    },
+    captionSize: {
+      type: String,
+      default: "15px"
     }
   },
   methods: {
@@ -70,7 +105,7 @@ export default defineComponent({
 
 <template>
   <div :class="'user-card ' + (isAvatarOnly ? 'circular' : '')" :style="style" @click="router">
-    <div class="avatar" v-if="$slots.avatar">
+    <div class="avatar" :style="avatarStyle" v-if="$slots.avatar">
       <slot name="avatar" />
     </div>
     <div class="info" v-if="!isAvatarOnly">
@@ -81,7 +116,7 @@ export default defineComponent({
         <slot name="caption" v-if="$slots.caption" />
       </div>
     </div>
-    <div class="icon" :style="style" v-if="!isAvatarOnly">
+    <div class="icon" v-if="!isAvatarOnly">
       <slot name="icon" v-if="$slots.icon" />
     </div>
   </div>
@@ -90,14 +125,13 @@ export default defineComponent({
 <style scoped>
   .user-card {
     display: flex;
-    /* padding: 0px 0.6rem;
-    padding-top: 0.4rem; */
     padding: 0.5rem .5rem;
     cursor: pointer;
     position: relative;
     line-height: normal;
     gap: 10px;
-    overflow: hidden;
+    justify-content: center;
+    height: 100%;
   }
   
   .user-card.circular {
@@ -106,11 +140,11 @@ export default defineComponent({
     margin: 0;
   }
 
-  .avatar,
+  /* .avatar,
 .info,
 .icon {
   line-height: 1.2;
-}
+} */
 
   .user-card.circular .avatar {
     width: 100%;
@@ -119,16 +153,15 @@ export default defineComponent({
   
   .avatar {
     flex: 0 0 auto;
-    max-width: 3rem;
     width: 100%;
     height: 100%;
+    display: flex;
   }
 
   :slotted(img) {
     border-radius: 50%;
     width: 100%;
     height: 100%;
-    padding: 0 !important;
   }
 
   .user-card.circular .avatar :slotted(img) {
@@ -138,19 +171,23 @@ export default defineComponent({
   
   .info {
     flex: 1 1 auto;
-    align-items: center;
   }
   
   .title {
     font-weight: 900;
     font-size: 17px;
+    margin-bottom: .5rem; 
+  }
+
+  .title :slotted(*) {
+    font-size: inherit;
+    font-weight: 900;
+    color: var(--color-heading);
   }
   
   .icon {
     flex: 0 0 auto;
-    display: flex;
-    justify-content: center;
-    position: relative;
+    width: fit-content;
   }
 
 

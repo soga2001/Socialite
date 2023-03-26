@@ -152,13 +152,13 @@ export default defineComponent({
     <q-card class="post" @click="">
         <div class="post__main">
 
-            <Item :vert-icon-center="true" :to="{ name: 'user-profile', params: { username: username } }" @click.stop="" >
+            <Item :to="{ name: 'user-profile', params: { username: username } }" @click.stop="" >
                     <template #avatar>
                         <img v-if="avatar" :src="avatar" alt="John Doe" class="rounded-full" />
                         <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                         <!-- <q-icon size="50px" v-else name="account_circle" class="rounded-full" /> -->
                     </template>
-                    <template #title>@{{ username }}</template>
+                    <template #title><span>@{{ username }}</span></template>
                     <template #caption>
                         <Timeago size="12px" :date="date_posted"/>
                     </template>

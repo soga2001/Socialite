@@ -222,7 +222,7 @@ export default defineComponent({
       <!-- <Item :avatar="$store.state.user.profile.avatar" :title="$store.state.user.first_name + ' ' + $store.state.user.last_name" :subtitle="$store.state.user.username" icon="more_vert"/> -->
       <div class="dropdown-btn">
         <q-btn no-caps dense rounded flat class="dropdown" v-if="$store.state.authenticated">
-          <Item :border="false" :vert-icon-center="true" class="hide item">
+          <Item class="hide item">
             <template #avatar>
               <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
               <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
@@ -317,7 +317,7 @@ export default defineComponent({
       <!-- <Item :avatar="$store.state.user.profile.avatar" :title="$store.state.user.username" /> -->
       <div class="dropdown-btn">
         <q-btn no-caps flat round class="dropdown" v-if="$store.state.authenticated">
-            <Item class="item">
+            <Item class="item" avatar-size="fit-content">
                 <template #avatar>
                 <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
                 <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
