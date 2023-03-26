@@ -1,24 +1,5 @@
-<template>
-  <div :class="'user-card ' + (isAvatarOnly ? 'circular' : '')" :style="style" @click="router">
-    <div class="avatar" v-if="$slots.avatar">
-      <slot name="avatar" />
-    </div>
-    <div class="info" v-if="!isAvatarOnly">
-      <div class="title">
-        <slot name="title" v-if="$slots.title" />
-      </div>
-      <div class="caption">
-        <slot name="caption" v-if="$slots.caption" />
-      </div>
-    </div>
-    <div class="icon" :style="style" v-if="!isAvatarOnly">
-      <slot name="icon" v-if="$slots.icon" />
-    </div>
-  </div>
-</template>
-
 <script lang="ts">
-import { defineComponent, type PropType } from 'vue';
+import { defineComponent, type PropType, type CSSProperties } from 'vue';
 import type {RouteLocationRaw} from 'vue-router'
 
 export default defineComponent({
@@ -28,7 +9,21 @@ export default defineComponent({
       style: {
         alignItems: this.vertIconCenter ? 'center' : 'normal',
         cursor: this.to ? 'pointer' : 'normal'
-      }
+      },
+      // titleStyle: {} as CSSProperties,
+      // captionStyle: {} as CSSProperties,
+      titleStyle: {
+        display: '-webkit-box',
+        '-webkit-box-orient': 'vertical',
+        '-webkit-line-clamp': this.titleLineClamp,
+        overflow: 'hidden'
+      } as CSSProperties,
+      captionStyle: {
+        display: '-webkit-box',
+        '-webkit-box-orient': 'vertical',
+        '-webkit-line-clamp': this.captionLineClamp,
+        overflow: 'hidden'
+      } as CSSProperties
     };
   },
   props: {
@@ -43,6 +38,14 @@ export default defineComponent({
     clickable: {
       type: Boolean,
       default: false
+    },
+    titleLineClamp: {
+      type: Number,
+      default: 1
+    },
+    captionLineClamp: {
+      type: Number,
+      default: 2
     }
   },
   methods: {
@@ -64,7 +67,27 @@ export default defineComponent({
 });
 </script>
   
-  <style scoped>
+
+<template>
+  <div :class="'user-card ' + (isAvatarOnly ? 'circular' : '')" :style="style" @click="router">
+    <div class="avatar" v-if="$slots.avatar">
+      <slot name="avatar" />
+    </div>
+    <div class="info" v-if="!isAvatarOnly">
+      <div class="title" :style="titleStyle">
+        <slot name="title" v-if="$slots.title" />
+      </div>
+      <div class="caption" :style="captionStyle">
+        <slot name="caption" v-if="$slots.caption" />
+      </div>
+    </div>
+    <div class="icon" :style="style" v-if="!isAvatarOnly">
+      <slot name="icon" v-if="$slots.icon" />
+    </div>
+  </div>
+</template>
+
+<style scoped>
   .user-card {
     display: flex;
     /* padding: 0px 0.6rem;
@@ -121,7 +144,6 @@ export default defineComponent({
   .title {
     font-weight: 900;
     font-size: 17px;
-    margin-bottom: .4rem;
   }
   
   .icon {
@@ -153,5 +175,5 @@ export default defineComponent({
     color: rgb(37, 192, 114);
     color: rgb(0, 191, 255);
   } */
-  </style>
+</style>
   
