@@ -151,23 +151,8 @@ export default defineComponent({
 <template>
     <q-card class="post" @click="">
         <div class="post__main">
-            <!-- <q-item class="post__info z-index-2" @click.stop="" :to="{name: 'user-profile', params: {username: username}}">
-                <q-item-section avatar>
-                    <q-avatar size="50px">
-                        <img v-if="avatar" :src="avatar"/>
-                        <q-icon v-else size="50px" name="face" />
-                    </q-avatar>
-                </q-item-section>
 
-                <q-item-section>
-                    <q-item-label class="username">@{{username}}</q-item-label>
-                    <q-item-label caption class="date__posted">
-                        <Timeago size="12px" :date="date_posted"/>
-                    </q-item-label>
-                </q-item-section>
-            </q-item> -->
-
-            <Item @click.stop="$router.push({ name: 'user-profile', params: { username: username } })" >
+            <Item :vert-icon-center="true" :to="{ name: 'user-profile', params: { username: username } }" @click.stop="" >
                     <template #avatar>
                         <img v-if="avatar" :src="avatar" alt="John Doe" class="rounded-full" />
                         <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
@@ -178,89 +163,91 @@ export default defineComponent({
                         <Timeago size="12px" :date="date_posted"/>
                     </template>
                     <template #icon>
-                        <!-- <q-icon /> -->
-                        <q-btn @click.stop="dropdown = !dropdown" size="16px" class="more__vert" flat dense round icon="more_vert" />
-                        <q-menu class="dropdown" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
-                            <q-list class="more__option">
-                                <q-item clickable v-close-popup @click="report = true" v-if="username !== $store.state.user.username">
-                                    <q-item-section avatar>
-                                        <q-icon class="danger__icon" name="flag"/>
-                                    </q-item-section>
-                                    <q-item-section>
-                                        <q-item-label>Report Post</q-item-label>
-                                    </q-item-section>
-                                </q-item>
-                                <q-item clickable v-close-popup @click="persistent = true" tabindex="0" v-if="username === $store.state.user.username">
-                                    <q-item-section avatar>
-                                        <q-icon class="danger__icon" name="delete_forever"/>
-                                    </q-item-section>
-                                    <q-item-section>
-                                        <q-item-label>Delete</q-item-label>
-                                    </q-item-section>
-                                </q-item>
-                                <q-item clickable v-close-popup v-if="username === $store.state.user.username">
-                                    <q-item-section avatar>
-                                        <q-icon class="" name="edit_note"/>
-                                    </q-item-section>
-                                    <q-item-section>
-                                        <q-item-label>Edit</q-item-label>
-                                    </q-item-section>
-                                </q-item>
-                            </q-list>
-                        </q-menu>
-                        <!-- Confirm Delete Model -->
-                        <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
-                            <q-card class="card">
-                                <q-card-section class="row">
-                                    <q-item>
-                                        <q-item-section class="title">Are you sure you want to delete this post?</q-item-section>
-                                    </q-item>
-                                </q-card-section>
-                                <q-card-section>
-                                    <q-item>
+                        <div>
+                            <q-btn @click.stop="dropdown = !dropdown" size="13px" class="more__vert" flat round icon="more_horiz" />
+                            <q-menu class="dropdown" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
+                                <q-list class="more__option">
+                                    <q-item clickable v-close-popup @click="report = true" v-if="username !== $store.state.user.username">
                                         <q-item-section avatar>
-                                        <q-avatar class="red" icon="warning"/>
+                                            <q-icon class="danger__icon" name="flag"/>
                                         </q-item-section>
-                                        <q-item-section class="red alert">This action is permanent and irreversible.</q-item-section>
-                                    </q-item>
-                                </q-card-section>
-
-                                <q-card-actions align="right" class="buttons">
-                                    <q-btn flat label="Cancel"  v-close-popup />
-                                    <q-btn flat label="Confirm" @click="deletePost" v-close-popup />
-                                </q-card-actions>
-                            </q-card>
-                        </q-dialog>
-                        <!-- Report model -->
-                        <q-dialog v-model="report" persistent>
-                            <q-card class="card">
-                                <q-card-section>
-                                    <!-- <h6 class="title">Report</h6> -->
-                                    <q-item>
-                                        <q-item-section class="title">Report</q-item-section>
-                                        <q-item-section avatar>
-                                        <q-avatar class="red" icon="flag"/>
+                                        <q-item-section>
+                                            <q-item-label>Report Post</q-item-label>
                                         </q-item-section>
                                     </q-item>
-                                </q-card-section>
-                                <q-card-section class="q-pt-none">
-                                    <!-- <q-input :dark="$store.state.dark" class="report__reason" placeholder="Reason" dense v-model="reason" /> -->
-                                    <q-input
-                                        v-model="reason"
-                                        filled
-                                        clearable
-                                        type="textarea"
-                                        label="Reason"
-                                        :dark="$store.state.dark"                                
-                                    />
-                                </q-card-section>
+                                    <q-item clickable v-close-popup @click="persistent = true" tabindex="0" v-if="username === $store.state.user.username">
+                                        <q-item-section avatar>
+                                            <q-icon class="danger__icon" name="delete_forever"/>
+                                        </q-item-section>
+                                        <q-item-section>
+                                            <q-item-label>Delete</q-item-label>
+                                        </q-item-section>
+                                    </q-item>
+                                    <q-item clickable v-close-popup v-if="username === $store.state.user.username">
+                                        <q-item-section avatar>
+                                            <q-icon class="" name="edit_note"/>
+                                        </q-item-section>
+                                        <q-item-section>
+                                            <q-item-label>Edit</q-item-label>
+                                        </q-item-section>
+                                    </q-item>
+                                </q-list>
+                            </q-menu>
+                            <!-- Confirm Delete Model -->
+                            <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
+                                <q-card class="card">
+                                    <q-card-section class="row">
+                                        <q-item>
+                                            <q-item-section class="title">Are you sure you want to delete this post?</q-item-section>
+                                        </q-item>
+                                    </q-card-section>
+                                    <q-card-section>
+                                        <q-item>
+                                            <q-item-section avatar>
+                                            <q-avatar class="red" icon="warning"/>
+                                            </q-item-section>
+                                            <q-item-section class="red alert">This action is permanent and irreversible.</q-item-section>
+                                        </q-item>
+                                    </q-card-section>
 
-                                <q-card-actions align="right" class="buttons">
-                                    <q-btn flat label="Cancel" v-close-popup />
-                                    <q-btn flat label="Report" v-close-popup @click="reportPost" />
-                                </q-card-actions>
-                            </q-card>
-                        </q-dialog>
+                                    <q-card-actions align="right" class="buttons">
+                                        <q-btn flat label="Cancel"  v-close-popup />
+                                        <q-btn flat label="Confirm" @click="deletePost" v-close-popup />
+                                    </q-card-actions>
+                                </q-card>
+                            </q-dialog>
+                            <!-- Report model -->
+                            <q-dialog v-model="report" persistent>
+                                <q-card class="card">
+                                    <q-card-section>
+                                        <!-- <h6 class="title">Report</h6> -->
+                                        <q-item>
+                                            <q-item-section class="title">Report</q-item-section>
+                                            <q-item-section avatar>
+                                            <q-avatar class="red" icon="flag"/>
+                                            </q-item-section>
+                                        </q-item>
+                                    </q-card-section>
+                                    <q-card-section class="q-pt-none">
+                                        <!-- <q-input :dark="$store.state.dark" class="report__reason" placeholder="Reason" dense v-model="reason" /> -->
+                                        <q-input
+                                            v-model="reason"
+                                            filled
+                                            clearable
+                                            type="textarea"
+                                            label="Reason"
+                                            :dark="$store.state.dark"                                
+                                        />
+                                    </q-card-section>
+
+                                    <q-card-actions align="right" class="buttons">
+                                        <q-btn flat label="Cancel" v-close-popup />
+                                        <q-btn flat label="Report" v-close-popup @click="reportPost" />
+                                    </q-card-actions>
+                                </q-card>
+                            </q-dialog>
+                        </div>
+                        
                     </template>
             </Item>
 
@@ -295,17 +282,6 @@ export default defineComponent({
                 </q-icon>
                 <label>{{total_likes}}</label>
             </div>
-            <div>
-                <Heart/>
-            </div>
-            <!-- <q-btn round flat :class="'like__btn ' + (liked ? 'liked' : '')" :icon="liked ? 'favorite' : 'favorite_border'" :disable="!$store.state.authenticated" v-on:click="like">
-                <q-tooltip :offset="[0,0]">
-                    Like
-                </q-tooltip>
-                <input type="checkbox" :checked="liked" hidden id="favorite" name="favorite-checkbox" value="favorite-button">
-                    <label for="favorite" class="container">
-                 </label>
-            </q-btn> -->
             <div>
                 <q-icon size="30px" class="action comment" :name="total_comments == 0 ? 'sym_o_chat_bubble' : 'sym_o_chat'" @click="commentToggle">
                     <q-tooltip :offset="[0,0]">
@@ -356,8 +332,7 @@ export default defineComponent({
     border-bottom: 1px solid var(--color-border);
     position: relative;
     width: 100%;
-    max-width: 700px;
-    /* box-shadow:0 4px 20px 0 var(--color-text); */
+    max-width: 600px;
     height: 100%;
     position: relative;
     z-index: 1;
@@ -372,25 +347,10 @@ export default defineComponent({
     z-index: 2;
 }
 
-.post__head__div {
-    display: flex, table-cell;
-    position: relative;
-}
-
-.post__main {
-    display: grid;
-    grid-template-columns: 1fr auto;
-
-}
 .post__info {
     padding: 5px 10px;
     background-color: transparent !important;
 }
-
-.post__info:hover {
-    background-color: transparent !important;
-}
-
 .username {
     font-size: 20px;
     color: var(--color-heading);
@@ -402,28 +362,16 @@ export default defineComponent({
     color: var(--color-text);
 }
 
-
-.dropdown__div {
-    display: flex;
-    justify-content: center;
-    justify-items: center;
-    align-items: center;
-    align-content: center;
+.dropdown-btn {
+    background-color: transparent;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
 }
 
-/* .dropdown {
-    box-shadow: 0 4px 8px 0 var(--color-heading), 0 6px 20px 0 var(--color-heading);
-} */
-
-.more__vert {
-    color: var(--color-heading);
-    background-color: transparent;
-    box-shadow: none !important;
-    display: flex;
-    float: right;
-    align-items: center;
-    align-items: center;
-    cursor: pointer;
+.dropdown-btn:hover {
+    /* background-color: red; */
+    border-radius: 50%;
 }
 
 .more__option {

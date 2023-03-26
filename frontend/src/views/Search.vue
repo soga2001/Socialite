@@ -103,14 +103,14 @@ export default defineComponent({
                         <q-item-label caption>@{{ u.username }}</q-item-label>
                     </q-item-section>
                 </q-item> -->
-                <Item @click="$router.push({ name: 'user-profile', params: { username: u.username } })" >
+                <Item clickable :to="{ name: 'user-profile', params: { username: u.username } }" >
                     <template #avatar>
                         <img src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                         <!-- <img v-if="u.avatar" :src="u.avatar" alt="John Doe" class="rounded-full" /> -->
                         <!-- <q-icon size="50px" v-else name="account_circle" class="rounded-full" /> -->
                     </template>
                     <template #title>{{u.first_name + ' ' + u.last_name}}</template>
-                    <template #sub-title>@{{ u.username }}</template>
+                    <template #caption>@{{ u.username }}</template>
                 </Item>
             </div>
             <div v-if="noResults">

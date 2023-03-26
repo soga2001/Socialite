@@ -53,12 +53,12 @@ export default defineComponent({
             
         </div> -->
 
-        <Item class="user__name">
+        <Item class="user__name" :vert-icon-center="true">
                 <template #avatar>
                     <q-icon @click="$router.go(-1)" class="back" name="arrow_back" />
                 </template>
                 <template #title>
-                    {{ user[0].first_name }} {{ user[0].last_name }}
+                    <h5>{{ user[0].first_name }} {{ user[0].last_name }}</h5>
                 </template>
                 <template #icon>
                         <!-- <q-icon /> -->

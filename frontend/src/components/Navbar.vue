@@ -221,8 +221,8 @@ export default defineComponent({
       </q-item>
       <!-- <Item :avatar="$store.state.user.profile.avatar" :title="$store.state.user.first_name + ' ' + $store.state.user.last_name" :subtitle="$store.state.user.username" icon="more_vert"/> -->
       <div class="dropdown-btn">
-        <q-btn no-caps flat round class="dropdown" v-if="$store.state.authenticated">
-          <Item :border="false" class="hide">
+        <q-btn no-caps dense rounded flat class="dropdown" v-if="$store.state.authenticated">
+          <Item :border="false" :vert-icon-center="true" class="hide item">
             <template #avatar>
               <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
               <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
@@ -234,11 +234,11 @@ export default defineComponent({
               <span class="subtitle">@{{ $store.state.user.username }}</span>
             </template>
             <template #icon>
-              <q-icon name="o_more_vert"/>
+              <q-icon name="more_vert" />
             </template>
           </Item>
 
-          <Item :border="false" class="show">
+          <Item :border="false" class="show item">
             <template #avatar>
               <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
               <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
@@ -456,23 +456,14 @@ a {
 
 .dropdown-btn {
   width: 100%;
+  /* border-radius: 30px; */
   display: flex;
   justify-content: center;
-  align-items: center;
-  justify-self: center;
-}
-
-.dropdown:hover {
-  border-radius: 30px;
 }
 
 .dropdown__main {
   background-color: var(--color-background-mute);
   color: var(--text-heading);
-}
-
-.nav_avatar {
-  margin: 30px 0;
 }
 
 .avatar {
@@ -500,6 +491,10 @@ a {
 @media (max-width: 992px) {
   .show {
     display:flex;
+  }
+
+  .item {
+    min-width: 0;
   }
 
   .hide {

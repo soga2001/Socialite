@@ -1,7 +1,7 @@
 <template>
-  <div :class="'user-card ' + (isAvatarOnly ? 'circular' : '')">
+  <div :class="'user-card ' + (isAvatarOnly ? 'circular' : '')" :style="style" @click="router">
     <div class="avatar" v-if="$slots.avatar">
-      <slot name="avatar"  />
+      <slot name="avatar" />
     </div>
     <div class="info" v-if="!isAvatarOnly">
       <div class="title">
@@ -11,38 +11,70 @@
         <slot name="caption" v-if="$slots.caption" />
       </div>
     </div>
-    <div class="icon" v-if="!isAvatarOnly">
+    <div class="icon" :style="style" v-if="!isAvatarOnly">
       <slot name="icon" v-if="$slots.icon" />
     </div>
   </div>
 </template>
-  
-<script lang="ts">
-  import { defineComponent } from 'vue';
-  
-  export default defineComponent({
-    data() {
-      return {
-        isAvatarOnly: true
-      };
-    },
-    computed: {
 
+<script lang="ts">
+import { defineComponent, type PropType } from 'vue';
+import type {RouteLocationRaw} from 'vue-router'
+
+export default defineComponent({
+  data() {
+    return {
+      isAvatarOnly: true,
+      style: {
+        alignItems: this.vertIconCenter ? 'center' : 'normal',
+        cursor: this.to ? 'pointer' : 'normal'
+      }
+    };
+  },
+  props: {
+    vertIconCenter: {
+      type: Boolean,
+      default: false
     },
-    mounted() {
-      this.isAvatarOnly =  Boolean(this.$slots.avatar && !this.$slots.title && !this.$slots.caption && !this.$slots.icon);
+    to: {
+      type: [String, Object] as PropType<RouteLocationRaw>,
+      default: null,
+    },
+    clickable: {
+      type: Boolean,
+      default: false
     }
-  });
-  </script>
+  },
+  methods: {
+    router() {
+      if (this.to) {
+        this.$router.push(this.to);
+      }
+    }
+  },
+  mounted() {
+    this.isAvatarOnly = Boolean(
+      this.$slots.avatar &&
+        !this.$slots.title &&
+        !this.$slots.caption &&
+        !this.$slots.icon
+    );
+    console.log(this.$props.clickable)
+  }
+});
+</script>
   
   <style scoped>
   .user-card {
     display: flex;
-    /* align-items: center; */
-    justify-content: space-between;
-    padding: 0.6rem;
+    /* padding: 0px 0.6rem;
+    padding-top: 0.4rem; */
+    padding: 0.5rem .5rem;
     cursor: pointer;
     position: relative;
+    line-height: normal;
+    gap: 10px;
+    overflow: hidden;
   }
   
   .user-card.circular {
@@ -51,6 +83,12 @@
     margin: 0;
   }
 
+  .avatar,
+.info,
+.icon {
+  line-height: 1.2;
+}
+
   .user-card.circular .avatar {
     width: 100%;
     display: inline-flex;
@@ -58,14 +96,15 @@
   
   .avatar {
     flex: 0 0 auto;
-    width: 4rem;
-
+    max-width: 3rem;
+    width: 100%;
+    height: 100%;
   }
 
   :slotted(img) {
     border-radius: 50%;
-    max-width: 50px;
-    max-height: 50px;
+    width: 100%;
+    height: 100%;
     padding: 0 !important;
   }
 
@@ -76,17 +115,19 @@
   
   .info {
     flex: 1 1 auto;
+    align-items: center;
   }
   
   .title {
     font-weight: 900;
     font-size: 17px;
+    margin-bottom: .4rem;
   }
   
   .icon {
     flex: 0 0 auto;
     display: flex;
-    align-items: center;
+    justify-content: center;
     position: relative;
   }
 
@@ -99,8 +140,7 @@
   }
 
   :slotted(p:deep(a:hover)) {
-    text-decoration: none;
-    color: rgb(0, 191, 255);
+    text-decoration: underline;
   }
 
   /* .post__caption:deep(a) {
@@ -112,6 +152,6 @@
     color: #b16af4;
     color: rgb(37, 192, 114);
     color: rgb(0, 191, 255);
-} */
+  } */
   </style>
   

@@ -19,7 +19,9 @@ export default defineComponent({
         return {cookies};
     },
     methods: {
-        
+        handleItemClick() {
+            console.log('clicked')
+        }
     },
     created() {
         // console.log(import.meta.env)
@@ -40,7 +42,10 @@ export default defineComponent({
                 Stuff
             </template>
             <template #caption>
-                <p>Hello</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </template>
+            <template #icon>
+                <q-icon name="o_more_horiz"/>
             </template>
         </Item>
         <!-- <Cropper /> -->
@@ -48,17 +53,11 @@ export default defineComponent({
 </template>
 
 <style scoped>
-/* div {
-    min-height: 100vh;
-    height: 100%;
-} */
-
-
-
-/* .item:hover {
-    background-color: red;
-    width: fit-content;
-    border-radius: 50%;
-    padding: 0;
-} */
+div {
+    max-width: 100%;
+}
+.item {
+    height: fit-content;
+    /* background-color: lightblue; */
+}
 </style>

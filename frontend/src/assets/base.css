@@ -95,6 +95,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-y: visible;
   scrollbar-width: thin;
+  max-width: 100%;
 }
 
 
@@ -102,6 +103,3 @@ body {
   font-weight: 900;
 } */
 
-.text-right {
-  text-align: right;
-}
