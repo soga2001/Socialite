@@ -80,7 +80,7 @@ export default defineComponent({
     },
     captionSize: {
       type: String,
-      default: "15px"
+      default: "16px"
     }
   },
   methods: {
@@ -190,8 +190,8 @@ export default defineComponent({
     width: fit-content;
   }
 
-
-  :slotted(p:deep(a)) {
+  .caption :slotted(p:deep(a)) {
+    font-size: inherit;
     font-weight: 900;
     text-decoration: none;
     color: #FF7373;

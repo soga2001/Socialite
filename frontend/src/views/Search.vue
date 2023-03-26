@@ -79,10 +79,10 @@ export default defineComponent({
                 placeholder="Search by username"
                 v-debounce:1ms="search"
             >
-                <template v-slot:prepend>
+                <template #prepend>
                     <q-icon @click="$router.go(-1)" class="back" name="arrow_back" />
                 </template>
-                <template v-slot:append>
+                <template #append>
                     <q-icon size="30px" v-if="input.length == 0" name="search" />
                     <q-icon class="close" size="30px" v-else-if="input.length > 0 && !loading" name="close" @click="resetInput" />
                     <q-spinner-tail v-else size="30px" color="blue-grey" />

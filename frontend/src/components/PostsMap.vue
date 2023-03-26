@@ -262,7 +262,7 @@ export default defineComponent({
             <q-item-label v-html="caption" caption class="post__caption"></q-item-label>
             <p v-html="caption" class="post__caption"></p>
         </q-item-section> -->
-        <Item class="caption">
+        <Item title-size="16px" caption-size="13px">
             <template #title class="caption__username">
                 {{ username }}
             </template>
@@ -498,7 +498,6 @@ export default defineComponent({
 
 
 .post__caption {
-    font-size: 15px;
     color: var(--color-text);
     line-height: 1.5;
     z-index: 3;
