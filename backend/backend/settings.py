@@ -68,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'backend.middleware.AllowCredentialsMiddleware',
 ]
 
 
@@ -85,8 +86,7 @@ CORS_ALLOW_METHODS = [
     "PUT",
 ]
 
-
-CSRF_HEADER_NAME = 'X-CSRFToken'
+CORS_ALLOW_CREDENTIALS = True
 
 # CSRF_TRUSTED_ORIGINS = [
 #     'http://localhost:3000'
@@ -144,6 +144,23 @@ DATABASES = {
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_NAME = 'sessionid'
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# SECURE_SSL_REDIRECT = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_HSTS_SECONDS = 3600
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+
+# SSL/TLS settings
+# SSL_CERTIFICATE = '/User/Suyogya/Projects/cert.pem'
+# SSL_KEY = '/path/to/key.pem'
+
+# HTTPS settings
+# SECURE_BROWSER_XSS_FILTER = True
+# SECURE_CONTENT_TYPE_NOSNIFF = True
+
 
 
 AUTH_USER_MODEL = "users.User"
@@ -189,10 +206,28 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+JWT_AUTH = {
+    'JWT_AUTH_COOKIE': 'access_token',
+}
+
+JWT_AUTH_COOKIE = 'access_token'
+JWT_AUTH_COOKIE_SECURE = True
+JWT_AUTH_COOKIE_HTTPONLY = True
+
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ],
+    # 'DEFAULT_RENDERER_CLASSES': [
+    #     'rest_framework.renderers.JSONRenderer',
+    # ],
+    # 'DEFAULT_PARSER_CLASSES': [
+    #     'rest_framework.parsers.JSONParser',
+    # ],
 }
 
 SIMPLE_JWT = {
@@ -210,6 +245,8 @@ SIMPLE_JWT = {
     'JWK_URL': None,
     'LEEWAY': 0,
 
+
+    # 'AUTH_COOKIE': 'access_token',
     'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'id',

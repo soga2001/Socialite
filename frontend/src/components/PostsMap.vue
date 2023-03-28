@@ -51,20 +51,21 @@ export default defineComponent({
             if(!this.$store.state.authenticated) {
                 return false;
             }
-            http.get(`like/check_liked/${this.post.id}/`, {
-                headers: {
-                    'Authorization': "Bearer " + Crypter.decrypt(this.cookies.get("access_token"))
-                }
-            }).then((res) => {
-                if(res.data.liked) {
-                    this.liked = res.data.liked;
-                }
-                else {
-                    this.liked = false;
-                }
-            }).catch((err) => {
-                console.log(err)
-            })
+            // http.get(`like/check_liked/${this.post.id}/`, {
+            //     headers: {
+            //         'Authorization': "Bearer " + Crypter.decrypt(this.cookies.get("access_token"))
+            //     }
+            // }).then((res) => {
+            //     if(res.data.liked) {
+            //         this.liked = res.data.liked;
+            //     }
+            //     else {
+            //         this.liked = false;
+            //     }
+            // }).catch((err) => {
+            //     console.log(err)
+            // })
+            this.liked = true
         },
         like() {
             if (!this.$store.state.authenticated) {

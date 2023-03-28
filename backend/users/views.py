@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.core import serializers
 from django.db import DatabaseError
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt, csrf_protect, requires_csrf_token
 # from django.contrib.auth.models import User
@@ -99,7 +99,6 @@ def user_by_username(request, username, multiple=True):
             # users = User.objects.annotate(similarity=TrigramSimilarity('username', username)).filter(similary_gt=0).order_by('-similarity')
             users_data = UserSerializer(users, many=True).data
         else:
-            print('here')
             user = User.objects.get(username=username)
             users_data = UserSerializer(user).data
         return JsonResponse({"success": True, "users": users_data})
@@ -140,28 +139,6 @@ def user_register(request):
     except DatabaseError:
         return JsonResponse({"error": True, "message":" Username or email is taken."}, safe=False)
 
-# @api_view(["POST"])
-# @requires_csrf_token
-# def user_login(request):
-#     # data = json.loads(request.data)
-#     print(request.data)
-#     data = request.data
-#     # print(decrypt(data["encryptedUsername"]))
-
-#     # enUser = d(data['username'])
-#     user = authenticate(username=data['username'], password=data['password'])
-#     if(user):
-#         login(request, user)
-#         token = RefreshToken.for_user(user)
-#         userSerialized = UserSerializer(user)
-#         return JsonResponse({"access_token": str(token.access_token), 
-#                             "at_lifetime": str(token.access_token.lifetime.days) + "d",
-#                             "refresh_token": str(token),
-#                             "rt_lifetime": str(token.lifetime.days) + "d",
-#                             "user": userSerialized.data
-#                             }, safe=False)
-#     return JsonResponse({"error": True}, safe=False)
-
 @api_view(["POST"])
 def user_login(request):
     data = json.loads(request.body)
@@ -171,13 +148,82 @@ def user_login(request):
         login(request, user)
         token = RefreshToken.for_user(user)
         userSerialized = UserSerializer(user)
-        return JsonResponse({"access_token": str(token.access_token), 
+        request.session.set_test_cookie()
+        jResponse = JsonResponse({"access_token": str(token.access_token), 
                             "at_lifetime": str(token.access_token.lifetime.days) + "d",
                             "refresh_token": str(token),
                             "rt_lifetime": str(token.lifetime.days) + "d",
                             "user": userSerialized.data
-                            }, safe=False)
+                            })
+        response = HttpResponse(jResponse, content_type="application/json")
+        # response.set_cookie("testing", "true", secure=True, httponly=True)
+        response.set_cookie('access_token', str(token.access_token), expires=str(token.access_token.lifetime.days) + "d", secure=True, httponly=True)
+        response.set_cookie('refresh_token', str(token), expires=str(token.lifetime.days)+ "d", secure=True, httponly=True)
+        return response
     return JsonResponse({"error": True}, safe=False)
+
+# @api_view(["GET"])
+# def check_cookie(request):
+#     print(request.COOKIES)
+#     if request.session.test_cookie_worked():
+#         return JsonResponse({"success": True}, safe=False)
+#     else:
+#         return JsonResponse({"success": False}, safe=False)
+
+@api_view(["GET"])
+def get_session(request):
+    if "access_token" in request.COOKIES:
+        print('here')
+    return JsonResponse({"success": True})
+
+@api_view(["GET"])
+def user_by_username(request, username):
+    try:
+        users = UserSerializer(User.objects.filter(username__contains=username), many=True)
+        return JsonResponse({"success": True, "users": users.data}, safe=False)
+    except:
+        return JsonResponse({"error": True}, safe=False)
+
+@api_view(["POST"])
+def user_register(request):
+    try:
+        data = json.loads(request.body)
+        if(data['first_name'] == '' or data['last_name'] == ''):
+            raise ValueError('Please enter your name')
+        if(data['username'] == ''):
+            raise ValueError('Please enter your username')
+        if(data['email'] == ''):
+            raise ValueError('Please enter your email')
+        if(data['password'] == ''):
+            raise ValueError('Please enter your password')
+        if(data['confirm_password'] == ''):
+            raise ValueError('Please enter your confirm password')
+        if(data['password'] != data['confirm_password']):
+            raise ValueError('Password and confirm password must match')
+
+        user = User.objects.create_user(
+            first_name=data['first_name'],
+            last_name=data['last_name'],
+            username=data['username'], 
+            password=data['password'], 
+            email=data['email'])
+        return JsonResponse({"success": True}, safe=False)
+    except ValueError as e:
+        return JsonResponse({"error": True, "message": str(e)}, safe=False)
+    except DatabaseError:
+        return JsonResponse({"error": True, "message":" Username or email is taken."}, safe=False)
+
+    
+class CheckCookies(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = (JWTAuthentication,)
+
+    def get(self, request):
+        if request.session.test_cookie_worked():
+            return JsonResponse({"success": True}, safe=False)
+        else:
+            return JsonResponse({"success": False}, safe=False)
+        
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
@@ -207,10 +253,6 @@ class AllLogins(APIView):
     def get(self, request):
         user = request.user
         userSerialized = UserSerializer(user)
-        print(request.session.get())
-        # print(Session.objects.all().values())
-        # sessions = Session.objects.filter(user_id=user.id)
-        # print(sessions)
         return JsonResponse({'success': True, 'user': userSerialized.data, 'sessions': list(Session.objects.all().values())})
         
 
@@ -273,9 +315,7 @@ class Delete_User(APIView):
         except:
             return JsonResponse({"error": True}, safe=False)
 
-# users = UserSerializer(User.objects.annotate(rank=SearchRank(F('sv'), SearchQuery(username, search_type='phrase'), weights=[0.1, 0.2, 0.4, 1.0])).order_by("-rank"), many=True)
-# users = UserSerializer(User.objects.filter(sv=username), many=True)
-# print(users.data) 
+
 
 @api_view(["DELETE"])
 # @permission_classes([IsAdminUser,])

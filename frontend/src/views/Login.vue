@@ -48,14 +48,14 @@ export default defineComponent({
                 }
                 else {
                     // this.$cookie.getCookie()
-                    this.cookies.set("access_token", Crypter.encrypt(res.data.access_token), res.data.at_lifetime);
-                    this.cookies.set("refresh_token", Crypter.encrypt(res.data.refresh_token), res.data.rt_lifetime);
+                    // this.cookies.set("access_token", Crypter.encrypt(res.data.access_token), res.data.at_lifetime);
+                    // this.cookies.set("refresh_token", Crypter.encrypt(res.data.refresh_token), res.data.rt_lifetime);
                     this.cookies.set("loggedIn", "true", res.data.at_lifetime);
                     this.cookies.set("user", Crypter.encrypt(JSON.stringify(res.data.user)), res.data.at_lifetime);
                     this.$store.commit("authenticate", true);
                     this.$store.commit("setUser", res.data.user);
                     this.$router.push("/home");
-                    get_csrf_token();
+                    // get_csrf_token();
                 }
             }).catch((err) => {
                 console.log(err);
