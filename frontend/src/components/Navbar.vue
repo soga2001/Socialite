@@ -37,7 +37,6 @@ export default defineComponent({
         },
         logout() {
             http.post("users/logout/").then((res) => {
-                this.cookies.remove("user");
                 this.cookies.remove("loggedIn");
                 this.$store.commit("authenticate", false);
                 this.$store.commit("setDefaultUser");

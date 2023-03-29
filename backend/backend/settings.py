@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     "rest_framework_simplejwt.token_blacklist",
     'users',
-    # 'userprofile.apps.UserprofileConfig',
     'posts.apps.PostsConfig',
     'following.apps.FollowingConfig',
     'likes.apps.LikesConfig',
@@ -145,6 +144,7 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_NAME = 'sessionid'
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
 
 # SECURE_SSL_REDIRECT = True
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

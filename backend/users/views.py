@@ -169,6 +169,10 @@ def user_login(request):
                     httponly = settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
                     samesite = settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
         )
+        response.set_cookie('user', json.dumps(userSerialized.data), expires = settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+                    secure = settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                    httponly = settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+                    samesite = settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'])
         # response.set_cookie('access_token', str(token.access_token), expires=str(token.access_token.lifetime.days) + "d", secure=True, httponly=True)
         response.set_cookie('refresh_token', str(token), expires=str(token.lifetime.days)+ "d", secure=True, httponly=True)
         return response
@@ -189,16 +193,17 @@ def get_session(request):
     return JsonResponse({"success": True})
 
     
-class CheckCookies(APIView):
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [CustomAuthentication,]
+class UserFromCookie(APIView):
+    # permission_classes = [IsAuthenticated]
+    # authentication_classes = [CustomAuthentication,]
 
     def get(self, request):
         # user, token = custom.authenticate(request)
-        if request.session.test_cookie_worked():
-            return JsonResponse({"success": True}, safe=False)
+        if 'user' in request.COOKIES:
+            user = json.loads(request.COOKIES.get('user'))
+            return JsonResponse({"success": True, "user": user})
         else:
-            return JsonResponse({"success": False}, safe=False)
+            return JsonResponse({"success": False})
         
 
 class LogoutView(APIView):
@@ -207,12 +212,12 @@ class LogoutView(APIView):
 
     def post(self, request):
         try:
-            # user, token = custom.authenticate(request)
-            data = json.loads(request.body)
-            # rt_token = RefreshToken(data['refresh_token'])
-            # rt_token.blacklist()
+            
+            response = HttpResponse({"success": True}, content_type="application/json")
             logout(request)
-            return JsonResponse({"success": True}, safe=False)
+            for cookies in request.COOKIES:
+                response.delete_cookie(cookies)
+            return response
         except:
             return JsonResponse({"error": True}, safe=False)
 

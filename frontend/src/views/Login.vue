@@ -8,6 +8,7 @@ import Input from '@/components/Input.vue';
 // import { AES } from 'crypto-ts';
 import {Crypter} from '@/assets/crypter';
 import { get_csrf_token } from '@/assets/csrf';
+import { get_user_from_cookie } from '@/assets/userFromCookie';
 
 export default defineComponent({
     data() {
@@ -23,7 +24,7 @@ export default defineComponent({
         return { cookies };
     },
     methods: {
-        login() {
+        async login() {
             if (this.username.length === 0 || this.password.length === 0) {
                 this.error = true;
                 this.errMsg = "Please don't leave username or password blank!";
@@ -41,19 +42,16 @@ export default defineComponent({
                 username: this.username,
                 password: this.password,
             }, {
-            }).then((res) => {
+            }).then(async (res) => {
                 if (res.data.error === true) {
                     this.error = true;
                     this.errMsg = "Username or Password is incorrect.";
                 }
                 else {
-                    // this.$cookie.getCookie()
-                    // this.cookies.set("access_token", Crypter.encrypt(res.data.access_token), res.data.at_lifetime);
-                    // this.cookies.set("refresh_token", Crypter.encrypt(res.data.refresh_token), res.data.rt_lifetime);
-                    this.cookies.set("loggedIn", "true", res.data.at_lifetime);
-                    this.cookies.set("user", Crypter.encrypt(JSON.stringify(res.data.user)), res.data.at_lifetime);
+                    
+                    await get_user_from_cookie()
                     this.$store.commit("authenticate", true);
-                    this.$store.commit("setUser", res.data.user);
+                    // this.cookies.set("loggedIn", "true", res.data.at_lifetime);
                     this.$router.push("/home");
                     // get_csrf_token();
                 }

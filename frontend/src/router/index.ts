@@ -126,16 +126,18 @@ const router: Router = createRouter({
   scrollBehavior,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, from) => {
   from.meta?.scrollPos && (from.meta.scrollPos.top = document.documentElement.scrollTop)
+})
+
+router.beforeResolve((to, next) => {
   if(to.matched.some(record => record.meta.hideForAuth) && store.state.authenticated) {
-      return {path: '/'}
+    return {path: '/home'}
   }
 
   if(to.matched.some(record => record.meta.auth) && !store.state.authenticated) {
     return {path: '/login'}
   }
-  return next()
-})
+}) 
 
 export default router

@@ -97,7 +97,6 @@ export default defineComponent({
         !this.$slots.caption &&
         !this.$slots.icon
     );
-    console.log(this.$props.clickable)
   }
 });
 </script>

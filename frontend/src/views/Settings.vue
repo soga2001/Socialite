@@ -63,8 +63,8 @@ export default defineComponent({
             </template>
         </Item>
         <!-- <Cropper /> -->
-        <button @click="check_cookie">Btn</button>
-        <button @click="get_session"> BTN 2</button>
+        <!-- <button @click="check_cookie">Btn</button>
+        <button @click="get_session"> BTN 2</button> -->
     </div>
 </template>
 

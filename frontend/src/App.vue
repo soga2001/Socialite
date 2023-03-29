@@ -10,6 +10,7 @@ import Search from './views/Search.vue'
 import { Cookies } from 'quasar';
 import Main from './views/Main.vue';
 import { Crypter } from './assets/crypter';
+import { get_user_from_cookie } from './assets/userFromCookie';
 
 
 export default defineComponent({
@@ -19,6 +20,7 @@ export default defineComponent({
       dark_mode: false,
       include: ['home', 'explore'],
       class: 'app',
+      loading: true
     }
   },
   setup() {
@@ -50,18 +52,17 @@ export default defineComponent({
       else {
         this.$store.commit('setDesktop', true)
       }
+    },
+    async loadUser() {
+      await get_user_from_cookie()
+      this.loading = false
     }
   },
   created() {
     this.theme = Cookies.get('theme') === 'dark'
     this.$store.commit('setTheme', this.theme)
     document.documentElement.setAttribute('data-theme', this.theme ? 'dark': 'light')
-
-    this.$store.commit('authenticate',JSON.parse(Cookies.get("loggedIn")) || false)
-    if(this.cookies.get('user')) {
-      this.$store.commit('setUser', JSON.parse(Crypter.decrypt(this.cookies.get('user'))))
-    }
-
+    this.loadUser()
   },
   components: { Main },
   mounted() {
@@ -75,7 +76,7 @@ export default defineComponent({
 
 <template>
   <!-- <h1>Potato</h1> -->
-  <header id="app">
+  <header id="app" v-if="!loading">
       <Main />
   </header>
 </template>

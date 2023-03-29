@@ -17,8 +17,10 @@ export class Crypter{
     //         padding: crypto.pad.Pkcs7,  
     //     });
     //     return decryptedMessage.toString(crypto.enc.Utf8);
+
     // }
 
+    // this is horrible way to encrypt
     public static encrypt(message: string) {
         // Generate a random key and IV
         const key = crypto.lib.WordArray.random(32);
