@@ -1,3 +1,4 @@
+from backend.authenticate import CustomAuthentication
 # From Django
 from django.conf import settings
 from django.core import serializers
@@ -13,6 +14,7 @@ from django.db.models import F
 from django.contrib.postgres.search import TrigramSimilarity, TrigramDistance
 from django.db.models import Q
 
+
 from django.contrib.sessions.models import Session
 
 
@@ -24,6 +26,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import authentication_classes
 
 # from CryptoDome
 from Crypto.Cipher import AES
@@ -49,6 +52,7 @@ env = environ.Env()
 environ.Env.read_env()
 
 jwt = JWTAuthentication()
+custom = CustomAuthentication()
 
 # Create your views here.
 @api_view(["GET"])
@@ -90,7 +94,7 @@ def user_by_id(request, user_id):
 #         return JsonResponse({"error": "An error occurred"}, status=500)
 
 @api_view(["GET"])
-def user_by_username(request, username, multiple=True):
+def user_by_username(request, username, multiple = True):
     try:
         if multiple == True:
             users = User.objects.annotate(similarity=TrigramSimilarity('username', username)).filter(similarity__gte=0.2).order_by('-similarity')
@@ -157,7 +161,15 @@ def user_login(request):
                             })
         response = HttpResponse(jResponse, content_type="application/json")
         # response.set_cookie("testing", "true", secure=True, httponly=True)
-        response.set_cookie('access_token', str(token.access_token), expires=str(token.access_token.lifetime.days) + "d", secure=True, httponly=True)
+        response.set_cookie(
+                    key = settings.SIMPLE_JWT['AUTH_COOKIE'], 
+                    value = str(token.access_token),
+                    expires = settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+                    secure = settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                    httponly = settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+                    samesite = settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+        )
+        # response.set_cookie('access_token', str(token.access_token), expires=str(token.access_token.lifetime.days) + "d", secure=True, httponly=True)
         response.set_cookie('refresh_token', str(token), expires=str(token.lifetime.days)+ "d", secure=True, httponly=True)
         return response
     return JsonResponse({"error": True}, safe=False)
@@ -173,7 +185,7 @@ def user_login(request):
 @api_view(["GET"])
 def get_session(request):
     if "access_token" in request.COOKIES:
-        print('here')
+        print(request.COOKIES.get('access_token'))
     return JsonResponse({"success": True})
 
 @api_view(["GET"])
@@ -215,10 +227,11 @@ def user_register(request):
 
     
 class CheckCookies(APIView):
-    permission_classes = [IsAuthenticated]
-    authentication_classes = (JWTAuthentication,)
+    permission_classes = [CustomAuthentication]
+    authentication_classes = [CustomAuthentication,]
 
     def get(self, request):
+        # user, token = custom.authenticate(request)
         if request.session.test_cookie_worked():
             return JsonResponse({"success": True}, safe=False)
         else:
@@ -226,8 +239,8 @@ class CheckCookies(APIView):
         
 
 class LogoutView(APIView):
-    permission_classes = [IsAuthenticated]
-    authentication_classes = (JWTAuthentication,)
+    # permission_classes = [IsAuthenticated]
+    authentication_classes = (CustomAuthentication,)
 
     def post(self, request):
         try:

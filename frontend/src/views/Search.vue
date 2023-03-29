@@ -121,7 +121,6 @@ export default defineComponent({
                 </q-item>
             </div> 
         </div>
-        
     </div>
 </template>
 
