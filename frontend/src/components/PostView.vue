@@ -31,7 +31,6 @@ export default defineComponent({
                 formData.append("caption", this.caption);
                 http.post("posts/post_content/", formData, {
                     headers: {
-                        "Authorization": "Bearer " + Crypter.decrypt(this.cookies.get("access_token")),
                         "Content-Type": "multipart/form-data"
                     }
                 }).then((res) => {

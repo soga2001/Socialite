@@ -41,9 +41,6 @@ export default defineComponent({
                 return;
             }
             http.post(`follow/follow_user/${this.id}/`, {}, {
-                headers: {
-                    "Authorization": "Bearer " + Crypter.decrypt(this.cookies.get("access_token")),
-                }
             }).then((res) => {
                 if (res.data.error) {
                     return;
@@ -65,9 +62,6 @@ export default defineComponent({
                 return;
             }
             http.get(`follow/get_if_followed/${this.id}/`, {
-                headers: {
-                    "Authorization": "Bearer " +  Crypter.decrypt(this.cookies.get("access_token")),
-                }
             }).then((res) => {
                 // console.log("followed: ", res.data.followed);
                 this.followed = res.data.followed;

@@ -1,39 +1,41 @@
 import re
 from time import time
-import traceback
 from django.http import JsonResponse
 from django.utils.html import escape
-from django.shortcuts import render
 from rest_framework.decorators import api_view
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+# From Django
+from django.http import HttpResponse, JsonResponse
+from django.middleware.csrf import get_token
+from django.views.decorators.csrf import csrf_exempt, csrf_protect, requires_csrf_token
+# from django.contrib.auth.models import User
+
+from django.contrib.postgres.search import TrigramSimilarity, TrigramDistance
+from django.db.models import Q
+
+
+from django.contrib.sessions.models import Session
+
+# From rest_framework
+from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view, permission_classes
+
+from PIL import Image
 from .models import Post
 from .serializer import PostSerializer
-from PIL import Image
 from users.models import User
+from backend.authenticate import *
+
 
 import json
 
-jwt = JWTAuthentication()
-
-# def replace(val):
-#     u = re.sub(r'@', '', val.group())
-#     try:
-#         user = User.objects.get(username=u)
-#         if(user):
-#             return r'<a href="/profile/user/{0}/">@{0}</a>'.format(u)
-#         else:
-#             return val
-#     except User.DoesNotExist:
-#         return val
+custom = CustomAuthentication()
 
 def replace(val):
     u = re.sub(r'@', '', val.group())
-    # return r'<a href="/profile/user/{0}/">@{0}</a>'.format(val)
     try:
         user = User.objects.get(username=u)
-        print(user)
         if user:
             return r'<a href="/profile/user/{0}/">@{0}</a>'.format(u)
         else:
@@ -41,15 +43,10 @@ def replace(val):
     except User.DoesNotExist:
         return r'{0}'.format(val.group())
 
-    # except Exception as e:
-    #     print(f'Error: {e}')
-    #     print(f'User with username {u} not found')
-    #     print(traceback.format_exc())
-    #     return val
-        # return val
 
 class Post_Content(APIView):
     permission_classes = [IsAuthenticated]
+    authentication_classes = (CustomAuthentication,)
 
     def post(self, request):
         try:
@@ -62,7 +59,7 @@ class Post_Content(APIView):
             regex = r'@(\w+)'
             # caption = re.sub(r'@(\w+)', r'<a href="/users/\1/">@\1</a>', caption)
             caption = re.sub(regex, replace, caption)
-            user, token = jwt.authenticate(request)
+            user, token = custom.authenticate(request)
             post = Post(
                 user = user,
                 img_url = image,

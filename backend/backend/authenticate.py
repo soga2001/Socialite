@@ -27,6 +27,10 @@ class CustomAuthentication(JWTAuthentication):
         # enforce_csrf(request)
         return self.get_user(validated_token), validated_token
     
+    
+
+class IsAuthenticated:
+
     def has_permission(self, request, view):
         return bool(request.user and request.user.is_authenticated)
     

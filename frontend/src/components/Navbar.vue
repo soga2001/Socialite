@@ -36,16 +36,7 @@ export default defineComponent({
             this.$store.commit("setTheme", !this.$store.state.dark);
         },
         logout() {
-            http.post("users/logout/", {
-                "access_token": this.cookies.get("access_token"),
-                "refresh_token": this.cookies.get("refresh_token")
-            }, {
-                headers: {
-                    "Authorization": "Bearer "  + Crypter.decrypt(this.cookies.get("access_token"))
-                }
-            }).then((res) => {
-                this.cookies.remove("access_token");
-                this.cookies.remove("refresh_token");
+            http.post("users/logout/").then((res) => {
                 this.cookies.remove("user");
                 this.cookies.remove("loggedIn");
                 this.$store.commit("authenticate", false);

@@ -51,21 +51,17 @@ export default defineComponent({
             if(!this.$store.state.authenticated) {
                 return false;
             }
-            // http.get(`like/check_liked/${this.post.id}/`, {
-            //     headers: {
-            //         'Authorization': "Bearer " + Crypter.decrypt(this.cookies.get("access_token"))
-            //     }
-            // }).then((res) => {
-            //     if(res.data.liked) {
-            //         this.liked = res.data.liked;
-            //     }
-            //     else {
-            //         this.liked = false;
-            //     }
-            // }).catch((err) => {
-            //     console.log(err)
-            // })
-            this.liked = true
+            http.get(`like/check_liked/${this.post.id}/`).then((res) => {
+                if(res.data.liked) {
+                    this.liked = res.data.liked;
+                }
+                else {
+                    this.liked = false;
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
+            // this.liked = true
         },
         like() {
             if (!this.$store.state.authenticated) {
@@ -81,9 +77,6 @@ export default defineComponent({
             http.post('like/like_post/', {
                 post_id: this.id
             }, {
-                headers:  {
-                    "Authorization": "Bearer " + Crypter.decrypt(this.cookies.get("access_token"))
-                }
             }).then((res) => {
                 if(res.data.liked) {
                     this.total_likes += 1;
@@ -106,9 +99,6 @@ export default defineComponent({
                 data: {
                     id: this.id
                 },
-                headers: {
-                    "Authorization": "Bearer " + Crypter.decrypt(this.cookies.get("access_token"))
-                }
             }).then((res) => {
                 console.log(res);
             }).catch((err) => {

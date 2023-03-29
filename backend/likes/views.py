@@ -14,20 +14,22 @@ from posts.models import Post
 from posts.serializer import PostSerializer
 
 import json
+from backend.authenticate import *
 
 
-jwt = JWTAuthentication()
+custom = CustomAuthentication()
 
 # Create your views here.
 
 class Like_Post(APIView):
     permission_classes = [IsAuthenticated]
+    authentication_classes = (CustomAuthentication,)
 
     def post(self, request):
         data = json.loads(request.body)
         post_id = data['post_id']
         post = Post.objects.get(pk=post_id)
-        user, token = jwt.authenticate(request)
+        user, token = custom.authenticate(request)
         try:
             
             like = PostLikes(
@@ -45,6 +47,7 @@ class Like_Post(APIView):
 
 class UserLiked(APIView):
     permission_classes = [IsAuthenticated]
+    authentication_classes = (CustomAuthentication,)
 
     def get(self, request, timestamp, page, post_id):
         try:
@@ -57,6 +60,7 @@ class UserLiked(APIView):
 
 class Check_Liked(APIView):
     permission_classes = [IsAuthenticated]
+    authentication_classes = (CustomAuthentication,)
 
     def get(self, request, post_id):
         try:

@@ -1,17 +1,16 @@
 from django.db import IntegrityError
 from django.forms import ValidationError
 from django.http import JsonResponse
-from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
+
 from rest_framework.decorators import api_view, permission_classes
 # from django.contrib.auth.models import User
 from users.models import User 
 from .models import UserFollowing
 from rest_framework.views import APIView
 from .serializer import UserFollowingSerializer
+from backend.authenticate import *
 
-
-jwt = JWTAuthentication()
+custom = CustomAuthentication()
 
 # Create your views here.
 
@@ -27,7 +26,7 @@ class Follow_User(APIView):
             return JsonResponse({"error": True, "message": 'Invalid User Id'}, safe=False)
 
         followed_user = User.objects.get(pk=user_id)
-        following_user, token = jwt.authenticate(request)
+        following_user, token = custom.authenticate(request)
         # following_user = User.objects.get(pk=request.user.id)
 
         try:
