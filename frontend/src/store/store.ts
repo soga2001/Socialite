@@ -36,10 +36,8 @@ export const store = createStore<State>({
       total_followers: 0,
       total_following: 0,
       total_posted: 0,
-      profile: {
-        bio: '',
-        avatar: '',
-      },
+      bio: '',
+      avatar: '',
       groups: [],
       user_permissions: [],
       date_joined: ''
@@ -57,10 +55,8 @@ export const store = createStore<State>({
       total_followers: 0,
       total_following: 0,
       total_posted: 0,
-      profile: {
-        bio: '',
-        avatar: '',
-      },
+      bio: '',
+      avatar: '',
       groups: [],
       user_permissions: [],
       date_joined: ''
