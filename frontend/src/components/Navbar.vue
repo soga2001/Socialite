@@ -44,9 +44,6 @@ export default defineComponent({
                 console.log(err);
             });
         },
-        onload(e: any) {
-            console.log(e);
-        }
     },
     created() {
         this.theme = this.cookies.get("theme") === "dark";

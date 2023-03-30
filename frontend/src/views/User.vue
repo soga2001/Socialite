@@ -61,90 +61,8 @@ export default defineComponent({
                     <h5>{{ user[0].first_name }} {{ user[0].last_name }}</h5>
                 </template>
                 <template #icon>
-                        <!-- <q-icon /> -->
                         <q-btn @click.stop="" size="16px" class="less" flat dense round icon="notifications" />
                         <q-btn @click.stop="" size="16px" class="more__vert" flat dense round icon="more_vert" />
-                        <!-- <q-menu class="dropdown" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
-                            <q-list class="more__option">
-                                <q-item clickable v-close-popup @click="report = true" v-if="username !== $store.state.user.username">
-                                    <q-item-section avatar>
-                                        <q-icon class="danger__icon" name="flag"/>
-                                    </q-item-section>
-                                    <q-item-section>
-                                        <q-item-label>Report Post</q-item-label>
-                                    </q-item-section>
-                                </q-item>
-                                <q-item clickable v-close-popup @click="persistent = true" tabindex="0" v-if="username === $store.state.user.username">
-                                    <q-item-section avatar>
-                                        <q-icon class="danger__icon" name="delete_forever"/>
-                                    </q-item-section>
-                                    <q-item-section>
-                                        <q-item-label>Delete</q-item-label>
-                                    </q-item-section>
-                                </q-item>
-                                <q-item clickable v-close-popup v-if="username === $store.state.user.username">
-                                    <q-item-section avatar>
-                                        <q-icon class="" name="edit_note"/>
-                                    </q-item-section>
-                                    <q-item-section>
-                                        <q-item-label>Edit</q-item-label>
-                                    </q-item-section>
-                                </q-item>
-                            </q-list>
-                        </q-menu> -->
-                        <!-- Confirm Delete Model -->
-                        <!-- <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
-                            <q-card class="card">
-                                <q-card-section class="row">
-                                    <q-item>
-                                        <q-item-section class="title">Are you sure you want to delete this post?</q-item-section>
-                                    </q-item>
-                                </q-card-section>
-                                <q-card-section>
-                                    <q-item>
-                                        <q-item-section avatar>
-                                        <q-avatar class="red" icon="warning"/>
-                                        </q-item-section>
-                                        <q-item-section class="red alert">This action is permanent and irreversible.</q-item-section>
-                                    </q-item>
-                                </q-card-section>
-
-                                <q-card-actions align="right" class="buttons">
-                                    <q-btn flat label="Cancel"  v-close-popup />
-                                    <q-btn flat label="Confirm" @click="deletePost" v-close-popup />
-                                </q-card-actions>
-                            </q-card>
-                        </q-dialog> -->
-                        <!-- Report model -->
-                        <!-- <q-dialog v-model="report" persistent>
-                            <q-card class="card">
-                                <q-card-section>
-                                    <h6 class="title">Report</h6>
-                                    <q-item>
-                                        <q-item-section class="title">Report</q-item-section>
-                                        <q-item-section avatar>
-                                        <q-avatar class="red" icon="flag"/>
-                                        </q-item-section>
-                                    </q-item>
-                                </q-card-section>
-                                <q-card-section class="q-pt-none">
-                                    <q-input :dark="$store.state.dark" class="report__reason" placeholder="Reason" dense v-model="reason" />
-                                    <q-input
-                                        v-model="reason"
-                                        filled
-                                        clearable
-                                        type="textarea"
-                                        label="Reason"
-                                        :dark="$store.state.dark"                                
-                                    />
-                                </q-card-section>
-
-                                <q-card-actions align="right" class="buttons">
-                                    <q-btn flat label="Cancel" v-close-popup />
-                                    <q-btn flat label="Report" v-close-popup @click="reportPost" />
-                                </q-card-actions>
-                            </q-card>
-                        </q-dialog> -->
                     </template>
         </Item>
         
@@ -177,16 +95,6 @@ export default defineComponent({
                         <UserLiked  />
                     </q-tab-panel>
                 </q-tab-panels>
-                <!-- <div class="tabs">
-                    <RouterLink class="nav__link" :to="{ name: 'user-posted'}">
-                        <q-icon size="30px" name="grid_view" class="panel__icon" />
-                    </RouterLink>
-                    <RouterLink class="nav__link" :to="{ name: 'user-liked'}">
-                        <q-icon size="30px" name="favorite" class="panel__icon" />
-                    </RouterLink>
-                </div>
-               
-                <RouterView /> -->
             </div>
         </div>
     </div>

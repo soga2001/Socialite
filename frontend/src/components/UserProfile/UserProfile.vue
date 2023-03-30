@@ -5,7 +5,6 @@ import type { User } from '@/assets/interfaces';
 import { http } from '@/assets/http';
 import Timeago from '../Timeago.vue';
 import { useCookies } from 'vue3-cookies';
-import { Crypter } from '@/assets/crypter';
 
 export default defineComponent({
     props: {

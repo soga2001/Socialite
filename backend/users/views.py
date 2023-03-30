@@ -169,22 +169,11 @@ def user_login(request):
                     httponly = settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
                     samesite = settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
         )
-        response.set_cookie('user', json.dumps(userSerialized.data), expires = settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
-                    secure = settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
-                    httponly = settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-                    samesite = settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'])
         # response.set_cookie('access_token', str(token.access_token), expires=str(token.access_token.lifetime.days) + "d", secure=True, httponly=True)
         response.set_cookie('refresh_token', str(token), expires=str(token.lifetime.days)+ "d", secure=True, httponly=True)
         return response
     return JsonResponse({"error": True}, safe=False)
 
-# @api_view(["GET"])
-# def check_cookie(request):
-#     print(request.COOKIES)
-#     if request.session.test_cookie_worked():
-#         return JsonResponse({"success": True}, safe=False)
-#     else:
-#         return JsonResponse({"success": False}, safe=False)
 
 @api_view(["GET"])
 def get_session(request):
@@ -194,16 +183,20 @@ def get_session(request):
 
     
 class UserFromCookie(APIView):
-    # permission_classes = [IsAuthenticated]
-    # authentication_classes = [CustomAuthentication,]
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [CustomAuthentication,]
 
     def get(self, request):
-        # user, token = custom.authenticate(request)
-        if 'user' in request.COOKIES:
-            user = json.loads(request.COOKIES.get('user'))
+        try:
+            user = UserSerializer(request.user).data
             return JsonResponse({"success": True, "user": user})
-        else:
-            return JsonResponse({"success": False})
+        except:
+            return JsonResponse({"success": False, "message": "User not found."})
+        # if 'user' in request.COOKIES:
+        #     user = json.loads(request.COOKIES.get('user'))
+        #     return JsonResponse({"success": True, "user": user})
+        # else:
+        #     return JsonResponse({"success": False})
         
 
 class LogoutView(APIView):

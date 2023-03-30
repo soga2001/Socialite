@@ -95,19 +95,6 @@ export default defineComponent({
         <h1 class="register__header">Register</h1>
         <hr/>
         <form class="register__form" autocomplete="off" v-on:submit.prevent="register">
-            <!-- <input type="text" placeholder="First Name" class="fname" v-model="fname"/> -->
-            <!-- <q-input
-                clearable
-                clear-icon="close"
-                filled
-                :dark="$store.state.dark"
-                :color="$store.state.dark ? 'white' : 'black'"
-                v-model="fname"
-                label="First Name*"
-                class="fname"
-                type="text"
-                :rules="[val => fname.length > 0 || 'Please enter your first name']"
-            /> -->
             <Input
                 @update:val="fname = $event"
                 input_label="First Name*"
@@ -115,74 +102,12 @@ export default defineComponent({
                 input_type="text" required
                 id="fname"
                 />
-            <!-- <input type="text" placeholder="Last Name" class="lname" v-model="lname"/> -->
             <Input @update:val="lname = $event" input_label="Last Name*" id="lname" class="lname" input_type="text" required/>
-            <!-- <q-input
-                clearable
-                clear-icon="close"
-                filled
-                :dark="$store.state.dark"
-                :color="$store.state.dark ? 'white' : 'black'"
-                v-model="lname"
-                label="Last Name*"
-                class="lname"
-                type="text"
-                :rules="[val => lname.length > 0 || 'Please enter your last name']"
-            /> -->
-            <!-- <input type="email" placeholder="Email*" class="email" v-model="email" required/> -->
             <Input @update:val="email = $event" input_label="Email*" id="email" class="email" input_type="email" required/>
-            <!-- <q-input
-                clearable
-                clear-icon="close"
-                filled
-                :dark="$store.state.dark"
-                :color="$store.state.dark ? 'white' : 'black'"
-                v-model="email"
-                label="Email*"
-                class="email"
-                type="email"
-                :rules="[val => checkEmail() || 'Please enter a valid email']"
-            /> -->
-            <!-- <input type="text" placeholder="Username*" class="username"  :change="checkUsername" v-model="username" required /> -->
-            <!-- <q-input
-                clearable
-                clear-icon="close"
-                filled
-                :dark="$store.state.dark"
-                :color="$store.state.dark ? 'white' : 'black'"
-                v-model="username"
-                label="Username*"
-                class="username"
-                type="text"
-                :rules="[val => checkUsername() || 'Please enter a valid email']"
-            /> -->
             <Input @update:val="username = $event" input_label="Username*" id="username" class="username" input_type="text" required/>
-            <!-- <input type="password" placeholder="Password*" class="password" v-model="password" required /> -->
             <Input @update:val="password = $event" input_label="Password*" id="password" class="password" input_type="password" required/>
-            <!-- <q-input
-                filled
-                :dark="$store.state.dark"
-                :color="$store.state.dark ? 'white' : 'black'"
-                v-model="password"
-                label="Password*"
-                class="password"
-                type="password"
-                :rules="[val => checkPassword() || 'Please Enter a password']"
-            /> -->
-            <!-- <input type="password" placeholder="Confirm Password*" class="c_password" v-model="cPass" required /> -->
             <Input @update:val="cPass = $event" input_label="Confirm Password*" id="c_password" class="c_password" input_type="password" required/>
-            <!-- <q-input
-                filled
-                :dark="$store.state.dark"
-                :color="$store.state.dark ? 'white' : 'black'"
-                v-model="cPass"
-                label="Confirm Password*"
-                class="c_password"
-                type="password"
-                :rules="[val => confirmPassword() || 'Password does not match']"
-            /> -->
             <span v-if="error" class="errMsg">{{errMsg}}</span>
-            <!-- <input type="submit" value="Register" class="submit" :disabled="!checkForm()"/> -->
             <button type="submit" class="submit" :disabled="!checkForm()">
                 Register
             </button>

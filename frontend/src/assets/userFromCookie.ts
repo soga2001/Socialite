@@ -13,7 +13,7 @@ export async function get_user_from_cookie() {
         }
         
     }).catch((err) => {
-        
+        console.clear()
     })
     return true
 }

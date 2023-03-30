@@ -4,7 +4,6 @@ import { http } from '@/assets/http';
 import type { Post } from '@/assets/interfaces';
 import UserPostedMap from './UserPostedMap.vue';
 import Loading from '../Loading.vue';
-import $j from 'jquery';
 
 
 export default defineComponent({

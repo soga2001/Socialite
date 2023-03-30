@@ -243,15 +243,7 @@ export default defineComponent({
 
             
         </div> 
-        <!-- <div class="caption" v-if="caption">
-            <span class="post__caption">{{ caption }}</span>
-        </div> -->
         <q-img :src="img_url" @click.stop=""/>
-        <!-- <q-item-section v-if="caption" class="caption">
-            <q-item-label><span class="caption__username">{{ username }}</span></q-item-label>
-            <q-item-label v-html="caption" caption class="post__caption"></q-item-label>
-            <p v-html="caption" class="post__caption"></p>
-        </q-item-section> -->
         <Item title-size="16px" caption-size="13px">
             <template #title class="caption__username">
                 {{ username }}

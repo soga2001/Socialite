@@ -5,7 +5,6 @@ import { RouterLink, RouterView } from 'vue-router';
 import { http } from '@/assets/http';
 import {useStore} from '../store/store'
 import Item from '../components/Item.vue'
-import Cropper from '@/components/Cropper.vue';
 
 export default defineComponent({
     data() {
@@ -41,7 +40,7 @@ export default defineComponent({
         // console.log(import.meta.env)
         // console.log(window.innerHeight)
     },
-    components: { Item, Cropper }
+    components: { Item }
 })
 </script>
 

@@ -99,11 +99,6 @@ export default defineComponent({
           </div>
         </template>
       </q-infinite-scroll>
-      <!-- <div id="infinite-scroll">
-          <div class="posts" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
-            <PostsMap :post="post" />
-          </div>
-      </div> -->
       </div>
       
   </div>

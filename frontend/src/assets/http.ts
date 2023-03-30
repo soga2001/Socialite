@@ -7,3 +7,4 @@ export const http = axios.create({
   baseURL: `https://localhost/`,
   withCredentials: true,
 })
+

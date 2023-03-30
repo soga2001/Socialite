@@ -6,8 +6,6 @@ import { http } from '@/assets/http';
 import {useStore} from '../store/store'
 import Input from '@/components/Input.vue';
 // import { AES } from 'crypto-ts';
-import {Crypter} from '@/assets/crypter';
-import { get_csrf_token } from '@/assets/csrf';
 import { get_user_from_cookie } from '@/assets/userFromCookie';
 
 export default defineComponent({
@@ -73,45 +71,8 @@ export default defineComponent({
         <h1 class="login__header">Login</h1>
         <hr/>
         <form class="login__form" autocomplete="off" v-on:submit.prevent="login">
-            <!-- <div class="login__credentials">
-                <input type="text" placeholder="Username*" v-model="username" required />
-                <input type="password" placeholder="Password*" v-model="password" required />
-            </div>
-            <div class="login__submit">
-                <input type="submit" value="Login"/>
-            </div>
-            <div class="login__error">
-                <h3 class="login__errMsg">{{errMsg}}</h3>
-            </div>
-            <div class="login__links">
-                <a disabled>Frogot Password?</a>
-                <RouterLink to="/register">Create an Account</RouterLink>
-            </div> -->
-            <!-- <q-input
-                clearable
-                clear-icon="close"
-                filled
-                :dark="$store.state.dark"
-                :color="$store.state.dark ? 'white' : 'black'"
-                v-model="username"
-                label="Username*"
-                class="username"
-                type="text"
-                :rules="[val => !!val || 'Please enter a valid username']"
-            /> -->
             <Input @update:val="username = $event" required input_type="text" input_label="Username*" id="username" class="username" />
-            <!-- <input type="password" placeholder="Password*" class="password" v-model="password" required /> -->
             <Input @update:val="password = $event" required input_type="password" input_label="Password*" id="password" class="password" />
-            <!-- <q-input
-                filled
-                :dark="$store.state.dark"
-                :color="$store.state.dark ? 'white' : 'black'"
-                v-model="password"
-                label="Password*"
-                class="password"
-                type="password"
-                :rules="[val => !!val || 'Please enter a password']"
-            /> -->
             <span v-if="error" class="errMsg">{{errMsg}}</span>
             <button type="submit" class="submit" :disabled="username.length < 1 && password.length < 1" >
                 Login
