@@ -6,7 +6,6 @@ import { RouterLink, RouterView } from 'vue-router';
 import router from '../router';
 import { useStore } from '../store/store';
 import Item from './Item.vue';
-import { Crypter } from '@/assets/crypter';
 
 
 export default defineComponent({

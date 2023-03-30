@@ -5,7 +5,6 @@ import { http } from '@/assets/http';
 import moment from 'moment'
 import Timeago from './Timeago.vue';
 import { useCookies } from 'vue3-cookies';
-import { Crypter } from '@/assets/crypter';
 import Heart from './Heart.vue';
 import Item from './Item.vue';
 

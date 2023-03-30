@@ -9,7 +9,6 @@ import $ from 'jquery'
 import Search from './views/Search.vue'
 import { Cookies } from 'quasar';
 import Main from './views/Main.vue';
-import { Crypter } from './assets/crypter';
 import { get_user_from_cookie } from './assets/userFromCookie';
 import Loading from './components/Loading.vue';
 

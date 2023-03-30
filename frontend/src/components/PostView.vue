@@ -4,7 +4,6 @@ import { defineComponent } from 'vue';
 import { useCookies } from 'vue3-cookies';
 import type { User } from '../assets/interfaces';
 import Mention from './Mention.vue';
-import { Crypter } from '@/assets/crypter';
 
 
 export default defineComponent({
