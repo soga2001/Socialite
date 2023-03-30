@@ -6,14 +6,18 @@ boto3==1.24.78
 botocore==1.27.78
 cachetools==5.2.0
 certifi==2022.6.15
+cffi==1.15.1
 charset-normalizer==2.1.1
+cryptography==40.0.1
 debugpy==1.6.3
 decorator==5.1.1
 Django==4.0.6
 django-appconf==1.0.5
 django-cors-headers==3.13.0
 django-environ==0.9.0
+django-extensions==3.2.1
 django-select2==8.1.1
+django-sslserver==0.22
 django-storages==1.13.1
 djangorestframework==3.13.1
 djangorestframework-simplejwt==5.2.0
@@ -22,6 +26,7 @@ elasticsearch-dsl==7.4.1
 entrypoints==0.4
 executing==1.0.0
 google-crc32c==1.5.0
+gunicorn==20.1.0
 httplib2==0.20.4
 idna==3.3
 ipykernel==6.15.2
@@ -30,6 +35,7 @@ jedi==0.18.1
 jmespath==1.0.1
 jupyter-core==4.11.1
 jupyter_client==7.3.5
+MarkupSafe==2.1.2
 matplotlib-inline==0.1.6
 nest-asyncio==1.5.5
 oauthlib==3.2.0
@@ -46,9 +52,11 @@ ptyprocess==0.7.0
 pure-eval==0.2.2
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
+pycparser==2.21
 pycryptodome==3.17
 Pygments==2.13.0
 PyJWT==2.4.0
+pyOpenSSL==23.1.1
 pyparsing==3.0.9
 python-dateutil==2.8.2
 pytz==2022.1
@@ -66,3 +74,4 @@ tzdata==2022.1
 uritemplate==4.1.1
 urllib3==1.26.12
 wcwidth==0.2.5
+Werkzeug==2.2.3

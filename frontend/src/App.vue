@@ -11,6 +11,7 @@ import { Cookies } from 'quasar';
 import Main from './views/Main.vue';
 import { Crypter } from './assets/crypter';
 import { get_user_from_cookie } from './assets/userFromCookie';
+import Loading from './components/Loading.vue';
 
 
 export default defineComponent({
@@ -64,7 +65,7 @@ export default defineComponent({
     document.documentElement.setAttribute('data-theme', this.theme ? 'dark': 'light')
     this.loadUser()
   },
-  components: { Main },
+  components: { Main, Loading },
   mounted() {
     // let regexp = /android|iphone|kindle|ipad/i;
     this.checkOS
@@ -79,6 +80,9 @@ export default defineComponent({
   <header id="app" v-if="!loading">
       <Main />
   </header>
+  <header class="loading" v-else>
+    <Loading/>
+  </header>
 </template>
 
 <style>
@@ -91,5 +95,14 @@ export default defineComponent({
   overflow-y:scroll;
   overflow-x:hidden;
 } */
+
+.loading {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  align-items: center;
+  justify-content: center;
+}
 
 </style>
