@@ -28,13 +28,6 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.decorators import authentication_classes
 
-# from CryptoDome
-from Crypto.Cipher import AES
-from Crypto.Random import get_random_bytes
-from Crypto.Util.Padding import pad, unpad
-
-# Others
-from base64 import b64encode, b64decode
 
 
 from users.models import User
@@ -73,25 +66,6 @@ def user_by_id(request, user_id):
     except:
         return JsonResponse({"error": True}, safe=False)
 
-
-
-
-# @api_view(["GET"])
-# def user_by_username(request, username, multiple=True):
-#     try:
-#         if multiple == True:
-#             query = SearchQuery(username)
-#             vector = SearchVector('search_vector', weight='A')  # 'A' weight is used to indicate a primary search vector
-#             users = User.objects.annotate(similarity=SearchRank(vector, query)).order_by('-similarity')
-#             users_data = UserSerializer(users, many=True).data
-#         else:
-#             user = User.objects.get(username=username)
-#             users_data = UserSerializer(user).data
-#         return JsonResponse({"success": True, "users": users_data})
-#     except User.DoesNotExist:
-#         return JsonResponse({"error": "User does not exist"}, status=404)
-#     except:
-#         return JsonResponse({"error": "An error occurred"}, status=500)
 
 @api_view(["GET"])
 def user_by_username(request, username, multiple = True):
@@ -240,6 +214,43 @@ class LogoutFromAll(APIView):
 
         # Delete the sessions
         sessions.delete()
+
+
+class SuperUser(APIView):
+    permission_classes = [IsAuthenticated,]
+
+    def get(self, request):
+        user = User.objects.get(id=request.user.id)
+        if user.is_superuser:
+            return JsonResponse({"message": True}, safe=False)
+        return JsonResponse({"message": False}, safe=False)
+
+    def post(self, request):
+        try:
+            user = User.objects.get(id=request.user.id)
+            user.is_superuser = True
+            user.save()
+            return JsonResponse({"success": True}, safe=False)
+        except:
+            return JsonResponse({"error": True}, safe=False)
+
+class Staff(APIView):
+    permission_classes = [IsAuthenticated,]
+
+    def get(self, request):
+        user = User.objects.get(id=request.user.id)
+        if user.is_staff:
+            return JsonResponse({"message": True}, safe=False)
+        return JsonResponse({"message": False}, safe=False)
+
+    def post(self, request):
+        try:
+            user = User.objects.get(id=request.user.id)
+            user.is_staff = True
+            user.save()
+            return JsonResponse({"success": True}, safe=False)
+        except:
+            return JsonResponse({"error": True}, safe=False)
 
 
 class SuperUser(APIView):
