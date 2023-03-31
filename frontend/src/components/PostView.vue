@@ -1,7 +1,6 @@
 <script lang="ts">
 import { http } from '@/assets/http';
 import { defineComponent } from 'vue';
-import { useCookies } from 'vue3-cookies';
 import type { User } from '../assets/interfaces';
 import Mention from './Mention.vue';
 
@@ -17,10 +16,6 @@ export default defineComponent({
             chars: 255,
         };
     },
-    setup() {
-        const { cookies } = useCookies();
-        return { cookies };
-    },
     methods: {
         submit() {
             this.submitting = true;
@@ -30,7 +25,7 @@ export default defineComponent({
                 formData.append("caption", this.caption);
                 http.post("posts/post_content/", formData, {
                     headers: {
-                        "Content-Type": "multipart/form-data"
+                        "Content-Type": "multipart/form-data",
                     }
                 }).then((res) => {
                     this.submitting = false;

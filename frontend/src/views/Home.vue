@@ -100,7 +100,6 @@ export default defineComponent({
         </template>
       </q-infinite-scroll>
       </div>
-      
   </div>
 </template>
 

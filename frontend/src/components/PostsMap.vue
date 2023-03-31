@@ -34,7 +34,7 @@ export default defineComponent({
             comments: [],
             img_loading: true,
             avatar_loading: true,
-            delete: false,
+            deleted: false,
             persistent: ref(false),
             report: ref(false),
             reason: ref(""),
@@ -91,7 +91,7 @@ export default defineComponent({
             })
         },
         setDelete() {
-            this.delete = true;
+            this.deleted = true;
         },
         deletePost() {
             http.delete("posts/delete_post/", {
@@ -99,7 +99,7 @@ export default defineComponent({
                     id: this.id
                 },
             }).then((res) => {
-                console.log(res);
+                this.deleted = true
             }).catch((err) => {
                 console.log(err);
             });
@@ -117,10 +117,6 @@ export default defineComponent({
         captionChange() {
 
         },
-        // testing(event: Event) {
-        //     console.log('clicked');
-        //     event.stopPropagation();
-        // }
         
     },
     created() {
@@ -139,7 +135,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <q-card class="post" @click="">
+    <q-card class="post" @click="" v-if="!deleted">
         <div class="post__main">
 
             <Item :to="{ name: 'user-profile', params: { username: username } }" @click.stop="" >
@@ -303,6 +299,9 @@ export default defineComponent({
                 </q-item-section>
             </q-item>
         </div> -->
+    </q-card>
+    <q-card class="deleted" v-else>
+        <span class="deleted__msg">This post has been deleted.</span>
     </q-card>
 </template>
 
@@ -490,5 +489,17 @@ export default defineComponent({
 .comments {
     padding: 5px 15px;
     color: var(--color-heading);
+}
+
+.deleted {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100px;
+}
+.deleted__msg {
+    font-weight: 900;
+    font-size: 20px;
 }
 </style>

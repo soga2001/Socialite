@@ -183,7 +183,9 @@ class LogoutView(APIView):
             response = HttpResponse({"success": True}, content_type="application/json")
             logout(request)
             for cookies in request.COOKIES:
-                response.delete_cookie(cookies)
+                if cookies != "theme":
+                    response.delete_cookie(cookies)
+            request.session.flush()
             return response
         except:
             return JsonResponse({"error": True}, safe=False)

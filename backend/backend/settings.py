@@ -77,6 +77,12 @@ CORS_ALLOWED_ORIGINS = [
     'https://127.0.0.1:3000',
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
+# CSRF_TRUSTED_ORIGINS = [
+#     'http://localhost:3000'
+# ]
+
 CORS_ALLOW_METHODS = [
     "DELETE",
     "GET",
@@ -85,12 +91,6 @@ CORS_ALLOW_METHODS = [
     "POST",
     "PUT",
 ]
-
-CORS_ALLOW_CREDENTIALS = True
-
-# CSRF_TRUSTED_ORIGINS = [
-#     'http://localhost:3000'
-# ]
 
 
 ROOT_URLCONF = 'backend.urls'
@@ -155,13 +155,6 @@ SECURE_HSTS_SECONDS = 3600
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
-# SSL/TLS settings
-# SSL_CERTIFICATE = '/User/Suyogya/Projects/cert.pem'
-# SSL_KEY = '/path/to/key.pem'
-
-# HTTPS settings
-# SECURE_BROWSER_XSS_FILTER = True
-# SECURE_CONTENT_TYPE_NOSNIFF = True
 
 
 

@@ -9,7 +9,8 @@ export default defineComponent({
       style: {
         alignItems: this.alignItems,
         cursor: this.to ? 'pointer' : 'normal',
-        justifyContent: this.justifyContent
+        justifyContent: this.justifyContent,
+        padding: this.dense ? ".2rem" : ".5rem"
       } as CSSProperties,
       titleStyle: {
         fontSize: this.titleSize,
@@ -61,6 +62,10 @@ export default defineComponent({
     clickable: {
       type: Boolean,
       default: false
+    },
+    dense: {
+      type: Boolean,
+      default: false,
     },
     titleLineClamp: {
       type: Number,
@@ -124,7 +129,6 @@ export default defineComponent({
 <style scoped>
   .user-card {
     display: flex;
-    padding: 0.5rem .5rem;
     cursor: pointer;
     position: relative;
     line-height: normal;
@@ -157,7 +161,7 @@ export default defineComponent({
     display: flex;
   }
 
-  :slotted(img) {
+  :slotted(*) {
     border-radius: 50%;
     width: 100%;
     height: 100%;
@@ -175,7 +179,7 @@ export default defineComponent({
   .title {
     font-weight: 900;
     font-size: 17px;
-    margin-bottom: .5rem; 
+    /* margin-bottom: .5rem;  */
   }
 
   .title :slotted(*) {

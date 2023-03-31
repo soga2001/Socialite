@@ -66,24 +66,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <!-- <div class="home row">
-    <div class="nav col-2 col-lg-3 col-md-4">
-       <Navbar />
-    </div>
-    <div class="main--center col-10 col-lg-5 col-md-6">
-      <RouterView v-slot="{Component}">
-        <KeepAlive :max="3" :include="['home','user-profile', 'search']">
-          <component :is="Component" :key="$route.fullPath"/>
-        </KeepAlive>
-      </RouterView>
-    </div>
-    <div class="home__sides right">
-    
-    </div>
-  </div> -->
   <div :class="$store.state.desktop ? 'main' : 'mobile'">
     <div :class="!$store.state.desktop && 'mobile-' + 'navbar'">
-       <Navbar />
+      <Navbar />
     </div>
     <div :class="$store.state.desktop ? 'main--center' : 'mobile-main'">
       <RouterView v-slot="{Component}">
@@ -95,19 +80,6 @@ export default defineComponent({
     <div v-if="!$store.state.desktop" class="main--right">
     </div>
   </div>
-
-  <!-- <div class="mobile">
-    <div class="mobile-nav">
-      <Navbar />
-    </div>
-    <div>
-      <RouterView v-slot="{Component}">
-        <KeepAlive :max="3" :include="['home','user-profile', 'search']">
-          <component :is="Component" :key="$route.fullPath"/>
-        </KeepAlive>
-      </RouterView>
-    </div>
-  </div> -->
 </template>
 
 <style scoped>
