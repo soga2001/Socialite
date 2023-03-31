@@ -18,6 +18,7 @@ export default defineComponent({
         hasMore: false,
         scrollY: 0,
         message: '',
+        offset: 0,
       };
   },
   name: 'explore',
@@ -32,7 +33,7 @@ export default defineComponent({
   },
   methods: {
     async getData() {
-      http.get(`posts/explore/`).then((res) => {
+      http.get(`posts/explore/${this.offset}/`).then((res) => {
         if(res.data.message) {
             this.message = res.data.message
             this.hasMore = false
@@ -42,6 +43,7 @@ export default defineComponent({
         }
         if(res.data.posts) {
             this.posts = [...this.posts, ...res.data.posts]
+            this.offset = (this.posts).length
         }
       }).catch((err) => {
           console.log(err);

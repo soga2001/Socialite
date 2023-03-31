@@ -84,17 +84,20 @@ def view_posts(request, timestamp, page):
     posts = PostSerializer(Post.objects.filter(date_posted__lt=timestamp)[offset:offset+5], many=True)
     return JsonResponse({"posts": posts.data}, safe=False)
 
-def explore(request):
+def explore(request, offset):
     if 'displayed_post_ids' not in request.session:
         request.session['displayed_post_ids'] = []
     displayed_post_ids = request.session['displayed_post_ids']
-    post_ids = Post.objects.exclude(id__in=displayed_post_ids).order_by('?').values_list('pk', flat=True)[:10]
-    # Fetch the corresponding posts
-    posts = Post.objects.filter(pk__in=post_ids)
+    if int(offset) < len(displayed_post_ids):
+        newList = displayed_post_ids[int(offset):int(offset) + 10]
+        posts = Post.objects.filter(pk__in=newList)
+    else:
+        post_ids = Post.objects.exclude(id__in=displayed_post_ids).order_by('?').values_list('id', flat=True)[:10]
+        posts = Post.objects.filter(pk__in=post_ids).order_by('?')
+        displayed_post_ids += list(post_ids)
+        request.session['displayed_post_ids'] = displayed_post_ids
 
-    # Add the displayed post IDs to the session
-    displayed_post_ids += list(post_ids)
-    request.session['displayed_post_ids'] = displayed_post_ids
+    
 
     if len(posts) == 0:
         return JsonResponse({"message": "You have viewed all the unique posts."})

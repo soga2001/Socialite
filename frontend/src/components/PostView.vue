@@ -59,7 +59,7 @@ export default defineComponent({
             <q-icon name="cloud_upload" />
           </template>
         </q-file>
-        <Mention @update:charsLeft="chars = $event" @update:val="caption = $event" :value="caption" required input_type="text" id="caption" input_label="Caption" class="post__caption" />
+        <Mention @update:charsLeft="chars = $event" @update:val="caption = $event" :value="caption" input_type="text" id="caption" input_label="Caption" class="post__caption" />
         <p>{{ chars }} / 255</p>
         <q-btn class="post__submit__btn" :loading="submitting" type="submit"  icon-right="send" push label="Post" :disable="image === null">
           <template v-slot:loading>

@@ -131,6 +131,8 @@ export default defineComponent({
 #top-nav {
   grid-row: 1;
   background-color: #ccc;
+  /* padding: 10px; */
+  font-size: 20px;
 }
 
 .navbar {
