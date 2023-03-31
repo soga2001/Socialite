@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent, ref} from 'vue';
+import {defineComponent, ref, type CSSProperties} from 'vue';
 import  type {Post} from '@/assets/interfaces';
 import { http } from '@/assets/http';
 import PostsMap from '../components/PostsMap.vue';
@@ -14,19 +14,33 @@ export default defineComponent({
   data() {
       return {
         $q: useQuasar(),
-
+        mobileStyle: {} as CSSProperties,
+        scrollY: 0
       };
   },
   name: 'Main',
-  setup() {
-    const store = useStore()
-  },
   created() {
-    
   },
   mounted() {
+    this.mobileDiv()
+  },
+  activated() {
   },
   methods: {
+    mobileDiv() {
+      const top = (document.getElementById("top-nav") as HTMLDivElement)
+      const bottom = (document.getElementById("bottom-nav") as HTMLDivElement)
+      if(top && bottom){
+        this.mobileStyle = {
+          height: `calc(100vh - ${top.offsetHeight}px - ${bottom.offsetHeight}px)`
+        }
+
+        const div = (document.getElementById("content") as HTMLDivElement)
+        div.onscroll = () => {
+          this.scrollY = div.scrollTop
+        };
+      }
+    }
   },
   components: { PostsMap, PostView, Search, Navbar },
   watch: {
@@ -60,6 +74,9 @@ export default defineComponent({
             ]
           })
         }
+    },
+    '$store.state.desktop': function () {
+      this.mobileDiv()
     }
   }
 })
@@ -67,16 +84,22 @@ export default defineComponent({
 
 <template>
   <div :class="$store.state.desktop ? 'main' : 'mobile'">
-    <div :class="!$store.state.desktop && 'mobile-' + 'navbar'">
+    <nav v-if="$store.state.desktop" class="navbar">
       <Navbar />
+    </nav>
+    <div v-if="!$store.state.desktop" id="top-nav">
+      Top Nav will go here eventually
     </div>
-    <div :class="$store.state.desktop ? 'main--center' : 'mobile-main'">
+    <div :style="!$store.state.desktop ? mobileStyle : {}" id="content" :class="$store.state.desktop ? 'main--center' : 'mobile-main'">
       <RouterView v-slot="{Component}">
-        <KeepAlive :max="3" :include="['home','user-profile', 'search']">
+        <KeepAlive :max="3" :include="['home','user-profile', 'search', 'explore']">
           <component :is="Component" :key="$route.fullPath"/>
         </KeepAlive>
       </RouterView>
     </div>
+    <nav v-if="!$store.state.desktop" id="bottom-nav">
+      <Navbar/>
+    </nav>
     <div v-if="!$store.state.desktop" class="main--right">
     </div>
   </div>
@@ -91,8 +114,10 @@ export default defineComponent({
 .mobile {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 12fr;
+  grid-template-rows: auto 1fr auto;
+  height: 100%;
+  max-height: 100vh;
+  max-height: 100dvh;
 }
 
 .mobile-navbar {
@@ -103,9 +128,13 @@ export default defineComponent({
   border-right: 2px solid var(--color-border);
 }
 
+#top-nav {
+  grid-row: 1;
+  background-color: #ccc;
+}
+
 .navbar {
   position: relative;
-
   height: 100%;
   min-height: 100vh;
   background-color: var(--color-background);
@@ -122,16 +151,14 @@ export default defineComponent({
 .mobile-main {
   border-left: 2px solid var(--color-border);
   border-right: 2px solid var(--color-border);
-  height: 100%;
-  grid-row: 1 / span 9;
+  min-height: 100%;
+  grid-row: 2;
+  overflow: hidden;
+  overflow-y: scroll;
 }
 
-.mobile-nav {
-  overflow: hidden;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  z-index: 999;
+#bottom-nav {
+  grid-row: 3;
 }
 
 /* Extra small devices (phones, 600px and down) */

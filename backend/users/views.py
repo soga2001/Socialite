@@ -54,6 +54,11 @@ def get_csrf(request):
     return JsonResponse({'csrf': csrf})
 
 @api_view(["GET"])
+def flush_session(request):
+    request.session.flush()
+    return JsonResponse({'success': True})
+
+@api_view(["GET"])
 def users(request):
     users = UserSerializer(User.objects.all(), many=True)
     return JsonResponse({'users': list(users.data)}, safe=False)

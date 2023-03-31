@@ -5,11 +5,10 @@ import { http } from '@/assets/http';
 import PostsMap from '../components/PostsMap.vue';
 import PostView from '../components/PostView.vue';
 import Search from './Search.vue';
-import { useStore } from '@/store/store';
 import Navbar from '../components/Navbar.vue';
 
 export default defineComponent({
-  title: 'Home',
+  title: 'Explore',
   data() {
       return {
         posts: new Array<Post>(),
@@ -17,13 +16,11 @@ export default defineComponent({
         user_timestap: new Date().toISOString(),
         page: ref(0),
         hasMore: false,
-        scrollY: 0
+        scrollY: 0,
+        message: '',
       };
   },
-  name: 'home',
-  setup() {
-    const store = useStore()
-  },
+  name: 'explore',
   created() {
     this.getData();
   },
@@ -35,21 +32,28 @@ export default defineComponent({
   },
   methods: {
     async getData() {
-      http.get(`posts/view_posts/${this.user_timestap}/${this.page}/`).then((res) => {
-        this.$store.commit('setMainPosts', res.data.posts)
-        if(res.data.posts.length === 5) {
-          this.hasMore = true
+      http.get(`posts/explore/`).then((res) => {
+        if(res.data.message) {
+            this.message = res.data.message
+            this.hasMore = false
         }
         else {
-          this.hasMore = false
+          this.hasMore = true
         }
-        this.posts = [...this.posts, ...res.data.posts]
+        if(res.data.posts) {
+            this.posts = [...this.posts, ...res.data.posts]
+        }
       }).catch((err) => {
           console.log(err);
       });
     },
-    async search() {
-      this.input = ""
+    async flushSession() {
+        http.get(`users/flush_session/`).then((res) => {
+            this.posts = new Array<Post>()
+            this.getData()
+        }).catch((err) => {
+            console.log(err);
+        });
     },
     onLoad(index: any, done: any) {
       if(this.hasMore) {
@@ -66,8 +70,14 @@ export default defineComponent({
         this.getData()
       }
     },
+    scrollTo() {
+      (document.getElementById("infinite-scroll") as HTMLDivElement).scrollTo(0, this.scrollY)
+    }
   },
   components: { PostsMap, PostView, Search, Navbar },
+  activated() {
+    this.scrollTo()
+  }
 })
 </script>
 
@@ -75,11 +85,8 @@ export default defineComponent({
   <div class="home" id="home">
     <div class="home__center">
       <header>
-        Home
+        Explore
       </header>
-      <div v-if="$store.state.authenticated">
-        <PostView />
-      </div>
       <q-infinite-scroll id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
         <div class="posts" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
           <PostsMap :post="post" />
@@ -90,6 +97,10 @@ export default defineComponent({
           </div>
         </template>
       </q-infinite-scroll>
+      </div>
+      <div v-if="!hasMore" class="text-center message">
+        <p>{{message}}</p>
+        <button @click="flushSession">Reset Session Data</button>
       </div>
   </div>
 </template>
@@ -117,16 +128,16 @@ header {
                         -1px -1px 0 var(--color-background);
 }
 
-/* #infinite-scroll {
-  height: 100vh;
-  overflow-y: scroll;
-} */
+.message {
+    padding: 1rem;
+}
+
 
 .posts:not(:first-child) {
   margin: 20px 0;
 }
 
-.posts:is(:last-child) {
+/* .posts:is(:last-child) {
   margin-bottom: 70px;
-}
+} */
 </style>

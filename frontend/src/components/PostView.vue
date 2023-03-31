@@ -80,6 +80,7 @@ export default defineComponent({
   border: 1px solid var(--color-border);
   position: relative;
   width: 100%;
+  max-width: 600px;
 }
 .post__container {
   padding: 10px 0px;

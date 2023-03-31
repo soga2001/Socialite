@@ -1,12 +1,5 @@
 <script lang="ts">
-import { useCookies } from 'vue3-cookies';
 import { defineComponent } from 'vue'
-import {http} from './assets/http'
-import { RouterLink, RouterView } from 'vue-router';
-import router from './router';
-import { useStore } from './store/store';
-import $ from 'jquery'
-import Search from './views/Search.vue'
 import { Cookies } from 'quasar';
 import Main from './views/Main.vue';
 import { get_user_from_cookie } from './assets/userFromCookie';
@@ -24,9 +17,6 @@ export default defineComponent({
     }
   },
   setup() {
-    const store = useStore()
-    const {cookies} = useCookies();
-    return {cookies}
   },
   methods: {
     switchTheme(e: any) {
@@ -46,7 +36,8 @@ export default defineComponent({
       console.log(e)
     },
     checkOS() {
-      if(navigator.userAgent.includes('Mobile')) {
+      const regex = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i
+      if(regex.test(navigator.userAgent)) {
         this.$store.commit('setDesktop', false)
       }
       else {
@@ -59,17 +50,16 @@ export default defineComponent({
     }
   },
   created() {
+    this.checkOS()
     this.theme = Cookies.get('theme') === 'dark'
     this.$store.commit('setTheme', this.theme)
     document.documentElement.setAttribute('data-theme', this.theme ? 'dark': 'light')
     this.loadUser()
   },
-  components: { Main, Loading },
   mounted() {
-    // let regexp = /android|iphone|kindle|ipad/i;
-    this.checkOS
     window.onresize = this.checkOS
-  }
+  },
+  components: { Main, Loading },
 })
 
 </script>

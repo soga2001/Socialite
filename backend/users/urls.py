@@ -10,6 +10,7 @@ urlpatterns = [
     path('all_logins/', views.AllLogins.as_view(), name="all sessions"),
     # path('check_cookies/', views.check_cookie, name="check cookies"),
     path('user_from_cookie/', views.UserFromCookie.as_view(), name="user from cookie"),
+    path('flush_session/', views.flush_session, name="flush session"),
     path('get_session', views.get_session, name="get session"),
     path('login/', views.user_login, name="login"),
     path('register/', views.user_register, name="register"),

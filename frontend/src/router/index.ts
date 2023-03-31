@@ -39,6 +39,17 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/explore',
+    name: 'Explore',
+    component: () => import('../views/Explore.vue'),
+    meta: {
+      scrollPos: {
+        top: 0,
+        left: 0
+      }
+    },
+  },
+  {
     path: '/login',
     name: 'login',
     component: () => import('../views/Login.vue'),

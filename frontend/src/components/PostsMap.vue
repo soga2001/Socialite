@@ -484,8 +484,6 @@ export default defineComponent({
     z-index: 3;
 }
 
-
-
 .comments {
     padding: 5px 15px;
     color: var(--color-heading);

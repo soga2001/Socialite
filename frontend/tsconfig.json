@@ -7,8 +7,9 @@
     "paths": {
       "@/*": ["./src/*"]
     },
+    "ignoreDeprecations": "5.0",
+    "verbatimModuleSyntax": true
   },
-
   "references": [
     {
       "path": "./tsconfig.config.json"

@@ -18,7 +18,6 @@ from django.contrib.sessions.models import Session
 
 # From rest_framework
 from rest_framework.views import APIView
-from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 
 from PIL import Image
@@ -83,7 +82,27 @@ class Post_Content(APIView):
 def view_posts(request, timestamp, page):
     offset = int(page) * 5
     posts = PostSerializer(Post.objects.filter(date_posted__lt=timestamp)[offset:offset+5], many=True)
-    return JsonResponse({"posts": list(posts.data)}, safe=False)
+    return JsonResponse({"posts": posts.data}, safe=False)
+
+def explore(request):
+    if 'displayed_post_ids' not in request.session:
+        request.session['displayed_post_ids'] = []
+    displayed_post_ids = request.session['displayed_post_ids']
+    post_ids = Post.objects.exclude(id__in=displayed_post_ids).order_by('?').values_list('pk', flat=True)[:10]
+    # Fetch the corresponding posts
+    posts = Post.objects.filter(pk__in=post_ids)
+
+    # Add the displayed post IDs to the session
+    displayed_post_ids += list(post_ids)
+    request.session['displayed_post_ids'] = displayed_post_ids
+
+    if len(posts) == 0:
+        return JsonResponse({"message": "You have viewed all the unique posts."})
+
+    posts = PostSerializer(posts, many=True)
+    return JsonResponse({"posts": posts.data})
+
+
 
 @api_view(["GET"])
 def user_posted(request, timestamp, page, username):

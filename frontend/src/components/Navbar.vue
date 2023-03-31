@@ -227,7 +227,7 @@ export default defineComponent({
                 </template>
               </Item>
 
-              <Item :border="false" class="show item">
+              <Item :border="false" dense class="show item">
                 <template #avatar>
                   <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
                   <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
@@ -273,13 +273,13 @@ export default defineComponent({
             </q-tooltip>
           </q-avatar>
         </RouterLink>
-        <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
+        <!-- <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
           <q-avatar size="iconSize" :icon="$route.fullPath == `/profile/user/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" class="icon">
             <q-tooltip anchor="top middle" self="bottom middle">
               Profile
             </q-tooltip>
           </q-avatar>
-        </RouterLink>
+        </RouterLink> -->
 
         <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
           <q-avatar size="iconSize" :icon="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" class="icon">
@@ -305,7 +305,7 @@ export default defineComponent({
           </q-avatar>
         </RouterLink>
       <!-- <Item :avatar="$store.state.user.profile.avatar" :title="$store.state.user.username" /> -->
-      <div class="dropdown-btn">
+      <!-- <div class="dropdown-btn">
         <q-btn no-caps flat round class="dropdown" v-if="$store.state.authenticated">
             <Item class="item" avatar-size="fit-content">
                 <template #avatar>
@@ -326,7 +326,7 @@ export default defineComponent({
             </q-list>
           </q-menu>
         </q-btn>
-      </div>
+      </div> -->
     </nav>
   </header>
 </template>
@@ -359,14 +359,10 @@ header {
 }
 
 .mobile-nav {
-  position: fixed;
+  width: 100%;
   background-color: var(--color-background);
   border-top: 1px solid var(--color-text);
-  bottom: 0;
-  left: 0;
-  right: 0;
   z-index: 0;
-  /* width: 100%; */
   display: inline-flex;
 }
 
@@ -491,6 +487,11 @@ a {
 @media (max-width: 992px) {
   .show {
     display:flex;
+  }
+
+  .nav {
+    justify-content: center;
+    
   }
 
   .item {
