@@ -9,60 +9,76 @@ import Item from './Item.vue';
 
 
 export default defineComponent({
-    data() {
-        return {
-            theme: false,
-            dark_mode: false,
-            include: ["home", "explore"],
-            iconSize: "5rem"
-        };
+  props: {
+    topnav: {
+      type: Boolean,
+      default: false
     },
-    setup() {
-        const store = useStore();
-        const { cookies } = useCookies();
-        return { cookies };
+    bottomnav: {
+      type: Boolean,
+      default: false
     },
-    computed: {
-      navStyle(): {justifyContent: string} {
-        return {
-          justifyContent: this.$store.state.authenticated ? "right" : "center"
-        }
-      },
-      
+  },
+  data() {
+      return {
+          theme: false,
+          dark_mode: false,
+          include: ["home", "explore"],
+          iconSize: "5rem",
+          navSlideIn: false
+      };
+  },
+  setup() {
+      const { cookies } = useCookies();
+      return { cookies };
+  },
+  computed: {
+    navStyle(): {justifyContent: string} {
+      return {
+        justifyContent: this.$store.state.authenticated ? "right" : "center"
+      }
+    },
+    slideIn(): {width: string} {
+      return {
+          width: this.navSlideIn ? '250px' : '0vh'
+      }
+    }
+    
 
-    },
-    methods: {
-        switchTheme(e: any) {
-            if (this.theme) {
-                this.cookies.set("theme", "light");
-                document.documentElement.setAttribute("data-theme", "light");
-            }
-            else {
-                this.cookies.set("theme", "dark");
-                document.documentElement.setAttribute("data-theme", "dark");
-            }
-            this.$store.commit("setTheme", !this.$store.state.dark);
-        },
-        logout() {
-            http.post("users/logout/").then((res) => {
-                this.cookies.remove("loggedIn");
-                this.$store.commit("authenticate", false);
-                this.$store.commit("setDefaultUser");
-                router.push("/login");
-            }).catch((err) => {
-                console.log(err);
-            });
-        },
-    },
-    created() {
-        this.theme = this.cookies.get("theme") === "dark";
-        this.$store.commit("setTheme", this.theme);
-        document.documentElement.setAttribute("data-theme", this.theme ? "dark" : "light");
-    },
-    mounted() {
-    },
-    watch: {},
-    components: { Item }
+  },
+  methods: {
+      switchTheme(e: any) {
+          if (this.theme) {
+              this.cookies.set("theme", "light");
+              document.documentElement.setAttribute("data-theme", "light");
+          }
+          else {
+              this.cookies.set("theme", "dark");
+              document.documentElement.setAttribute("data-theme", "dark");
+          }
+          this.$store.commit("setTheme", !this.$store.state.dark);
+      },
+      logout() {
+          http.post("users/logout/").then((res) => {
+              this.cookies.remove("loggedIn");
+              this.$store.commit("authenticate", false);
+              this.$store.commit("setDefaultUser");
+              router.push("/login");
+          }).catch((err) => {
+              console.log(err);
+          });
+      },
+  },
+  created() {
+      this.theme = this.cookies.get("theme") === "dark";
+      this.$store.commit("setTheme", this.theme);
+      document.documentElement.setAttribute("data-theme", this.theme ? "dark" : "light");
+  },
+  mounted() {
+  },
+  watch: {
+  },
+  components: { Item }
 })
 
 </script>
@@ -260,82 +276,136 @@ export default defineComponent({
       </q-list>
     </nav>
 
-    <nav v-else class="mobile-nav">
-      <RouterLink to="/home" class="nav__link" active-class="active">
-        <q-avatar size="iconSize" :icon="$route.fullPath == '/home' ? 'house' : 'o_house'" class="icon">
-          <q-tooltip anchor="top middle" self="bottom middle">
-            Home
-          </q-tooltip>
-        </q-avatar>
-      </RouterLink>
-      <RouterLink to="/explore" class="nav__link" active-class="active">
-        <q-avatar size="iconSize" :icon="$route.fullPath == '/explore' ? 'explore' : 'o_explore'" class="icon">
-          <q-tooltip anchor="top middle" self="bottom middle">
-            Explore
-          </q-tooltip>
-        </q-avatar>
-      </RouterLink>
-      <RouterLink to="/search" class="nav__link" active-class="active">
-          <q-avatar size="iconSize" :icon="$route.fullPath == '/search' ? 'search' : 'o_search'" class="icon search">
-            <q-tooltip anchor="top middle" self="bottom middle">
-              Search
-            </q-tooltip>
-          </q-avatar>
-        </RouterLink>
-        <!-- <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
-          <q-avatar size="iconSize" :icon="$route.fullPath == `/profile/user/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" class="icon">
-            <q-tooltip anchor="top middle" self="bottom middle">
-              Profile
-            </q-tooltip>
-          </q-avatar>
-        </RouterLink> -->
+    <nav v-else >
+      <div class="topNav" v-if="topnav && $store.state.authenticated">
+        <slot name="topNav">
+          <div class="dropdown-btn">
+            <q-btn no-caps flat dense round class="dropdown" @click="navSlideIn = true" v-if="$store.state.authenticated">
+                <Item class="item" dense avatar-size="fit-content">
+                    <template #avatar>
+                      <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
+                      <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
+                    </template>
+                </Item>
+              <!-- <q-menu fit square self="top left" anchor="bottom left">
+                <q-list class="dropdown__main" dense>
+                  <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
+                    <q-item-section avatar>
+                      <q-avatar icon="logout" />
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label>Logout</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu> -->
+            </q-btn>
+          </div>
 
-        <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
-          <q-avatar size="iconSize" :icon="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" class="icon">
-            <q-tooltip anchor="top middle" self="bottom middle">
-              Settings
-            </q-tooltip>
-          </q-avatar>
-        </RouterLink>
-
-        <RouterLink to="/login" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
-          <q-avatar size="iconSize" icon="login" class="icon">
-            <q-tooltip anchor="top middle" self="bottom middle">
-              Login
-            </q-tooltip>
-          </q-avatar>
-        </RouterLink>
-
-        <RouterLink to="/Register" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
-          <q-avatar size="iconSize" icon="app_registration" class="icon">
-            <q-tooltip anchor="top middle" self="bottom middle">
-              Register
-            </q-tooltip>
-          </q-avatar>
-        </RouterLink>
-      <!-- <Item :avatar="$store.state.user.profile.avatar" :title="$store.state.user.username" /> -->
-      <!-- <div class="dropdown-btn">
-        <q-btn no-caps flat round class="dropdown" v-if="$store.state.authenticated">
-            <Item class="item" avatar-size="fit-content">
-                <template #avatar>
+          <div class="slide-in-nav" :style="slideIn">
+            <Item class="item" @click="navSlideIn = false" dense avatar-size="fit-content">
+              <template #avatar>
                 <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
                 <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
-                </template>
+              </template>
             </Item>
-          <q-menu fit square self="top left" anchor="bottom left">
-            <q-list class="dropdown__main" dense>
-              <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
-                <q-item-section avatar>
-                  <q-avatar icon="logout" />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>Logout</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
-      </div> -->
+            <hr/>
+            <div>
+              <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
+                <q-item>
+                  <q-item-section avatar>
+                    <q-icon class="icon" :name="$route.fullPath == `/profile/user/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" />
+                  </q-item-section>
+
+                  <q-item-section class="bold">
+                    Profile
+                  </q-item-section>
+                </q-item>
+              </RouterLink>
+              
+              <!-- <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
+                <q-item>
+                  <q-item-section avatar>
+                    <q-icon class="icon" :name="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" />
+                  </q-item-section>
+
+                  <q-item-section class="bold">
+                    Settings
+                  </q-item-section>
+                </q-item>
+              </RouterLink> -->
+            </div>
+            
+            <q-item class="logout" clickable v-close-popup v-on:click="logout">
+              <q-item-section avatar>
+                <q-icon name="logout" />
+              </q-item-section>
+              <q-item-section class="bold">
+                Logout
+              </q-item-section>
+            </q-item>
+          </div>
+        
+        </slot>
+      </div>
+      <div class="bottomNav" v-if="bottomnav">
+        <slot name="bottomNav">
+          <RouterLink to="/home" class="nav__link" active-class="active" v-if="$store.state.authenticated">
+            <q-avatar size="iconSize" :icon="$route.fullPath == '/home' ? 'house' : 'o_house'" class="icon">
+              <q-tooltip anchor="top middle" self="bottom middle">
+                Home
+              </q-tooltip>
+            </q-avatar>
+          </RouterLink>
+          <RouterLink to="/explore" class="nav__link" active-class="active">
+            <q-avatar size="iconSize" :icon="$route.fullPath == '/explore' ? 'explore' : 'o_explore'" class="icon">
+              <q-tooltip anchor="top middle" self="bottom middle">
+                Explore
+              </q-tooltip>
+            </q-avatar>
+          </RouterLink>
+          <RouterLink to="/search" class="nav__link" active-class="active">
+              <q-avatar size="iconSize" :icon="$route.fullPath == '/search' ? 'search' : 'o_search'" class="icon search">
+                <q-tooltip anchor="top middle" self="bottom middle">
+                  Search
+                </q-tooltip>
+              </q-avatar>
+            </RouterLink>
+            <!-- <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
+              <q-avatar size="iconSize" :icon="$route.fullPath == `/profile/user/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" class="icon">
+                <q-tooltip anchor="top middle" self="bottom middle">
+                  Profile
+                </q-tooltip>
+              </q-avatar>
+            </RouterLink> -->
+
+            <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
+              <q-avatar size="iconSize" :icon="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" class="icon">
+                <q-tooltip anchor="top middle" self="bottom middle">
+                  Settings
+                </q-tooltip>
+              </q-avatar>
+            </RouterLink>
+
+            <RouterLink to="/login" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
+              <q-avatar size="iconSize" icon="login" class="icon">
+                <q-tooltip anchor="top middle" self="bottom middle">
+                  Login
+                </q-tooltip>
+              </q-avatar>
+            </RouterLink>
+
+            <RouterLink to="/Register" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
+              <q-avatar size="iconSize" icon="app_registration" class="icon">
+                <q-tooltip anchor="top middle" self="bottom middle">
+                  Register
+                </q-tooltip>
+              </q-avatar>
+            </RouterLink>
+        </slot>
+      </div>
+      
+      
     </nav>
   </header>
 </template>
@@ -352,7 +422,7 @@ header {
   height: 100%;
   width: 100%;
 	top: 0;
-  z-index: 999;
+  z-index: 20;
   overflow-y: scroll;
 }
 
@@ -367,13 +437,77 @@ header {
   
 }
 
-.mobile-nav {
+.topNav {
+  width: 100%;
+  background-color: var(--color-background);
+  z-index: 0;
+  display: inline-flex;
+}
+  
+.bottomNav {
   width: 100%;
   background-color: var(--color-background);
   border-top: 1px solid var(--color-text);
   z-index: 0;
   display: inline-flex;
 }
+
+.topNav {
+  padding: 0 10px 0 10px ;
+}
+.topNav .dropdown-btn {
+  padding: 0;
+  width: 3rem;
+}
+
+.item {
+  height: fit-content;
+}
+.item img {
+  width: 3rem;
+}
+
+.slide-in-nav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background-color: var(--color-background);
+  border-right: 3px solid var(--color-border);
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 1rem;
+}
+
+.slide-in-nav a {
+  padding: 0 10px 0 10px;
+  text-decoration: none;
+  font-size: 25px;
+  /* color: #818181; */
+  color: var(--color-heading);
+  display: block;
+}
+
+.logout {
+  padding: 0 28px;
+  font-size: 25px;
+  color: var(--color-heading);
+}
+
+.slide-in-nav a:hover {
+  color: #f1f1f1;
+}
+
+/* .slide-in-nav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 36px;
+  margin-left: 50px;
+} */
 
 
 .nav .brand {
@@ -464,6 +598,11 @@ a {
   /* border-radius: 30px; */
   display: flex;
   justify-content: center;
+}
+
+.top-nav .dropdown {
+  position: relative;
+  display: inline-block;
 }
 
 .dropdown__main {

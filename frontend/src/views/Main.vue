@@ -30,15 +30,17 @@ export default defineComponent({
     mobileDiv() {
       const top = (document.getElementById("top-nav") as HTMLDivElement)
       const bottom = (document.getElementById("bottom-nav") as HTMLDivElement)
+      console.log(top, bottom)
       if(top && bottom){
         this.mobileStyle = {
           height: `calc(100vh - ${top.offsetHeight}px - ${bottom.offsetHeight}px)`
         }
+        console.log(top, bottom)
 
-        const div = (document.getElementById("content") as HTMLDivElement)
-        div.onscroll = () => {
-          this.scrollY = div.scrollTop
-        };
+        // const div = (document.getElementById("content") as HTMLDivElement)
+        // div.onscroll = () => {
+        //   this.scrollY = div.scrollTop
+        // };
       }
     }
   },
@@ -76,7 +78,9 @@ export default defineComponent({
         }
     },
     '$store.state.desktop': function () {
-      this.mobileDiv()
+      setTimeout(() => {
+        this.mobileDiv()
+      }, 100)
     }
   }
 })
@@ -88,7 +92,7 @@ export default defineComponent({
       <Navbar />
     </nav>
     <div v-if="!$store.state.desktop" id="top-nav">
-      Top Nav will go here eventually
+      <Navbar topnav/>
     </div>
     <div :style="!$store.state.desktop ? mobileStyle : {}" id="content" :class="$store.state.desktop ? 'main--center' : 'mobile-main'">
       <RouterView v-slot="{Component}">
@@ -98,7 +102,7 @@ export default defineComponent({
       </RouterView>
     </div>
     <nav v-if="!$store.state.desktop" id="bottom-nav">
-      <Navbar/>
+      <Navbar bottomnav/>
     </nav>
     <div v-if="!$store.state.desktop" class="main--right">
     </div>
@@ -129,10 +133,10 @@ export default defineComponent({
 }
 
 #top-nav {
+  z-index: 100;
   grid-row: 1;
-  background-color: #ccc;
+  border-bottom: 2px solid var(--color-border);
   /* padding: 10px; */
-  font-size: 20px;
 }
 
 .navbar {
@@ -161,6 +165,7 @@ export default defineComponent({
 
 #bottom-nav {
   grid-row: 3;
+  z-index: 99;
 }
 
 /* Extra small devices (phones, 600px and down) */

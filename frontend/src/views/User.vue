@@ -131,13 +131,13 @@ export default defineComponent({
     position: -webkit-sticky;
     position: sticky;
     top: 45px;
-    z-index: 900;
+    z-index: 20;
     width: 100%;
 }
 
 .panel__icon {
     width: 100%;
-    z-index: 900;
+    z-index: 200;
     border-bottom: 1px solid var(--color-border);
 }
 
@@ -172,7 +172,7 @@ export default defineComponent({
     position: sticky;
     width: 100%;
     top: 0;
-    z-index: 999;
+    z-index: 20;
     background-color: var(--color-background);
 
 }

@@ -12,7 +12,7 @@ export async function get_user_from_cookie() {
             await store.commit('authenticate', true)
         }
         
-    }).catch((err) => {
+    }).catch(async (err) => {
         console.clear()
     })
     return true

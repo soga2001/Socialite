@@ -10,10 +10,6 @@ export default defineComponent({
     props: {
         user: { type: Object as PropType<User>, required: true }
     },
-    setup() {
-        const {cookies} = useCookies();
-        return {cookies}
-    },
     data() {
         return {
             id: this.user.id,
@@ -32,20 +28,20 @@ export default defineComponent({
             following: this.user.total_following,
             followed: false,
             date_joined: this.user.date_joined,
+            loading: true,
         };
     },
     methods: {
-        follow() {
+        async follow() {
             if (!this.$store.state.authenticated) {
                 return;
             }
-            http.post(`follow/follow_user/${this.id}/`, {}, {
+            await http.post(`follow/follow_user/${this.id}/`, {}, {
             }).then((res) => {
                 if (res.data.error) {
                     return;
                 }
                 this.followed = !this.followed;
-                console.log(this.followed);
                 if (!this.followed && this.following != 0) {
                     this.following -= 1;
                 }
@@ -56,23 +52,28 @@ export default defineComponent({
                 console.log(err);
             });
         },
-        if_followed() {
+        async if_followed() {
+            // console.log(this.$store.state.user.id != this.id && this.loading)
             if (!this.$store.state.authenticated) {
+                this.loading = false
                 return;
             }
-            http.get(`follow/get_if_followed/${this.id}/`, {
+            await http.get(`follow/get_if_followed/${this.id}/`, {
             }).then((res) => {
-                // console.log("followed: ", res.data.followed);
-                this.followed = res.data.followed;
+                this.followed = res.data.followed
+                
             }).catch((err) => {
                 this.followed = false;
-                console.log("error");
             });
+            this.loading = false
         }
     },
     created() {
         // console.log(this.date_joined)
         this.if_followed();
+        
+    },
+    mounted() {
     },
     components: { Timeago }
 })
@@ -124,8 +125,8 @@ export default defineComponent({
                     </div>
                 </div>
                 <div>
-                    <button class="user__follow__btn bold" :hidden="$store.state.user.id == id" @click="follow" :disabled="!$store.state.authenticated">{{ followed ? 'Unfollow' : 'Follow' }}</button>
-                    <button class="user__follow__btn bold" :hidden="$store.state.user.id != id" @click="" disabled>Edit Profile</button>
+                    <button v-if="$store.state.user.id != id && !loading" class="user__follow__btn bold" @click="follow" :disabled="!$store.state.authenticated">{{ followed ? 'Unfollow' : 'Follow' }}</button>
+                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="user__follow__btn bold" @click="" disabled>Edit Profile</button>
                 </div>
                 <div class="user__bio">
                     <!-- <q-icon name="calendar_month"><Timeago :date="date_joined"/></q-icon> -->
