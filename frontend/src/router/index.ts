@@ -35,7 +35,8 @@ const routes: RouteRecordRaw[] = [
       scrollPos: {
         top: 0,
         left: 0
-      }
+      },
+      auth: true
     },
   },
   {

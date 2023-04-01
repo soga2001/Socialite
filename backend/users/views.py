@@ -126,19 +126,12 @@ def user_register(request):
 def user_login(request):
     data = json.loads(request.body)
     user = authenticate(username=data['username'], password=data['password'])
-
     if(user):
         login(request, user)
         token = RefreshToken.for_user(user)
-        userSerialized = UserSerializer(user)
         request.session.set_test_cookie()
-        jResponse = JsonResponse({"access_token": str(token.access_token), 
-                            "at_lifetime": str(token.access_token.lifetime.days) + "d",
-                            "refresh_token": str(token),
-                            "rt_lifetime": str(token.lifetime.days) + "d",
-                            "user": userSerialized.data
-                            })
-        response = HttpResponse(jResponse, content_type="application/json")
+        
+        response = HttpResponse({"success": True}, content_type="application/json")
         # response.set_cookie("testing", "true", secure=True, httponly=True)
         response.set_cookie(
                     key = settings.SIMPLE_JWT['AUTH_COOKIE'], 

@@ -18,7 +18,7 @@ from django.contrib.sessions.models import Session
 
 # From rest_framework
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 
 from PIL import Image
 from .models import Post
@@ -84,6 +84,25 @@ def view_posts(request, timestamp, page):
     posts = PostSerializer(Post.objects.filter(date_posted__lt=timestamp)[offset:offset+5], many=True)
     return JsonResponse({"posts": posts.data}, safe=False)
 
+
+@api_view(["GET"])
+@authentication_classes([CustomAuthentication,])
+@permission_classes([IsAuthenticated,])
+def post_by_followed_users(request, timestamp, page):
+    try:
+        followed_list = request.user.following.values_list('followed_user_id', flat=True)
+        offset = int(page) * 10
+        posts = PostSerializer(Post.objects.filter(user__in=followed_list).filter(date_posted__lt=timestamp)[offset:offset+10], many=True)
+        if posts:
+            return JsonResponse({"posts": posts.data}, safe=False)
+        else:
+            if offset == 0:
+                return JsonResponse({"message": "You are not following anyone"})
+            return JsonResponse({"message": "You have reached the end."})
+    except Exception as e:
+        return JsonResponse({"error": True, "message": str(e)})
+
+@api_view(["GET"])
 def explore(request, offset):
     if 'displayed_post_ids' not in request.session:
         request.session['displayed_post_ids'] = []

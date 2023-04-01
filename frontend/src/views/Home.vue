@@ -35,15 +35,16 @@ export default defineComponent({
   },
   methods: {
     async getData() {
-      http.get(`posts/view_posts/${this.user_timestap}/${this.page}/`).then((res) => {
-        this.$store.commit('setMainPosts', res.data.posts)
+      http.get(`posts/posts_by_followed_users/${this.user_timestap}/${this.page}/`).then((res) => {
         if(res.data.posts.length === 5) {
           this.hasMore = true
         }
         else {
           this.hasMore = false
         }
-        this.posts = [...this.posts, ...res.data.posts]
+        if((res.data.posts).length > 0){
+          this.posts = [...this.posts, ...res.data.posts]
+        }
       }).catch((err) => {
           console.log(err);
       });

@@ -22,6 +22,15 @@ export default defineComponent({
         const { cookies } = useCookies();
         return { cookies };
     },
+    computed: {
+      navStyle(): {justifyContent: string} {
+        return {
+          justifyContent: this.$store.state.authenticated ? "right" : "center"
+        }
+      },
+      
+
+    },
     methods: {
         switchTheme(e: any) {
             if (this.theme) {
@@ -39,7 +48,7 @@ export default defineComponent({
                 this.cookies.remove("loggedIn");
                 this.$store.commit("authenticate", false);
                 this.$store.commit("setDefaultUser");
-                router.push("/home");
+                router.push("/login");
             }).catch((err) => {
                 console.log(err);
             });
@@ -60,7 +69,7 @@ export default defineComponent({
 
 <template>
   <header>
-    <nav class="nav" v-if="$store.state.desktop">
+    <nav class="nav" :style="navStyle" v-if="$store.state.desktop">
       <q-list class="list">
         <div class="main__nav">
           <RouterLink to="/home" class="brand">
@@ -71,7 +80,7 @@ export default defineComponent({
             </q-item>
             <q-avatar rounded :size="iconSize" icon="BB" class="show"/>
           </RouterLink>
-          <RouterLink to="/home" class="nav__link" active-class="active">
+          <RouterLink to="/home" class="nav__link" active-class="active" v-if="$store.state.authenticated">
             <q-item class="hide">
               <q-item-section avatar>
                 <q-icon class="icon" size="2rem" :name="$route.fullPath == '/home' ? 'house' : 'o_house'"/>
@@ -351,7 +360,7 @@ header {
   height: 100%;
   display: flex;
   width: 100%;  
-  justify-content: right;
+  justify-content: center;
   padding: 0 16px;
   background-color: transparent;
   position: relative;
