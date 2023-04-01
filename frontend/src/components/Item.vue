@@ -134,6 +134,7 @@ export default defineComponent({
     line-height: normal;
     gap: 10px;
     justify-content: center;
+    align-items: center; /* add this line */
     height: 100%;
   }
   
@@ -173,12 +174,15 @@ export default defineComponent({
 
   
   .info {
-    flex: 1 1 auto;
+    flex: 1;
+    /* display: flex; */
+    justify-content: center;
   }
   
   .title {
     font-weight: 900;
     font-size: 17px;
+    align-self: center;
     /* margin-bottom: .5rem;  */
   }
 
@@ -189,6 +193,8 @@ export default defineComponent({
   }
   
   .icon {
+    display: flex;
+    justify-content: flex-end;
     flex: 0 0 auto;
     width: fit-content;
   }

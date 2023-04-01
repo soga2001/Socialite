@@ -20,22 +20,39 @@ export default defineComponent({
   },
   name: 'Main',
   created() {
+    // console.log(screen.width)
   },
   mounted() {
     this.mobileDiv()
+    // console.log((document.getElementById("content") as HTMLDivElement).style)
   },
   activated() {
+  },
+  computed: {
+    mobStyle(): {style: CSSProperties}  {
+      const topNavHeight = (document.getElementById("top-nav") as HTMLDivElement)?.offsetHeight;
+      const bottomNavHeight = (document.getElementById("bottom-nav") as HTMLDivElement)?.offsetHeight;
+      console.log(topNavHeight, top)
+      return {
+        style: {
+          ...(topNavHeight && bottomNavHeight) ? {
+            height: `calc(100vh - ${topNavHeight.offsetHeight}px - ${bottomNavHeight.offsetHeight}px)`,
+            height: `calc(100dvh - ${topNavHeight.offsetHeight}px - ${bottomNavHeight.offsetHeight}px)`
+          } : {}
+        }
+      }
+    }
   },
   methods: {
     mobileDiv() {
       const top = (document.getElementById("top-nav") as HTMLDivElement)
       const bottom = (document.getElementById("bottom-nav") as HTMLDivElement)
-      console.log(top, bottom)
       if(top && bottom){
         this.mobileStyle = {
-          height: `calc(100vh - ${top.offsetHeight}px - ${bottom.offsetHeight}px)`
+          height: `calc(100vh - ${top.offsetHeight}px - ${bottom.offsetHeight}px)`,
+          height: `calc(100dvh - ${top.offsetHeight}px - ${bottom.offsetHeight}px)`
         }
-        console.log(top, bottom)
+        // console.log(top, bottom)
 
         // const div = (document.getElementById("content") as HTMLDivElement)
         // div.onscroll = () => {
@@ -77,11 +94,6 @@ export default defineComponent({
           })
         }
     },
-    '$store.state.desktop': function () {
-      setTimeout(() => {
-        this.mobileDiv()
-      }, 100)
-    }
   }
 })
 </script>
@@ -119,24 +131,15 @@ export default defineComponent({
   position: relative;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  height: 100%;
   max-height: 100vh;
   max-height: 100dvh;
-}
-
-.mobile-navbar {
-  position: relative;
-  grid-column: 1;
-  grid-row: 10 / span 2;
-  background-color: var(--color-background);
-  border-right: 2px solid var(--color-border);
+  height: 100%;
 }
 
 #top-nav {
   z-index: 100;
   grid-row: 1;
   border-bottom: 2px solid var(--color-border);
-  /* padding: 10px; */
 }
 
 .navbar {
@@ -147,11 +150,14 @@ export default defineComponent({
   border-right: 2px solid var(--color-border);
 }
 
+
+#content {
+  height: 100%;
+}
+
 .main--center {
   border-left: 2px solid var(--color-border);
   border-right: 2px solid var(--color-border);
-  height: 100%;
-  min-height: 100vh;
 }
 
 .mobile-main {

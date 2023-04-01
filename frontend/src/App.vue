@@ -37,7 +37,7 @@ export default defineComponent({
     },
     checkOS() {
       const regex = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i
-      const width = window.innerWidth <= 768
+      const width = window.innerWidth <= 597
       if(regex.test(navigator.userAgent) && width) {
         this.$store.commit('setDesktop', false)
       }

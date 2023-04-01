@@ -60,10 +60,10 @@ export default defineComponent({
       },
       logout() {
           http.post("users/logout/").then((res) => {
-              this.cookies.remove("loggedIn");
-              this.$store.commit("authenticate", false);
-              this.$store.commit("setDefaultUser");
-              router.push("/login");
+            this.navSlideIn = false
+            this.$store.commit("authenticate", false);
+            this.$store.commit("setDefaultUser");
+            router.push("/login");
           }).catch((err) => {
               console.log(err);
           });
@@ -287,30 +287,49 @@ export default defineComponent({
                       <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                     </template>
                 </Item>
-              <!-- <q-menu fit square self="top left" anchor="bottom left">
-                <q-list class="dropdown__main" dense>
-                  <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
-                    <q-item-section avatar>
-                      <q-avatar icon="logout" />
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label>Logout</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-menu> -->
             </q-btn>
           </div>
 
-          <div class="slide-in-nav" :style="slideIn">
-            <Item class="item" @click="navSlideIn = false" dense avatar-size="fit-content">
-              <template #avatar>
-                <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
-                <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
-              </template>
-            </Item>
-            <hr/>
-            <div>
+          <div class="slide-in-nav list" :style="slideIn">
+            <div class="rest_nav">
+              <Item class="item">
+                <template #title>
+                  Account Info
+                </template>
+                <template #icon>
+                  <q-btn flat round dense icon="close" size="16px" @click="navSlideIn = false" />
+                </template>
+              </Item>
+              <Item class="item" avatar-size="fit-content">
+                <template #avatar>
+                  <div @click="function() {$router.push({name: 'user-profile', params: {username: $store.state.user.username}}), navSlideIn = false}">
+                    <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
+                    <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
+                  </div>
+                </template>
+                <!-- <template #icon>
+                  <q-btn flat round dense icon="close" size="16px" @click="navSlideIn = false" />
+                </template> -->
+              </Item>
+              <Item class="item">
+                <template #title>
+                  {{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}
+                </template>
+                <template #caption>
+                  @{{ $store.state.user.username }}
+                </template>
+              </Item>
+              <Item class="item">
+                <template #caption>
+                  <div class="follow">
+                    <p> <span>{{ $store.state.user.total_following }} </span> following</p>
+                    <p> <span>{{ $store.state.user.total_followers }} </span> followers</p>
+                  </div>
+                  
+                </template>
+              </Item>
+              <hr/>
+
               <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
                 <q-item>
                   <q-item-section avatar>
@@ -322,7 +341,6 @@ export default defineComponent({
                   </q-item-section>
                 </q-item>
               </RouterLink>
-              
               <!-- <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
                 <q-item>
                   <q-item-section avatar>
@@ -335,15 +353,17 @@ export default defineComponent({
                 </q-item>
               </RouterLink> -->
             </div>
-            
-            <q-item class="logout" clickable v-close-popup v-on:click="logout">
-              <q-item-section avatar>
-                <q-icon name="logout" />
-              </q-item-section>
-              <q-item-section class="bold">
-                Logout
-              </q-item-section>
-            </q-item>
+            <hr/>
+            <div>
+              <q-item class="logout" clickable v-close-popup @click="logout">
+                <q-item-section avatar>
+                  <q-icon name="logout" />
+                </q-item-section>
+                <q-item-section class="bold">
+                  Logout
+                </q-item-section>
+              </q-item>
+            </div>
           </div>
         
         </slot>
@@ -479,7 +499,9 @@ header {
   border-right: 3px solid var(--color-border);
   overflow-x: hidden;
   transition: 0.5s;
-  padding-top: 1rem;
+  /* padding-top: .1rem; */
+
+  display: grid;
 }
 
 .slide-in-nav a {
@@ -491,15 +513,21 @@ header {
   display: block;
 }
 
+.slide-in-nav a:hover {
+  color: #f1f1f1;
+}
+
 .logout {
   padding: 0 28px;
   font-size: 25px;
   color: var(--color-heading);
 }
 
-.slide-in-nav a:hover {
-  color: #f1f1f1;
+.follow {
+  display: flex;
 }
+
+
 
 /* .slide-in-nav .closebtn {
   position: absolute;

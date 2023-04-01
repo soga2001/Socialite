@@ -90,6 +90,7 @@ export default defineComponent({
 @import '@/assets/base.css';
 
 .login {
+    height: 100%;
     padding: 20px;
     display: flex;
     justify-content: center;

@@ -75,23 +75,26 @@ export default defineComponent({
 <template>
   <div class="home" id="home">
     <div class="home__center">
-      <header>
-        Home
-      </header>
-      <div v-if="$store.state.authenticated">
-        <PostView />
-      </div>
-      <q-infinite-scroll id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
-        <div class="posts" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
-          <PostsMap :post="post" />
+      <div class="">
+        <header v-if="$store.state.desktop">
+          Home
+        </header>
+        <div v-if="$store.state.authenticated">
+          <PostView />
         </div>
-        <template v-slot:loading>
-          <div class="row justify-center q-my-md">
-            <q-spinner-oval class="loading" size="40px" />
+        <q-infinite-scroll id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
+          <div class="posts" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
+            <PostsMap :post="post" />
           </div>
-        </template>
-      </q-infinite-scroll>
+          <template v-slot:loading>
+            <div class="row justify-center q-my-md">
+              <q-spinner-oval class="loading" size="40px" />
+            </div>
+          </template>
+        </q-infinite-scroll>
       </div>
+    </div>
+    
   </div>
 </template>
 
@@ -122,6 +125,10 @@ header {
   height: 100vh;
   overflow-y: scroll;
 } */
+
+.home {
+  width: 100%;
+}
 
 .posts:not(:first-child) {
   margin: 20px 0;

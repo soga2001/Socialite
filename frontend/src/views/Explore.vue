@@ -86,7 +86,7 @@ export default defineComponent({
 <template>
   <div class="home" id="home">
     <div class="home__center">
-      <header>
+      <header v-if="$store.state.desktop">
         Explore
       </header>
       <q-infinite-scroll id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
