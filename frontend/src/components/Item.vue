@@ -18,7 +18,7 @@ export default defineComponent({
         '-webkit-box-orient': 'vertical',
         '-webkit-line-clamp': this.titleLineClamp,
         overflow: 'hidden',
-        color: "var(--color-heading)"
+        color: "var(--color-heading)",
       } as CSSProperties,
       captionStyle: {
         fontSize: this.captionSize,
@@ -86,7 +86,7 @@ export default defineComponent({
     captionSize: {
       type: String,
       default: "16px"
-    }
+    },
   },
   methods: {
     router() {
@@ -182,7 +182,6 @@ export default defineComponent({
   .title {
     font-weight: 900;
     font-size: 17px;
-    align-self: center;
     /* margin-bottom: .5rem;  */
   }
 

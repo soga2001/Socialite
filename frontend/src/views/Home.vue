@@ -79,7 +79,7 @@ export default defineComponent({
         <header v-if="$store.state.desktop">
           Home
         </header>
-        <div v-if="$store.state.authenticated">
+        <div v-if="$store.state.authenticated && $store.state.desktop">
           <PostView />
         </div>
         <q-infinite-scroll id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">

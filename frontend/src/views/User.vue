@@ -49,10 +49,6 @@ export default defineComponent({
 
 <template>
     <div :class="'user__main ' + !$store.state.desktop && 'mobile'" v-if="user.length">
-        <!-- <div class="user__name">
-            
-        </div> -->
-
         <Item class="user__name" :vert-icon-center="true">
                 <template #avatar>
                     <q-icon @click="$router.go(-1)" class="back" name="arrow_back" />
@@ -113,6 +109,7 @@ export default defineComponent({
 
 .user__main {
     height: 100%;
+    padding: 0;
 }
 
 .mobile {
@@ -169,9 +166,9 @@ export default defineComponent({
 
     display: relative;
     position: -webkit-sticky;
+    top: 0px;
     position: sticky;
     width: 100%;
-    top: 0;
     z-index: 20;
     background-color: var(--color-background);
 

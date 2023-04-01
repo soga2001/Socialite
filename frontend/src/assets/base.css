@@ -96,6 +96,7 @@ body {
   overflow-y: visible;
   scrollbar-width: thin;
   max-width: 100%;
+  padding: 0;
 }
 
 

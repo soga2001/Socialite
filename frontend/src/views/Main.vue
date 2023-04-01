@@ -15,7 +15,8 @@ export default defineComponent({
       return {
         $q: useQuasar(),
         mobileStyle: {} as CSSProperties,
-        scrollY: 0
+        scrollY: 0,
+        topNavHeight: (document.getElementById("top-nav") as HTMLDivElement)?.offsetHeight
       };
   },
   name: 'Main',
@@ -59,7 +60,8 @@ export default defineComponent({
         //   this.scrollY = div.scrollTop
         // };
       }
-    }
+    },
+    
   },
   components: { PostsMap, PostView, Search, Navbar },
   watch: {
@@ -94,6 +96,9 @@ export default defineComponent({
           })
         }
     },
+    '$store.state.desktop': function () {
+      this.mobileDiv()
+    }
   }
 })
 </script>
@@ -131,6 +136,9 @@ export default defineComponent({
   position: relative;
   display: grid;
   grid-template-rows: auto 1fr auto;
+  padding: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
   max-height: 100vh;
   max-height: 100dvh;
   height: 100%;
@@ -170,6 +178,7 @@ export default defineComponent({
 }
 
 #bottom-nav {
+  /* height: fit-content; */
   grid-row: 3;
   z-index: 99;
 }

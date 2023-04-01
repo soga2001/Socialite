@@ -68,6 +68,12 @@ export default defineComponent({
               console.log(err);
           });
       },
+      openNav() {
+        this.navSlideIn = true
+      },
+      closeNav() {
+        this.navSlideIn = false
+      }
   },
   created() {
       this.theme = this.cookies.get("theme") === "dark";
@@ -276,11 +282,10 @@ export default defineComponent({
       </q-list>
     </nav>
 
-    <nav v-else >
+    <nav v-else class="mobile-nav" >
       <div class="topNav" v-if="topnav && $store.state.authenticated">
-        <slot name="topNav">
           <div class="dropdown-btn">
-            <q-btn no-caps flat dense round class="dropdown" @click="navSlideIn = true" v-if="$store.state.authenticated">
+            <q-btn no-caps flat dense round class="dropdown" @click="openNav" v-if="$store.state.authenticated">
                 <Item class="item" dense avatar-size="fit-content">
                     <template #avatar>
                       <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
@@ -289,6 +294,8 @@ export default defineComponent({
                 </Item>
             </q-btn>
           </div>
+
+          <div class="overlay" v-if="navSlideIn" @click="closeNav"></div>
 
           <div class="slide-in-nav list" :style="slideIn">
             <div class="rest_nav">
@@ -302,7 +309,7 @@ export default defineComponent({
               </Item>
               <Item class="item" avatar-size="fit-content">
                 <template #avatar>
-                  <div @click="function() {$router.push({name: 'user-profile', params: {username: $store.state.user.username}}), navSlideIn = false}">
+                  <div @click="() => {$router.push({name: 'user-profile', params: {username: $store.state.user.username}}), closeNav()}">
                     <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
                     <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                   </div>
@@ -330,7 +337,7 @@ export default defineComponent({
               </Item>
               <hr/>
 
-              <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
+              <RouterLink @click="closeNav" :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
                 <q-item>
                   <q-item-section avatar>
                     <q-icon class="icon" :name="$route.fullPath == `/profile/user/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" />
@@ -365,8 +372,6 @@ export default defineComponent({
               </q-item>
             </div>
           </div>
-        
-        </slot>
       </div>
       <div class="bottomNav" v-if="bottomnav">
         <slot name="bottomNav">
@@ -433,7 +438,6 @@ export default defineComponent({
 <style scoped>
 @import '@/assets/base.css';
 
-
 header {
   position: -webkit-sticky;
 	position: sticky;
@@ -458,11 +462,20 @@ header {
 }
 
 .topNav {
+  padding: 0 10px 0 10px ;
   width: 100%;
   background-color: var(--color-background);
+  margin: 0;
   z-index: 0;
   display: inline-flex;
 }
+
+
+.topNav .dropdown-btn {
+  padding: 0;
+  width: 3rem;
+}
+
   
 .bottomNav {
   width: 100%;
@@ -472,12 +485,8 @@ header {
   display: inline-flex;
 }
 
-.topNav {
-  padding: 0 10px 0 10px ;
-}
-.topNav .dropdown-btn {
+.mobile-nav {
   padding: 0;
-  width: 3rem;
 }
 
 .item {
@@ -511,6 +520,16 @@ header {
   /* color: #818181; */
   color: var(--color-heading);
   display: block;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-hover); /* Set the opacity value for the background */
+  z-index: 999; /* Set the z-index to a value higher than the slide-in menu */
 }
 
 .slide-in-nav a:hover {
