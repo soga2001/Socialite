@@ -6,15 +6,8 @@ from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 # From Django
 from django.http import HttpResponse, JsonResponse
-from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt, csrf_protect, requires_csrf_token
 # from django.contrib.auth.models import User
-
-from django.contrib.postgres.search import TrigramSimilarity, TrigramDistance
-from django.db.models import Q
-
-
-from django.contrib.sessions.models import Session
 
 # From rest_framework
 from rest_framework.views import APIView
@@ -134,8 +127,11 @@ def user_posted(request, timestamp, page, username):
 
 @api_view(["GET"])
 def view_post_by_id(request, post_id):
-    post = PostSerializer(Post.objects.get(pk=post_id))
-    return JsonResponse({"post": post.data}, safe=False)
+    try:
+        post = PostSerializer(Post.objects.get(pk=post_id))
+        return JsonResponse({"post": post.data})
+    except:
+        return JsonResponse({"error": True, "message": "Post not found."})
 
 
 @api_view(["DELETE"])

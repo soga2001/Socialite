@@ -11,6 +11,10 @@ class PostSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     total_likes = serializers.SerializerMethodField()
+    total_comments = serializers.SerializerMethodField()
     
     def get_total_likes(self, obj):
         return obj.post_likes.count()
+    
+    def get_total_comments(self, obj):
+        return obj.post_comments.count()
