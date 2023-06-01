@@ -3,7 +3,7 @@ import {defineComponent, ref} from 'vue';
 import  type {Post} from '@/assets/interfaces';
 import { http } from '@/assets/http';
 import PostsMap from '../components/PostsMap.vue';
-import PostView from '../components/PostView.vue';
+import Update from '../components/Update.vue';
 import Search from './Search.vue';
 import { useStore } from '@/store/store';
 
@@ -67,7 +67,7 @@ export default defineComponent({
       }
     },
   },
-  components: { PostsMap, PostView, Search },
+  components: { PostsMap, Update, Search },
 })
 </script>
 
@@ -79,7 +79,7 @@ export default defineComponent({
           Home
         </header>
         <div v-if="$store.state.authenticated && $store.state.desktop">
-          <PostView />
+          <Update />
         </div>
         <q-infinite-scroll id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
           <div class="posts" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">

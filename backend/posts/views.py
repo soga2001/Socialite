@@ -29,7 +29,10 @@ def replace(val):
     try:
         user = User.objects.get(username=u)
         if user:
-            return r'<a href="/profile/user/{0}/">@{0}</a>'.format(u)
+            # result = r'<RouterLink :to="{name: `user-profile`, params: {username: {0}}}" :exact="true">@{0}</RouterLink>'.format(u)
+            result = '<RouterLink :to="{name: `user-profile`, params: {username: \'' + u + '\'}}" :exact="true">@' + u + '</RouterLink>'
+            return result
+            # return r'<a href="/{0}/">@{0}</a>'.format(u)
         else:
             return val
     except User.DoesNotExist:
@@ -51,6 +54,7 @@ class Post_Content(APIView):
             regex = r'@(\w+)'
             # caption = re.sub(r'@(\w+)', r'<a href="/users/\1/">@\1</a>', caption)
             caption = re.sub(regex, replace, caption)
+            print(caption)
             user, token = custom.authenticate(request)
             post = Post(
                 user = user,

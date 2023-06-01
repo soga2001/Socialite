@@ -75,11 +75,15 @@ def user_by_id(request, user_id):
 def user_by_username(request, username, multiple = True):
     try:
         if multiple == True:
-            users = User.objects.annotate(similarity=TrigramSimilarity('username', username)).filter(similarity__gte=0.2).order_by('-similarity')
+            users_data = UserSerializer(User.objects.filter(username__icontains=username), many=True).data
+            print(users_data)
+            # users = User.objects.annotate(similarity=TrigramSimilarity('username', username)).filter(similarity__gte=0.2).order_by('-similarity')
+            # print(users)
             # users = User.objects.filter(username__icontains=username)
             # search_indexes = TrigramSimilarity('username', username) + TrigramSimilarity('bio', username) + TrigramSimilarity('first_name', username) + TrigramSimilarity('last_name', username)
             # users = User.objects.annotate(similarity=TrigramSimilarity('username', username)).filter(similary_gt=0).order_by('-similarity')
-            users_data = UserSerializer(users, many=True).data
+            # users_data = UserSerializer(users).data
+            print(users_data)
         else:
             user = User.objects.get(username=username)
             users_data = UserSerializer(user).data

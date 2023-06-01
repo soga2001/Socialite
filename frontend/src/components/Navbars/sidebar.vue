@@ -126,6 +126,24 @@ export default defineComponent({
                     </q-tooltip>
                     </q-avatar>
                 </RouterLink>
+                <RouterLink v-if="$store.state.authenticated" to="/notifications" class="nav__link" active-class="active">
+                    <q-item class="hide">
+                      <q-item-section avatar>
+                          <q-icon class="icon" :name="$route.fullPath == '/notifications' ? 'notifications' : 'o_notifications'" />
+                      </q-item-section>
+
+                      <q-item-section class="bold">
+                          Notifications
+                      </q-item-section>
+                    </q-item>
+                    <q-avatar size="iconSize" :icon="$route.fullPath == '/notifications' ? 'explore' : 'o_explore'" class="show icon">
+                      <q-tooltip anchor="top middle" self="bottom middle">
+                          Notifications
+                      </q-tooltip>
+                    </q-avatar>
+                </RouterLink>
+
+
 
                 <RouterLink to="/search" class="nav__link" active-class="active">
                     <q-item class="hide">

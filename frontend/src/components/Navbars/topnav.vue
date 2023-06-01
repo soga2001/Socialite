@@ -33,7 +33,7 @@ export default defineComponent({
     },
     slideIn(): {width: string} {
       return {
-          width: this.navSlideIn ? '250px' : '0vh'
+          width: this.navSlideIn ? '70vw' : '0vw'
       }
     }
     
@@ -217,18 +217,6 @@ header {
   width: 3rem;
 }
 
-  
-.bottomNav {
-  width: 100%;
-  background-color: var(--color-background);
-  border-top: 1px solid var(--color-text);
-  z-index: 0;
-  display: inline-flex;
-}
-
-.mobile-nav {
-  padding: 0;
-}
 
 .item {
   height: fit-content;

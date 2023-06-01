@@ -3,7 +3,7 @@ import {defineComponent, ref, type CSSProperties} from 'vue';
 import  type {Post} from '@/assets/interfaces';
 import { http } from '@/assets/http';
 import PostsMap from '../components/PostsMap.vue';
-import PostView from '../components/PostView.vue';
+import Update from '../components/Update.vue';
 import Search from './Search.vue';
 import { useStore } from '@/store/store';
 // import Navbar from '../components/Navbar.vue';
@@ -49,7 +49,7 @@ export default defineComponent({
   methods: {
     
   },
-  components: { PostsMap, PostView, Search, Sidebar, TopNav, BottomNav },
+  components: { PostsMap, Update, Search, Sidebar, TopNav, BottomNav },
   watch: {
     '$store.state.authenticated': function () {
       if(this.$store.state.authenticated) {

@@ -3,7 +3,6 @@ import {defineComponent, ref} from 'vue';
 import  type {Post} from '@/assets/interfaces';
 import { http } from '@/assets/http';
 import PostsMap from '../components/PostsMap.vue';
-import PostView from '../components/PostView.vue';
 import Search from './Search.vue';
 import Navbar from '../components/Navbar.vue';
 
@@ -76,8 +75,9 @@ export default defineComponent({
       (document.getElementById("infinite-scroll") as HTMLDivElement).scrollTo(0, this.scrollY)
     }
   },
-  components: { PostsMap, PostView, Search, Navbar },
+  components: { PostsMap, Search, Navbar },
   activated() {
+    console.log('here')
     this.scrollTo()
   }
 })

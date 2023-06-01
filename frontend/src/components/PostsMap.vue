@@ -7,6 +7,7 @@ import Timeago from './Timeago.vue';
 import { useCookies } from 'vue3-cookies';
 import Heart from './Heart.vue';
 import Item from './Item.vue';
+import MentionLink from './MentionLink.vue';
 
 
 export default defineComponent({
@@ -130,7 +131,7 @@ export default defineComponent({
             }
         }
     },
-    components: { Timeago, Heart, Item }
+    components: { Timeago, Heart, Item, MentionLink }
 })
 </script>
 
@@ -245,7 +246,7 @@ export default defineComponent({
                 {{ username }}
             </template>
             <template #caption>
-                <p class="post__caption" v-html="caption"></p>
+                <p><MentionLink :mention="caption"/></p>
             </template>
         </Item>
 

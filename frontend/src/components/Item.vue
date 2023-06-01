@@ -205,7 +205,7 @@ export default defineComponent({
     width: fit-content;
   }
 
-  .caption :slotted(p:deep(a)) {
+  .caption :slotted(:deep(a)) {
     font-size: inherit;
     font-weight: 900;
     text-decoration: none;
@@ -213,7 +213,7 @@ export default defineComponent({
     
   }
 
-  :slotted(p:deep(a:hover)) {
+  :slotted(:deep(a:hover)) {
     text-decoration: underline;
   }
 
