@@ -5,6 +5,7 @@ import type { User } from '@/assets/interfaces';
 import { http } from '@/assets/http';
 import Timeago from '../Timeago.vue';
 import { useCookies } from 'vue3-cookies';
+import Item from '../Item.vue';
 
 export default defineComponent({
     props: {
@@ -75,7 +76,7 @@ export default defineComponent({
     },
     mounted() {
     },
-    components: { Timeago }
+    components: { Timeago, Item }
 })
 </script>
 
@@ -83,57 +84,43 @@ export default defineComponent({
     
     <div class="user row justify-center">
         <div class="user__container col-12 col-md-auto">
-            <div class="user__profile__avatar">
-                <!-- https://uiverse.io/igoramos77/silly-fireant-70 -->
-                <q-avatar size="200px" class="avatar">
-                    <img v-if="avatar" :src="avatar" alt="John Doe" class="rounded-full" />
-                    <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
-                </q-avatar>
-                <!-- https://stackoverflow.com/questions/67104652/hover-effect-change-your-picture-with-icon-on-profile-picture -->
-                <!-- <div class="profilepic">
-                    <img v-if="avatar" class="profilepic__image" :src="avatar" width="150" height="150" alt="Profibild" />
-                    <q-avatar v-else icon="face" class="profilepic__image" size="150px" />
-                    <div class="profilepic__content">
-                        <span class="profilepic__icon"><q-icon size="30px" name="photo_camera"/></span>
-                        <span class="profilepic__text">Edit Profile</span>
+            <div class='profile '>
+                <div class='banner'>
+                    <img class="" src="https://unsplash.it/1000/1000/?random&pic=1" id="header-background-id" alt="background-img"/>
+                </div>
+                <div class="profile-img profile-pic">
+                    <img v-if="avatar" class="profile-pic__image" :src="avatar" width="150" height="150" alt="Profibild" />
+                    <img v-else class="profile-picture" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
+                    <div class="profile-pic__content">
+                        <span class="profile-pic__icon"><q-icon size="30px" name="photo_camera"/></span>
+                        <span class="profile-pic__text">Edit Profile</span>
                     </div>
-                </div> -->
+                </div>
+                <div class="edit-profile">
+                    <button v-if="$store.state.user.id != id && !loading" class="edit-btn user__follow__btn bold" @click="follow" :disabled="!$store.state.authenticated">{{ followed ? 'Unfollow' : 'Follow' }}</button>
+                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="edit-btn user__follow__btn bold" @click="" disabled>Edit Profile</button>
+                    <q-btn @click.stop="" v-if="followed && !loading" size="16px" class="less" flat dense round icon="notifications" />
+                    <q-btn @click.stop="" v-if="followed && !loading"  size="16px" class="more__vert" flat dense round icon="more_horiz" />
+                    
+                </div>
             </div>
-            <q-item class="user__username text-center">
-                <q-item-section class="username">@{{ username }}</q-item-section>
-                <!-- <q-item-section avatar class="right">
-                    <q-icon name="verified" />
-                    <q-icon name="admin_panel_settings" />
-                    <q-icon name="stars" color="" />
-                </q-item-section> -->
+            <q-item class="user__username text-left" dense>
+                <q-item-section>
+                    <q-item-label class="bold">{{first_name }} {{last_name }}</q-item-label>
+                    <q-item-label caption>@{{ username }}</q-item-label>
+                </q-item-section>
             </q-item>
+        
             <div class="user__profile__info">
-                <div class="user__social">
-                    <div class="user__following">
-                        <h6>Following</h6> 
-                        <p class="text-center bold">{{ followers }}</p>
-                        <!-- <q-skeleton type="text" width="30px" /> -->
-                    </div>
-                    <div class="user__followers">
-                        <h6>Followers</h6>
-                        <p class="text-center bold">{{ following }}</p>
-                        <!-- <q-skeleton type="text" width="30px" /> -->
-                    </div>
-                    <div class="user__posts">
-                        <h6>Posts</h6>
-                        <p class="text-center bold">{{ posts }}</p>
-                    </div>
-                </div>
-                <div>
-                    <button v-if="$store.state.user.id != id && !loading" class="user__follow__btn bold" @click="follow" :disabled="!$store.state.authenticated">{{ followed ? 'Unfollow' : 'Follow' }}</button>
-                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="user__follow__btn bold" @click="" disabled>Edit Profile</button>
-                </div>
                 <div class="user__bio">
-                    <!-- <q-icon name="calendar_month"><Timeago :date="date_joined"/></q-icon> -->
-                    <!-- <h6 class="joined"><q-icon size="30px" name="calendar_month" /> <Timeago date_type="relative" :date="date_joined" /></h6> -->
-                    <div>
-                        <span class="joined"><q-icon class="icon" size="15px" name="calendar_month" /> Joined <Timeago class="timeago" size="15px" date_type="relative" :date="date_joined" /></span>
-                    </div>
+                    <Item>
+                        <template #avatar>
+                            <q-icon class="icon" size="26px" name="calendar_month" />
+                        </template>
+                        <template #title>
+                            <span class="joined"> Joined <Timeago class="timeago" size="15px" date_type="relative" :date="date_joined" /></span>
+                        </template>
+                    </Item>
                     <h6 class="user__caption">{{bio}}</h6>
                 </div>
             </div>
@@ -142,23 +129,13 @@ export default defineComponent({
 </template>
 
 <style scoped>
-
-.user {
-    padding: 20px;
-}
 .user__container {
     max-width: 600px;
     width: 100%;
 }
 
 
-.user__profile__avatar {
-    display: flex;
-    justify-content: center;
-    justify-items: center;
-    align-items: center;
-    align-content: center;
-}
+
 
 .avatar {
     border: 1px solid var(--color-text);
@@ -166,6 +143,7 @@ export default defineComponent({
     height: 10rem;
 }
 .user__username {
+    margin-left: 1vw;
     font-size: 20px;
 }
 
@@ -199,7 +177,7 @@ export default defineComponent({
 }
 
 .user__follow__btn {
-    width: 100%;
+    font-weight: bolder;
     padding: 10px;
     background-color: var(--color-background-mute);
     color: var(--color-text);
@@ -222,30 +200,37 @@ h6 {
 }
 
 /* Profile Pic */
-.profilepic {
+.profile-pic {
   position: relative;
-  width: 150px;
-  height: 150px;
+  /* width: 150px;
+  height: 150px; */
   border-radius: 50%;
   overflow: hidden;
-  background-color: var(--color-background-mute);
+  background-color: rgba(176, 176, 176);
+  transition: scale 1s ease-out;
+  z-index: 3;
 }
 
-.profilepic:hover .profilepic__content {
-  opacity: 1;
+.profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all .3s ease-in-out;
 }
 
-.profilepic:hover .profilepic__image {
-  opacity: .3;
+
+.profile-pic:hover img {
+    transform: scale(1.2);
+    opacity: .3;
 }
 
-.profilepic__image {
-  object-fit: cover;
-  opacity: 1;
-  transition: opacity .2s ease-in-out;
+
+
+.profile-pic:hover .profile-pic__content {
+    opacity: 1;
 }
 
-.profilepic__content {
+.profile-pic__content {
   position: absolute;
   top: 0;
   right: 0;
@@ -259,18 +244,15 @@ h6 {
   font-weight: bolder;
   opacity: 0;
   transition: opacity .2s ease-in-out;
+  border-radius: 50%;
 }
 
-.profilepic__icon {
+.profile-pic__icon {
   color: var(--color-heading);
   padding-bottom: 8px;
 }
 
-.fas {
-  font-size: 20px;
-}
-
-.profilepic__text {
+.profile-pic__text {
   text-transform: uppercase;
   font-size: 12px;
   width: 50%;
@@ -291,5 +273,85 @@ h6 {
 .timeago {
     margin-left: 5px;
 }
+
+
+/* Banner and profile picture */
+.profile {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: repeat(4, 1fr);
+    position: relative;
+}
+
+.banner {
+    padding: 0 !important;
+    grid-column: 1 / span 2;
+    grid-row: row 1 / span 3;
+    min-height: 150px;
+    height: 13vw;
+    height: 13dvw;
+    background-color: rgba(176, 176, 176, 0.7);
+    z-index: 1;
+}
+
+.banner:hover {
+    cursor: pointer;
+}
+
+.banner img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.profile-img {
+    grid-column: 1;
+    grid-row: row 3 / span 2;
+    min-width: 100px;
+    min-height: 100px;
+    width: 10vw;
+    height: 10vw;
+    margin-left: 2vw;
+    z-index: 2;
+}
+
+.profile-img:hover {
+    cursor: pointer;
+}
+
+.profile-img img {
+    border-radius: 50%;
+    width: 100%;
+}
+
+.edit-profile {
+    /* padding-top: 30px !important; */
+    grid-column: 2;
+    grid-row: row 4 / span 2;
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 5px;
+    /* background-color: rgba(176, 176, 176, 0.7); */
+    padding: 10px;
+}
+
+.edit-profile button {
+    padding: 10px;
+    /* background-color: var(--color-background-mute); */
+    border: 1px solid var(--color-heading);
+    color: var(--color-text);
+    border:none;
+}
+
+.edit-profile button:hover {
+    background-color: var(--color-background-soft);
+    color: var(--color-text);
+}
+
+
+
+
     
 </style>

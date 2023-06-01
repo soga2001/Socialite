@@ -12,6 +12,9 @@ export default defineComponent({
         justifyContent: this.justifyContent,
         padding: this.dense ? ".2rem" : ".5rem"
       } as CSSProperties,
+      infoStyle: {
+        padding: this.infoMargin
+      } as CSSProperties,
       titleStyle: {
         fontSize: this.titleSize,
         display: '-webkit-box',
@@ -67,6 +70,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    infoMargin: {
+      type: String,
+      default: "0 0 0 0"
+    },
     titleLineClamp: {
       type: Number,
       default: 1
@@ -112,7 +119,7 @@ export default defineComponent({
     <div class="avatar" :style="avatarStyle" v-if="$slots.avatar">
       <slot name="avatar" />
     </div>
-    <div class="info" v-if="!isAvatarOnly">
+    <div class="info" :style="infoStyle" v-if="!isAvatarOnly">
       <div class="title" :style="titleStyle">
         <slot name="title" v-if="$slots.title" />
       </div>

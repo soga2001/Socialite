@@ -6,7 +6,6 @@ import PostsMap from '../components/PostsMap.vue';
 import PostView from '../components/PostView.vue';
 import Search from './Search.vue';
 import { useStore } from '@/store/store';
-import Navbar from '../components/Navbar.vue';
 
 export default defineComponent({
   title: 'Home',
@@ -68,7 +67,7 @@ export default defineComponent({
       }
     },
   },
-  components: { PostsMap, PostView, Search, Navbar },
+  components: { PostsMap, PostView, Search },
 })
 </script>
 

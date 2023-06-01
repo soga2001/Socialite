@@ -6,8 +6,11 @@ import PostsMap from '../components/PostsMap.vue';
 import PostView from '../components/PostView.vue';
 import Search from './Search.vue';
 import { useStore } from '@/store/store';
-import Navbar from '../components/Navbar.vue';
+// import Navbar from '../components/Navbar.vue';
 import { Cookies, useQuasar } from 'quasar';
+import Sidebar from '@/components/Navbars/sidebar.vue';
+import TopNav from '@/components/Navbars/topnav.vue';
+import BottomNav from '@/components/Navbars/bottomnav.vue';
 
 export default defineComponent({
   title: 'Main',
@@ -24,46 +27,29 @@ export default defineComponent({
     // console.log(screen.width)
   },
   mounted() {
-    this.mobileDiv()
     // console.log((document.getElementById("content") as HTMLDivElement).style)
   },
   activated() {
   },
   computed: {
-    mobStyle(): {style: CSSProperties}  {
-      const topNavHeight = (document.getElementById("top-nav") as HTMLDivElement)?.offsetHeight;
-      const bottomNavHeight = (document.getElementById("bottom-nav") as HTMLDivElement)?.offsetHeight;
-      console.log(topNavHeight, top)
-      return {
-        style: {
-          ...(topNavHeight && bottomNavHeight) ? {
-            height: `calc(100vh - ${topNavHeight.offsetHeight}px - ${bottomNavHeight.offsetHeight}px)`,
-            height: `calc(100dvh - ${topNavHeight.offsetHeight}px - ${bottomNavHeight.offsetHeight}px)`
-          } : {}
-        }
-      }
-    }
+    // mobStyle(): {style: CSSProperties}  {
+    //   const topNavHeight = (document.getElementById("top-nav") as HTMLDivElement)?.offsetHeight;
+    //   const bottomNavHeight = (document.getElementById("bottom-nav") as HTMLDivElement)?.offsetHeight;
+    //   console.log(topNavHeight, top)
+    //   return {
+    //     style: {
+    //       ...(topNavHeight && bottomNavHeight) ? {
+    //         height: `calc(100vh - ${topNavHeight.offsetHeight}px - ${bottomNavHeight.offsetHeight}px)`,
+    //         height: `calc(100dvh - ${topNavHeight.offsetHeight}px - ${bottomNavHeight.offsetHeight}px)`
+    //       } : {}
+    //     }
+    //   }
+    // }
   },
   methods: {
-    mobileDiv() {
-      const top = (document.getElementById("top-nav") as HTMLDivElement)
-      const bottom = (document.getElementById("bottom-nav") as HTMLDivElement)
-      if(top && bottom){
-        this.mobileStyle = {
-          height: `calc(100vh - ${top.offsetHeight}px - ${bottom.offsetHeight}px)`,
-          height: `calc(100dvh - ${top.offsetHeight}px - ${bottom.offsetHeight}px)`
-        }
-        // console.log(top, bottom)
-
-        // const div = (document.getElementById("content") as HTMLDivElement)
-        // div.onscroll = () => {
-        //   this.scrollY = div.scrollTop
-        // };
-      }
-    },
     
   },
-  components: { PostsMap, PostView, Search, Navbar },
+  components: { PostsMap, PostView, Search, Sidebar, TopNav, BottomNav },
   watch: {
     '$store.state.authenticated': function () {
       if(this.$store.state.authenticated) {
@@ -96,9 +82,6 @@ export default defineComponent({
           })
         }
     },
-    '$store.state.desktop': function () {
-      this.mobileDiv()
-    }
   }
 })
 </script>
@@ -106,12 +89,12 @@ export default defineComponent({
 <template>
   <div :class="$store.state.desktop ? 'main' : 'mobile'">
     <nav v-if="$store.state.desktop" class="navbar">
-      <Navbar />
+      <Sidebar/>
     </nav>
     <div v-if="!$store.state.desktop" id="top-nav">
-      <Navbar topnav/>
+      <TopNav/>
     </div>
-    <div :style="!$store.state.desktop ? mobileStyle : {}" id="content" :class="$store.state.desktop ? 'main--center' : 'mobile-main'">
+    <div id="content" :class="$store.state.desktop ? 'main--center' : 'mobile-main'">
       <RouterView v-slot="{Component}">
         <KeepAlive :max="3" :include="['home','user-profile', 'search', 'explore']">
           <component :is="Component" :key="$route.fullPath"/>
@@ -119,7 +102,7 @@ export default defineComponent({
       </RouterView>
     </div>
     <nav v-if="!$store.state.desktop" id="bottom-nav">
-      <Navbar bottomnav/>
+      <BottomNav/>
     </nav>
     <div v-if="!$store.state.desktop" class="main--right">
     </div>
@@ -152,8 +135,9 @@ export default defineComponent({
 
 .navbar {
   position: relative;
-  height: 100%;
   min-height: 100vh;
+  min-height: 100dvh;
+  height: 100%;
   background-color: var(--color-background);
   border-right: 2px solid var(--color-border);
 }

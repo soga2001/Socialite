@@ -15,7 +15,7 @@ export default defineComponent({
         return {
             // user_id: this.$route.params.id,
             username: this.$route.params.username,
-            user: new Array<User>(),
+            user: {} as User,
             avatar: '',
             tab: ref('User_Posted'),
             loading: true,
@@ -27,8 +27,8 @@ export default defineComponent({
 
             await http.get(`users/username/${this.username}/${false}/`).then((res) => {
                 if (res.data.success) {
-                    this.user = [res.data.users];
-                    this.avatar = this.user[0].avatar || '';
+                    this.user = res.data.users;
+                    this.avatar = this.user.avatar || '';
                 }
             }).catch((err) => {
                 console.log(err);
@@ -48,22 +48,25 @@ export default defineComponent({
 </script>
 
 <template>
-    <div :class="'user__main ' + !$store.state.desktop && 'mobile'" v-if="user.length">
-        <Item class="user__name" :vert-icon-center="true">
+    <div :class="'user__main ' + !$store.state.desktop && 'mobile'" v-if="Object.keys(user).length > 0">
+        <Item class="user__name" info-margin="0 1rem 0 1rem" dense :vert-icon-center="true">
                 <template #avatar>
-                    <q-icon @click="$router.go(-1)" class="back" name="arrow_back" />
+                    <q-btn size="16px" @click="$router.go(-1)" flat round class="back" icon="arrow_back" />
                 </template>
                 <template #title>
-                    <h5>{{ user[0].first_name }} {{ user[0].last_name }}</h5>
+                    <h5 className="text-left">{{ user.first_name }} {{ user.last_name }}</h5>
                 </template>
-                <template #icon>
-                        <q-btn @click.stop="" size="16px" class="less" flat dense round icon="notifications" />
-                        <q-btn @click.stop="" size="16px" class="more__vert" flat dense round icon="more_vert" />
-                    </template>
+                <template #caption>
+                    <div class="text-left">{{ user.total_posted }} Posts</div>
+                </template>
+                <!-- <template #icon>
+                    <q-btn @click.stop="" size="16px" class="less" flat dense round icon="notifications" />
+                    <q-btn @click.stop="" size="16px" class="more__vert" flat dense round icon="more_vert" />
+                </template> -->
         </Item>
         
-        <div v-for="u in user">
-            <UserProfile :user="u"/>
+        <div v-if="Object.keys(user).length > 0" >
+            <UserProfile :user="user"/>
         </div>
         <div class="">
             <div class="">
@@ -85,7 +88,7 @@ export default defineComponent({
 
                 <q-tab-panels :keep-alive="true" :keep-alive-include="['User_Posted', 'User_Liked']"  :keep-alive-max="5" v-model="tab" class="panels" swipeable>
                     <q-tab-panel name="User_Posted" class="panel" id="panel">
-                        <UserPosted :uid="user[0].id" />
+                        <UserPosted :uid="user.id" />
                     </q-tab-panel>
                     <q-tab-panel name="User_Liked" class="panel" id="panel">
                         <UserLiked  />

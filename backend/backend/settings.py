@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
     "rest_framework_simplejwt.token_blacklist",
+    'django_extensions',
     'users',
     'posts.apps.PostsConfig',
     'following.apps.FollowingConfig',

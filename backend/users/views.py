@@ -39,7 +39,6 @@ import json
 from .serializer import UserSerializer
 
 import environ
-from aes import *
 
 env = environ.Env()
 environ.Env.read_env()

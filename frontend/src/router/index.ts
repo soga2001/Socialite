@@ -67,7 +67,7 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/profile/user/:username/',
+    path: '/:username/',
     name: 'user-profile',
     component: () => import('../views/User.vue'),
     // alias: '/user_posted/:id',
