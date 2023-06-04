@@ -31,7 +31,7 @@ export default defineComponent({
                     this.avatar = this.user.avatar || '';
                 }
             }).catch((err) => {
-                console.log(err);
+                // console.log(err);
             });
             
             this.loading = false
@@ -57,12 +57,8 @@ export default defineComponent({
                     <h5 className="text-left">{{ user.first_name }} {{ user.last_name }}</h5>
                 </template>
                 <template #caption>
-                    <div class="text-left">{{ user.total_posted }} Posts</div>
+                    <div class="text-left">{{ user.total_posted }} Spills</div>
                 </template>
-                <!-- <template #icon>
-                    <q-btn @click.stop="" size="16px" class="less" flat dense round icon="notifications" />
-                    <q-btn @click.stop="" size="16px" class="more__vert" flat dense round icon="more_vert" />
-                </template> -->
         </Item>
         
         <div v-if="Object.keys(user).length > 0" >
@@ -174,6 +170,7 @@ export default defineComponent({
     width: 100%;
     z-index: 20;
     background-color: var(--color-background);
+    /* backdrop-filter: blur(50px); */
 
 }
 

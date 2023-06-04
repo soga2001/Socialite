@@ -3,7 +3,7 @@ import {defineComponent, ref} from 'vue';
 import  type {Post} from '@/assets/interfaces';
 import { http } from '@/assets/http';
 import PostsMap from '../components/PostsMap.vue';
-import Update from '../components/Update.vue';
+import Spills from '../components/Spills.vue';
 import Search from './Search.vue';
 import { useStore } from '@/store/store';
 
@@ -28,9 +28,10 @@ export default defineComponent({
   },
   
   mounted() {
-    (document.getElementById("infinite-scroll") as HTMLDivElement).onscroll = () => {
-      this.scroll()
-    };
+    const element = (document.getElementById("infinite-scroll") as HTMLDivElement)
+    element.addEventListener("scroll", function() {
+      console.log('x')
+    })
   },
   methods: {
     async getData() {
@@ -67,7 +68,7 @@ export default defineComponent({
       }
     },
   },
-  components: { PostsMap, Update, Search },
+  components: { PostsMap, Spills, Search },
 })
 </script>
 
@@ -75,14 +76,14 @@ export default defineComponent({
   <div class="home" id="home">
     <div class="home__center">
       <div class="">
-        <header v-if="$store.state.desktop">
+        <header class="border-b" v-if="$store.state.desktop">
           Home
         </header>
-        <div v-if="$store.state.authenticated && $store.state.desktop">
-          <Update />
+        <div v-if="$store.state.authenticated && $store.state.desktop" class="border-b">
+          <Spills />
         </div>
         <q-infinite-scroll id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
-          <div class="posts" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
+          <div class="grid gap-10" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
             <PostsMap :post="post" />
           </div>
           <template v-slot:loading>
@@ -129,11 +130,7 @@ header {
   width: 100%;
 }
 
-.posts:not(:first-child) {
+/* .posts:not(:first-child) {
   margin: 20px 0;
-}
-
-.posts:is(:last-child) {
-  margin-bottom: 70px;
-}
+} */
 </style>

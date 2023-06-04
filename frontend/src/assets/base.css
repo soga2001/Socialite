@@ -9,9 +9,10 @@
   --vt-c-black-mute: #282828;
 
   --vt-c-black: #000000;
-  --vt-c-green: #089e6a;
-  --vt-c-background-green: rgb(12,116,76, .4);
-  --vt-c-green-hover: rgb(12,116,76, .6);
+  /* --vt-c-green: #089e6a; */
+  --vt-c-orange: rgb(253, 137, 137);
+  --vt-c-background-orange: rgb(255, 115, 115, .4);
+  --vt-c-orange-hover: rgb(255, 115, 115, .6);
 
   --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
   --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
@@ -41,9 +42,9 @@
   --color-heading: var(--vt-c-text-dark-1);
   --color-text: var(--vt-c-text-dark-2);
 
-  --color-button: var(--vt-c-green);
-  --color-button-background: var(--vt-c-background-green);
-  --color-button-hover: var(--vt-c-green-hover);
+  --color-button: var(--vt-c-orange);
+  --color-button-background: var(--vt-c-background-orange);
+  --color-button-hover: var(--vt-c-orange-hover);
 
   --color-switch: var(--vt-c-black);
   --color-switch-slider: var(--vt-c-white);
@@ -62,9 +63,9 @@
   --color-heading: var(--vt-c-text-light-1);
   --color-text: var(--vt-c-text-light-2);
 
-  --color-button: var(--vt-c-green);
-  --color-button-background: var(--vt-c-background-green);
-  --color-button-hover: var(--vt-c-green-hover);
+  --color-button: var(--vt-c-orange);
+  --color-button-background: var(--vt-c-background-orange);
+  --color-button-hover: var(--vt-c-orange-hover);
 
   --color-switch: var(--vt-c-white);
   --color-switch-slider: var(--vt-c-black);
@@ -85,7 +86,7 @@
 body {
   color: var(--color-text);
   background: var(--color-background);
-  transition: color 0.5s, background-color 0.5s;
+  /* transition: color 0.5s, background-color 0.5s; */
   line-height: 1.6;
   font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
     Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;

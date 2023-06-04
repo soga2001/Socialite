@@ -6,6 +6,13 @@ import { RouterLink, RouterView } from 'vue-router';
 import router from '../../router';
 import { useStore } from '../../store/store';
 import Item from '../Item.vue';
+import HomeIcon from '@/icons/i-home.vue'
+import ExploreIcon from '@/icons/i-explore.vue';
+import SearchIcon from '@/icons/i-search.vue';
+import NotificationIcon from '@/icons/i-notif.vue';
+import SettingIcon from '@/icons/i-settings.vue';
+import LoginIcon from '@/icons/i-login.vue';
+import RegisterIcon from '@/icons/i-register.vue';
 
 export default defineComponent({
     
@@ -41,7 +48,7 @@ export default defineComponent({
   },
   watch: {
   },
-  components: { Item }
+  components: {}
 })
 </script>
 
@@ -50,56 +57,44 @@ export default defineComponent({
         <div class="bottomNav">
         <slot name="bottomNav">
           <RouterLink to="/home" class="nav__link" active-class="active" v-if="$store.state.authenticated">
-            <q-avatar size="iconSize" :icon="$route.fullPath == '/home' ? 'house' : 'o_house'" class="icon">
-              <q-tooltip anchor="top middle" self="bottom middle">
-                Home
-              </q-tooltip>
-            </q-avatar>
+            <home-icon size="2rem" :fill="$route.fullPath == `/home` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'"/>
           </RouterLink>
+
           <RouterLink to="/explore" class="nav__link" active-class="active">
-            <q-avatar size="iconSize" :icon="$route.fullPath == '/explore' ? 'explore' : 'o_explore'" class="icon">
-              <q-tooltip anchor="top middle" self="bottom middle">
-                Explore
-              </q-tooltip>
-            </q-avatar>
+            <explore-icon size="2rem" :fill="$route.fullPath == `/explore` ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == `/explore` ? 'none' : 'var(--color-heading)'"/>
           </RouterLink>
           <RouterLink to="/search" class="nav__link" active-class="active">
-              <q-avatar size="iconSize" :icon="$route.fullPath == '/search' ? 'search' : 'o_search'" class="icon search">
-                <q-tooltip anchor="top middle" self="bottom middle">
-                  Search
-                </q-tooltip>
-              </q-avatar>
-            </RouterLink>
-            <!-- <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
-              <q-avatar size="iconSize" :icon="$route.fullPath == `/profile/user/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" class="icon">
-                <q-tooltip anchor="top middle" self="bottom middle">
-                  Profile
-                </q-tooltip>
-              </q-avatar>
-            </RouterLink> -->
+            <search-icon size="2rem" :fill="$route.fullPath == `/search` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)"/>
+          </RouterLink>
+          <RouterLink to="/notifications" class="nav__link" active-class="active">
+            <notification-icon size="2rem" :fill="$route.fullPath == `/notifications` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
+          </RouterLink>
 
             <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
-              <q-avatar size="iconSize" :icon="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" class="icon">
+              <!-- <q-avatar size="iconSize" :icon="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" class="icon">
                 <q-tooltip anchor="top middle" self="bottom middle">
                   Settings
                 </q-tooltip>
-              </q-avatar>
+              </q-avatar> -->
+              <setting-icon size="2rem" :fill="$route.fullPath == `/settings` ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == `/settings` ? 'none' : 'var(--color-heading)'" />
             </RouterLink>
 
             <RouterLink to="/login" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
-              <q-avatar size="iconSize" icon="login" class="icon">
+              <!-- <q-avatar size="iconSize" icon="login" class="icon">
                 <q-tooltip anchor="top middle" self="bottom middle">
                   Login
                 </q-tooltip>
-              </q-avatar>
+              </q-avatar> -->
+              <login-icon size="3rem" :fill="$route.fullPath == `/login` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
             </RouterLink>
 
             <RouterLink to="/Register" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
-              <q-avatar size="iconSize" icon="app_registration" class="icon">
+              <!-- <q-avatar size="iconSize" icon="app_registration" class="icon">
                 <q-tooltip anchor="top middle" self="bottom middle">
                   Register
                 </q-tooltip>
-              </q-avatar>
+              </q-avatar> -->
+              <register-icon size="2.3rem" :fill="$route.fullPath == `/login` ? 'var(--color-heading)' : 'none'"  stroke="var(--color-heading)" />
             </RouterLink>
         </slot>
       </div>

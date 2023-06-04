@@ -7,6 +7,7 @@ import router from '../../router';
 import { useStore } from '../../store/store';
 import Item from '../Item.vue';
 import Themetoggle from '../themetoggle.vue';
+import ProfileIcon from '@/icons/i-profile.vue'
 
 export default defineComponent({
     
@@ -77,7 +78,7 @@ export default defineComponent({
   },
   watch: {
   },
-  components: { Item }
+  components: { Item, ProfileIcon }
 })
 </script>
 
@@ -95,6 +96,10 @@ export default defineComponent({
             </q-btn>
           </div>
 
+          <!-- <div className="brand">
+              BB
+            </div> -->
+
           <div class="overlay" v-if="navSlideIn" @click="closeNav"></div>
 
           <div class="slide-in-nav list" :style="slideIn">
@@ -104,7 +109,7 @@ export default defineComponent({
                   Account Info
                 </template>
                 <template #icon>
-                  <q-btn flat round dense icon="close" size="16px" @click="navSlideIn = false" />
+                  <q-btn flat round dense icon="close" size="16px" @click="closeNav" />
                 </template>
               </Item>
               <Item class="item" avatar-size="fit-content">
@@ -129,8 +134,8 @@ export default defineComponent({
               <Item class="item">
                 <template #caption>
                   <div class="follow">
-                    <p> <span>{{ $store.state.user.total_following }} </span> Following</p>
-                    <p> <span>{{ $store.state.user.total_followers }} </span> Followers</p>
+                    <p> <span class="text-heading">{{ $store.state.user.total_following }} </span> Following</p>
+                    <p> <span class="text-heading">{{ $store.state.user.total_followers }} </span> Followers</p>
                   </div>
                 </template>
               </Item>
@@ -139,7 +144,8 @@ export default defineComponent({
               <RouterLink @click="closeNav" :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
                 <q-item>
                   <q-item-section avatar>
-                    <q-icon class="icon" :name="$route.fullPath == `/profile/user/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" />
+                    <!-- <q-icon class="icon" :name="$route.fullPath == `/profile/user/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" /> -->
+                    <profile-icon size="2rem" :fill="$route.fullPath == `/${$store.state.user.username}/` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'"/>
                   </q-item-section>
 
                   <q-item-section class="bold">
@@ -159,7 +165,7 @@ export default defineComponent({
                 </q-item>
               </RouterLink> -->
             </div>
-            <hr/>
+            <!-- <hr/> -->
             <div>
               <q-item class="logout" clickable v-close-popup @click="logout">
                 <q-item-section avatar>
@@ -189,17 +195,6 @@ header {
 	top: 0;
   z-index: 20;
   overflow-y: scroll;
-}
-
-.nav {
-  height: 100%;
-  display: flex;
-  width: 100%;  
-  justify-content: center;
-  padding: 0 16px;
-  background-color: transparent;
-  position: relative;
-  
 }
 
 .topNav {
@@ -258,7 +253,7 @@ header {
   width: 100%;
   height: 100%;
   /* background-color: var(--color-hover); */
-    background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0,0,0,0.5);
   z-index: 999; /* Set the z-index to a value higher than the slide-in menu */
 }
 
@@ -274,35 +269,6 @@ header {
 
 .follow {
   display: flex;
-}
-
-
-
-/* .slide-in-nav .closebtn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 36px;
-  margin-left: 50px;
-} */
-
-
-.nav .brand {
-  width: fit-content;
-  font-size: 25px;
-  font-weight: 300;
-  width: 100%;
-  color: var(--color-heading);
-  margin-top: 0 !important;
-}
-
-.nav .brand:hover {
-  background-color: transparent !important;
-}
-
-.nav .logo {
-  font-weight: 900;
-  color: var(--color-heading);
 }
 
 .list {
@@ -335,7 +301,6 @@ a {
 .nav__link.active {
   color: var(--color-heading) !important;
   font-weight: 900;
-  /* background-color: var(--color-background-mute); */
   border-radius: 30px;
 }
 
@@ -365,14 +330,8 @@ a {
   border-radius: 30px;
 }
 
-
-/* .nav__link:hover .bold {
-  font-weight: 900;
-} */
-
 .dropdown-btn {
   width: 100%;
-  /* border-radius: 30px; */
   display: flex;
   justify-content: center;
 }
@@ -395,235 +354,6 @@ a {
 
 .username {
   color: var(--color-text);
-}
-
-
-
-/* nav icons */
-
-.show {
-  display: none;
-}
-
-@media (min-width: 993px) {
-
-}
-
-@media (max-width: 992px) {
-  .show {
-    display:flex;
-  }
-
-  .nav {
-    justify-content: center;
-    
-  }
-
-  .item {
-    min-width: 0;
-  }
-
-  .hide {
-    display: none;
-  }
-
-  .nav__link:hover {
-    background-color: transparent !important;
-  }
-
-  .nav__link {
-    width: 100%;
-    display: flex;
-    border-radius: 50%;
-    /* padding: 10px; */
-  }
-}
-
-
-/* Reference: https://uiverse.io/alexruix/splendid-liger-23 */
-/* theme */
-/* The switch - the box around the slider */
-
-/* Theme toggle */
-
-
-.toggleWrapper input {
-  position: absolute;
-  left: -99em;
-}
-
-.toggle {
-  cursor: pointer;
-  display: inline-block;
-  position: relative;
-  width: 45px;
-  height: 25px;
-  background-color: #83d8ff;
-  border-radius: 84px;
-  transition: background-color 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
-}
-
-.toggle__handler {
-  display: inline-block;
-  position: relative;
-  z-index: 1;
-  top: 1.7px;
-  left: 3px;
-  width: 21px;
-  height: 21px;
-  background-color: #f5d418;
-  border-radius: 50px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
-  transition: all 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  transform: rotate(-45deg);
-}
-
-.toggle__handler .crater {
-  position: absolute;
-  background-color: #e8cda5;
-  opacity: 0;
-  transition: opacity 200ms ease-in-out;
-  border-radius: 100%;
-}
-
-.toggle__handler .crater--1 {
-  top: 9px;
-  left: 5px;
-  width: 2px;
-  height: 2px;
-}
-
-.toggle__handler .crater--2 {
-  top: 14px;
-  left: 11px;
-  width: 3px;
-  height: 3px;
-}
-
-.toggle__handler .crater--3 {
-  top: 5px;
-  left: 12.5px;
-  width: 4px;
-  height: 4px;
-}
-
-.star {
-  position: absolute;
-  background-color: rgb(255, 255, 255);
-  /* font-weight: 900; */
-  transition: all 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
-  border-radius: 50%;
-}
-
-.star--1 {
-  top: 5px;
-  left: 17.5px;
-  z-index: 0;
-  width: 15px;
-  height: 1.5px;
-}
-
-.star--2 {
-  top: 9px;
-  left: 14px;
-  z-index: 1;
-  width: 15px;
-  height: 1.5px;
-}
-
-.star--3 {
-  top: 13.5px;
-  left: 20px;
-  z-index: 0;
-  width: 15px;
-  height: 1.5px;
-}
-
-.star--4, .star--5, .star--6 {
-  opacity: 0;
-  transition: all 300ms 0 cubic-bezier(0.445, 0.05, 0.55, 0.95);
-}
-
-.star--4 {
-  top: 8px;
-  left: 5.5px;
-  z-index: 0;
-  width: 1px;
-  height: 1px;
-  transform: translate3d(3px, 0, 0);
-}
-
-.star--5 {
-  top: 16px;
-  left: 8.5px;
-  z-index: 0;
-  width: 1.5px;
-  height: 1.5px;
-  transform: translate3d(3px, 0, 0);
-}
-
-.star--6 {
-  top: 18px;
-  left: 14px;
-  z-index: 0;
-  width: 1px;
-  height: 1px;
-  transform: translate3d(3px, 0, 0);
-}
-
-input:checked + .toggle {
-  background-color: #475668;
-}
-
-input:checked + .toggle:before {
-  color: #475668;
-}
-
-input:checked + .toggle:after {
-  color: #fff;
-}
-
-input:checked + .toggle .toggle__handler {
-  background-color: #ffe5b5;
-  transform: translate3d(17px, 0, 0) rotate(0);
-}
-
-input:checked + .toggle .toggle__handler .crater {
-  opacity: 1;
-}
-
-input:checked + .toggle .star--1 {
-  width: 1px;
-  height: 1px;
-}
-
-input:checked + .toggle .star--2 {
-  width: 2px;
-  height: 2px;
-  transform: translate3d(-5px, 0, 0);
-}
-
-input:checked + .toggle .star--3 {
-  width: 2px;
-  height: 2px;
-  transform: translate3d(-7px, 0, 0);
-}
-
-input:checked + .toggle .star--4, input:checked + .toggle .star--5, input:checked + .toggle .star--6 {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-}
-
-input:checked + .toggle .star--4 {
-  transition: all 300ms 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
-}
-
-input:checked + .toggle .star--5 {
-  transition: all 300ms 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
-}
-
-input:checked + .toggle .star--6 {
-  transition: all 300ms 400ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
 }
  
 </style>

@@ -5,8 +5,6 @@ import {http} from '../../assets/http'
 import { RouterLink, RouterView } from 'vue-router';
 import router from '../../router';
 import { useStore } from '../../store/store';
-import Item from '../Item.vue';
-import Themetoggle from '../themetoggle.vue';
 export default defineComponent({
     
   props: {
@@ -76,188 +74,188 @@ export default defineComponent({
   },
   watch: {
   },
-  components: { Item, Themetoggle }
 })
 </script>
 
 <template>
     <header>
-        <nav class="nav" :style="navStyle">
+        <nav class="nav sticky" :style="navStyle">
             <q-list class="list">
-                <div class="main__nav">
-                <RouterLink to="/home" class="brand">
-                    <q-item class="hide">
-                    <q-item-section avatar>
-                        BB
-                    </q-item-section>
-                    </q-item>
-                    <q-avatar rounded :size="iconSize" icon="BB" class="show"/>
-                </RouterLink>
-                <RouterLink to="/home" class="nav__link" active-class="active" v-if="$store.state.authenticated">
-                    <q-item class="hide">
-                    <q-item-section avatar>
-                        <q-icon class="icon" size="2rem" :name="$route.fullPath == '/home' ? 'house' : 'o_house'"/>
-                    </q-item-section>
-
-                    <q-item-section class="bold">
-                        Home
-                    </q-item-section>
-                    </q-item>
-                    <q-avatar size="iconSize" :icon="$route.fullPath == '/home' ? 'house' : 'o_house'" class="show icon">
-                    <q-tooltip anchor="top middle" self="bottom middle">
-                        Home
-                    </q-tooltip>
-                    </q-avatar>
-                </RouterLink>
-
-                <RouterLink to="/explore" class="nav__link" active-class="active">
-                    <q-item class="hide">
-                    <q-item-section avatar>
-                        <q-icon class="icon" :name="$route.fullPath == '/explore' ? 'explore' : 'o_explore'" />
-                    </q-item-section>
-
-                    <q-item-section class="bold">
-                        Explore
-                    </q-item-section>
-                    </q-item>
-                    <q-avatar size="iconSize" :icon="$route.fullPath == '/explore' ? 'explore' : 'o_explore'" class="show icon">
-                    <q-tooltip anchor="top middle" self="bottom middle">
-                        Explore
-                    </q-tooltip>
-                    </q-avatar>
-                </RouterLink>
-                <RouterLink v-if="$store.state.authenticated" to="/notifications" class="nav__link" active-class="active">
-                    <q-item class="hide">
+                <div class="">
+                  <!-- <RouterLink to="/home" class="brand">
+                      <q-item class="hide">
                       <q-item-section avatar>
-                          <q-icon class="icon" :name="$route.fullPath == '/notifications' ? 'notifications' : 'o_notifications'" />
+                          BB
+                      </q-item-section>
+                      </q-item>
+                      <q-avatar rounded :size="iconSize" icon="BB" class="show"/>
+                  </RouterLink> -->
+                  <RouterLink to="/home" class="nav__link" active-class="active" v-if="$store.state.authenticated">
+                      <q-item class="hide">
+                        <q-item-section avatar>
+                            <!-- <q-icon class="icon" size="2rem" :name="$route.fullPath == '/home' ? 'house' : 'o_house'"/> -->
+                            <home-icon size="2rem" :fill="$route.fullPath == '/home' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                        </q-item-section>
+
+                        <q-item-section class="bold">
+                            Home
+                        </q-item-section>
+                      </q-item>
+                      <home-icon class="show" size="2rem" :fill="$route.fullPath == '/home' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                  </RouterLink>
+
+                  <RouterLink to="/explore" class="nav__link" active-class="active">
+                      <q-item class="hide">
+                      <q-item-section avatar>
+                          <!-- <q-icon class="icon" :name="$route.fullPath == '/explore' ? 'explore' : 'o_explore'" /> -->
+                          <explore-icon size="2rem" :fill="$route.fullPath == '/explore' ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == '/explore' ? 'none' : 'var(--color-heading)'" />
                       </q-item-section>
 
                       <q-item-section class="bold">
-                          Notifications
+                          Explore
                       </q-item-section>
-                    </q-item>
-                    <q-avatar size="iconSize" :icon="$route.fullPath == '/notifications' ? 'explore' : 'o_explore'" class="show icon">
+                      </q-item>
+                      <explore-icon class="show" size="2rem" :fill="$route.fullPath == '/explore' ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == '/explore' ? 'none' : 'var(--color-heading)'" />
+                  </RouterLink>
+                  <RouterLink v-if="$store.state.authenticated" to="/notifications" class="nav__link" active-class="active">
+                      <q-item class="hide">
+                        <q-item-section avatar>
+                            <!-- <q-icon class="icon" :name="$route.fullPath == '/notifications' ? 'notifications' : 'o_notifications'" /> -->
+                            <notif-icon size="2rem" :fill="$route.fullPath == '/notifications' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                        </q-item-section>
+
+                        <q-item-section class="bold">
+                            Notifications
+                        </q-item-section>
+                      </q-item>
+                      <tool-tips text="Notifications">
+                        <notif-icon class="show" size="2rem" :fill="$route.fullPath == '/notifications' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                      </tool-tips>
+                  </RouterLink>
+
+
+
+                  <RouterLink to="/search" class="nav__link" active-class="active">
+                      <q-item class="hide">
+                      <q-item-section avatar>
+                          <!-- <q-icon class="icon search" :name="$route.fullPath == '/search' ? 'search' : 'o_search'" /> -->
+                          <search-icon size="2rem" :fill="$route.fullPath == '/search' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                      </q-item-section>
+
+                      <q-item-section class="bold">
+                          Search
+                      </q-item-section>
+                      
+                      </q-item>
+                      <!-- <q-avatar size="iconSize" :icon="$route.fullPath == '/search' ? 'search' : 'o_search'" class="show icon search">
                       <q-tooltip anchor="top middle" self="bottom middle">
-                          Notifications
+                          Search
                       </q-tooltip>
-                    </q-avatar>
-                </RouterLink>
+                      </q-avatar> -->
+                      <tool-tips text="Search">
+                        <search-icon class="show" size="2rem" :fill="$route.fullPath == '/search' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                      </tool-tips>
+                  </RouterLink>
 
+                  <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
+                      <q-item class="hide">
+                        <q-item-section avatar>
+                            <!-- <q-icon class="icon" :name="$route.fullPath == `/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" /> -->
+                            <profile-icon size="2rem" :fill="$route.fullPath == `/${$store.state.user.username}/` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                        </q-item-section>
 
+                        <q-item-section class="bold">
+                            Profile
+                        </q-item-section>
+                      </q-item>
+                      <profile-icon class="show icon" size="2rem" :fill="$route.fullPath == `/${$store.state.user.username}/` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'"/>
+                  </RouterLink>
 
-                <RouterLink to="/search" class="nav__link" active-class="active">
-                    <q-item class="hide">
-                    <q-item-section avatar>
-                        <q-icon class="icon search" :name="$route.fullPath == '/search' ? 'search' : 'o_search'" />
-                    </q-item-section>
+                  <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
+                      <q-item class="hide">
+                      <q-item-section avatar>
+                          <!-- <q-icon class="icon" :name="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" /> -->
+                          <settings-icon size="2rem" :fill="$route.fullPath == '/settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                      </q-item-section>
 
-                    <q-item-section class="bold">
-                        Search
-                    </q-item-section>
-                    </q-item>
-                    <q-avatar size="iconSize" :icon="$route.fullPath == '/search' ? 'search' : 'o_search'" class="show icon search">
-                    <q-tooltip anchor="top middle" self="bottom middle">
-                        Search
-                    </q-tooltip>
-                    </q-avatar>
-                </RouterLink>
+                      <q-item-section class="bold">
+                          Settings
+                      </q-item-section>
+                      </q-item>
+                      <settings-icon class="show" size="2rem" :fill="$route.fullPath == '/settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                  </RouterLink>
+                  
+                  <div v-if="$store.state.authenticated" class="w-full px-5">
+                   <button class=" hide w-full px-15 py-3 text-xl rounded-lg border-none btn btn-primary weight-900 ">Spill</button>
+                   <q-btn class="show btn-primary" round flat icon="add"/>
+                  </div>
 
-                <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
-                    <q-item class="hide">
-                    <q-item-section avatar>
-                        <q-icon class="icon" :name="$route.fullPath == `/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" />
-                    </q-item-section>
+                  <RouterLink to="/login" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
+                      <q-item class="hide">
+                      <q-item-section avatar>
+                          <q-icon class="icon" name="login" />
+                      </q-item-section>
 
-                    <q-item-section class="bold">
-                        Profile
-                    </q-item-section>
-                    </q-item>
-                    <q-avatar size="iconSize" :icon="$route.fullPath == `/${$store.state.user.id}/` ? 'account_circle' : 'o_account_circle'" class="show icon">
-                    <q-tooltip anchor="top middle" self="bottom middle">
-                        Profile
-                    </q-tooltip>
-                    </q-avatar>
-                </RouterLink>
+                      <q-item-section class="bold">
+                          Login
+                      </q-item-section>
+                      </q-item>
+                      <q-avatar size="iconSize" icon="login" class="show icon">
+                      <q-tooltip anchor="top middle" self="bottom middle">
+                          Login
+                      </q-tooltip>
+                      </q-avatar>
+                  </RouterLink>
 
-                <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
-                    <q-item class="hide">
-                    <q-item-section avatar>
-                        <q-icon class="icon" :name="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" />
-                    </q-item-section>
+                  <RouterLink to="/Register" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
+                      <q-item class="hide">
+                      <q-item-section avatar>
+                          <q-icon class="icon" name="o_app_registration" />
+                      </q-item-section>
 
-                    <q-item-section class="bold">
-                        Settings
-                    </q-item-section>
-                    </q-item>
-                    <q-avatar size="iconSize" :icon="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" class="show icon">
-                    <q-tooltip  anchor="top middle" self="bottom middle">
-                        Settings
-                    </q-tooltip>
-                    </q-avatar>
-                </RouterLink>
-
-                <RouterLink to="/login" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
-                    <q-item class="hide">
-                    <q-item-section avatar>
-                        <q-icon class="icon" name="login" />
-                    </q-item-section>
-
-                    <q-item-section class="bold">
-                        Login
-                    </q-item-section>
-                    </q-item>
-                    <q-avatar size="iconSize" icon="login" class="show icon">
-                    <q-tooltip anchor="top middle" self="bottom middle">
-                        Login
-                    </q-tooltip>
-                    </q-avatar>
-                </RouterLink>
-
-                <RouterLink to="/Register" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
-                    <q-item class="hide">
-                    <q-item-section avatar>
-                        <q-icon class="icon" name="o_app_registration" />
-                    </q-item-section>
-
-                    <q-item-section class="bold">
-                        Register
-                    </q-item-section>
-                    </q-item>
-                    <q-avatar size="iconSize" icon="app_registration" class="show icon">
-                    <q-tooltip anchor="top middle" self="bottom middle">
-                        Register
-                    </q-tooltip>
-                    </q-avatar>
-                </RouterLink>
+                      <q-item-section class="bold">
+                          Register
+                      </q-item-section>
+                      </q-item>
+                      <q-avatar size="iconSize" icon="app_registration" class="show icon">
+                      <q-tooltip anchor="top middle" self="bottom middle">
+                          Register
+                      </q-tooltip>
+                      </q-avatar>
+                  </RouterLink>
                 </div>
 
                 <div class="rest__nav">
-                    <Themetoggle/>
-                    <!-- <Item :avatar="$store.state.user.profile.avatar" :title="$store.state.user.first_name + ' ' + $store.state.user.last_name" :subtitle="$store.state.user.username" icon="more_vert"/> -->
+                    <theme-toggle/>
                     <div class="dropdown-btn">
                         <q-btn no-caps dense rounded flat class="dropdown" v-if="$store.state.authenticated">
-                        <Item class="hide item" dense>
-                            <template #avatar>
-                            <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
-                            <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
-                            </template>
-                            <template #title>
-                            <span class="title">{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</span>
-                            </template>
-                            <template #caption>
-                            <span class="subtitle">@{{ $store.state.user.username }}</span>
-                            </template>
-                            <template #icon>
-                            <q-icon name="more_vert" />
-                            </template>
-                        </Item>
+                          <div class="hide item">
+                            <Item  dense>
+                                <template #avatar>
+                                <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
+                                <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
+                                </template>
+                                <template #title>
+                                <span class="title">{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</span>
+                                </template>
+                                <template #caption>
+                                <span class="subtitle">@{{ $store.state.user.username }}</span>
+                                </template>
+                                <template #icon>
+                                <q-icon name="more_vert" />
+                                </template>
+                            </Item>
+                          </div>
 
-                        <Item :border="false" dense class="show item">
-                            <template #avatar>
-                            <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
-                            <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
-                            </template>
-                        </Item>
+                        <div class="show item">
+                          <Item :border="false" dense >
+                              <template #avatar>
+                              <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
+                              <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="w-full h-full" />
+                              </template>
+                          </Item>
+                        </div>
+                        
                         <q-menu fit square self="top left" anchor="bottom left">
                             <q-list class="dropdown__main" dense>
                             <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
@@ -284,12 +282,11 @@ export default defineComponent({
 
 header {
   position: -webkit-sticky;
-position: sticky;
+  position: sticky;
   max-height: 100vh;
   max-height: 100dvh;
   height: 100%;
-  width: 100%;
-	top: 0;
+  top: 0;
   z-index: 20;
   overflow-y: scroll;
 }
@@ -391,15 +388,6 @@ position: sticky;
   display: flex;
 }
 
-
-
-/* .slide-in-nav .closebtn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 36px;
-  margin-left: 50px;
-} */
 
 
 .nav .brand {

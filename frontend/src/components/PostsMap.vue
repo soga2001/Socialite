@@ -8,6 +8,8 @@ import { useCookies } from 'vue3-cookies';
 import Heart from './Heart.vue';
 import Item from './Item.vue';
 import MentionLink from './MentionLink.vue';
+import ToolTips from './ToolTips.vue';
+import HeartIcon from '@/icons/i-heart.vue';
 
 
 export default defineComponent({
@@ -122,6 +124,8 @@ export default defineComponent({
     },
     created() {
     },
+    mounted() {
+    },
     watch: {
         '$store.state.authenticated': function () {
             if(this.$store.state.authenticated) {
@@ -131,7 +135,7 @@ export default defineComponent({
             }
         }
     },
-    components: { Timeago, Heart, Item, MentionLink }
+    components: { Timeago, Heart, Item, MentionLink, ToolTips, HeartIcon }
 })
 </script>
 
@@ -246,28 +250,50 @@ export default defineComponent({
                 {{ username }}
             </template>
             <template #caption>
-                <p><MentionLink :mention="caption"/></p>
+                <div>
+                    <MentionLink :mention="caption"/>
+                </div>
             </template>
         </Item>
 
         <q-separator :dark="$store.state.dark"/>
-        <q-card-actions class="actions z-index-2">
-            <!-- <q-btn flat round color="red" :icon="liked ? 'favorite' : 'favorite_border'" /> -->
+        <q-card-actions class="flex justify-center z-index-2">
             <div>
-                <q-icon size="30px" :class="'action like__btn ' + (liked ? 'liked' : '')" :name="liked ? 'favorite' : 'favorite_border'" @click.stop="like">
-                    <q-tooltip :offset="[0,0]">
-                        Like
-                    </q-tooltip>
-                </q-icon>
-                <label>{{total_likes}}</label>
+                <Item>
+                    <template #avatar>
+                        <q-icon size="30px" :class="'action like__btn ' + (liked ? 'liked' : '')" :name="liked ? 'favorite' : 'favorite_border'" @click.stop="like">
+                            <q-tooltip :offset="[0,0]">
+                                Like
+                            </q-tooltip>
+                        </q-icon>
+                        <!-- <ToolTips text="Like">
+                            <heart-icon size="3rem" :fill="liked ? '' : ''"  stroke="" />
+                        </ToolTips> -->
+                    </template>
+                    <template #title>
+                        <label>{{total_likes}}</label>
+                    </template>
+                </Item>
             </div>
             <div>
-                <q-icon size="30px" class="action comment" :name="total_comments == 0 ? 'sym_o_chat_bubble' : 'sym_o_chat'" @click="commentToggle">
+                <!-- <q-icon size="30px" class="action comment" :name="total_comments == 0 ? 'sym_o_chat_bubble' : 'sym_o_chat'" @click="commentToggle">
                     <q-tooltip :offset="[0,0]">
                         Comment
                     </q-tooltip>
                 </q-icon>
-                <label>{{total_comments}}</label>
+                <label>{{total_comments}}</label> -->
+                <Item>
+                    <template #avatar>
+                        <q-icon size="30px" class="action comment" :name="total_comments == 0 ? 'sym_o_chat_bubble' : 'sym_o_chat'" @click="commentToggle">
+                            <q-tooltip :offset="[0,0]">
+                                Comment
+                            </q-tooltip>
+                        </q-icon>
+                    </template>
+                    <template #title>
+                        <label>{{total_comments}}</label>
+                    </template>
+                </Item>
             </div>
             
             <!-- <q-btn :icon="total_comments == 0 ? 'sym_o_chat_bubble' : 'sym_o_chat'" round flat>
@@ -276,10 +302,11 @@ export default defineComponent({
                 </q-tooltip>
             </q-btn> -->
 
-            <q-btn icon="share" round flat>
+            <q-btn round flat>
                 <q-tooltip :offset="[0,0]">
                     Copy Link
                 </q-tooltip>
+                <share-icon fill="var(--color-heading)" />
             </q-btn> 
         </q-card-actions>
         <!-- <q-separator :dark="$store.state.dark"/>
@@ -310,7 +337,6 @@ export default defineComponent({
 .post {
     display: grid;
     background-color: transparent;
-    border-top: 1px solid var(--color-border);
     border-bottom: 1px solid var(--color-border);
     position: relative;
     width: 100%;

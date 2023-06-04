@@ -26,9 +26,7 @@ export default defineComponent({
   },
   
   mounted() {
-    (document.getElementById("infinite-scroll") as HTMLDivElement).onscroll = () => {
-      this.scroll()
-    };
+    
   },
   methods: {
     async getData() {
@@ -77,7 +75,6 @@ export default defineComponent({
   },
   components: { PostsMap, Search, Navbar },
   activated() {
-    console.log('here')
     this.scrollTo()
   }
 })
@@ -86,7 +83,7 @@ export default defineComponent({
 <template>
   <div class="home" id="home">
     <div class="home__center">
-      <header v-if="$store.state.desktop">
+      <header class="border-b" v-if="$store.state.desktop">
         Explore
       </header>
       <q-infinite-scroll id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
@@ -102,7 +99,7 @@ export default defineComponent({
       </div>
       <div v-if="!hasMore" class="text-center message">
         <p>{{message}}</p>
-        <button @click="flushSession">Reset Session Data</button>
+        <button class="btn btn-themed border-none text-heading px-3 py-3 rounded weight-900" @click="flushSession">Reset Session Data</button>
       </div>
   </div>
 </template>

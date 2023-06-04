@@ -1,8 +1,4 @@
-<template>
-    <div id="spinner" class="spinner" :style="{ width: size, height: size, border: borderColor, borderTopColor: color}"></div>
-  </template>
-  
-  <script lang="ts">
+<script lang="ts">
   import { defineComponent } from 'vue';
   
   export default defineComponent({
@@ -46,7 +42,19 @@
     mounted() {
     }
   });
-  </script>
+</script>
+
+<template>
+  <div class="">
+    <div class="flex w-full justify-center items-center flex-col gap-2">
+      <div id="spinner" class="spinner" :style="{ width: size, height: size, border: borderColor, borderTopColor: color}"></div>
+    </div>
+    <div class="text-2xl weight-900">Loading</div>
+  </div>
+  
+  
+  
+</template>
   
   <style scoped>
  .spinner {

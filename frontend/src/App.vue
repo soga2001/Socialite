@@ -13,7 +13,7 @@ export default defineComponent({
       dark_mode: false,
       include: ['home', 'explore'],
       class: 'app',
-      loading: true
+      loading: true,
     }
   },
   setup() {
@@ -32,9 +32,6 @@ export default defineComponent({
       }
       this.$store.commit('setTheme', !this.$store.state.dark)
     },
-    onload(e: any) {
-      console.log(e)
-    },
     checkOS() {
       const regex = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i
       const width = window.innerWidth <= 597
@@ -47,7 +44,10 @@ export default defineComponent({
     },
     async loadUser() {
       await get_user_from_cookie()
-      this.loading = false
+      setTimeout(() => {
+        this.loading = false
+      }, 3000)
+      // this.loading = false
     }
   },
   created() {
@@ -67,32 +67,16 @@ export default defineComponent({
 
 <template>
   <!-- <h1>Potato</h1> -->
-  <header id="app" v-if="!loading">
-      <Main />
-  </header>
-  <header class="loading" v-else>
-    <Loading/>
-  </header>
+  <div v-if="!loading">
+    <Main />
+  </div>
+  <div class="flex items-center justify-center w-full h-viewport" v-else>
+    <Loading />
+  </div>
 </template>
 
 <style>
 @import '@/assets/base.css';
-
-/* #app {
-  width: 100%;
-  height: 100%;
-  position:fixed;
-  overflow-y:scroll;
-  overflow-x:hidden;
-} */
-
-.loading {
-  display: flex;
-  width: 100%;
-  height: 100vh;
-  height: 100dvh;
-  align-items: center;
-  justify-content: center;
-}
+@import '@/assets/global.css';
 
 </style>

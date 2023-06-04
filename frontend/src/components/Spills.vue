@@ -3,6 +3,7 @@ import { http } from '@/assets/http';
 import { defineComponent } from 'vue';
 import type { User } from '../assets/interfaces';
 import Mention from './Mention.vue';
+import ProfileIcon from '@/icons/i-profile.vue';
 
 
 export default defineComponent({
@@ -42,7 +43,7 @@ export default defineComponent({
     },
     watch: {
     },
-    components: { Mention }
+    components: { Mention, ProfileIcon }
 })
 </script>
 
@@ -51,7 +52,8 @@ export default defineComponent({
     <div class="post__container">
       <q-avatar class="post__avatar" size="65px" >
           <img class="user__avatar" v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
-          <q-icon v-else size="65px" name="face" />
+          <!-- <q-icon v-else size="65px" name="face" /> -->
+          <!-- <profile-icon v-else size="4rem" /> -->
       </q-avatar>
       <form class="post__form" autocorrect="on" autocomplete="off" @submit.prevent="submit">
         <q-file v-model="image" clearable class="post__file" label="Upload an image" :dark="$store.state.dark" :color="$store.state.dark ? 'white': 'black'">
@@ -77,7 +79,6 @@ export default defineComponent({
 .post {
   display: grid;
   background-color: var(--color-background);
-  border: 1px solid var(--color-border);
   position: relative;
   width: 100%;
   max-width: 600px;

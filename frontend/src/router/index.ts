@@ -70,7 +70,6 @@ const routes: RouteRecordRaw[] = [
     path: '/:username/',
     name: 'user-profile',
     component: () => import('../views/User.vue'),
-    // alias: '/user_posted/:id',
     meta: {
       scrollPos: {
         top: 0,

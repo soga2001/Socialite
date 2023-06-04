@@ -84,11 +84,11 @@ export default defineComponent({
     
     <div class="user row justify-center">
         <div class="user__container col-12 col-md-auto">
-            <div class='profile '>
-                <div class='banner'>
+            <div class=' grid cols-auto-fr rows-4 relative h-fit'>
+                <div id="banner" class='p-0 col-start-1 col-span-full z-1'>
                     <img class="" src="https://unsplash.it/1000/1000/?random&pic=1" id="header-background-id" alt="background-img"/>
                 </div>
-                <div class="profile-img profile-pic">
+                <div class="profile-img profile-pic relative overflow-hidden z-3">
                     <img v-if="avatar" class="profile-pic__image" :src="avatar" width="150" height="150" alt="Profibild" />
                     <img v-else class="profile-picture" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
                     <div class="profile-pic__content">
@@ -96,31 +96,36 @@ export default defineComponent({
                         <span class="profile-pic__text">Edit Profile</span>
                     </div>
                 </div>
-                <div class="edit-profile">
-                    <button v-if="$store.state.user.id != id && !loading" class="edit-btn user__follow__btn bold" @click="follow" :disabled="!$store.state.authenticated">{{ followed ? 'Unfollow' : 'Follow' }}</button>
-                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="edit-btn user__follow__btn bold" @click="" disabled>Edit Profile</button>
+                <div class="edit-profile w-full h-fit flex flex-row-reverse p-2">
+                    <button v-if="$store.state.user.id != id && !loading" class="border btn rounded text-heading bg-transparent weight-900" @click="follow" :disabled="!$store.state.authenticated">{{ followed ? 'Unfollow' : 'Follow' }}</button>
+                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="border btn rounded text-heading bg-transparent weight-900" @click="">Edit Profile</button>
                     <q-btn @click.stop="" v-if="followed && !loading" size="16px" class="less" flat dense round icon="notifications" />
                     <q-btn @click.stop="" v-if="followed && !loading"  size="16px" class="more__vert" flat dense round icon="more_horiz" />
-                    
                 </div>
             </div>
-            <q-item class="user__username text-left" dense>
-                <q-item-section>
-                    <q-item-label class="bold">{{first_name }} {{last_name }}</q-item-label>
-                    <q-item-label caption>@{{ username }}</q-item-label>
-                </q-item-section>
-            </q-item>
+            <div>
+                
+            </div>
         
             <div class="user__profile__info">
+                <Item title-size="30px">
+                    <template #title>
+                        <span class="joined"> {{first_name }} {{last_name }}</span>
+                    </template>
+                    <template #caption>
+                        <span class="joined">@{{ username }}</span>
+                    </template>
+                </Item>
                 <div class="user__bio">
-                    <Item>
+                    <!-- <Item dense info-margin="0">
                         <template #avatar>
                             <q-icon class="icon" size="26px" name="calendar_month" />
                         </template>
                         <template #title>
                             <span class="joined"> Joined <Timeago class="timeago" size="15px" date_type="relative" :date="date_joined" /></span>
                         </template>
-                    </Item>
+                    </Item> -->
+                    <h6><span class="joined"> Joined <Timeago class="timeago" size="15px" date_type="relative" :date="date_joined" /></span> </h6>
                     <h6 class="user__caption">{{bio}}</h6>
                 </div>
             </div>
@@ -132,6 +137,11 @@ export default defineComponent({
 .user__container {
     max-width: 600px;
     width: 100%;
+}
+
+.user__container:not(:first-child) {
+    margin-left: 2vw;
+    background-color: aliceblue;
 }
 
 
@@ -157,6 +167,7 @@ export default defineComponent({
 
 .user__profile__info {
     /* padding: 0 30px; */
+    margin-left: 2vw;
     display: grid;
     
 }
@@ -201,14 +212,9 @@ h6 {
 
 /* Profile Pic */
 .profile-pic {
-  position: relative;
-  /* width: 150px;
-  height: 150px; */
   border-radius: 50%;
-  overflow: hidden;
   background-color: rgba(176, 176, 176);
   transition: scale 1s ease-out;
-  z-index: 3;
 }
 
 .profile-pic img {
@@ -276,29 +282,16 @@ h6 {
 
 
 /* Banner and profile picture */
-.profile {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-rows: repeat(4, 1fr);
-    position: relative;
-}
-
-.banner {
-    padding: 0 !important;
-    grid-column: 1 / span 2;
+#banner {
     grid-row: row 1 / span 3;
-    min-height: 150px;
-    height: 13vw;
-    height: 13dvw;
-    background-color: rgba(176, 176, 176, 0.7);
-    z-index: 1;
+    aspect-ratio: 3/1;
 }
 
-.banner:hover {
+#banner:hover {
     cursor: pointer;
 }
 
-.banner img {
+#banner img {
     object-fit: cover;
     width: 100%;
     height: 100%;
@@ -306,13 +299,15 @@ h6 {
 
 .profile-img {
     grid-column: 1;
-    grid-row: row 3 / span 2;
-    min-width: 100px;
-    min-height: 100px;
-    width: 10vw;
-    height: 10vw;
+    grid-row: row 3 / span 3;
+    min-width: 90px;
+    min-height: 90px;
+    padding: 2px;
+    width: 8vw;
+    height: 8vw;
     margin-left: 2vw;
     z-index: 2;
+    background-color: var(--color-background);
 }
 
 .profile-img:hover {
@@ -328,13 +323,8 @@ h6 {
     /* padding-top: 30px !important; */
     grid-column: 2;
     grid-row: row 4 / span 2;
-    width: 100%;
-    height: fit-content;
-    display: flex;
-    flex-direction: row-reverse;
     gap: 5px;
-    /* background-color: rgba(176, 176, 176, 0.7); */
-    padding: 10px;
+    /* padding: 10px; */
 }
 
 .edit-profile button {

@@ -3,6 +3,7 @@ import {store, key} from './store/store'
 import App from './App.vue'
 import router from './router'
 import { vue3Debounce } from 'vue-debounce'
+import VueMobileDetection from "vue-mobile-detection";
 
 import { Quasar, Cookies, Dialog, Notify } from 'quasar'
 // Import icon libraries
@@ -24,11 +25,48 @@ import '@quasar/extras/bootstrap-icons/bootstrap-icons.css'
 // Import Quasar css
 import 'quasar/dist/quasar.css'
 
+// My Components
+import Item from '@/components/Item.vue';
+import Themetoggle from '@/components/themetoggle.vue';
+import ToolTips from '@/components/ToolTips.vue';
+
+
+// my icons
+import HomeIcon from '@/icons/i-home.vue';
+import ExploreIcon from '@/icons/i-explore.vue';
+import ProfileIcon from '@/icons/i-profile.vue';
+import SettingsIcon from '@/icons/i-settings.vue';
+import NotifIcon from '@/icons/i-notif.vue';
+import SearchIcon from '@/icons/i-search.vue';
+import HeartIcon from '@/icons/i-heart.vue';
+import ShareIcon from '@/icons/i-share.vue';
+
+
+
+
+
 
 const app = createApp(App)
 
-app.use(router)
-app.use(store, key)
+app.use(router);
+app.use(store, key);
+app.component('Item', Item);
+
+// icon components
+app.component('theme-toggle', Themetoggle);
+app.component('home-icon', HomeIcon);
+app.component('explore-icon', ExploreIcon);
+app.component('profile-icon', ProfileIcon);
+app.component('settings-icon', SettingsIcon);
+app.component('notif-icon', NotifIcon);
+app.component('search-icon', SearchIcon);
+app.component('heart-icon', HeartIcon);
+app.component('share-icon', ShareIcon);
+app.component('tool-tips', ToolTips);
+
+
+
+app.use(VueMobileDetection)
 app.use(Quasar, {
     plugins: {Dialog, Notify }, // import Quasar plugins and add here
     config: {
