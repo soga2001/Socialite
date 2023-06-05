@@ -118,10 +118,6 @@ export default defineComponent({
                         </div>
                     </div>
                     <div class="follows text-lg flex items-center gap-3">
-                        <!-- <div class="text-base flex gap-2">
-                            <span class="text-heading weight-900">{{ followers }}</span> <span class="mr-2"> Followers</span>
-                            <span class="text-heading weight-900">{{ following }}</span> <span class="mr-2"> Following</span>
-                        </div> -->
                         <span><span class="text-heading weight-900">{{ followers }} </span> Followers</span> 
                         <span><span class="text-heading weight-900">{{ following }} </span> Following</span>
                     </div>

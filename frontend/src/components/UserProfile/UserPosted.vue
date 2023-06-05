@@ -60,7 +60,6 @@ export default defineComponent({
             <div class="posts" v-if="user_posted.length > 0" v-for="post in user_posted" :key="post.id">
                 <!-- <UserPostedMap class="post" :post="post" :user_avatar="avatar"/> -->
                 <UserPostedMap class="post" :post="post"/>
-
             </div>
         </div>
         <div class="col-12" v-if="user_posted.length == 0 && !loading">

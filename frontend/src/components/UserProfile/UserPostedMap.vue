@@ -57,7 +57,7 @@ export default defineComponent({
 <style scoped>
 img {
     object-fit: cover;
-    border: 4px double #FF7373;
+    border: 2px solid #FF7373;
     border-radius: 5px;
     
 }
