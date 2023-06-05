@@ -57,44 +57,29 @@ export default defineComponent({
         <div class="bottomNav">
         <slot name="bottomNav">
           <RouterLink to="/home" class="nav__link" active-class="active" v-if="$store.state.authenticated">
-            <home-icon size="2rem" :fill="$route.fullPath == `/home` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'"/>
+            <i-home size="2rem" :fill="$route.fullPath == `/home` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'"/>
           </RouterLink>
 
           <RouterLink to="/explore" class="nav__link" active-class="active">
-            <explore-icon size="2rem" :fill="$route.fullPath == `/explore` ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == `/explore` ? 'none' : 'var(--color-heading)'"/>
+            <i-explore size="2rem" :fill="$route.fullPath == `/explore` ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == `/explore` ? 'none' : 'var(--color-heading)'"/>
           </RouterLink>
           <RouterLink to="/search" class="nav__link" active-class="active">
-            <search-icon size="2rem" :fill="$route.fullPath == `/search` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)"/>
+            <i-search size="2rem" :fill="$route.fullPath == `/search` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)"/>
           </RouterLink>
           <RouterLink to="/notifications" class="nav__link" active-class="active">
-            <notification-icon size="2rem" :fill="$route.fullPath == `/notifications` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
+            <i-notif size="2rem" :fill="$route.fullPath == `/notifications` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
           </RouterLink>
 
             <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
-              <!-- <q-avatar size="iconSize" :icon="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" class="icon">
-                <q-tooltip anchor="top middle" self="bottom middle">
-                  Settings
-                </q-tooltip>
-              </q-avatar> -->
-              <setting-icon size="2rem" :fill="$route.fullPath == `/settings` ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == `/settings` ? 'none' : 'var(--color-heading)'" />
+              <i-settings size="2rem" :fill="$route.fullPath == `/settings` ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == `/settings` ? 'none' : 'var(--color-heading)'" />
             </RouterLink>
 
             <RouterLink to="/login" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
-              <!-- <q-avatar size="iconSize" icon="login" class="icon">
-                <q-tooltip anchor="top middle" self="bottom middle">
-                  Login
-                </q-tooltip>
-              </q-avatar> -->
-              <login-icon size="3rem" :fill="$route.fullPath == `/login` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
+              <i-login size="3rem" :fill="$route.fullPath == `/login` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
             </RouterLink>
 
             <RouterLink to="/Register" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
-              <!-- <q-avatar size="iconSize" icon="app_registration" class="icon">
-                <q-tooltip anchor="top middle" self="bottom middle">
-                  Register
-                </q-tooltip>
-              </q-avatar> -->
-              <register-icon size="2.3rem" :fill="$route.fullPath == `/login` ? 'var(--color-heading)' : 'none'"  stroke="var(--color-heading)" />
+              <i-register size="2.3rem" :fill="$route.fullPath == `/login` ? 'var(--color-heading)' : 'none'"  stroke="var(--color-heading)" />
             </RouterLink>
         </slot>
       </div>

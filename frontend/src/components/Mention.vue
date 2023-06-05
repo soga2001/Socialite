@@ -15,9 +15,8 @@ export default defineComponent({
             users: new Array<User>(),
             index: ref<number>(-1),
             rows: 1,
-            charsLeft: this.maxChars,
+            charsLeft: 0,
             savedUsers: new Map<string, Array<User>>(),
-            // required: this.required,
         }
     },
     props: {
@@ -40,7 +39,15 @@ export default defineComponent({
         maxChars: {
           type: Number,
           default: 255,
-        }
+        },
+        textarea: {
+          type: Boolean,
+          default: true,
+        },
+        placeholder: {
+          type: String,
+          default: "Spill your guts here",
+        },
     },
     components: {Item},
     created() {
@@ -49,6 +56,10 @@ export default defineComponent({
     mounted() {
     },
     methods: {
+      emitData() {
+        this.$emit('update:val', this.val)
+        this.$emit('update:charsLeft', this.charsLeft)
+      },
       async replaceMention(username: string) {
         const at = this.index
         const space = this.val.indexOf(" ", this.index)
@@ -59,7 +70,7 @@ export default defineComponent({
         const ending = this.val.substring(endIndex)
         this.val = beginning + this.val.substring(at, space < at ? length : space).replace(u, '@' + username + ' ') + ending
         const input = document.getElementById('input') as HTMLInputElement;
-        this.$emit('update:val', this.val);
+        this.emitData()
         const data = await this.getUsers(username)
         await this.savedUsers.set(username, data)
         this.users = new Array<User>()
@@ -72,7 +83,7 @@ export default defineComponent({
       async mention(e: any) {
         // if input is empty
         if(this.val.length == 0) {
-          this.charsLeft = this.maxChars
+          this.charsLeft = 0
           this.savedUsers.clear()
           this.index = -1
           this.users = new Array<User>();
@@ -119,6 +130,9 @@ export default defineComponent({
         }
       },
       async checkSavedUsers(e: any) {
+        if(this.val.length == 0) {
+          this.emitData()
+        }
         if(this.savedUsers.size == 0) {
           return
         }
@@ -142,9 +156,8 @@ export default defineComponent({
       },
       updateRows() {
         this.rows = Math.min(this.val.split("\n").length, this.numRows);
-        this.charsLeft = this.maxChars - this.val.length
-        this.$emit('update:val', this.val)
-        this.$emit('update:charsLeft', this.charsLeft)
+        this.charsLeft = this.val.length
+        this.emitData()
       },
       async getUsers(username: String) {
         let tempUsers = new Array<User>()
@@ -163,11 +176,11 @@ export default defineComponent({
       val(val) { 
         this.updateRows()
         if(val.length == 0) {
-          this.charsLeft = this.maxChars
+          this.charsLeft = 0
           this.savedUsers.clear()
           this.index = -1
           this.users = new Array<User>();
-          this.$emit('update:charsLeft', this.charsLeft)
+          this.emitData()
         }
       },
       rows(rows) {
@@ -181,11 +194,10 @@ export default defineComponent({
 <template>
   <div class="main">
     <div class="wave-group">
-        <!-- <input :required="required" @mouseup="mention" @keyup="mention" v-model="val"  :type="type" id="input" class="input" /> -->
-        <textarea :rows="rows" :required="required" :maxlength="maxChars" autocomplete="off" @input="mention" @mouseup="checkSavedUsers"  @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input"></textarea>
-        <label class="label">
+        <textarea :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers"  @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input"></textarea>
+        <!-- <label class="label" v-if="textarea">
             <span class="label-char" v-for="(char, index) in label" :key="index" :style="{'--index': index }">{{ char == ' ' ? '&nbsp' : char }}</span>
-        </label>
+        </label> -->
     </div>
     <div class="results" v-if="users.length">
         <div @click="replaceMention(user.username)" class="result__map" v-for="user in users" :key="user.id">

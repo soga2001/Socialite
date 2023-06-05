@@ -29,6 +29,8 @@ import 'quasar/dist/quasar.css'
 import Item from '@/components/Item.vue';
 import Themetoggle from '@/components/themetoggle.vue';
 import ToolTips from '@/components/ToolTips.vue';
+import CircularProgress from './components/circularProgress.vue'
+import UploadedImage from '@/components/uploadedImg.vue';
 
 
 // my icons
@@ -40,6 +42,11 @@ import NotifIcon from '@/icons/i-notif.vue';
 import SearchIcon from '@/icons/i-search.vue';
 import HeartIcon from '@/icons/i-heart.vue';
 import ShareIcon from '@/icons/i-share.vue';
+import LoginIcon from '@/icons/i-login.vue'
+import LogoutIcon from '@/icons/i-logout.vue';
+import UploadImage from '@/icons/i-uploadImg.vue';
+import UploadVideo from '@/icons/i-uploadVid.vue';
+import CloseIcon from '@/icons/i-close.vue';
 
 
 
@@ -52,17 +59,27 @@ app.use(router);
 app.use(store, key);
 app.component('Item', Item);
 
-// icon components
+// components
 app.component('theme-toggle', Themetoggle);
-app.component('home-icon', HomeIcon);
-app.component('explore-icon', ExploreIcon);
-app.component('profile-icon', ProfileIcon);
-app.component('settings-icon', SettingsIcon);
-app.component('notif-icon', NotifIcon);
-app.component('search-icon', SearchIcon);
-app.component('heart-icon', HeartIcon);
-app.component('share-icon', ShareIcon);
+app.component('i-home', HomeIcon);
+app.component('i-explore', ExploreIcon);
+app.component('i-profile', ProfileIcon);
+app.component('i-settings', SettingsIcon);
+app.component('i-notif', NotifIcon);
+app.component('i-search', SearchIcon);
+app.component('i-heart', HeartIcon);
+app.component('i-share', ShareIcon);
 app.component('tool-tips', ToolTips);
+app.component('i-login', LoginIcon);
+app.component('i-logout', LogoutIcon);
+app.component('circular-progress', CircularProgress);
+app.component('i-upload-img', UploadImage);
+app.component('i-upload-vid', UploadVideo);
+app.component('uploaded-img', UploadedImage);
+app.component('i-close', CloseIcon);
+
+
+
 
 
 

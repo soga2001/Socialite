@@ -14,7 +14,8 @@ export default defineComponent({
             submitting: false,
             users: new Array<User>(),
             capt: "",
-            chars: 255,
+            chars: 0,
+            imgURL: '',
         };
     },
     methods: {
@@ -36,6 +37,17 @@ export default defineComponent({
                 });
             }
         },
+        getImage(e: Event) {
+            const target = e.target as HTMLInputElement;
+            const file: File = (target.files as FileList)[0];
+            this.image = file;
+            this.imgURL = URL.createObjectURL(file);
+        },
+        deleteImg() {
+          console.log('here')
+          this.image = null;
+          this.imgURL = '';
+        }
     },
     created() {
     },
@@ -53,25 +65,34 @@ export default defineComponent({
       <q-avatar class="post__avatar" size="65px" >
           <img class="user__avatar" v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
           <!-- <q-icon v-else size="65px" name="face" /> -->
-          <!-- <profile-icon v-else size="4rem" /> -->
+          <profile-icon v-else size="4rem" />
       </q-avatar>
-      <form class="post__form" autocorrect="on" autocomplete="off" @submit.prevent="submit">
-        <q-file v-model="image" clearable class="post__file" label="Upload an image" :dark="$store.state.dark" :color="$store.state.dark ? 'white': 'black'">
-          <template v-slot:prepend>
-            <q-icon name="cloud_upload" />
-          </template>
-        </q-file>
-        <Mention @update:charsLeft="chars = $event" @update:val="caption = $event" :value="caption" input_type="text" id="caption" input_label="Caption" class="post__caption" />
-        <p>{{ chars }} / 255</p>
-        <q-btn class="post__submit__btn" :loading="submitting" type="submit"  icon-right="send" push label="Post" :disable="image === null">
-          <template v-slot:loading>
-            <q-spinner-puff
-              class="loading"
-            />
-          </template>
-        </q-btn> 
-      </form>
-    </div>
+      <div class="grid gap-3">
+        <form class="post__form" autocorrect="on" autocomplete="off" @submit.prevent="submit">
+          <Mention @update:charsLeft="chars = $event" @update:val="caption = $event" :value="caption" input_type="text" id="caption" input_label="Caption" class="post__caption" />
+          <div class="flex gap-2 col-span-2">
+            <label for="file" class="pointer">
+              <i-upload-img size="2rem" fill="rgb(253, 137, 137)" stroke="rbg(253,137,137)"/>
+              <input @change="getImage" type="file" id="file" style="display: none" name="image" accept="image/*" data-original-title="upload photos">
+            </label>
+            <i-upload-vid size="2rem" fill="rgb(253, 137, 137)" stroke="rgb(253, 137, 137)" />
+          </div>
+          <div class="col-5 col-span-3 flex flex-row-reverse items-center gap-2 bottom-0 right-0 mr-2">
+            <q-btn class="right bottom-0 right-0 mr-2 btn btn-themed text-heading rounded px-7 py-2 weight-900" flat :loading="submitting" type="submit" push label="Spill" :disable="image === null">
+              <template v-slot:loading>
+                <q-spinner-puff
+                  class="loading"
+                />
+              </template>
+            </q-btn> 
+            <circular-progress v-if="chars" :val="chars" size="30px" />
+          </div>
+        </form>
+        <div v-if="imgURL" class="flex rounded mr-3">
+          <uploaded-img class="rounded border btn" @update:delete="deleteImg" :imgUrl="imgURL"/>
+        </div>
+      </div>
+    </div> 
   </div>
 </template>
 
@@ -162,13 +183,6 @@ export default defineComponent({
   gap: 10px;
 }
 
-
-.post__submit__btn {
-  grid-column: 4 / span 2;
-  background-color: var(--color-border);
-  /* padding: 10px 20px; */
-  font-size: 15px;
-}
 
 .post__submit__btn:enabled {
   cursor: pointer;

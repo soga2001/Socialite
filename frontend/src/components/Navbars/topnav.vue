@@ -144,12 +144,12 @@ export default defineComponent({
               <RouterLink @click="closeNav" :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
                 <q-item>
                   <q-item-section avatar>
-                    <!-- <q-icon class="icon" :name="$route.fullPath == `/profile/user/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" /> -->
-                    <profile-icon size="2rem" :fill="$route.fullPath == `/${$store.state.user.username}/` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'"/>
+                      <!-- <q-icon class="icon" :name="$route.fullPath == `/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" /> -->
+                      <i-profile size="2rem" :fill="$route.fullPath == `/${$store.state.user.username}/` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                   </q-item-section>
 
                   <q-item-section class="bold">
-                    Profile
+                      Profile
                   </q-item-section>
                 </q-item>
               </RouterLink>
@@ -165,11 +165,11 @@ export default defineComponent({
                 </q-item>
               </RouterLink> -->
             </div>
-            <!-- <hr/> -->
-            <div>
+            <div class="pb-3">
               <q-item class="logout" clickable v-close-popup @click="logout">
                 <q-item-section avatar>
-                  <q-icon name="logout" />
+                  <!-- <q-icon name="logout" /> -->
+                  <i-logout size="3rem" :fill="'var(--color-heading)'" :stroke="'var(--color-heading)'" />
                 </q-item-section>
                 <q-item-section class="bold">
                   Logout

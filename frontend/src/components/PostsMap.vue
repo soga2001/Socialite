@@ -257,7 +257,7 @@ export default defineComponent({
         </Item>
 
         <q-separator :dark="$store.state.dark"/>
-        <q-card-actions class="flex justify-center z-index-2">
+        <q-card-actions class="p-0 m-0 flex justify-center z-index-2">
             <div>
                 <Item>
                     <template #avatar>
@@ -306,7 +306,7 @@ export default defineComponent({
                 <q-tooltip :offset="[0,0]">
                     Copy Link
                 </q-tooltip>
-                <share-icon fill="var(--color-heading)" />
+                <i-share fill="var(--color-heading)" />
             </q-btn> 
         </q-card-actions>
         <!-- <q-separator :dark="$store.state.dark"/>
