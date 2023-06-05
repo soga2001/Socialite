@@ -31,6 +31,9 @@ export default defineComponent({
                     }
                 }).then((res) => {
                     this.submitting = false;
+                    this.image = null;
+                    this.imgURL = '';
+                    this.caption = "";
                     console.log(res.data);
                 }).catch((err) => {
                     console.log(err);
@@ -78,10 +81,13 @@ export default defineComponent({
             <i-upload-vid size="2rem" fill="rgb(253, 137, 137)" stroke="rgb(253, 137, 137)" />
           </div>
           <div class="col-5 col-span-3 flex flex-row-reverse items-center gap-2 bottom-0 right-0 mr-2">
-            <q-btn class="right bottom-0 right-0 mr-2 btn btn-themed text-heading rounded px-7 py-2 weight-900" flat :loading="submitting" type="submit" push label="Spill" :disable="image === null">
+            <q-btn class="right bottom-0 right-0 mr-2 btn btn-themed text-heading rounded px-7 py-2 weight-900" flat dense :loading="submitting" type="submit" push :disable="image === null">
+              <div>
+                <span class="text-white text-base weight-900 text-capitalize">Spill</span>
+              </div>
               <template v-slot:loading>
-                <q-spinner-puff
-                  class="loading"
+                <q-spinner
+                  color="grey-1"
                 />
               </template>
             </q-btn> 
@@ -155,7 +161,7 @@ export default defineComponent({
   font-size: 15px;
   margin-top: 20px;
   grid-column: auto / span 5;
-  color: var(--color-heading);
+  /* color: var(--color-heading); */
   position: relative;
 }
 

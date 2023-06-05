@@ -85,7 +85,7 @@ export default defineComponent({
     <div class="user row justify-center">
         <div class="user__container col-12 col-md-auto">
             <div class=' grid cols-auto-fr rows-4 relative h-fit'>
-                <div id="banner" class='p-0 col-start-1 col-span-full z-1'>
+                <div id="banner" class='p-0 col-start-1 col-span-full z-1 bg-theme-soft'>
                     <img class="" src="https://unsplash.it/1000/1000/?random&pic=1" id="header-background-id" alt="background-img"/>
                 </div>
                 <div class="profile-img profile-pic relative overflow-hidden z-3">
@@ -117,14 +117,6 @@ export default defineComponent({
                     </template>
                 </Item>
                 <div class="user__bio">
-                    <!-- <Item dense info-margin="0">
-                        <template #avatar>
-                            <q-icon class="icon" size="26px" name="calendar_month" />
-                        </template>
-                        <template #title>
-                            <span class="joined"> Joined <Timeago class="timeago" size="15px" date_type="relative" :date="date_joined" /></span>
-                        </template>
-                    </Item> -->
                     <h6><span class="joined"> Joined <Timeago class="timeago" size="15px" date_type="relative" :date="date_joined" /></span> </h6>
                     <h6 class="user__caption">{{bio}}</h6>
                 </div>

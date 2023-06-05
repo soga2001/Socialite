@@ -49,7 +49,9 @@
     <div class="flex w-full justify-center items-center flex-col gap-2">
       <div id="spinner" class="spinner" :style="{ width: size, height: size, border: borderColor, borderTopColor: color}"></div>
     </div>
-    <div class="text-2xl weight-900">Loading</div>
+    <div class="text-2xl weight-900">
+      <slot name="text"></slot>
+    </div>
   </div>
   
   

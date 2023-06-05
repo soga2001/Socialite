@@ -71,7 +71,11 @@ export default defineComponent({
     <Main />
   </div>
   <div class="flex items-center justify-center w-full h-viewport" v-else>
-    <Loading />
+    <Loading size="5rem">
+      <template v-slot:text>
+        <p class="text-5xl">Loading</p>
+      </template>
+    </Loading>
   </div>
 </template>
 

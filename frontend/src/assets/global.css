@@ -2177,3 +2177,7 @@
 .pointer:hover {
     cursor: pointer !important;
 }
+
+.placeholder::placeholder {
+    font-weight: 900;
+}
