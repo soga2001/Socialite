@@ -47,6 +47,7 @@ import LogoutIcon from '@/icons/i-logout.vue';
 import UploadImage from '@/icons/i-uploadImg.vue';
 import UploadVideo from '@/icons/i-uploadVid.vue';
 import CloseIcon from '@/icons/i-close.vue';
+import SpillIcon from '@/icons/i-spill.vue'
 
 
 
@@ -77,8 +78,7 @@ app.component('i-upload-img', UploadImage);
 app.component('i-upload-vid', UploadVideo);
 app.component('uploaded-img', UploadedImage);
 app.component('i-close', CloseIcon);
-
-
+app.component('i-spill', SpillIcon);
 
 
 

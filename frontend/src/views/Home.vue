@@ -82,8 +82,8 @@ export default defineComponent({
         <div v-if="$store.state.authenticated && $store.state.desktop" class="border-b">
           <Spills />
         </div>
-        <q-infinite-scroll id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
-          <div class="grid gap-10" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
+        <q-infinite-scroll class="grid gap-3" id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
+          <div class="" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
             <PostsMap :post="post" />
           </div>
           <template v-slot:loading>

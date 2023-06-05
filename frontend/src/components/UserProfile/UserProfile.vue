@@ -82,7 +82,7 @@ export default defineComponent({
 
 <template>
     
-    <div class="user row justify-center">
+    <div class="user">
         <div class="user__container col-12 col-md-auto">
             <div class=' grid cols-auto-fr rows-4 relative h-fit'>
                 <div id="banner" class='p-0 col-start-1 col-span-full z-1 bg-theme-soft'>
@@ -103,22 +103,29 @@ export default defineComponent({
                     <q-btn @click.stop="" v-if="followed && !loading"  size="16px" class="more__vert" flat dense round icon="more_horiz" />
                 </div>
             </div>
-            <div>
+            <!-- <div>
                 
-            </div>
+            </div> -->
         
-            <div class="user__profile__info">
-                <Item title-size="30px">
-                    <template #title>
-                        <span class="joined"> {{first_name }} {{last_name }}</span>
-                    </template>
-                    <template #caption>
-                        <span class="joined">@{{ username }}</span>
-                    </template>
-                </Item>
-                <div class="user__bio">
-                    <h6><span class="joined"> Joined <Timeago class="timeago" size="15px" date_type="relative" :date="date_joined" /></span> </h6>
-                    <h6 class="user__caption">{{bio}}</h6>
+            <div class="user-profile__info flex py-3 mb-5">
+                <div class="flex flex-col" >
+                    <div class="user-name text-2xl weight-900">{{ first_name }} {{ last_name }}</div>
+                    <div class="user-username text-xl">@{{ username }}</div>
+                    <div class="user-date_joined my-2  flex items-center">
+                        <q-icon name="date_range" size="16px" class="q-mr-sm" />
+                        <div class="flex items-center text-xl">
+                            <span class="mr-2">Joined </span> <Timeago size="1.25rem" :date="date_joined" date_type="long" />
+                        </div>
+                    </div>
+                    <div class="follows text-lg flex items-center gap-3">
+                        <!-- <div class="text-base flex gap-2">
+                            <span class="text-heading weight-900">{{ followers }}</span> <span class="mr-2"> Followers</span>
+                            <span class="text-heading weight-900">{{ following }}</span> <span class="mr-2"> Following</span>
+                        </div> -->
+                        <span><span class="text-heading weight-900">{{ followers }} </span> Followers</span> 
+                        <span><span class="text-heading weight-900">{{ following }} </span> Following</span>
+                    </div>
+                    <div class="user-bio">{{ bio }}</div>
                 </div>
             </div>
         </div>
@@ -157,10 +164,8 @@ export default defineComponent({
     bottom: 0;
 }
 
-.user__profile__info {
-    /* padding: 0 30px; */
+.user-profile__info {
     margin-left: 2vw;
-    display: grid;
     
 }
 .user__social {
