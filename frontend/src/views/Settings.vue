@@ -6,10 +6,16 @@ import { http } from '@/assets/http';
 import {useStore} from '../store/store'
 import Item from '../components/Item.vue'
 
+// import imageCropper from '@/components/imageCropper.vue';
+
 export default defineComponent({
+    props: {
+        
+    },
     data() {
         return {
-            
+            imgURL: '',
+            img: null
         }
     },
     setup() {
@@ -18,53 +24,43 @@ export default defineComponent({
         return {cookies};
     },
     methods: {
-        handleItemClick() {
-            console.log('clicked')
+        async launchCropper(e: Event) {
+            if(!e) return;
+            var file = event?.target.files[0]
+            this.img = await this.toBase64(file);
+            console.log(this.$refs)
+            this.$refs.cropperDialog.initCropper(file.type);
         },
-        check_cookie() {
-            http.get('users/check_cookies/').then((res) => {
-                console.log(res.data)
-            }).catch((err) => {
-                console.log(err)
+
+        async toBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (error) => reject(error);
             })
         },
-        get_session() {
-            http.get('users/get_session').then((res) => {
-                console.log(res.data)
-                }).catch((err) => {
-                    console.log(err)
-            })
-        }
     },
     created() {
-        // console.log(import.meta.env)
-        // console.log(window.innerHeight)
     },
     components: { Item }
 })
 </script>
 
 <template>
+    <input ref="filePickerField" type="file" accept="image/*" @change="launchCropper" hidden/>
+
     <div>
-        <Item class="item" :caption-line-clamp="2" align-items="flex-start">
-            <template #avatar>
-              <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
-              <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
-            </template>
-            <template #title>
-                Lorem ipsum dolor sit amet,
-            </template>
-            <template #caption>
-                <p>Lorem ipsum dolor sit amet, consectetur  </p>
-            </template>
-            <template #icon>
-                <q-btn size="10px" flat rounded icon="o_more_horiz"/>
-            </template>
-        </Item>
-        <!-- <Cropper /> -->
-        <!-- <button @click="check_cookie">Btn</button>
-        <button @click="get_session"> BTN 2</button> -->
+        <q-avatar size="350px">
+            <q-img :src="imgURL"></q-img>
+        </q-avatar>
     </div>
+
+    <q-btn @click="$refs.filePickerField.click()">
+        upload
+    </q-btn>
+
+    <image-cropper ref="cropperDialog" :chosen-img="img" @onReset="$ref.filePickerField.value = null" @onCrop="(croppedImage) => {img = croppedImage}"/>
 </template>
 
 <style scoped>

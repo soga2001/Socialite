@@ -1261,6 +1261,10 @@
     background-color: var(--color-background-mute) !important;
 }
 
+.bg-gray-op {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
 .bg-black {
     background-color: #000 !important;
 }
@@ -2148,6 +2152,10 @@
 
 /* buttons */
 
+.pointer {
+    cursor: pointer !important;
+}
+
 .btn {
     cursor: pointer !important;
 }
@@ -2181,3 +2189,10 @@
 .placeholder::placeholder {
     font-weight: 900;
 }
+
+.centered-on-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }

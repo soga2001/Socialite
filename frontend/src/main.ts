@@ -4,6 +4,10 @@ import App from './App.vue'
 import router from './router'
 import { vue3Debounce } from 'vue-debounce'
 import VueMobileDetection from "vue-mobile-detection";
+import VueCropper from 'vue-cropperjs';
+import 'cropperjs/dist/cropper.css';
+
+
 
 import { Quasar, Cookies, Dialog, Notify } from 'quasar'
 // Import icon libraries
@@ -31,6 +35,8 @@ import Themetoggle from '@/components/themetoggle.vue';
 import ToolTips from '@/components/ToolTips.vue';
 import CircularProgress from './components/circularProgress.vue'
 import UploadedImage from '@/components/uploadedImg.vue';
+import myUpload from 'vue-image-crop-upload';
+import imageCropper from '@/components/imageCropper.vue';
 
 
 // my icons
@@ -60,8 +66,9 @@ app.use(router);
 app.use(store, key);
 app.component('Item', Item);
 
-// components
-app.component('theme-toggle', Themetoggle);
+
+app.component('cropper', VueCropper);
+// icon components
 app.component('i-home', HomeIcon);
 app.component('i-explore', ExploreIcon);
 app.component('i-profile', ProfileIcon);
@@ -73,12 +80,18 @@ app.component('i-share', ShareIcon);
 app.component('tool-tips', ToolTips);
 app.component('i-login', LoginIcon);
 app.component('i-logout', LogoutIcon);
-app.component('circular-progress', CircularProgress);
-app.component('i-upload-img', UploadImage);
-app.component('i-upload-vid', UploadVideo);
-app.component('uploaded-img', UploadedImage);
 app.component('i-close', CloseIcon);
 app.component('i-spill', SpillIcon);
+app.component('i-upload-img', UploadImage);
+app.component('i-upload-vid', UploadVideo);
+
+// components
+app.component('circular-progress', CircularProgress);
+app.component('uploaded-img', UploadedImage);
+app.component('my-upload', myUpload);
+app.component('theme-toggle', Themetoggle);
+// app.component('image-cropper', myUpload);
+app.component('image-cropper', imageCropper);
 
 
 

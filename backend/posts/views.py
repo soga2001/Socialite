@@ -54,7 +54,6 @@ class Post_Content(APIView):
             regex = r'@(\w+)'
             # caption = re.sub(r'@(\w+)', r'<a href="/users/\1/">@\1</a>', caption)
             caption = re.sub(regex, replace, caption)
-            print(caption)
             user, token = custom.authenticate(request)
             post = Post(
                 user = user,

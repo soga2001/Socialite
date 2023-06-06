@@ -22,6 +22,7 @@ export default defineComponent({
         submit() {
             this.submitting = true;
             const formData = new FormData();
+            console.log(this.image)
             if (this.image) {
                 formData.append("image", this.image);
                 formData.append("caption", this.caption);
@@ -34,7 +35,6 @@ export default defineComponent({
                     this.image = null;
                     this.imgURL = '';
                     this.caption = "";
-                    console.log(res.data);
                 }).catch((err) => {
                     console.log(err);
                 });
@@ -168,27 +168,6 @@ export default defineComponent({
 .post__caption:active {
   color: var(--color-heading) !important;
 }
-
-.results {
-  /* background-color: var(--color-background-soft);
-  text-align: center;
-  position: absolute; */
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-  left: 0;
-  overflow-y: auto;
-  max-height: 100px;
-  background-color: white; /* set the background color to match your design */
-  border: 1px solid #ccc; /* add a border for visual separation */
-  border-top: none; /* remove top border to align with input element */
-}
-.results ul {
-  list-style: none;
-  padding: 0px 20px;
-  gap: 10px;
-}
-
 
 .post__submit__btn:enabled {
   cursor: pointer;

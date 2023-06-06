@@ -18,4 +18,7 @@ urlpatterns = [
     path('delete_user/', views.Delete_User.as_view(), name="delete_user"),
     path('delete_all/', views.delete_all, name="delete"),
     path('make_staff/', views.Staff.as_view(), name="make_staff"),
+    path('update_profile/', views.UpdateProfile.as_view(), name="make_superuser"),
+    # path('upload_avatar/', views.UploadAvatar.as_view(), name="upload avatar"),
+    # path('upload_banner/', views.UploadBanner.as_view(), name="upload banner"),
 ]

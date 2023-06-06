@@ -1,3 +1,4 @@
+from django.forms import ImageField
 from backend.authenticate import *
 # From Django
 from django.conf import settings
@@ -31,12 +32,13 @@ from rest_framework.decorators import authentication_classes
 
 
 from users.models import User
+from .serializer import UserSerializer
 
 
 import datetime
 
 import json
-from .serializer import UserSerializer
+from PIL import Image
 
 import environ
 
@@ -172,6 +174,105 @@ class UserFromCookie(APIView):
         #     return JsonResponse({"success": True, "user": user})
         # else:
         #     return JsonResponse({"success": False})
+
+
+class UpdateProfile(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [CustomAuthentication,]
+
+    def post(self, request):
+        try:
+            # if 'avatar' in json.loads(request.body):
+            #     print('lol')
+            avatar = None
+            banner = None
+            bio = None
+            first_name = None
+            last_name = None
+
+            if 'avatar' in request.FILES:
+                avatar = request.FILES['avatar']
+                try:
+                    check_image = Image.open(avatar)
+                    check_image.verify()
+                except Exception as e:
+                    print(e)
+                    return JsonResponse({"error": True, "message": "Invalid image file."})
+
+            if 'banner' in request.FILES:
+                banner = request.FILES['banner']
+                print(banner)
+                try:
+                    check_image = Image.open(banner)
+                    check_image.verify()
+                except Exception as e:
+                    print(e)
+                    return JsonResponse({"error": True, "message": "Invalid image file."})
+            if 'bio' in request.POST:
+                bio = request.POST['bio']
+            if 'first_name' in request.POST:
+                first_name = request.POST['first_name']
+            if 'last_name' in request.POST:
+                last_name = request.POST['last_name']
+
+            user = request.user
+            if(first_name):
+                user.first_name = first_name
+            if(last_name):
+                user.last_name = last_name
+            if(bio):
+                user.bio = bio
+            if(avatar):
+                user.avatar = avatar
+            if(banner):
+                user.banner = banner
+            user.save()
+            
+            updatedUser = UserSerializer(user).data
+            return JsonResponse({"success": True, "user": updatedUser})
+        except:
+            return JsonResponse({"error": True}, 404)
+# class UploadAvatar(APIView):
+#     permission_classes = [IsAuthenticated]
+#     authentication_classes = [CustomAuthentication,]
+
+#     def put(self, request):
+#         try:
+#             avatar = request.FILES['avatar']
+#             user = User.objects.get(id=request.user.id)
+#             try:
+#                 check_image = Image.open(avatar)
+#                 check_image.verify()
+#                 user.avatar = avatar
+#                 user.save()
+#                 return JsonResponse({"success": True})
+#             except Exception as e:
+#                 print(e)
+#                 return JsonResponse({"error": "Invalid image"})
+            
+#         except:
+#             return JsonResponse({"error": True})
+        
+
+# class UploadBanner(APIView):
+#     permission_classes = [IsAuthenticated]
+#     authentication_classes = [CustomAuthentication,]
+
+#     def put(self, request):
+#         try:
+#             banner = request.FILES['banner']
+#             user = User.objects.get(id=request.user.id)
+#             try:
+#                 check_image = Image.open(banner)
+#                 check_image.verify()
+#                 user.banner = banner
+#                 user.save()
+#                 return JsonResponse({"success": True})
+#             except Exception as e:
+#                 return JsonResponse({"error": "Invalid image"})
+            
+#         except:
+#             return JsonResponse({"error": True})
         
 
 class LogoutView(APIView):

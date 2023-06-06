@@ -8,7 +8,7 @@ export default defineComponent({
       isAvatarOnly: false,
       style: {
         alignItems: this.alignItems,
-        cursor: this.to ? 'pointer' : 'normal',
+        cursor: this.clickable ? 'pointer' : 'normal',
         justifyContent: this.justifyContent,
         padding: this.dense ? ".2rem" : ".5rem"
       } as CSSProperties,
@@ -136,7 +136,6 @@ export default defineComponent({
 <style scoped>
   .user-card {
     display: flex;
-    cursor: pointer;
     position: relative;
     line-height: normal;
     gap: 10px;

@@ -11,6 +11,7 @@ export interface User{
     groups: string[],
     user_permissions: string[],
     avatar: '',
+    banner: '',
     bio: '',
     total_posted: number,
     total_followers: number,

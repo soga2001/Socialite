@@ -37,6 +37,7 @@ export const store = createStore<State>({
       total_following: 0,
       total_posted: 0,
       bio: '',
+      banner: '',
       avatar: '',
       groups: [],
       user_permissions: [],
@@ -57,6 +58,7 @@ export const store = createStore<State>({
       total_posted: 0,
       bio: '',
       avatar: '',
+      banner: '',
       groups: [],
       user_permissions: [],
       date_joined: ''
@@ -86,6 +88,12 @@ export const store = createStore<State>({
     },
     setCSRF(state, payload) {
       state.csrf = payload
+    },
+    changeAvatar(state, payload) {
+      state.user.avatar = payload
+    },
+    changeBanner(state, payload) {
+      state.user.banner = payload
     }
   }
 })

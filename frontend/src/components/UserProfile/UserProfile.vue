@@ -24,12 +24,30 @@ export default defineComponent({
             last_login: this.user.last_login,
             bio: this.user.bio,
             avatar: this.user.avatar,
+            banner: this.user.banner,
             posts: this.user.total_posted,
             followers: this.user.total_followers,
             following: this.user.total_following,
             followed: false,
             date_joined: this.user.date_joined,
             loading: true,
+
+            showAvatar: false,
+            showBanner: false,
+            editProfile: false,
+
+
+            newAvatar: this.user.avatar,
+            newBanner: this.user.banner,
+            new_FN: this.user.first_name,
+            new_LN: this.user.last_name,
+            newBio: this.user.bio,
+            
+            avatarFile: null,
+            bannerFile: null,
+
+            fileName: null,
+
         };
     },
     methods: {
@@ -67,16 +85,112 @@ export default defineComponent({
                 this.followed = false;
             });
             this.loading = false
-        }
+        },
+
+        toggleAvatar() {
+            this.$refs.avatarUpload.click();
+            this.showAvatar = !this.showAvatar;
+        },
+        toggleBanner() {
+            this.$refs.bannerUpload.click()
+            this.showBanner = !this.showBanner;
+        },
+
+        updateProfile() {
+            const formData = new FormData()
+            if (this.avatarFile) {
+                formData.append('avatar', this.avatarFile)
+            }
+            if (this.bannerFile) {
+                formData.append('banner', this.bannerFile)
+            }
+            if (this.new_FN && this.first_name != this.new_FN) {
+                formData.append('first_name', this.new_FN)
+            }
+            if (this.new_LN && this.last_name != this.new_LN) {
+                formData.append('last_name', this.new_LN)
+            }
+            if (this.newBio && this.bio != this.newBio) {
+                formData.append('bio', this.newBio)
+            }
+
+            http.post('users/update_profile/', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then((res) => {
+                this.editProfile = false;
+                if(res.data.user) {
+                    this.updateUser(res.data.user)
+                }
+                // this.$store.commit('setUser', res.data.user)
+            }).catch((err) => {
+                console.log(err)
+            })
+
+        },
+
+        async updateUser(user: User) {
+            this.first_name = user.first_name;
+            this.last_name = user.last_name;
+            this.bio = user.bio;
+            this.avatar = user.avatar;
+            this.banner = user.banner;
+
+        },
+
+        async launchCropper(e: Event) {
+            if(!e) return;
+            var file = event?.target.files[0];
+            console.log(file.type)
+            if(this.showBanner) {
+                this.newBanner = await this.toBase64(file);
+                this.$refs.bannerDialog.initCropper(file.type, file.name);
+
+            }
+            if(this.showAvatar) {
+                this.newAvatar = await this.toBase64(file);
+                this.$refs.avatarDialog.initCropper(file.type, file.name);
+
+            }
+        },
+
+        async toBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (error) => reject(error);
+            })
+        },
     },
     created() {
         // console.log(this.date_joined)
+        // console.log(this.$store.state)
         this.if_followed();
         
     },
     mounted() {
     },
-    components: { Timeago, Item }
+    computed: {
+        theme() {
+            return this.$store.state.dark;
+        },
+    },
+    watch: {
+        // newAvatar(newAvatar) {
+        //     console.log('here')
+        // },
+        // newBanner(newBanner) {
+        // },
+        avatarFile(avatarFile) {
+            console.log(avatarFile)
+        },
+        bannerFile(bannerFile) {
+            console.log(bannerFile)
+        }
+    },
+    components: { Timeago }
 })
 </script>
 
@@ -84,32 +198,95 @@ export default defineComponent({
     
     <div class="user">
         <div class="user__container col-12 col-md-auto">
-            <div class=' grid cols-auto-fr rows-4 relative h-fit'>
-                <div id="banner" class='p-0 col-start-1 col-span-full z-1 bg-theme-soft'>
-                    <img class="" src="https://unsplash.it/1000/1000/?random&pic=1" id="header-background-id" alt="background-img"/>
+            <div class=' grid cols-auto-fr rows-4 relative'>
+                <div id="banner" class='p-0 col-start-1 col-span-full z-3 bg-theme-soft pointer'>
+                    
+                    <img v-if="banner" :src="banner" alt="banner"/>
+                    <img v-else class="" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
                 </div>
-                <div class="profile-img profile-pic relative overflow-hidden z-3">
-                    <img v-if="avatar" class="profile-pic__image" :src="avatar" width="150" height="150" alt="Profibild" />
+                <div class="profile-img profile-pic overflow-hidden z-3 pointer">
+                    <img v-if="avatar" class="profile-pic__image" :src="avatar" alt="Profibild" />
                     <img v-else class="profile-picture" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
-                    <div class="profile-pic__content">
+                    <div class="profile-pic__content ">
                         <span class="profile-pic__icon"><q-icon size="30px" name="photo_camera"/></span>
                         <span class="profile-pic__text">Edit Profile</span>
                     </div>
                 </div>
                 <div class="edit-profile w-full h-fit flex flex-row-reverse p-2">
                     <button v-if="$store.state.user.id != id && !loading" class="border btn rounded text-heading bg-transparent weight-900" @click="follow" :disabled="!$store.state.authenticated">{{ followed ? 'Unfollow' : 'Follow' }}</button>
-                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="border btn rounded text-heading bg-transparent weight-900" @click="">Edit Profile</button>
+                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="border btn rounded text-heading bg-transparent weight-900" @click="editProfile = true">Edit Profile</button>
                     <q-btn @click.stop="" v-if="followed && !loading" size="16px" class="less" flat dense round icon="notifications" />
                     <q-btn @click.stop="" v-if="followed && !loading"  size="16px" class="more__vert" flat dense round icon="more_horiz" />
                 </div>
             </div>
-            <!-- <div>
-                
-            </div> -->
+            <div>
+                <q-dialog class="h-full" v-model="editProfile" persistent>
+                    <q-card :dark="theme">
+                        <q-card-section>
+                            <Item>
+                                <template #title>
+                                    <div class="text-h6">Edit Profile</div>
+                                </template>
+                                <template #icon>
+                                    <div class="btn" @click="editProfile = !editProfile">
+                                        <i-close :vert-icon-center="true"  size="2rem"/>
+                                    </div>
+                                    
+                                </template>
+                            </Item>
+                        </q-card-section>
+
+                        <q-card-section class="q-pt-none">
+                            <div class=' grid cols-auto-fr rows-4 relative'>
+                                <div id="banner" class='p-0 col-start-1 col-span-full bg-theme-soft' >
+                                    <img v-if="!newBanner && banner" :src="banner"/>
+                                    <img v-else-if="newBanner" :src="newBanner" alt="banner"/>
+                                    <img v-else class="" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
+                                    <div class="centered-on-image">
+                                        <button class="border-none btn rounded-lg p-3 bg-gray-op" @click="toggleBanner">
+                                            <q-icon name="edit" size="2rem"/>
+                                        </button>
+                                        <input ref="bannerUpload" type="file" id="file" @change="launchCropper" hidden/>
+                                    </div>
+                                    <div class="z-100">
+                                        <image-cropper ref="bannerDialog" :aspect-ratio="3/1" :filename="fileName" :chosen-img="newBanner" @close="newBanner = null" @onReset="{$refs.bannerUpload.value = null; showBanner = false}" @file="bannerFile = $event" @onCrop="(croppedImage) => {newBanner = croppedImage}"/>
+                                    </div>
+                                    
+                                </div>
+                                <div class="profile-img profile-pic relative overflow-hidden">
+                                    <!-- <img v-if="!newAvatar && avatar" :src="avatar" alt="profile img"/> -->
+                                    <!-- <img v-if="newAvatar" class="profile-pic__image" :src="newAvatar" alt="Profile img" /> -->
+                                    <img class="profile-picture__image" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
+                                    <div class="centered-on-image">
+                                        <button class="border-none btn rounded-lg p-3 bg-gray-op" @click="toggleAvatar">
+                                            <q-icon name="edit" size="2rem"/>
+                                        </button>
+                                        <input ref="avatarUpload" type="file" id="file" @change="launchCropper" hidden/>
+                                    </div>
+                                    <div class="z-100 realtive h-full bg-theme-soft">
+                                        <image-cropper ref="avatarDialog" :fileName="fileName" :chosen-img="newAvatar" @close="newAvatar = null" @onReset="{$refs.avatarUpload.value = null; showAvatar = false}" @file="avatarFile = $event" @onCrop="(croppedImage) => {newAvatar = croppedImage}"/>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <div>
+                                <q-input :dark="theme" v-model="new_FN" label="First Name" />
+                                <q-input :dark="theme" v-model="new_LN" label="Last Name" />
+                                <q-input :dark="theme" v-model="newBio" label="Bio" />
+                            </div>
+                        </q-card-section>
+
+                        <q-card-actions align="right">
+                            <q-btn flat label="Cancel" color="primary" v-close-popup />
+                            <q-btn flat label="Save" color="primary" @click="updateProfile" />
+                        </q-card-actions>
+                    </q-card>
+                </q-dialog>
+            </div>
         
             <div class="user-profile__info flex py-3 mb-5">
                 <div class="flex flex-col" >
-                    <div class="user-name text-2xl weight-900">{{ first_name }} {{ last_name }}</div>
+                    <div class="user-name text-2xl weight-900 text-heading">{{ first_name }} {{ last_name }}</div>
                     <div class="user-username text-xl">@{{ username }}</div>
                     <div class="user-date_joined my-2  flex items-center">
                         <q-icon name="date_range" size="16px" class="q-mr-sm" />
@@ -121,7 +298,7 @@ export default defineComponent({
                         <span><span class="text-heading weight-900">{{ followers }} </span> Followers</span> 
                         <span><span class="text-heading weight-900">{{ following }} </span> Following</span>
                     </div>
-                    <div class="user-bio">{{ bio }}</div>
+                    <div class="user-bio text-lg py-3 text-heading text-bold">{{ bio }}</div>
                 </div>
             </div>
         </div>
@@ -142,11 +319,6 @@ export default defineComponent({
 
 
 
-.avatar {
-    border: 1px solid var(--color-text);
-    width: 10rem;
-    height: 10rem;
-}
 .user__username {
     margin-left: 1vw;
     font-size: 20px;
@@ -277,12 +449,13 @@ h6 {
 /* Banner and profile picture */
 #banner {
     grid-row: row 1 / span 3;
+    min-height: 180px;
     aspect-ratio: 3/1;
 }
 
-#banner:hover {
+/* #banner:hover {
     cursor: pointer;
-}
+} */
 
 #banner img {
     object-fit: cover;
@@ -293,19 +466,20 @@ h6 {
 .profile-img {
     grid-column: 1;
     grid-row: row 3 / span 3;
-    min-width: 90px;
-    min-height: 90px;
+    min-width: 120px;
+    min-height: 120px;
     padding: 2px;
-    width: 8vw;
-    height: 8vw;
+    width: 100%;
+    height: 100%;
+    max-height: 8vw;
+    max-width: 8vw;
     margin-left: 2vw;
-    z-index: 2;
     background-color: var(--color-background);
 }
 
-.profile-img:hover {
+/* .profile-img:hover {
     cursor: pointer;
-}
+} */
 
 .profile-img img {
     border-radius: 50%;

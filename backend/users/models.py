@@ -12,16 +12,23 @@ import os, uuid
 
 
 
-def rename_file(instance, filename):
+def rename_avatar(instance, filename):
     file, file_extension = os.path.splitext(filename)
-    path = 'avatar/'
-    format = str(instance.user_id) + '-' + str(uuid.uuid4()) + str(file_extension)
+    path = 'media/avatar/'
+    format = str(instance.id) + '-' + str(uuid.uuid4()) + str(file_extension)
+    return os.path.join(path, format)
+
+def rename_banner(instance, filename):
+    file, file_extension = os.path.splitext(filename)
+    path = 'media/banner/'
+    format = str(instance.id) + '-' + str(uuid.uuid4()) + str(file_extension)
     return os.path.join(path, format)
 
 # Create your models here.
 class User(AbstractUser):
     bio = models.CharField(max_length=300, null=True, blank=True, editable=True)
-    avatar = models.FileField(upload_to=rename_file, blank=True, null=True, editable=True)
+    avatar = models.FileField(upload_to=rename_avatar, blank=True, null=True, editable=True)
+    banner = models.FileField(upload_to=rename_banner, blank=True, null=True, editable=True)
     # search_vector = SearchVectorField(null=True, blank=True)
 
     groups = models.ManyToManyField(
@@ -40,30 +47,41 @@ class User(AbstractUser):
         help_text='Specific permissions for this user.'
     )
 
-    # class Meta:
-    #     indexes = [GinIndex(fields=['search_vector'])]
-
 
 # when a post gets deleted
 @receiver(models.signals.post_delete, sender=User)
 def remove_file_from_s3(sender, instance, using, **kwargs):
     instance.avatar.delete(save=False)
 
+@receiver(pre_save, sender=User)
+def auto_delete_avatar_on_change(sender, instance, **kwargs):
+    if not instance.pk:
+        return False
+    
+    if instance.avatar:
+        old_avatar = User.objects.get(pk=instance.id).avatar
+        if old_avatar:
+            old_avatar.delete(save=False)
+
+    
+@receiver(pre_save, sender=User)
+def auto_delete_banner_on_change(sender, instance, **kwargs):
+    if not instance.pk:
+        return False
+    
+    if instance.banner:
+        old_banner = User.objects.get(pk=instance.id).banner
+        if old_banner:
+            old_banner.delete(save=False)
+
+    
+
+
 # make sure first_name and last_name aren't empty 
 @receiver(pre_save, sender=User)
 def check_name(sender, instance, **kwargs):
     if instance.first_name == '' or instance.last_name == '':
         raise ValueError('Please enter your name')
-    
-
-# @receiver(post_save, sender=User)
-# def update_search_vector(sender, instance, created, **kwargs):
-#     if created:
-#         # Create a new SearchVector object with the fields you want to include
-#         search_vector = SearchVector('username', 'first_name', 'last_name', 'email')
-#         # Update the sv field with the new SearchVector value
-#         instance.search_vector = search_vector
-#         instance.save()
     
 
 
