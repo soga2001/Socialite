@@ -6,6 +6,8 @@ import { http } from '@/assets/http';
 import {useStore} from '../store/store'
 import Item from '../components/Item.vue'
 
+import newCropper from '@/components/newCropper.vue';
+
 // import imageCropper from '@/components/imageCropper.vue';
 
 export default defineComponent({

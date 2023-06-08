@@ -26,10 +26,6 @@
     },
     data() {
         return {
-            // img: {
-            //     src: "https://images.unsplash.com/photo-1619737307100-55b82496fcda?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80",
-            //     type: null
-            // },
             showCropper: false,
             imgFileType: null,
             fileName: null,
@@ -52,7 +48,7 @@
             this.imgFileType = imageFileType
             this.fileName = filename
             await new Promise(resolve => setTimeout(resolve, 50));
-            // this.$refs.cropper.replace(this.chosenImg)
+            // // this.$refs.cropper.replace(this.chosenImg)
         },
         cropImage() {
             const { canvas } = this.$refs.cropper.getResult();
@@ -80,6 +76,23 @@
   </script>
 
 <template>
+    <!-- <div id="app">
+        <cropper
+			ref="cropper"
+			class="coodinates-cropper"
+			:src="img.src"
+            default-boundaries="fill"
+            check-orientation
+			:stencil-props="{
+                aspectRatio: aspectRatio,
+                previewClass: stencilClass
+			}"
+            :stencil-component="stencilComponent"
+		/>
+        <div class="button-wrapper">
+            <button class="button" @click="cropImage()">Crop image</button>
+        </div>
+    </div> -->
     <div class="crop-image-dialog relative w-full h-full">
         <q-dialog :dark="theme" v-model="showCropper" class="w-full h-full" persistent>
             <q-card :dark="theme" class="w-full">
@@ -169,4 +182,4 @@
     .button input {
       display: none;
     }
-  </style>
+</style>
