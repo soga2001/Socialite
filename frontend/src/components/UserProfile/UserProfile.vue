@@ -137,6 +137,8 @@ export default defineComponent({
             this.avatar = user.avatar;
             this.banner = user.banner;
 
+            this.$store.commit('setUser', user);
+
         },
 
         async launchCropper(e: Event) {
@@ -207,10 +209,6 @@ export default defineComponent({
                 <div class="profile-img profile-pic overflow-hidden z-3 pointer">
                     <img v-if="avatar" class="profile-pic__image" :src="avatar" alt="Profibild" />
                     <img v-else class="profile-picture" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
-                    <div class="profile-pic__content ">
-                        <span class="profile-pic__icon"><q-icon size="30px" name="photo_camera"/></span>
-                        <span class="profile-pic__text">Edit Profile</span>
-                    </div>
                 </div>
                 <div class="edit-profile w-full h-fit flex flex-row-reverse p-2">
                     <button v-if="$store.state.user.id != id && !loading" class="border btn rounded text-heading bg-transparent weight-900" @click="follow" :disabled="!$store.state.authenticated">{{ followed ? 'Unfollow' : 'Follow' }}</button>
@@ -254,8 +252,8 @@ export default defineComponent({
                                     
                                 </div>
                                 <div class="profile-img profile-pic relative overflow-hidden">
-                                    <!-- <img v-if="!newAvatar && avatar" :src="avatar" alt="profile img"/> -->
-                                    <!-- <img v-if="newAvatar" class="profile-pic__image" :src="newAvatar" alt="Profile img" /> -->
+                                    <img v-if="!newAvatar && avatar" :src="avatar" alt="profile img"/>
+                                    <img v-if="newAvatar" class="profile-pic__image" :src="newAvatar" alt="Profile img" />
                                     <img class="profile-picture__image" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
                                     <div class="centered-on-image">
                                         <button class="border-none btn rounded-lg p-3 bg-gray-op" @click="toggleAvatar">
@@ -392,7 +390,6 @@ h6 {
 
 .profile-pic:hover img {
     transform: scale(1.2);
-    opacity: .3;
 }
 
 
@@ -448,6 +445,7 @@ h6 {
 
 /* Banner and profile picture */
 #banner {
+    width: 100%;
     grid-row: row 1 / span 3;
     min-height: 180px;
     aspect-ratio: 3/1;

@@ -140,7 +140,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <q-card class="post" @click="" v-if="!deleted">
+    <q-card class="post border-t border-b" @click="" v-if="!deleted">
         <div class="post__main">
 
             <Item :to="{ name: 'user-profile', params: { username: username } }" @click.stop="" >
@@ -337,7 +337,6 @@ export default defineComponent({
 .post {
     display: grid;
     background-color: transparent;
-    border-bottom: 1px solid var(--color-border);
     position: relative;
     width: 100%;
     max-width: 600px;

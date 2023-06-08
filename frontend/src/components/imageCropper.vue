@@ -22,7 +22,6 @@ export default defineComponent({
     },
     methods: {
         async initCropper(imageFileType: any, filename: string) {
-            console.log(filename)
             this.showCropper = true;
             this.imgFileType = imageFileType
             this.fileName = filename
@@ -45,30 +44,32 @@ export default defineComponent({
         },
         async cropChosenImage() {
             const croppedImg = this.$refs.cropper.getCroppedCanvas().toDataURL(this.imgFileType)
+            
             const file = await this.toFile(croppedImg)
             this.$emit("file", file)
             this.$emit("onCrop", croppedImg);
             this.resetCropper();
         },
         async toFile(uri: string) {
-            var parts = uri.split(',');
+            // Parse the Data URL
+            const [, mimeType, base64] = uri.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9]+);base64,(.+)$/);
 
-            // Extract the mime type.
-            var mimeType = parts[0].split(':')[1];
-            console.log(mimeType)
+            // Convert base64 to binary
+            const binaryString = atob(base64);
+            const byteArray = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+            byteArray[i] = binaryString.charCodeAt(i);
+            }
 
-            // Extract the base64 encoded data.
-            var base64Data = parts[1];
+            // Create a Blob from binary data
+            const blob = new Blob([byteArray], { type: mimeType });
 
-            // Convert the base64 encoded data to a binary string.
-            var binaryData = atob(base64Data);
-            // Create a Blob object from the binary data
-            const blob = await new Blob([binaryData], { type: mimeType });
-
-            // Create a File object from the Blob object
-            const file = await new File([blob], this.fileName, { type: this.imgFileType });
+            // Create a File object from the Blob
+            const file = new File([blob], this.fileName, { type: mimeType });
 
             return file;
+        },
+        imgReady() {
         }
 
     },
@@ -91,7 +92,7 @@ export default defineComponent({
                     
                 </q-card-section>
                 <q-card-section class="h-fit">
-                    <cropper ref="cropper" :aspect-ratio="aspectRatio" :guides="true" :background="false" :view-mode="3" drag-mode="move" :src="chosenImg" alt="Image not available"/>
+                    <cropper ref="cropper" class="w-full" :aspect-ratio="aspectRatio" :guides="true" :background="false" :view-mode="3" drag-mode="move" @ready="" :src="chosenImg" alt="Image not available"/>
                 </q-card-section>
                 <q-card-actions class="justify-center">
                     <q-btn class="btn-themed" @click="cropChosenImage" >Crop</q-btn>

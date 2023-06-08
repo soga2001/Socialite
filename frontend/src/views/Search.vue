@@ -93,7 +93,8 @@ export default defineComponent({
             <div class="results" v-if="results.length > 0" v-for="u in results">
                 <Item clickable :to="{ name: 'user-profile', params: { username: u.username } }" >
                     <template #avatar>
-                        <img src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
+                        <img v-if="u.avatar" :src="u.avatar" alt="profile pic" />
+                        <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="profile pic plage holder" class="rounded-full" />
                     </template>
                     <template #title>{{u.first_name + ' ' + u.last_name}}</template>
                     <template #caption>@{{ u.username }}</template>

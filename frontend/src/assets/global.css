@@ -1045,11 +1045,11 @@
 
 /* text color */
 .text-heading {
-    color: var(--color-heading);
+    color: var(--color-heading) !important;
 }
 
 .text-body {
-    color: var(--color-text);
+    color: var(--color-text) !important;
 }
 
 
