@@ -165,6 +165,20 @@ export default defineComponent({
                 reader.onerror = (error) => reject(error);
             })
         },
+
+        async onCancel() {
+            this.showAvatar = false;
+            this.showBanner = false;
+            this.newAvatar = this.avatar;
+            this.newBanner = this.banner;
+            this.new_FN = this.first_name;
+            this.new_LN = this.last_name;
+            this.newBio = this.bio;
+            this.avatarFile = null;
+            this.bannerFile = null;
+            this.editProfile = false
+
+        },
     },
     created() {
         // console.log(this.date_joined)
@@ -202,7 +216,6 @@ export default defineComponent({
         <div class="user__container col-12 col-md-auto">
             <div class=' grid cols-auto-fr rows-4 relative'>
                 <div id="banner" class='p-0 col-start-1 col-span-full z-3 bg-theme-soft pointer'>
-                    
                     <img v-if="banner" :src="banner" alt="banner"/>
                     <img v-else class="" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
                 </div>
@@ -241,7 +254,7 @@ export default defineComponent({
                                     <img v-else-if="newBanner" :src="newBanner" alt="banner"/>
                                     <img v-else class="" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
                                     <div class="centered-on-image">
-                                        <button class="border-none btn rounded-lg p-3 bg-gray-op" @click="toggleBanner">
+                                        <button class="border-none btn btn-themed-low-op rounded-lg p-3" @click="toggleBanner">
                                             <q-icon name="edit" size="2rem"/>
                                         </button>
                                         <input ref="bannerUpload" type="file" id="file" @change="launchCropper" hidden/>
@@ -253,15 +266,15 @@ export default defineComponent({
                                 </div>
                                 <div class="profile-img profile-pic relative overflow-hidden">
                                     <img v-if="!newAvatar && avatar" :src="avatar" alt="profile img"/>
-                                    <img v-if="newAvatar" class="profile-pic__image" :src="newAvatar" alt="Profile img" />
-                                    <img class="profile-picture__image" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
+                                    <img v-else-if="newAvatar" class="profile-pic__image" :src="newAvatar" alt="Profile img" />
+                                    <img v-else class="profile-picture__image" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
                                     <div class="centered-on-image">
-                                        <button class="border-none btn rounded-lg p-3 bg-gray-op" @click="toggleAvatar">
+                                        <button class="border-none btn btn-themed-low-op rounded-lg p-3 bg-gray-op" @click="toggleAvatar">
                                             <q-icon name="edit" size="2rem"/>
                                         </button>
                                         <input ref="avatarUpload" type="file" id="file" @change="launchCropper" hidden/>
                                     </div>
-                                    <div class="z-100 realtive h-full bg-theme-soft">
+                                    <div class="hidden">
                                         <image-cropper ref="avatarDialog" :fileName="fileName" :chosen-img="newAvatar" @close="newAvatar = null" @onReset="{$refs.avatarUpload.value = null; showAvatar = false}" @file="avatarFile = $event" @onCrop="(croppedImage) => {newAvatar = croppedImage}"/>
                                     </div>
                                     
@@ -270,12 +283,13 @@ export default defineComponent({
                             <div>
                                 <q-input :dark="theme" v-model="new_FN" label="First Name" />
                                 <q-input :dark="theme" v-model="new_LN" label="Last Name" />
-                                <q-input :dark="theme" v-model="newBio" label="Bio" />
+                                <!-- <q-input :dark="theme" v-model="newBio" label="Bio" /> -->
+                                <q-input :dark="theme" v-model="newBio" label="Bio" type="textarea"/>
                             </div>
                         </q-card-section>
 
                         <q-card-actions align="right">
-                            <q-btn flat label="Cancel" color="primary" v-close-popup />
+                            <q-btn flat label="Cancel" color="primary" @click="onCancel" />
                             <q-btn flat label="Save" color="primary" @click="updateProfile" />
                         </q-card-actions>
                     </q-card>
@@ -288,8 +302,8 @@ export default defineComponent({
                     <div class="user-username text-xl">@{{ username }}</div>
                     <div class="user-date_joined my-2  flex items-center">
                         <q-icon name="date_range" size="16px" class="q-mr-sm" />
-                        <div class="flex items-center text-xl">
-                            <span class="mr-2">Joined </span> <Timeago size="1.25rem" :date="date_joined" date_type="long" />
+                        <div class="flex items-center text-base">
+                            <span class="mr-1">Joined </span> <Timeago size="1rem" :date="date_joined" date_type="long" />
                         </div>
                     </div>
                     <div class="follows text-lg flex items-center gap-3">

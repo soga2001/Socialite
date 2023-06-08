@@ -2170,16 +2170,11 @@
     background-color: var(--color-button-hover) !important;
 }
 
-.btn-primary {
-    color: #fff !important;
-    background-color: #FF7373 !important;
-    border-color: #FF7373 !important;
-}
-
-.btn-primary:hover {
+.btn-themed-low-op {
     color: var(--color-heading) !important;
     background-color: var(--color-button-hover) !important;
 }
+
 
 
 .pointer:hover {
@@ -2195,4 +2190,28 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-  }
+
+}
+
+
+/* opacity */
+
+.opacity-0 {
+    opacity: 0 !important;
+}
+
+.opacity-25 {
+    opacity: 0.25 !important;
+}
+
+.opacity-50 {
+    opacity: 0.5 !important;
+}
+
+.opacity-75 {
+    opacity: 0.75 !important;
+}
+
+.opacity-100 {
+    opacity: 1 !important;
+}

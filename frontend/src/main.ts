@@ -35,7 +35,6 @@ import Themetoggle from '@/components/themetoggle.vue';
 import ToolTips from '@/components/ToolTips.vue';
 import CircularProgress from './components/circularProgress.vue'
 import UploadedImage from '@/components/uploadedImg.vue';
-import myUpload from 'vue-image-crop-upload';
 import imageCropper from '@/components/imageCropper.vue';
 
 
@@ -88,9 +87,7 @@ app.component('i-upload-vid', UploadVideo);
 // components
 app.component('circular-progress', CircularProgress);
 app.component('uploaded-img', UploadedImage);
-app.component('my-upload', myUpload);
 app.component('theme-toggle', Themetoggle);
-// app.component('image-cropper', myUpload);
 app.component('image-cropper', imageCropper);
 
 
