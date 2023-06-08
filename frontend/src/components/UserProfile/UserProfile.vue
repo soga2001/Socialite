@@ -62,10 +62,10 @@ export default defineComponent({
                 }
                 this.followed = !this.followed;
                 if (!this.followed && this.following != 0) {
-                    this.following -= 1;
+                    this.followers -= 1;
                 }
                 else {
-                    this.following += 1;
+                    this.followers += 1;
                 }
             }).catch((err) => {
                 console.log(err);
@@ -144,7 +144,6 @@ export default defineComponent({
         async launchCropper(e: Event) {
             if(!e) return;
             var file = event?.target.files[0];
-            console.log(file.type)
             if(this.showBanner) {
                 this.newBanner = await this.toBase64(file);
                 this.$refs.bannerDialog.initCropper(file.type, file.name);
@@ -206,7 +205,7 @@ export default defineComponent({
                     <img v-if="banner" :src="banner" alt="banner"/>
                     <img v-else class="" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
                 </div>
-                <div class="profile-img profile-pic overflow-hidden z-3 pointer">
+                <div class="profile-img profile-pic z-3 pointer">
                     <img v-if="avatar" class="profile-pic__image" :src="avatar" alt="Profibild" />
                     <img v-else class="profile-picture" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
                 </div>
@@ -217,8 +216,8 @@ export default defineComponent({
                     <q-btn @click.stop="" v-if="followed && !loading"  size="16px" class="more__vert" flat dense round icon="more_horiz" />
                 </div>
             </div>
-            <div>
-                <q-dialog class="h-full" v-model="editProfile" persistent>
+            <div class="h-full">
+                <q-dialog class="h-full w-full" v-model="editProfile" persistent>
                     <q-card :dark="theme">
                         <q-card-section>
                             <Item>
@@ -236,7 +235,7 @@ export default defineComponent({
 
                         <q-card-section class="q-pt-none">
                             <div class=' grid cols-auto-fr rows-4 relative'>
-                                <div id="banner" class='p-0 col-start-1 col-span-full bg-theme-soft' >
+                                <div id="banner" class='col-start-1 col-span-full bg-theme-soft h-fit' >
                                     <img v-if="!newBanner && banner" :src="banner"/>
                                     <img v-else-if="newBanner" :src="newBanner" alt="banner"/>
                                     <img v-else class="" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
@@ -246,23 +245,25 @@ export default defineComponent({
                                         </button>
                                         <input ref="bannerUpload" type="file" id="file" @change="launchCropper" hidden/>
                                     </div>
-                                    <div class="z-100">
-                                        <image-cropper ref="bannerDialog" :aspect-ratio="3/1" :filename="fileName" :chosen-img="newBanner" @close="newBanner = null" @onReset="{$refs.bannerUpload.value = null; showBanner = false}" @file="bannerFile = $event" @onCrop="(croppedImage) => {newBanner = croppedImage}"/>
+                                    <div class="z-100 hidden">
+                                        <!-- <image-cropper ref="bannerDialog" :aspect-ratio="3/1" :filename="fileName" :chosen-img="newBanner" @close="newBanner = null" @onReset="{$refs.bannerUpload.value = null; showBanner = false}" @file="bannerFile = $event" @onCrop="(croppedImage) => {newBanner = croppedImage}"/> -->
+                                            <image-cropper ref="bannerDialog" :aspect-ratio="3/1" :fileName="fileName" :chosen-img="newBanner" @onReset="{$refs.bannerUpload.value = null; showBanner = false}" @file="bannerFile = $event" @onCrop="(croppedImage) => {newBanner = croppedImage}" />
                                     </div>
                                     
                                 </div>
                                 <div class="profile-img profile-pic relative overflow-hidden">
                                     <img v-if="!newAvatar && avatar" :src="avatar" alt="profile img"/>
-                                    <img v-if="newAvatar" class="profile-pic__image" :src="newAvatar" alt="Profile img" />
-                                    <img class="profile-picture__image" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
+                                    <img v-else-if="newAvatar" class="profile-pic__image" :src="newAvatar" alt="Profile img" />
+                                    <img v-else class="profile-picture__image" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
                                     <div class="centered-on-image">
                                         <button class="border-none btn rounded-lg p-3 bg-gray-op" @click="toggleAvatar">
                                             <q-icon name="edit" size="2rem"/>
                                         </button>
                                         <input ref="avatarUpload" type="file" id="file" @change="launchCropper" hidden/>
                                     </div>
-                                    <div class="z-100 realtive h-full bg-theme-soft">
-                                        <image-cropper ref="avatarDialog" :fileName="fileName" :chosen-img="newAvatar" @close="newAvatar = null" @onReset="{$refs.avatarUpload.value = null; showAvatar = false}" @file="avatarFile = $event" @onCrop="(croppedImage) => {newAvatar = croppedImage}"/>
+                                    <div class="z-100 hidden">
+                                        <!-- <image-cropper ref="avatarDialog" :fileName="fileName" :chosen-img="newAvatar" @close="newAvatar = null" @onReset="{$refs.avatarUpload.value = null; showAvatar = false}" @file="avatarFile = $event" @onCrop="(croppedImage) => {newAvatar = croppedImage}"/> -->
+                                            <image-cropper circle ref="avatarDialog" :fileName="fileName" :chosen-img="newAvatar" @close="{newAvatar = null; this.showAvatar = false}" @onReset="{$refs.avatarUpload.value = null; showAvatar = false}" @file="avatarFile = $event" @onCrop="(croppedImage) => {newAvatar = croppedImage}" />
                                     </div>
                                     
                                 </div>
@@ -270,7 +271,7 @@ export default defineComponent({
                             <div>
                                 <q-input :dark="theme" v-model="new_FN" label="First Name" />
                                 <q-input :dark="theme" v-model="new_LN" label="Last Name" />
-                                <q-input :dark="theme" v-model="newBio" label="Bio" />
+                                <q-input :dark="theme" v-model="newBio" type="textarea" label="Bio" />
                             </div>
                         </q-card-section>
 
@@ -283,18 +284,18 @@ export default defineComponent({
             </div>
         
             <div class="user-profile__info flex py-3 mb-5">
-                <div class="flex flex-col" >
+                <div class="flex flex-col text-left" >
                     <div class="user-name text-2xl weight-900 text-heading">{{ first_name }} {{ last_name }}</div>
-                    <div class="user-username text-xl">@{{ username }}</div>
-                    <div class="user-date_joined my-2  flex items-center">
-                        <q-icon name="date_range" size="16px" class="q-mr-sm" />
-                        <div class="flex items-center text-xl">
-                            <span class="mr-2">Joined </span> <Timeago size="1.25rem" :date="date_joined" date_type="long" />
+                    <div class="text-body text-xl">@{{ username }}</div>
+                    <div class="user-date_joined my-2 flex items-center">
+                        <q-icon name="date_range" size="16px" class="mr-1 text-body" />
+                        <div class="flex items-center text-base">
+                            <span class="mr-1 text-body">Joined </span> <Timeago class="text-body" size="1rem" :date="date_joined" date_type="long" />
                         </div>
                     </div>
                     <div class="follows text-lg flex items-center gap-3">
-                        <span><span class="text-heading weight-900">{{ followers }} </span> Followers</span> 
-                        <span><span class="text-heading weight-900">{{ following }} </span> Following</span>
+                        <span class="text-body"><span class="text-heading weight-900">{{ followers }} </span> Followers</span> 
+                        <span class="text-body"><span class="text-heading weight-900">{{ following }} </span> Following</span>
                     </div>
                     <div class="user-bio text-lg py-3 text-heading text-bold">{{ bio }}</div>
                 </div>
@@ -304,6 +305,7 @@ export default defineComponent({
 </template>
 
 <style scoped>
+
 .user__container {
     max-width: 600px;
     width: 100%;
@@ -445,10 +447,11 @@ h6 {
 
 /* Banner and profile picture */
 #banner {
-    width: 100%;
+    position: relative;
     grid-row: row 1 / span 3;
-    min-height: 180px;
     aspect-ratio: 3/1;
+    min-height: 180px;
+    /* aspect-ratio: 3/1; */
 }
 
 /* #banner:hover {

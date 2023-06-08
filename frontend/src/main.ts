@@ -7,6 +7,11 @@ import VueMobileDetection from "vue-mobile-detection";
 import VueCropper from 'vue-cropperjs';
 import 'cropperjs/dist/cropper.css';
 
+import { Cropper } from 'vue-advanced-cropper';
+import 'vue-advanced-cropper/dist/style.css';
+
+
+
 
 
 import { Quasar, Cookies, Dialog, Notify } from 'quasar'
@@ -35,7 +40,6 @@ import Themetoggle from '@/components/themetoggle.vue';
 import ToolTips from '@/components/ToolTips.vue';
 import CircularProgress from './components/circularProgress.vue'
 import UploadedImage from '@/components/uploadedImg.vue';
-import myUpload from 'vue-image-crop-upload';
 import imageCropper from '@/components/imageCropper.vue';
 
 
@@ -68,6 +72,7 @@ app.component('Item', Item);
 
 
 app.component('cropper', VueCropper);
+// app.component('adv-cropper', Cropper);
 // icon components
 app.component('i-home', HomeIcon);
 app.component('i-explore', ExploreIcon);
@@ -88,10 +93,9 @@ app.component('i-upload-vid', UploadVideo);
 // components
 app.component('circular-progress', CircularProgress);
 app.component('uploaded-img', UploadedImage);
-app.component('my-upload', myUpload);
 app.component('theme-toggle', Themetoggle);
-// app.component('image-cropper', myUpload);
 app.component('image-cropper', imageCropper);
+// app.component('adv-cropper', newCropper);
 
 
 
