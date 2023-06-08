@@ -5,75 +5,77 @@ import {http} from '../../assets/http'
 import { RouterLink, RouterView } from 'vue-router';
 import router from '../../router';
 import { useStore } from '../../store/store';
+import Spills from '../Spills.vue';
 export default defineComponent({
-    
-  props: {
-  },
-  data() {
-      return {
-          theme: false,
-          dark_mode: false,
-          include: ["home", "explore"],
-          iconSize: "5rem",
-          navSlideIn: false
-      };
-  },
-  setup() {
-      const { cookies } = useCookies();
-      return { cookies };
-  },
-  computed: {
-    navStyle(): {justifyContent: string} {
-      return {
-        justifyContent: this.$store.state.authenticated ? "right" : "center"
-      }
+    props: {},
+    data() {
+        return {
+            theme: false,
+            dark_mode: false,
+            include: ["home", "explore"],
+            iconSize: "5rem",
+            navSlideIn: false,
+            post: false,
+        };
     },
-    slideIn(): {width: string} {
-      return {
-          width: this.navSlideIn ? '250px' : '0vh'
-      }
-    }
-    
-
-  },
-  methods: {
-      switchTheme(e: any) {
-          if (this.theme) {
-              this.cookies.set("theme", "light");
-              document.documentElement.setAttribute("data-theme", "light");
-          }
-          else {
-              this.cookies.set("theme", "dark");
-              document.documentElement.setAttribute("data-theme", "dark");
-          }
-          this.$store.commit("setTheme", !this.$store.state.dark);
-      },
-      logout() {
-          http.post("users/logout/").then((res) => {
-            this.navSlideIn = false
-            this.$store.commit("authenticate", false);
-            this.$store.commit("setDefaultUser");
-            router.push("/login");
-          }).catch((err) => {
-              console.log(err);
-          });
-      },
-      openNav() {
-        this.navSlideIn = true
-      },
-      closeNav() {
-        this.navSlideIn = false
-      }
-  },
-  created() {
-      this.theme = this.cookies.get("theme") === "dark";
-      this.$store.commit("setTheme", this.theme);
-      document.documentElement.setAttribute("data-theme", this.theme ? "dark" : "light");
-  },
-  mounted() {
-  },
-  watch: {
-  },
+    setup() {
+        const { cookies } = useCookies();
+        return { cookies };
+    },
+    computed: {
+        navStyle(): {
+            justifyContent: string;
+        } {
+            return {
+                justifyContent: this.$store.state.authenticated ? "right" : "center"
+            };
+        },
+        slideIn(): {
+            width: string;
+        } {
+            return {
+                width: this.navSlideIn ? "250px" : "0vh"
+            };
+        }
+    },
+    methods: {
+        switchTheme(e: any) {
+            if (this.theme) {
+                this.cookies.set("theme", "light");
+                document.documentElement.setAttribute("data-theme", "light");
+            }
+            else {
+                this.cookies.set("theme", "dark");
+                document.documentElement.setAttribute("data-theme", "dark");
+            }
+            this.$store.commit("setTheme", !this.$store.state.dark);
+        },
+        logout() {
+            http.post("users/logout/").then((res) => {
+                this.navSlideIn = false;
+                this.$store.commit("authenticate", false);
+                this.$store.commit("setDefaultUser");
+                router.push("/login");
+            }).catch((err) => {
+                console.log(err);
+            });
+        },
+        openNav() {
+            this.navSlideIn = true;
+        },
+        closeNav() {
+            this.navSlideIn = false;
+        }
+    },
+    created() {
+        this.theme = this.cookies.get("theme") === "dark";
+        this.$store.commit("setTheme", this.theme);
+        document.documentElement.setAttribute("data-theme", this.theme ? "dark" : "light");
+    },
+    mounted() {
+    },
+    watch: {},
+    components: { Spills }
 })
 </script>
 
@@ -135,21 +137,16 @@ export default defineComponent({
 
                   <RouterLink to="/search" class="nav__link" active-class="active">
                       <q-item class="hide">
-                      <q-item-section avatar>
-                          <!-- <q-icon class="icon search" :name="$route.fullPath == '/search' ? 'search' : 'o_search'" /> -->
-                          <i-search size="2rem" :fill="$route.fullPath == '/search' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
-                      </q-item-section>
+                        <q-item-section avatar>
+                            <!-- <q-icon class="icon search" :name="$route.fullPath == '/search' ? 'search' : 'o_search'" /> -->
+                            <i-search size="2rem" :fill="$route.fullPath == '/search' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                        </q-item-section>
 
-                      <q-item-section class="bold">
-                          Search
-                      </q-item-section>
+                        <q-item-section class="bold">
+                            Search
+                        </q-item-section>
                       
                       </q-item>
-                      <!-- <q-avatar size="iconSize" :icon="$route.fullPath == '/search' ? 'search' : 'o_search'" class="show icon search">
-                      <q-tooltip anchor="top middle" self="bottom middle">
-                          Search
-                      </q-tooltip>
-                      </q-avatar> -->
                       <i-search class="show" size="2rem" :fill="$route.fullPath == '/search' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                   </RouterLink>
 
@@ -181,10 +178,29 @@ export default defineComponent({
                       <i-settings class="show" size="2rem" :fill="$route.fullPath == '/settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                   </RouterLink>
                   
-                  <div v-if="$store.state.authenticated" class="w-full px-5">
+                  <div v-if="$store.state.authenticated" class="w-full px-5 flex flex-rows" @click="post = !post">
                    <button class=" hide w-full px-15 py-3 text-xl rounded-lg border-none btn btn-themed text-white weight-900 ">Spill</button>
-                   <q-btn class="show btn-primary" round flat icon="add"/>
+                   <q-btn class="show btn-themed text-heading" round flat icon="add"/>
                   </div>
+
+                  <q-dialog class="min-h-viewport" v-model="post" persistent>
+                    <q-card class="border bg-theme w-full" >
+                      <q-card-section>
+                        <Item dense :vert-icon-center="true">
+                          <template #title>
+                            <div class="text-lg">Edit Window</div>
+                          </template>
+                          <template #icon>
+                            <i-close size="2rem" class="btn" @click="post = false"/>
+                          </template>
+                        </Item>
+                      </q-card-section>
+                      <hr class="border"/>
+                      <q-card-section>
+                        <Spills/>
+                      </q-card-section>
+                    </q-card>
+                   </q-dialog>
 
                   <RouterLink to="/login" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
                       <q-item class="hide">
@@ -230,17 +246,17 @@ export default defineComponent({
                           <div class="hide item">
                             <Item  dense>
                                 <template #avatar>
-                                <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
-                                <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
+                                  <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
+                                  <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                                 </template>
                                 <template #title>
-                                <span class="title">{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</span>
+                                  <span class="title">{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</span>
                                 </template>
                                 <template #caption>
-                                <span class="subtitle">@{{ $store.state.user.username }}</span>
+                                  <span class="subtitle">@{{ $store.state.user.username }}</span>
                                 </template>
                                 <template #icon>
-                                <q-icon name="more_vert" />
+                                  <q-icon class="text-heading" name="more_vert" />
                                 </template>
                             </Item>
                           </div>
@@ -258,7 +274,7 @@ export default defineComponent({
                             <q-list class="dropdown__main" dense>
                             <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
                                 <q-item-section avatar>
-                                <q-avatar icon="logout" />
+                                  <q-avatar icon="logout" />
                                 </q-item-section>
                                 <q-item-section>
                                 <q-item-label>Logout</q-item-label>

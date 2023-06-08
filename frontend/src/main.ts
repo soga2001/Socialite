@@ -7,6 +7,11 @@ import VueMobileDetection from "vue-mobile-detection";
 import VueCropper from 'vue-cropperjs';
 import 'cropperjs/dist/cropper.css';
 
+import { Cropper } from 'vue-advanced-cropper';
+import 'vue-advanced-cropper/dist/style.css';
+
+
+
 
 
 import { Quasar, Cookies, Dialog, Notify } from 'quasar'
@@ -67,6 +72,7 @@ app.component('Item', Item);
 
 
 app.component('cropper', VueCropper);
+// app.component('adv-cropper', Cropper);
 // icon components
 app.component('i-home', HomeIcon);
 app.component('i-explore', ExploreIcon);
@@ -89,6 +95,7 @@ app.component('circular-progress', CircularProgress);
 app.component('uploaded-img', UploadedImage);
 app.component('theme-toggle', Themetoggle);
 app.component('image-cropper', imageCropper);
+// app.component('adv-cropper', newCropper);
 
 
 

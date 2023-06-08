@@ -63,7 +63,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="post">
+  <div class="post bg-transparent">
     <div class="post__container">
       <q-avatar class="post__avatar" size="65px" >
           <img class="user__avatar" v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>

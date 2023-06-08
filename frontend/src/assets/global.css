@@ -1178,6 +1178,10 @@
     width: 1rem !important;
 }
 
+.w-2 {
+    width: 2rem !important;
+}
+
 .w-full {
     width: 100% !important;
 }
@@ -1198,6 +1202,10 @@
 .min-w-viewport {
     min-width: 100vw !important;
     min-width: 100dvw !important;
+}
+
+.min-w-52 {
+    min-width: 13rem !important;
 }
 
 .max-w-viewport {
@@ -1238,6 +1246,10 @@
 .min-h-viewport {
     min-height: 100vh !important;
     min-height: 100dvh !important;
+}
+
+.min-h-52 {
+    min-height: 13rem !important;
 }
 
 .max-h-viewport {

@@ -1,24 +1,50 @@
 <script lang="ts">
-import { constants } from 'buffer';
-import { defineComponent, type CSSProperties, ref } from 'vue';
-
-export default defineComponent({
+  import { defineComponent, ref, reactive, onUnmounted } from "vue";
+  import { Cropper, RectangleStencil, CircleStencil } from "vue-advanced-cropper";
+  import "vue-advanced-cropper/dist/style.css";
+  import 'vue-advanced-cropper/dist/theme.compact.css';
+  
+  export default defineComponent({
+    components: {
+        Cropper,
+        RectangleStencil,
+        CircleStencil,
+    },
     props: {
+        circle: {
+            type: Boolean,
+            default: false,
+        },
         aspectRatio: {
-            default: 1/1
+            type: Number,
+            default: 3/1,
         },
         chosenImg: {
-            default: null,
+            type: String,
+            required: true,
         },
     },
     data() {
         return {
+            // img: {
+            //     src: "https://images.unsplash.com/photo-1619737307100-55b82496fcda?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80",
+            //     type: null
+            // },
             showCropper: false,
             imgFileType: null,
             fileName: null,
-            // imgFile: null,
-            // cropper: ref<any>(),
         }
+    },
+    computed: {
+        stencilClass() {
+            return this.circle ? 'circle' : 'normal';
+        },
+        stencilComponent() {
+            return this.circle ? this.$options.components.CircleStencil : this.$options.components.RectangleStencil;
+        },
+        theme() {
+            return this.$store.state.dark;
+        },
     },
     methods: {
         async initCropper(imageFileType: any, filename: string) {
@@ -26,9 +52,20 @@ export default defineComponent({
             this.imgFileType = imageFileType
             this.fileName = filename
             await new Promise(resolve => setTimeout(resolve, 50));
-            this.$refs.cropper.replace(this.chosenImg)
+            // this.$refs.cropper.replace(this.chosenImg)
         },
+        cropImage() {
+            const { canvas } = this.$refs.cropper.getResult();
+			canvas.toBlob((blob) => {
+				// Do something with blob: upload to a server, download and etc.
+                const file = new File([blob], this.fileName, { type: this.imgFileType });
+                const croppedImg = canvas.toDataURL(this.imgFileType)
 
+                this.$emit("file", file)
+                this.$emit("onCrop", croppedImg);
+                this.resetCropper();
+			}, this.imgFileType);
+        },
         async resetCropper() {
             this.showCropper = false;
             this.imgFileType = null;
@@ -38,71 +75,98 @@ export default defineComponent({
             }
             this.$emit('onReset')
         },
-        onClose() {
-            this.$emit('close');
-            this.resetCropper();
-        },
-        async cropChosenImage() {
-            const croppedImg = this.$refs.cropper.getCroppedCanvas().toDataURL(this.imgFileType)
-            
-            const file = await this.toFile(croppedImg)
-            this.$emit("file", file)
-            this.$emit("onCrop", croppedImg);
-            this.resetCropper();
-        },
-        async toFile(uri: string) {
-            // Parse the Data URL
-            const [, mimeType, base64] = uri.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9]+);base64,(.+)$/);
-
-            // Convert base64 to binary
-            const binaryString = atob(base64);
-            const byteArray = new Uint8Array(binaryString.length);
-            for (let i = 0; i < binaryString.length; i++) {
-            byteArray[i] = binaryString.charCodeAt(i);
-            }
-
-            // Create a Blob from binary data
-            const blob = new Blob([byteArray], { type: mimeType });
-
-            // Create a File object from the Blob
-            const file = new File([blob], this.fileName, { type: mimeType });
-
-            return file;
-        },
-        imgReady() {
-        }
-
     },
-})
-</script>
+  });
+  </script>
 
 <template>
     <div class="crop-image-dialog relative w-full h-full">
-        <q-dialog dark v-model="showCropper" class="w-full h-full" persistent>
-            <q-card dark class="w-full">
+        <q-dialog :dark="theme" v-model="showCropper" class="w-full h-full" persistent>
+            <q-card :dark="theme" class="w-full">
                 <q-card-section>
                     <Item dense :vert-icon-center="true">
                         <template #title>
                             <div class="text-lg">Edit Window</div>
                         </template>
                         <template #icon>
-                            <i-close size="2rem" class="btn" @click="onClose"/>
+                            <i-close size="2rem" class="btn" @click="resetCropper"/>
                         </template>
                     </Item>
                     
                 </q-card-section>
-                <q-card-section class="h-fit">
-                    <cropper ref="cropper" class="w-full" :aspect-ratio="aspectRatio" :guides="true" :background="false" :view-mode="3" drag-mode="move" @ready="" :src="chosenImg" alt="Image not available"/>
+                <q-card-section>
+                    <!-- <cropper ref="cropper" class="w-full" :aspect-ratio="aspectRatio" :guides="true" :background="false" :view-mode="3" drag-mode="move" @ready="" :src="chosenImg" alt="Image not available"/> -->
+                    <cropper
+                        ref="cropper"
+                        class="coodinates-cropper"
+                        :src="chosenImg"
+                        default-boundaries="fill"
+                        check-orientation
+                        :stencil-props="{
+                            aspectRatio: aspectRatio,
+                            previewClass: stencilClass
+                        }"
+                        :stencil-component="stencilComponent"
+                    />
                 </q-card-section>
                 <q-card-actions class="justify-center">
-                    <q-btn class="btn-themed" @click="cropChosenImage" >Crop</q-btn>
+                    <q-btn class="btn-themed" @click="cropImage" >Crop</q-btn>
                 </q-card-actions>
             </q-card>
         </q-dialog>
     </div>
-</template>
+  </template>
+  
+  
+  
+  <style>
+  #app {
+    font-family: "Avenir", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+  }
+  
+  .coodinates-cropper {
+    width: 100%;
+    height: fit-content;
+  }
 
+  .normal {
+    width: 100%;
+    height: 100%;
+  }
 
-<style scoped>
+  .circle {
+    border-radius: 50%;
+    overflow: hidden;
 
-</style>
+  }
+  
+  .button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 17px;
+  }
+  
+  .button {
+    color: white;
+    font-size: 16px;
+    padding: 10px 20px;
+    width: 100%;
+    background: #151515;
+    cursor: pointer;
+    transition: background 0.5s;
+    border: none;
+  }
+.button:not(:last-of-type) {
+      margin-right: 10px;
+    }
+    .button:hover {
+      background: #2F2F2F;
+    }
+    .button input {
+      display: none;
+    }
+  </style>

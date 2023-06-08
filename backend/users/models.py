@@ -54,25 +54,19 @@ def remove_file_from_s3(sender, instance, using, **kwargs):
     instance.avatar.delete(save=False)
 
 @receiver(pre_save, sender=User)
-def auto_delete_avatar_on_change(sender, instance, **kwargs):
-    if not instance.pk:
-        return False
-    
-    if instance.avatar:
-        old_avatar = User.objects.get(pk=instance.id).avatar
-        if old_avatar:
-            old_avatar.delete(save=False)
-
-    
-@receiver(pre_save, sender=User)
-def auto_delete_banner_on_change(sender, instance, **kwargs):
-    if not instance.pk:
-        return False
-    
-    if instance.banner:
-        old_banner = User.objects.get(pk=instance.id).banner
-        if old_banner:
-            old_banner.delete(save=False)
+def auto_delete_files_on_change(sender, instance, **kwargs):
+    if instance.pk:
+        try:
+            old_instance = User.objects.get(pk=instance.pk)
+            
+            if old_instance.avatar and instance.avatar != old_instance.avatar:
+                old_instance.avatar.delete(save=False)
+            
+            if old_instance.banner and instance.banner != old_instance.banner:
+                old_instance.banner.delete(save=False)
+        
+        except User.DoesNotExist:
+            pass
 
     
 
@@ -83,5 +77,4 @@ def check_name(sender, instance, **kwargs):
     if instance.first_name == '' or instance.last_name == '':
         raise ValueError('Please enter your name')
     
-
 

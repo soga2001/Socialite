@@ -67,7 +67,7 @@ export default defineComponent({
 
 <template>
   <!-- <h1>Potato</h1> -->
-  <div v-if="!loading">
+  <div class="relative text-left" v-if="!loading">
     <Main />
   </div>
   <div class="flex items-center justify-center w-full h-viewport" v-else>

@@ -196,17 +196,14 @@ class UpdateProfile(APIView):
                     check_image = Image.open(avatar)
                     check_image.verify()
                 except Exception as e:
-                    print(e)
                     return JsonResponse({"error": True, "message": "Invalid image file."})
 
             if 'banner' in request.FILES:
                 banner = request.FILES['banner']
-                print(banner)
                 try:
                     check_image = Image.open(banner)
                     check_image.verify()
                 except Exception as e:
-                    print(e)
                     return JsonResponse({"error": True, "message": "Invalid image file."})
             if 'bio' in request.POST:
                 bio = request.POST['bio']
