@@ -164,6 +164,20 @@ export default defineComponent({
                 reader.onerror = (error) => reject(error);
             })
         },
+
+        async onCancel() {
+            this.showAvatar = false;
+            this.showBanner = false;
+            this.newAvatar = this.avatar;
+            this.newBanner = this.banner;
+            this.new_FN = this.first_name;
+            this.new_LN = this.last_name;
+            this.newBio = this.bio;
+            this.avatarFile = null;
+            this.bannerFile = null;
+            this.editProfile = false
+
+        },
     },
     created() {
         // console.log(this.date_joined)
@@ -201,7 +215,6 @@ export default defineComponent({
         <div class="user__container col-12 col-md-auto">
             <div class=' grid cols-auto-fr rows-4 relative'>
                 <div id="banner" class='p-0 col-start-1 col-span-full z-3 bg-theme-soft pointer'>
-                    
                     <img v-if="banner" :src="banner" alt="banner"/>
                     <img v-else class="" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
                 </div>
@@ -240,7 +253,7 @@ export default defineComponent({
                                     <img v-else-if="newBanner" :src="newBanner" alt="banner"/>
                                     <img v-else class="" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
                                     <div class="centered-on-image">
-                                        <button class="border-none btn rounded-lg p-3 bg-gray-op" @click="toggleBanner">
+                                        <button class="border-none btn btn-themed-low-op rounded-lg p-3" @click="toggleBanner">
                                             <q-icon name="edit" size="2rem"/>
                                         </button>
                                         <input ref="bannerUpload" type="file" id="file" @change="launchCropper" hidden/>
@@ -256,7 +269,7 @@ export default defineComponent({
                                     <img v-else-if="newAvatar" class="profile-pic__image" :src="newAvatar" alt="Profile img" />
                                     <img v-else class="profile-picture__image" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
                                     <div class="centered-on-image">
-                                        <button class="border-none btn rounded-lg p-3 bg-gray-op" @click="toggleAvatar">
+                                        <button class="border-none btn btn-themed-low-op rounded-lg p-3 bg-gray-op" @click="toggleAvatar">
                                             <q-icon name="edit" size="2rem"/>
                                         </button>
                                         <input ref="avatarUpload" type="file" id="file" @change="launchCropper" hidden/>
@@ -276,7 +289,7 @@ export default defineComponent({
                         </q-card-section>
 
                         <q-card-actions align="right">
-                            <q-btn flat label="Cancel" color="primary" v-close-popup />
+                            <q-btn flat label="Cancel" color="primary" @click="onCancel" />
                             <q-btn flat label="Save" color="primary" @click="updateProfile" />
                         </q-card-actions>
                     </q-card>
