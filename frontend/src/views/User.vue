@@ -49,9 +49,9 @@ export default defineComponent({
 
 <template>
     <div :class="'user__main ' + !$store.state.desktop && 'mobile'" v-if="Object.keys(user).length > 0">
-        <Item class="user__name" info-margin="0 1rem 0 1rem" dense :vert-icon-center="true">
+        <Item class="user__name" dense :vert-icon-center="true">
                 <template #avatar>
-                    <q-btn size="16px" @click="$router.go(-1)" flat round class="back" icon="arrow_back" />
+                    <q-btn size="16px" @click="$router.go(-1)" flat dense round class="text-heading" icon="arrow_back" />
                 </template>
                 <template #title>
                     <h5 className="text-left">{{ user.first_name }} {{ user.last_name }}</h5>
@@ -74,15 +74,15 @@ export default defineComponent({
                 class="tabs"
                 active-class="active"
                 >
-                <q-tab name="User_Posted" icon="grid_view" class="panel__icon">
+                <q-tab name="User_Posted" icon="grid_view" class="panel__icon text-body">
                     <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">User Posted</q-tooltip>
                 </q-tab>
-                <q-tab name="User_Liked" icon="favorite" class="panel__icon">
+                <q-tab name="User_Liked" icon="favorite" class="panel__icon text-body">
                     <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">User Liked</q-tooltip>
                 </q-tab>
                 </q-tabs>
 
-                <q-tab-panels :keep-alive="true" :keep-alive-include="['User_Posted', 'User_Liked']"  :keep-alive-max="5" v-model="tab" class="panels" swipeable>
+                <q-tab-panels :keep-alive="true" :keep-alive-include="['User_Posted', 'User_Liked']"  :keep-alive-max="5" v-model="tab" class="panels text-heading" swipeable>
                     <q-tab-panel name="User_Posted" class="panel" id="panel">
                         <UserPosted :uid="user.id" />
                     </q-tab-panel>
@@ -142,7 +142,7 @@ export default defineComponent({
 }
 
 .active {
-    color: var(--color-heading);
+    color: var(--color-heading) !important;
 }
 
 .panels {
