@@ -39,7 +39,7 @@ export default defineComponent({
     },
     created() {
         this.userInfo();
-
+        console.log('here')
     },
     mounted() {
     },
@@ -51,7 +51,7 @@ export default defineComponent({
     <div :class="'user__main ' + !$store.state.desktop && 'mobile'" v-if="Object.keys(user).length > 0">
         <Item class="user__name" dense :vert-icon-center="true">
                 <template #avatar>
-                    <q-btn size="16px" @click="$router.go(-1)" flat dense round class="text-heading" icon="arrow_back" />
+                    <q-btn size="16px" @click="$router.back" flat dense round class="text-heading" icon="arrow_back" />
                 </template>
                 <template #title>
                     <h5 className="text-left">{{ user.first_name }} {{ user.last_name }}</h5>
@@ -65,42 +65,45 @@ export default defineComponent({
             <UserProfile :user="user"/>
         </div>
         <div class="">
-            <div class="">
-                <q-tabs
-                v-model="tab"
-                inline-label
-                outside-arrows
-                mobile-arrows
-                class="tabs"
-                active-class="active"
-                >
-                <q-tab name="User_Posted" icon="grid_view" class="panel__icon text-body">
-                    <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">User Posted</q-tooltip>
-                </q-tab>
-                <q-tab name="User_Liked" icon="favorite" class="panel__icon text-body">
-                    <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">User Liked</q-tooltip>
-                </q-tab>
-                </q-tabs>
+            <div class="">                
+                <div class="grid cols-2 w-full text-center border">
+                    <RouterLink class="border-r p-2" exact-active-class="text-heading weight-900 bg-theme-mute" :to="{name: 'user-posted', params: {username: username}}" exact replace>
+                        Spills
+                    </RouterLink>
+                    <RouterLink class=" p-2" exact-active-class="text-heading weight-900 bg-theme-mute" :to="{name: 'user-liked', params: {username: username}}" exact replace>
+                        Likes
+                    </RouterLink>
+                </div>
 
-                <q-tab-panels :keep-alive="true" :keep-alive-include="['User_Posted', 'User_Liked']"  :keep-alive-max="5" v-model="tab" class="panels text-heading" swipeable>
+
+                <div class="p-2">
+                    <RouterView v-slot="{ Component }">
+                        <KeepAlive :max="2" :include="['user-posted', 'user-liked']">
+                            <component :is="Component" :key="$route.fullPath" />
+                        </KeepAlive>
+                    </RouterView>
+                </div>
+                
+
+                <!-- <q-tab-panels :keep-alive="true" :keep-alive-include="['User_Posted', 'User_Liked']"  :keep-alive-max="5" v-model="tab" class="panels text-heading" swipeable>
                     <q-tab-panel name="User_Posted" class="panel" id="panel">
                         <UserPosted :uid="user.id" />
                     </q-tab-panel>
                     <q-tab-panel name="User_Liked" class="panel" id="panel">
                         <UserLiked  />
                     </q-tab-panel>
-                </q-tab-panels>
+                </q-tab-panels> -->
             </div>
         </div>
     </div>
-    <div v-if="!loading && user.length == 0" class="user__not__found">
+    <!-- <div v-if="!loading && user.length == 0" class="user__not__found">
         <div class="">
             <div class="text-h2">User not found</div>
         </div>
     </div>
     <div v-if="loading" class="loading">
         <q-spinner :thickness="10" size="100px" />
-    </div>
+    </div> -->
 </template>
 
 
@@ -123,26 +126,10 @@ export default defineComponent({
     align-items: center;
 }
 
-.tabs {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 45px;
-    z-index: 1;
-    width: 100%;
-}
 
-.panel__icon {
-    width: 100%;
-    z-index: 1;
-    border-bottom: 1px solid var(--color-border);
-}
-
-.tabs {
-    background-color: var(--color-background);
-}
-
-.active {
-    color: var(--color-heading) !important;
+a {
+    text-decoration: none;
+    color: var(--color-text);
 }
 
 .panels {

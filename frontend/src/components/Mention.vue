@@ -194,10 +194,7 @@ export default defineComponent({
 <template>
   <div class="main">
     <div class="wave-group">
-        <textarea :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers"  @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input"></textarea>
-        <!-- <label class="label" v-if="textarea">
-            <span class="label-char" v-for="(char, index) in label" :key="index" :style="{'--index': index }">{{ char == ' ' ? '&nbsp' : char }}</span>
-        </label> -->
+        <textarea :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars"  @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input"/>
     </div>
     <div class="results" v-if="users.length">
         <div @click="replaceMention(user.username)" class="result__map" v-for="user in users" :key="user.id">
@@ -217,15 +214,15 @@ export default defineComponent({
 
 <style scoped>
 
-.main {
+/* .main {
   overflow: visible;
   min-height: 50px;
   display: grid;
   grid-template-columns: 1fr;
-}
+} */
+
 .wave-group {
-  position: relative;
-  width: 100%;
+  display: grid;
 }
 
 .wave-group .input {
@@ -240,62 +237,6 @@ export default defineComponent({
 
 .wave-group .input:focus {
   outline: none;
-}
-
-.wave-group .label {
-  color: var(--color-text);
-  font-size: 18px;
-  font-weight: 900;
-  position: absolute;
-  pointer-events: none;
-  left: 5px;
-  top: 10px;
-  display: flex;
-}
-
-
-.wave-group .label-char {
-  transition: 0.2s ease all;
-  transition-delay: calc(var(--index) * .05s);
-}
-
-.wave-group .input:focus ~ label .label-char,
-.wave-group .input:valid ~ label .label-char {
-  transform: translateY(-20px);
-  font-size: 14px;
-  /* color: #5264AE; */
-  color: var(--color-heading);
-}
-
-.wave-group .bar {
-  position: relative;
-  display: block;
-  width: 100%;
-}
-
-.wave-group .bar:before,.wave-group .bar:after {
-  content: '';
-  height: 2px;
-  width: 0;
-  bottom: 1px;
-  position: absolute;
-  background: #5264AE;
-  transition: 0.2s ease all;
-  -moz-transition: 0.2s ease all;
-  -webkit-transition: 0.2s ease all;
-}
-
-.wave-group .bar:before {
-  left: 50%;
-}
-
-.wave-group .bar:after {
-  right: 50%;
-}
-
-.wave-group .input:focus ~ .bar:before,
-.wave-group .input:focus ~ .bar:after {
-  width: 50%;
 }
 
 input {

@@ -32,6 +32,7 @@
     "vue-mobile-detection": "^2.0.1",
     "vue-router": "^4.0.16",
     "vue3-cookies": "^1.0.6",
+    "vue3-mobile-detection": "^1.0.5",
     "vuex": "^4.0.2"
   },
   "devDependencies": {

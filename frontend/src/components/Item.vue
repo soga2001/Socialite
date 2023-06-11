@@ -10,7 +10,7 @@ export default defineComponent({
         alignItems: this.alignItems,
         cursor: this.clickable ? 'pointer' : 'normal',
         justifyContent: this.justifyContent,
-        padding: this.dense ? ".2rem" : ".5rem"
+        padding: this.dense ? "0" : ".5rem"
       } as CSSProperties,
       infoStyle: {
         padding: this.infoMargin

@@ -3,7 +3,7 @@ import {store, key} from './store/store'
 import App from './App.vue'
 import router from './router'
 import { vue3Debounce } from 'vue-debounce'
-import VueMobileDetection from "vue-mobile-detection";
+import Vue3MobileDetection from "vue3-mobile-detection";
 import VueCropper from 'vue-cropperjs';
 import 'cropperjs/dist/cropper.css';
 
@@ -100,7 +100,7 @@ app.component('image-cropper', imageCropper);
 
 
 
-app.use(VueMobileDetection)
+app.use(Vue3MobileDetection)
 app.use(Quasar, {
     plugins: {Dialog, Notify }, // import Quasar plugins and add here
     config: {

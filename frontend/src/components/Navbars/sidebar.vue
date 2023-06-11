@@ -74,7 +74,15 @@ export default defineComponent({
     },
     mounted() {
     },
-    watch: {},
+    watch: {
+      '$route': function() {
+        // const element = (document.getElementById("main-div") as HTMLDivElement);
+        // element.scrollTop = this.scrollPos[(this.$route.fullPath)]
+        this.$nextTick(() => {
+          console.log(this.$route.path.startsWith(`/${this.$store.state.user.username}/`))
+        });
+      },
+    },
     components: { Spills }
 })
 </script>
@@ -161,7 +169,7 @@ export default defineComponent({
                             Profile
                         </q-item-section>
                       </q-item>
-                      <i-profile class="show icon" size="2rem" :fill="$route.fullPath == `/${$store.state.user.username}/` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'"/>
+                      <i-profile class="show icon" size="2rem" :fill="$route.path.startsWith(`/${$store.state.user.username}/`) ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'"/>
                   </RouterLink>
 
                   <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
@@ -188,7 +196,7 @@ export default defineComponent({
                       <q-card-section>
                         <Item dense :vert-icon-center="true">
                           <template #title>
-                            <div class="text-lg">Edit Window</div>
+                            <div class="text-lg">Spill</div>
                           </template>
                           <template #icon>
                             <i-close size="2rem" class="btn" @click="post = false"/>
@@ -308,6 +316,7 @@ header {
 .nav {
   height: 100vh;
   height: 100dvh;
+  width: 100%;
   display: flex;
   width: 100%;  
   justify-content: center;
@@ -522,11 +531,8 @@ a {
   display: none;
 }
 
-@media (min-width: 993px) {
 
-}
-
-@media (max-width: 992px) {
+@media (max-width: 800px) {
   .show {
     display:flex;
   }

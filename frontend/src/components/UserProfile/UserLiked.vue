@@ -7,9 +7,6 @@ import Loading from '../Loading.vue';
 
 export default defineComponent({
     name: "user-liked",
-    // props: {
-    // // user_avatar: {type: String, required: true}
-    // },
     data() {
         return {
             // user_id: this.$route.query.id,

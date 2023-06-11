@@ -10,7 +10,6 @@ export default defineComponent({
     name: 'user-posted',
     props: {
         // user_avatar: {type: String, required: true},
-        uid: {type: Number, required: true},
     },
     data() {
         return {

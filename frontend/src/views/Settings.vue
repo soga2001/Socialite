@@ -1,12 +1,10 @@
 <script lang="ts">
-import { defineComponent, ref, toHandlers } from 'vue';
+import { defineComponent, ref } from 'vue';
 import {useCookies} from 'vue3-cookies'
 import { RouterLink, RouterView } from 'vue-router';
 import { http } from '@/assets/http';
 import {useStore} from '../store/store'
 import Item from '../components/Item.vue'
-
-import newCropper from '@/components/newCropper.vue';
 
 // import imageCropper from '@/components/imageCropper.vue';
 

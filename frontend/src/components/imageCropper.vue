@@ -28,7 +28,7 @@
         return {
             showCropper: false,
             imgFileType: null,
-            fileName: null,
+            fileName: '',
         }
     },
     computed: {
@@ -36,7 +36,7 @@
             return this.circle ? 'circle' : 'normal';
         },
         stencilComponent() {
-            return this.circle ? this.$options.components.CircleStencil : this.$options.components.RectangleStencil;
+            return this.circle ? CircleStencil : RectangleStencil;
         },
         theme() {
             return this.$store.state.dark;
@@ -76,23 +76,6 @@
   </script>
 
 <template>
-    <!-- <div id="app">
-        <cropper
-			ref="cropper"
-			class="coodinates-cropper"
-			:src="img.src"
-            default-boundaries="fill"
-            check-orientation
-			:stencil-props="{
-                aspectRatio: aspectRatio,
-                previewClass: stencilClass
-			}"
-            :stencil-component="stencilComponent"
-		/>
-        <div class="button-wrapper">
-            <button class="button" @click="cropImage()">Crop image</button>
-        </div>
-    </div> -->
     <div class="crop-image-dialog relative w-full h-full">
         <q-dialog :dark="theme" v-model="showCropper" class="w-full h-full" persistent>
             <q-card :dark="theme" class="w-full">
@@ -102,7 +85,7 @@
                             <div class="text-lg">Edit Window</div>
                         </template>
                         <template #icon>
-                            <i-close size="2rem" class="btn" @click="resetCropper"/>
+                            <i-close class="btn" :vert-icon-center="true" fill="var(--color-heading)" stroke="none"  size="2rem" @click="resetCropper"/>
                         </template>
                     </Item>
                     

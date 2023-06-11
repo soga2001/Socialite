@@ -6,6 +6,7 @@ import { http } from '@/assets/http';
 import Timeago from '../Timeago.vue';
 import { useCookies } from 'vue3-cookies';
 import Item from '../Item.vue';
+import Notify from '../Notify.vue';
 
 export default defineComponent({
     props: {
@@ -48,6 +49,9 @@ export default defineComponent({
 
             fileName: null,
 
+            errMsg: '',
+            successMsg: '',
+
         };
     },
     methods: {
@@ -72,7 +76,6 @@ export default defineComponent({
             });
         },
         async if_followed() {
-            // console.log(this.$store.state.user.id != this.id && this.loading)
             if (!this.$store.state.authenticated) {
                 this.loading = false
                 return;
@@ -123,9 +126,13 @@ export default defineComponent({
                 if(res.data.user) {
                     this.updateUser(res.data.user)
                 }
+                if(res.data.message) {
+                    this.successMsg = res.data.message
+                }
                 // this.$store.commit('setUser', res.data.user)
-            }).catch((err) => {
-                console.log(err)
+            }).catch(err => {
+                // console.error(err.response.data.message)
+                this.errMsg = err.response.data.message
             })
 
         },
@@ -156,7 +163,7 @@ export default defineComponent({
             }
         },
 
-        async toBase64(file) {
+        async toBase64(file: File) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
@@ -205,7 +212,7 @@ export default defineComponent({
             console.log(bannerFile)
         }
     },
-    components: { Timeago }
+    components: { Timeago, Notify }
 })
 </script>
 
@@ -239,7 +246,7 @@ export default defineComponent({
                                 </template>
                                 <template #icon>
                                     <div class="btn" @click="editProfile = !editProfile">
-                                        <i-close :vert-icon-center="true"  size="2rem"/>
+                                        <i-close :vert-icon-center="true" fill="var(--color-heading)" stroke="none"  size="2rem"/>
                                     </div>
                                     
                                 </template>
@@ -302,8 +309,11 @@ export default defineComponent({
         
             <div class="user-profile__info flex py-3 mb-5">
                 <div class="flex flex-col text-left" >
-                    <div class="user-name text-2xl weight-900 text-heading">{{ first_name }} {{ last_name }}</div>
-                    <div class="text-body text-xl">@{{ username }}</div>
+                    <div class="user-name text-4xl weight-900 text-heading">{{ first_name }} {{ last_name }}</div>
+                    <div class="text-body text-base">@{{ username }}</div>
+
+                    <div class="user-bio text-xl py-3 text-heading weight-600">{{ bio }}</div>
+
                     <div class="user-date_joined my-2 flex items-center">
                         <q-icon name="date_range" size="16px" class="mr-1 text-body" />
                         <div class="flex items-center text-base">
@@ -314,9 +324,16 @@ export default defineComponent({
                         <span class="text-body"><span class="text-heading weight-900">{{ followers }} </span> Followers</span> 
                         <span class="text-body"><span class="text-heading weight-900">{{ following }} </span> Following</span>
                     </div>
-                    <div class="user-bio text-lg py-3 text-heading text-bold">{{ bio }}</div>
                 </div>
             </div>
+
+        </div>
+
+        <div v-if="errMsg">
+            <Notify :message="errMsg" type="error" @deleteMsg="errMsg=''" title="Error Message"/>
+        </div>
+        <div v-if="successMsg">
+            <Notify :message="successMsg" type="success" @deleteMsg="successMsg=''" title="Success Message"/>
         </div>
   </div>
 </template>
@@ -467,7 +484,7 @@ h6 {
     position: relative;
     grid-row: row 1 / span 3;
     aspect-ratio: 3/1;
-    min-height: 180px;
+    /* min-height: 180px; */
     /* aspect-ratio: 3/1; */
 }
 
@@ -478,19 +495,20 @@ h6 {
 #banner img {
     object-fit: cover;
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
+    aspect-ratio: 3/1;
 }
 
 .profile-img {
     grid-column: 1;
     grid-row: row 3 / span 3;
-    min-width: 120px;
-    min-height: 120px;
-    padding: 2px;
-    width: 100%;
+    min-width: 100px;
+    min-height: 100px;
     height: 100%;
     max-height: 8vw;
     max-width: 8vw;
+    padding: 2px;
+    width: 100%;
     margin-left: 2vw;
     background-color: var(--color-background);
 }
@@ -502,6 +520,7 @@ h6 {
 .profile-img img {
     border-radius: 50%;
     width: 100%;
+    
 }
 
 .edit-profile {

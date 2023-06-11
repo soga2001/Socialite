@@ -3,6 +3,7 @@
       <slot></slot>
       <div v-if="showTooltip" class="tooltip-text text-sm weight-900">
         {{ text }}
+        <!-- <slot name="tooltip"></slot> -->
       </div>
     </div>
   </template>

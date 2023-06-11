@@ -3,7 +3,7 @@ from backend.authenticate import *
 # From Django
 from django.conf import settings
 from django.core import serializers
-from django.db import DatabaseError
+from django.db import DatabaseError, IntegrityError
 from django.http import HttpResponse, JsonResponse
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt, csrf_protect, requires_csrf_token
@@ -78,14 +78,14 @@ def user_by_username(request, username, multiple = True):
     try:
         if multiple == True:
             users_data = UserSerializer(User.objects.filter(username__icontains=username), many=True).data
-            print(users_data)
+            # print(users_data)
             # users = User.objects.annotate(similarity=TrigramSimilarity('username', username)).filter(similarity__gte=0.2).order_by('-similarity')
             # print(users)
             # users = User.objects.filter(username__icontains=username)
             # search_indexes = TrigramSimilarity('username', username) + TrigramSimilarity('bio', username) + TrigramSimilarity('first_name', username) + TrigramSimilarity('last_name', username)
             # users = User.objects.annotate(similarity=TrigramSimilarity('username', username)).filter(similary_gt=0).order_by('-similarity')
             # users_data = UserSerializer(users).data
-            print(users_data)
+            # print(users_data)
         else:
             user = User.objects.get(username=username)
             users_data = UserSerializer(user).data
@@ -205,6 +205,7 @@ class UpdateProfile(APIView):
                     check_image.verify()
                 except Exception as e:
                     return JsonResponse({"error": True, "message": "Invalid image file."})
+                
             if 'bio' in request.POST:
                 bio = request.POST['bio']
             if 'first_name' in request.POST:
@@ -226,50 +227,12 @@ class UpdateProfile(APIView):
             user.save()
             
             updatedUser = UserSerializer(user).data
-            return JsonResponse({"success": True, "user": updatedUser})
+            return JsonResponse({"success": True, "user": updatedUser,  "message": "Profile Updated."})
+        except Exception as e:
+            print(e)
+            return JsonResponse({"error": True, "message": str(e)}, status=500)
         except:
-            return JsonResponse({"error": True}, 404)
-# class UploadAvatar(APIView):
-#     permission_classes = [IsAuthenticated]
-#     authentication_classes = [CustomAuthentication,]
-
-#     def put(self, request):
-#         try:
-#             avatar = request.FILES['avatar']
-#             user = User.objects.get(id=request.user.id)
-#             try:
-#                 check_image = Image.open(avatar)
-#                 check_image.verify()
-#                 user.avatar = avatar
-#                 user.save()
-#                 return JsonResponse({"success": True})
-#             except Exception as e:
-#                 print(e)
-#                 return JsonResponse({"error": "Invalid image"})
-            
-#         except:
-#             return JsonResponse({"error": True})
-        
-
-# class UploadBanner(APIView):
-#     permission_classes = [IsAuthenticated]
-#     authentication_classes = [CustomAuthentication,]
-
-#     def put(self, request):
-#         try:
-#             banner = request.FILES['banner']
-#             user = User.objects.get(id=request.user.id)
-#             try:
-#                 check_image = Image.open(banner)
-#                 check_image.verify()
-#                 user.banner = banner
-#                 user.save()
-#                 return JsonResponse({"success": True})
-#             except Exception as e:
-#                 return JsonResponse({"error": "Invalid image"})
-            
-#         except:
-#             return JsonResponse({"error": True})
+            return JsonResponse({"error": True}, status=404)
         
 
 class LogoutView(APIView):

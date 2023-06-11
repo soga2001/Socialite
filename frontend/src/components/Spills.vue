@@ -74,8 +74,8 @@ export default defineComponent({
         <form class="post__form" autocorrect="on" autocomplete="off" @submit.prevent="submit">
           <Mention @update:charsLeft="chars = $event" @update:val="caption = $event" :value="caption" input_type="text" id="caption" input_label="Caption" class="post__caption" />
           <div class="flex gap-2 col-span-2">
-            <label for="file" class="pointer">
-              <i-upload-img size="2rem" fill="rgb(253, 137, 137)" stroke="rbg(253,137,137)"/>
+            <label for="file" class="pointer btn-themed pt-2 px-2 rounded">
+              <i-upload-img  size="1.5rem" fill="rgb(253, 137, 137)" stroke="rbg(253,137,137)"/>
               <input @change="getImage" type="file" id="file" style="display: none" name="image" accept="image/*" data-original-title="upload photos">
             </label>
             <i-upload-vid size="2rem" fill="rgb(253, 137, 137)" stroke="rgb(253, 137, 137)" />
@@ -116,7 +116,6 @@ export default defineComponent({
   gap: 10px;
   grid-template-columns: 70px 1fr;
   position: relative;
-  /* border: .5px solid var(--color-heading); */
   width: 100%;
 }
 
