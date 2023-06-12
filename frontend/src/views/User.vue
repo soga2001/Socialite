@@ -66,11 +66,11 @@ export default defineComponent({
         </div>
         <div class="">
             <div class="">                
-                <div class="grid cols-2 w-full text-center border">
-                    <RouterLink class="border-r p-2" exact-active-class="text-heading weight-900 bg-theme-mute" :to="{name: 'user-posted', params: {username: username}}" exact replace>
+                <div class="grid cols-2 border-b bg-theme-soft gap-2 w-full text-center">
+                    <RouterLink class="p-2 bg-theme" exact-active-class="text-heading weight-900" :to="{name: 'user-posted', params: {username: username}}" exact replace>
                         Spills
                     </RouterLink>
-                    <RouterLink class=" p-2" exact-active-class="text-heading weight-900 bg-theme-mute" :to="{name: 'user-liked', params: {username: username}}" exact replace>
+                    <RouterLink class="p-2 bg-theme" exact-active-class="text-heading weight-900" :to="{name: 'user-liked', params: {username: username}}" exact replace>
                         Likes
                     </RouterLink>
                 </div>

@@ -243,7 +243,7 @@ export default defineComponent({
                 </div>
                 <div class="edit-profile w-full h-fit flex flex-row-reverse p-2">
                     <button v-if="$store.state.user.id != id && !loading" class="border btn rounded text-heading bg-transparent weight-900" @click="follow" :disabled="!$store.state.authenticated">{{ followed ? 'Unfollow' : 'Follow' }}</button>
-                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="border btn rounded text-heading bg-transparent weight-900" @click="editProfile = true">Edit Profile</button>
+                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="border btn rounded-lg px-6 text-base text-heading bg-theme weight-900" @click="editProfile = true">Edit Profile</button>
                     <q-btn @click.stop="" v-if="followed && !loading" size="16px" class="less" flat dense round icon="notifications" />
                     <q-btn @click.stop="" v-if="followed && !loading"  size="16px" class="more__vert" flat dense round icon="more_horiz" />
                 </div>
