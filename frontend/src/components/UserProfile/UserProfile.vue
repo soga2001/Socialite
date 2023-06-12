@@ -38,8 +38,8 @@ export default defineComponent({
             editProfile: false,
 
 
-            newAvatar: this.user.avatar,
-            newBanner: this.user.banner,
+            newAvatar: this.user.avatar as string,
+            newBanner: this.user.banner as string,
             new_FN: this.user.first_name,
             new_LN: this.user.last_name,
             newBio: this.user.bio,
@@ -91,12 +91,17 @@ export default defineComponent({
         },
 
         toggleAvatar() {
-            this.$refs.avatarUpload.click();
-            this.showAvatar = !this.showAvatar;
+            if (this.$refs.avatarUpload instanceof HTMLElement) {
+                (this.$refs.avatarUpload as HTMLElement).click();
+                this.showAvatar = !this.showAvatar;
+            }
         },
         toggleBanner() {
-            this.$refs.bannerUpload.click()
-            this.showBanner = !this.showBanner;
+            if (this.$refs.bannerUpload instanceof HTMLElement) {
+                (this.$refs.bannerUpload as HTMLElement).click();
+                this.showBanner = !this.showBanner;
+            }
+            
         },
 
         updateProfile() {
@@ -150,24 +155,33 @@ export default defineComponent({
 
         async launchCropper(e: Event) {
             if(!e) return;
-            var file = event?.target.files[0];
-            if(this.showBanner) {
+            const inputElement = e.target as HTMLInputElement;
+            const file = inputElement.files?.[0];
+            if(this.showBanner && file) {
                 this.newBanner = await this.toBase64(file);
-                this.$refs.bannerDialog.initCropper(file.type, file.name);
+                const bannerDialogRef = this.$refs.bannerDialog as {
+                    initCropper: (type: string | undefined, name: string | undefined) => void;
+                };
+                // this.newBanner = await this.toBase64(file);
+                bannerDialogRef.initCropper(file?.type, file?.name);
 
             }
-            if(this.showAvatar) {
+            if(this.showAvatar && file) {
                 this.newAvatar = await this.toBase64(file);
-                this.$refs.avatarDialog.initCropper(file.type, file.name);
+                const avatarDialogRef = this.$refs.avatarDialog as {
+                    initCropper: (type: string | undefined, name: string | undefined) => void;
+                };
+                // this.newBanner = await this.toBase64(file);
+                avatarDialogRef.initCropper(file?.type, file?.name);
 
             }
         },
 
-        async toBase64(file: File) {
-            return new Promise((resolve, reject) => {
+        async toBase64(file: File): Promise<string> {
+            return new Promise<string>((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
+                reader.onload = () => resolve(reader.result as string);
                 reader.onerror = (error) => reject(error);
             })
         },
@@ -187,8 +201,6 @@ export default defineComponent({
         },
     },
     created() {
-        // console.log(this.date_joined)
-        // console.log(this.$store.state)
         this.if_followed();
         
     },
@@ -205,12 +217,12 @@ export default defineComponent({
         // },
         // newBanner(newBanner) {
         // },
-        avatarFile(avatarFile) {
-            console.log(avatarFile)
-        },
-        bannerFile(bannerFile) {
-            console.log(bannerFile)
-        }
+        // avatarFile(avatarFile) {
+        //     console.log(avatarFile)
+        // },
+        // bannerFile(bannerFile) {
+        //     console.log(bannerFile)
+        // }
     },
     components: { Timeago, Notify }
 })
@@ -267,7 +279,7 @@ export default defineComponent({
                                     </div>
                                     <div class="z-100 hidden">
                                         <!-- <image-cropper ref="bannerDialog" :aspect-ratio="3/1" :filename="fileName" :chosen-img="newBanner" @close="newBanner = null" @onReset="{$refs.bannerUpload.value = null; showBanner = false}" @file="bannerFile = $event" @onCrop="(croppedImage) => {newBanner = croppedImage}"/> -->
-                                            <image-cropper ref="bannerDialog" :aspect-ratio="3/1" :fileName="fileName" :chosen-img="newBanner" @onReset="{$refs.bannerUpload.value = null; showBanner = false}" @file="bannerFile = $event" @onCrop="(croppedImage) => {newBanner = croppedImage}" />
+                                            <image-cropper ref="bannerDialog" :aspect-ratio="3/1" :fileName="fileName" :chosen-img="newBanner" @onReset="{($refs.bannerUpload as HTMLInputElement).value = ''; showBanner = false}" @file="bannerFile = $event" @onCrop="(croppedImage: string) => {newBanner = croppedImage}" />
                                     </div>
                                     
                                 </div>
@@ -283,7 +295,7 @@ export default defineComponent({
                                     </div>
                                     <div class="z-100 hidden">
                                         <!-- <image-cropper ref="avatarDialog" :fileName="fileName" :chosen-img="newAvatar" @close="newAvatar = null" @onReset="{$refs.avatarUpload.value = null; showAvatar = false}" @file="avatarFile = $event" @onCrop="(croppedImage) => {newAvatar = croppedImage}"/> -->
-                                            <image-cropper circle ref="avatarDialog" :fileName="fileName" :chosen-img="newAvatar" @close="{newAvatar = null; this.showAvatar = false}" @onReset="{$refs.avatarUpload.value = null; showAvatar = false}" @file="avatarFile = $event" @onCrop="(croppedImage) => {newAvatar = croppedImage}" />
+                                            <image-cropper circle ref="avatarDialog" :fileName="fileName" :chosen-img="newAvatar" @close="{newAvatar = ''; showAvatar = false}" @onReset="{($refs.avatarUpload as HTMLInputElement).value = ''; showAvatar = false}" @file="avatarFile = $event" @onCrop="(croppedImage: string) => {newAvatar = croppedImage}" />
                                     </div>
                                     
                                 </div>
@@ -501,12 +513,12 @@ h6 {
 
 .profile-img {
     grid-column: 1;
-    grid-row: row 3 / span 3;
-    min-width: 100px;
-    min-height: 100px;
+    grid-row: row 3 / span 2;
+    min-width: 120px;
+    min-height: 120px;
     height: 100%;
-    max-height: 8vw;
-    max-width: 8vw;
+    max-height: 10vw;
+    max-width: 10vw;
     padding: 2px;
     width: 100%;
     margin-left: 2vw;
@@ -526,7 +538,7 @@ h6 {
 .edit-profile {
     /* padding-top: 30px !important; */
     grid-column: 2;
-    grid-row: row 4 / span 2;
+    grid-row: row 4 / span 1;
     gap: 5px;
     /* padding: 10px; */
 }

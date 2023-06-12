@@ -8,6 +8,7 @@ import Search from './Search.vue';
 import UserPosted from '../components/UserProfile/UserPosted.vue';
 import UserLiked from '../components/UserProfile/UserLiked.vue';
 import Item from '@/components/Item.vue';
+import { getParentRouterPath } from '@/assets/parentPath';
 
 export default defineComponent({
     name: 'user-profile',
@@ -39,7 +40,6 @@ export default defineComponent({
     },
     created() {
         this.userInfo();
-        console.log('here')
     },
     mounted() {
     },
@@ -130,17 +130,6 @@ export default defineComponent({
 a {
     text-decoration: none;
     color: var(--color-text);
-}
-
-.panels {
-    background-color: transparent;
-    width: 100%;
-}
-
-
-.panel {
-    padding: 10px;
-    /* height: 87vh; */
 }
 
 

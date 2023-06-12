@@ -27,7 +27,7 @@
     data() {
         return {
             showCropper: false,
-            imgFileType: null,
+            imgFileType: '',
             fileName: '',
         }
     },
@@ -51,8 +51,8 @@
             // // this.$refs.cropper.replace(this.chosenImg)
         },
         cropImage() {
-            const { canvas } = this.$refs.cropper.getResult();
-			canvas.toBlob((blob) => {
+            const { canvas } = (this.$refs.cropper as any).getResult();
+			canvas.toBlob((blob: Blob) => {
 				// Do something with blob: upload to a server, download and etc.
                 const file = new File([blob], this.fileName, { type: this.imgFileType });
                 const croppedImg = canvas.toDataURL(this.imgFileType)
@@ -64,10 +64,10 @@
         },
         async resetCropper() {
             this.showCropper = false;
-            this.imgFileType = null;
+            this.imgFileType = '';
             await new Promise(resolve => setTimeout(resolve, 50));
             if(this.$refs.cropper) {
-                this.$refs.cropper.replace(null)
+                (this.$refs.cropper as any).replace(null)
             }
             this.$emit('onReset')
         },
@@ -76,6 +76,23 @@
   </script>
 
 <template>
+    <!-- <div id="app">
+        <cropper
+			ref="cropper"
+			class="coodinates-cropper"
+			:src="img.src"
+            default-boundaries="fill"
+            check-orientation
+			:stencil-props="{
+                aspectRatio: aspectRatio,
+                previewClass: stencilClass
+			}"
+            :stencil-component="stencilComponent"
+		/>
+        <div class="button-wrapper">
+            <button class="button" @click="cropImage()">Crop image</button>
+        </div>
+    </div> -->
     <div class="crop-image-dialog relative w-full h-full">
         <q-dialog :dark="theme" v-model="showCropper" class="w-full h-full" persistent>
             <q-card :dark="theme" class="w-full">

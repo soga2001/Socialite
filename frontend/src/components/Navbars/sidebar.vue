@@ -76,11 +76,7 @@ export default defineComponent({
     },
     watch: {
       '$route': function() {
-        // const element = (document.getElementById("main-div") as HTMLDivElement);
-        // element.scrollTop = this.scrollPos[(this.$route.fullPath)]
-        this.$nextTick(() => {
-          console.log(this.$route.path.startsWith(`/${this.$store.state.user.username}/`))
-        });
+
       },
     },
     components: { Spills }
@@ -162,7 +158,7 @@ export default defineComponent({
                       <q-item class="hide">
                         <q-item-section avatar>
                             <!-- <q-icon class="icon" :name="$route.fullPath == `/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" /> -->
-                            <i-profile size="2rem" :fill="$route.fullPath == `/${$store.state.user.username}/` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                            <i-profile size="2rem" :fill="$route.path.startsWith(`/${$store.state.user.username}`) ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                         </q-item-section>
 
                         <q-item-section class="bold">

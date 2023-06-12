@@ -6,6 +6,7 @@ import type {RouterScrollBehavior, RouteRecordRaw, Router, NavigationGuard} from
 // import Vue from 'vue'
 import { useCookies } from 'vue3-cookies'
 import { store } from '../store/store'
+import { getParentRouterPath } from '@/assets/parentPath';
 
 const { cookies }  = useCookies();
 
@@ -105,10 +106,12 @@ const { cookies }  = useCookies();
 
 const router: Router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  
   routes: [
     {
       path: '/search',
       name: 'Search',
+      // meta: {basePath: '/search'},
       component: () => import('../views/Search.vue')
     },
     {
@@ -153,18 +156,25 @@ const router: Router = createRouter({
       name: 'user-profile',
       component: () => import('../views/User.vue'),
       alias: '/:username?/*',
+      // meta: {basePath: '/:username?'},
       redirect: {
         name: 'user-posted'
       },
       children : [
         {
+          // path: getParentRouterPath(this), 
           path: '',
+          alias: '*',
           name: 'user-posted',
+          // meta: {basePath: getParentRouterPath(this)},
           component: () => import('../components/UserProfile/UserPosted.vue'),
         },
         {
-          path: 'liked',
+          // path: getParentRouterPath(this) + '/likes',
+          path: 'likes',
+          alias: 'likes/*',
           name: 'user-liked',
+          // meta: {basePath: getParentRouterPath(this) + '/likes'},
           component: () => import('../components/UserProfile/UserLiked.vue'),
         },
       ],
