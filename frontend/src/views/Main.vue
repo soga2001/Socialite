@@ -101,7 +101,7 @@ export default defineComponent({
       <div class="border-l border-r">
         <RouterView v-slot="{Component}">
           <KeepAlive :max="3" :include="['home','user-profile', 'search', 'explore']">
-            <component :is="Component" :key="$route.fullPath"/>
+            <component :is="Component" />
           </KeepAlive>
         </RouterView>
       </div>

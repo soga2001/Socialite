@@ -117,6 +117,7 @@ const router: Router = createRouter({
     {
       path: '/home',
       name: 'Home',
+      alias: '/',
       component: () => import('../views/Home.vue'),
       meta: {
         auth: true

@@ -1,8 +1,7 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, getCurrentInstance } from 'vue';
 import { http } from '@/assets/http';
 import UserProfile from '../components/UserProfile/UserProfile.vue';
-// import PostsMap from '../HomeViews/PostsMap.vue';
 import type { User } from '@/assets/interfaces';
 import Search from './Search.vue';
 import UserPosted from '../components/UserProfile/UserPosted.vue';
@@ -25,8 +24,7 @@ export default defineComponent({
     methods: {
         async userInfo() {
             this.loading = true
-
-            await http.get(`users/username/${this.username}/${false}/`).then((res) => {
+            await http.get(`users/username/${this.$route.params.username}/${false}/`).then((res) => {
                 if (res.data.success) {
                     this.user = res.data.users;
                     this.avatar = this.user.avatar || '';
@@ -34,16 +32,44 @@ export default defineComponent({
             }).catch((err) => {
                 // console.log(err);
             });
-            
             this.loading = false
         },
     },
     created() {
         this.userInfo();
+        this.$watch(
+            () => this.$route.params,
+            () => {
+                this.userInfo()
+            },
+            // fetch the data when the view is created and the data is
+            // already being observed
+            { immediate: true }
+        )
     },
+    // activated() {
+    //     console.log(this.$route.params.username, this.username)
+    //     if(this.$route.params.username !== this.username) {
+    //         this.user = {} as User;
+    //         this.userInfo();
+    //     }
+    // },
     mounted() {
     },
     components: { UserProfile, Search, UserPosted, UserLiked, Item },
+    watch: {
+        '$route'(to, from) {
+            if(to.matched[0].name == "user-profile") {
+                if(to.params.username != this.username) {
+                    this.username = to.params.username
+                    console.log(this.username)
+                    this.user = {} as User;
+                    this.userInfo();
+                }
+            }
+            
+        }
+    },
 })
 </script>
 
@@ -67,10 +93,10 @@ export default defineComponent({
         <div class="">
             <div class="">                
                 <div class="grid cols-2 border-b bg-theme-soft gap-2 w-full text-center">
-                    <RouterLink class="p-2 bg-theme" exact-active-class="text-heading weight-900" :to="{name: 'user-posted', params: {username: username}}" exact replace>
+                    <RouterLink class="p-2 bg-theme" exact-active-class="text-heading weight-900" :to="{name: 'user-posted', params: {username: username}}" exact>
                         Spills
                     </RouterLink>
-                    <RouterLink class="p-2 bg-theme" exact-active-class="text-heading weight-900" :to="{name: 'user-liked', params: {username: username}}" exact replace>
+                    <RouterLink class="p-2 bg-theme" exact-active-class="text-heading weight-900" :to="{name: 'user-liked', params: {username: username}}">
                         Likes
                     </RouterLink>
                 </div>
@@ -79,31 +105,13 @@ export default defineComponent({
                 <div class="p-2">
                     <RouterView v-slot="{ Component }">
                         <KeepAlive :max="2" :include="['user-posted', 'user-liked']">
-                            <component :is="Component" :key="$route.fullPath" />
+                            <component :is="Component"  />
                         </KeepAlive>
                     </RouterView>
                 </div>
-                
-
-                <!-- <q-tab-panels :keep-alive="true" :keep-alive-include="['User_Posted', 'User_Liked']"  :keep-alive-max="5" v-model="tab" class="panels text-heading" swipeable>
-                    <q-tab-panel name="User_Posted" class="panel" id="panel">
-                        <UserPosted :uid="user.id" />
-                    </q-tab-panel>
-                    <q-tab-panel name="User_Liked" class="panel" id="panel">
-                        <UserLiked  />
-                    </q-tab-panel>
-                </q-tab-panels> -->
             </div>
         </div>
     </div>
-    <!-- <div v-if="!loading && user.length == 0" class="user__not__found">
-        <div class="">
-            <div class="text-h2">User not found</div>
-        </div>
-    </div>
-    <div v-if="loading" class="loading">
-        <q-spinner :thickness="10" size="100px" />
-    </div> -->
 </template>
 
 
