@@ -92,7 +92,7 @@ export default defineComponent({
         </div>
         <div class="">
             <div class="">                
-                <div class="grid cols-2 border-b bg-theme-soft gap-2 w-full text-center">
+                <div class="grid cols-2 border-b bg-theme-soft gap-1 w-full text-center">
                     <RouterLink class="p-2 bg-theme" exact-active-class="text-heading weight-900" :to="{name: 'user-posted', params: {username: username}}" exact>
                         Spills
                     </RouterLink>

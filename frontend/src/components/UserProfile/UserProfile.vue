@@ -321,7 +321,7 @@ export default defineComponent({
         
             <div class="user-profile__info flex py-3 mb-5">
                 <div class="flex flex-col text-left" >
-                    <div class="user-name text-4xl weight-900 text-heading">{{ first_name }} {{ last_name }}</div>
+                    <div class="user-name text-3xl weight-900 text-heading">{{ first_name }} {{ last_name }}</div>
                     <div class="text-body text-base">@{{ username }}</div>
 
                     <div class="user-bio text-xl py-3 text-heading weight-600">{{ bio }}</div>

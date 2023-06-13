@@ -19,8 +19,8 @@ class UserSerializer(serializers.ModelSerializer):
         return obj.user_posted.count()
 
     def get_total_followers(self, obj):
-        return obj.following.count()
+        return obj.followers.count()
 
     def get_total_following(self, obj):
-        return obj.followers.count()
+        return obj.following.count()
         # return obj.following.filter(following_user=self).count()
