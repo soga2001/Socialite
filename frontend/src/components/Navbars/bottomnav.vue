@@ -89,17 +89,7 @@ export default defineComponent({
 <style scoped>
 @import '@/assets/base.css';
 
-header {
-  position: -webkit-sticky;
-	position: sticky;
-  max-height: 100vh;
-  max-height: 100dvh;
-  height: 100%;
-  width: 100%;
-	top: 0;
-  z-index: 20;
-  overflow-y: scroll;
-}
+
 
 .nav {
   height: 100%;

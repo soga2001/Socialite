@@ -1334,6 +1334,32 @@
     max-height: 100dvh !important;
 }
 
+.max-h-xs {
+    max-height: 25rem !important;
+}
+
+.max-h-sm {
+    max-height: 30rem !important;
+}
+
+.max-h-md {
+    max-height: 40rem !important;
+}
+
+.max-h-lg {
+    max-height: 50rem !important;
+}
+
+
+.min-h-52 {
+    min-height: 13rem !important;
+}
+
+.max-h-viewport {
+    max-height: 100vw !important;
+    max-height: 100dvw !important;
+}
+
 /* background color */
 .bg-transparent {
     background-color: transparent !important;
@@ -2303,4 +2329,13 @@
 
 .opacity-100 {
     opacity: 1 !important;
+}
+
+/* result */
+.results-even:nth-child(even) {
+    background-color: var(--color-background-mute);
+}
+
+.results-odd:nth-child(odd) {
+    background-color: var(--color-background);
 }

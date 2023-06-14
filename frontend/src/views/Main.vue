@@ -78,8 +78,6 @@ export default defineComponent({
         }
     },
     '$route': function() {
-      // const element = (document.getElementById("main-div") as HTMLDivElement);
-      // element.scrollTop = this.scrollPos[(this.$route.fullPath)]
       this.$nextTick(() => {
         const element = document.getElementById("main-div") as HTMLDivElement;
         element.scrollTop = this.scrollPos[this.$route.fullPath];
@@ -97,7 +95,7 @@ export default defineComponent({
     <div v-if="isMobile()" class="z-100 row-1 border-b">
       <TopNav/>
     </div>
-    <div id="main-div" :on-scroll="scroll" :class="(isMobile() && 'mobile-main min-h-full grid-row-2') + ' h-full w-full'">
+    <div id="main-div" :on-scroll="scroll" :class="(isMobile() && 'mobile-main min-h-full grid-row-2') + 'h-full w-full'">
       <div class="border-l border-r">
         <RouterView v-slot="{Component}">
           <KeepAlive :max="3" :include="['home','user-profile', 'search', 'explore']">
@@ -124,8 +122,8 @@ export default defineComponent({
   width: 100%;
   transform: transition 1s;
   position: fixed;
-  overflow: scroll;
-  overflow-y: scroll;
+  /* overflow: scroll;
+  overflow-y: scroll; */
   height: 100%;
   grid-template-columns: auto 1fr;
 }
@@ -137,6 +135,7 @@ export default defineComponent({
 .mobile-main {
   overflow: hidden;
   overflow-y: scroll;
+  height: 100%;
 }
 
 #main-div {

@@ -22,12 +22,10 @@ export default defineComponent({
         const store = useStore()
     },
     created() {
-        console.log(this.q)
-        // window.scroll({
-        //     top: 0,
-        //     left: 0,
-        //     behavior: 'smooth'
-        // })
+        if(this.q) {
+            this.input = this.q.toString()
+            this.search()
+        }
     },
     mounted() {
     },
@@ -52,7 +50,6 @@ export default defineComponent({
             }
         })
         this.loading = false
-        // this.users = users.data.users
       },
       resetInput() {
         this.input = ""

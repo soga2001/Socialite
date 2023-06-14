@@ -24,6 +24,7 @@ export default defineComponent({
     methods: {
         async userInfo() {
             this.loading = true
+            console.log('here')
             await http.get(`users/username/${this.$route.params.username}/${false}/`).then((res) => {
                 if (res.data.success) {
                     this.user = res.data.users;
@@ -37,32 +38,15 @@ export default defineComponent({
     },
     created() {
         this.userInfo();
-        this.$watch(
-            () => this.$route.params,
-            () => {
-                this.userInfo()
-            },
-            // fetch the data when the view is created and the data is
-            // already being observed
-            { immediate: true }
-        )
     },
-    // activated() {
-    //     console.log(this.$route.params.username, this.username)
-    //     if(this.$route.params.username !== this.username) {
-    //         this.user = {} as User;
-    //         this.userInfo();
-    //     }
-    // },
     mounted() {
     },
     components: { UserProfile, Search, UserPosted, UserLiked, Item },
     watch: {
         '$route'(to, from) {
-            if(to.matched[0].name == "user-profile") {
+            if(to.matched[0].name === "user-profile") {
                 if(to.params.username != this.username) {
                     this.username = to.params.username
-                    console.log(this.username)
                     this.user = {} as User;
                     this.userInfo();
                 }
@@ -75,7 +59,7 @@ export default defineComponent({
 
 <template>
     <div :class="'user__main ' + !$store.state.desktop && 'mobile'" v-if="Object.keys(user).length > 0">
-        <Item class="user__name" dense :vert-icon-center="true">
+        <Item class="user__name pl-2" dense :vert-icon-center="true">
                 <template #avatar>
                     <q-btn size="16px" @click="$router.back" flat dense round class="text-heading" icon="arrow_back" />
                 </template>
@@ -93,10 +77,10 @@ export default defineComponent({
         <div class="">
             <div class="">                
                 <div class="grid cols-2 border-b bg-theme-soft gap-1 w-full text-center">
-                    <RouterLink class="p-2 bg-theme" exact-active-class="text-heading weight-900" :to="{name: 'user-posted', params: {username: username}}" exact>
+                    <RouterLink class="p-2 text-lg bg-theme" exact-active-class="text-heading weight-900" :to="{name: 'user-posted', params: {username: username}}" exact>
                         Spills
                     </RouterLink>
-                    <RouterLink class="p-2 bg-theme" exact-active-class="text-heading weight-900" :to="{name: 'user-liked', params: {username: username}}">
+                    <RouterLink class="p-2 text-lg bg-theme" exact-active-class="text-heading weight-900" :to="{name: 'user-liked', params: {username: username}}">
                         Likes
                     </RouterLink>
                 </div>

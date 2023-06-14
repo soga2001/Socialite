@@ -9,7 +9,7 @@ import ProfileIcon from '@/icons/i-profile.vue';
 export default defineComponent({
     data() {
         return {
-            image: null,
+            image: null as File | null,
             caption: "",
             submitting: false,
             users: new Array<User>(),
@@ -72,7 +72,7 @@ export default defineComponent({
       </q-avatar>
       <div class="grid gap-3">
         <form class="post__form" autocorrect="on" autocomplete="off" @submit.prevent="submit">
-          <Mention @update:charsLeft="chars = $event" @update:val="caption = $event" :value="caption" input_type="text" id="caption" input_label="Caption" class="post__caption" />
+          <Mention @update:charsLeft="chars = $event" @update:val="caption = $event" :value="caption" input_type="text" id="caption" input_label="Caption" class="post__caption h-full" />
           <div class="flex gap-2 col-span-2">
             <label for="file" class="pointer btn-themed pt-2 px-2 rounded">
               <i-upload-img  size="1.5rem" fill="rgb(253, 137, 137)" stroke="rbg(253,137,137)"/>
@@ -156,11 +156,9 @@ export default defineComponent({
 }
 
 .post__caption {
-  /* border-bottom: 2px solid var(--color-border); */
   font-size: 15px;
   margin-top: 20px;
   grid-column: auto / span 5;
-  /* color: var(--color-heading); */
   position: relative;
 }
 

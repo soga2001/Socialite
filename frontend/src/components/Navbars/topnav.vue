@@ -6,7 +6,7 @@ import { RouterLink, RouterView } from 'vue-router';
 import router from '../../router';
 import { useStore } from '../../store/store';
 import Item from '../Item.vue';
-import Themetoggle from '../themetoggle.vue';
+// import Themetoggle from '../themetoggle.vue';
 import ProfileIcon from '@/icons/i-profile.vue'
 
 export default defineComponent({

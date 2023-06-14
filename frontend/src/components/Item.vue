@@ -66,6 +66,10 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    hover: {
+      type: Boolean,
+      default: false
+    },
     dense: {
       type: Boolean,
       default: false,
@@ -116,7 +120,7 @@ export default defineComponent({
 
 <template>
   <div :class="'user-card ' + (isAvatarOnly ? 'circular' : '')" :style="style" @click="router">
-    <div class="avatar" :style="avatarStyle" v-if="$slots.avatar">
+    <div class="avatar" :style="avatarStyle" v-if="$slots.avatar" @click="router">
       <slot name="avatar" />
     </div>
     <div class="info" :style="infoStyle" v-if="!isAvatarOnly">
@@ -149,12 +153,6 @@ export default defineComponent({
     padding: 0;
     margin: 0;
   }
-
-  /* .avatar,
-.info,
-.icon {
-  line-height: 1.2;
-} */
 
   .user-card.circular .avatar {
     width: 100%;
@@ -204,6 +202,12 @@ export default defineComponent({
     width: fit-content;
   }
 
+
+  .caption :slotted(*) {
+    font-size: inherit;
+    font-weight: 400;
+    color: var(--color-heading);
+  }
   .caption :slotted(*:deep(a)) {
     font-size: inherit;
     font-weight: 900;

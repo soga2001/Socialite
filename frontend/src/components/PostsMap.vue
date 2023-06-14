@@ -246,12 +246,12 @@ export default defineComponent({
         </div> 
         <q-img :src="img_url" @click.stop=""/>
         <Item title-size="16px" caption-size="13px">
-            <template #title class="caption__username">
+            <!-- <template #title class="caption__username">
                 {{ username }}
-            </template>
+            </template> -->
             <template #caption>
-                <div>
-                    <MentionLink :mention="caption"/>
+                <div class="text-base">
+                    <MentionLink  :mention="caption"/>
                 </div>
             </template>
         </Item>

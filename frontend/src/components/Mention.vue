@@ -200,9 +200,9 @@ export default defineComponent({
         <div @click="replaceMention(user.username)" class="result__map" v-for="user in users" :key="user.id">
           <Item>
               <template #avatar>
-                  <img src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
-                  <!-- <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" /> -->
-                  <!-- <q-icon size="50px" v-else name="account_circle" class="rounded-full" /> -->
+                  <!-- <img src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" /> -->
+                  <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
+                  <q-icon size="50px" v-else name="account_circle" class="rounded-full" />
               </template>
               <template #title>{{user.first_name + ' ' + user.last_name}}</template>
               <template #caption>@{{ user.username }}</template>

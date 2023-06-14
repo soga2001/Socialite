@@ -187,23 +187,23 @@ export default defineComponent({
                    <q-btn class="show btn-themed text-heading" round flat icon="add"/>
                   </div>
 
-                  <q-dialog class="min-h-viewport" v-model="post" persistent>
-                    <q-card class="border bg-theme w-full" >
-                      <q-card-section>
+                  <q-dialog class="min-h-sm" v-model="post" persistent>
+                    <div class="bg-theme-soft w-full max-w-sm h-full max-h-sm" >
+                      <div class="p-2">
                         <Item dense :vert-icon-center="true">
                           <template #title>
-                            <div class="text-lg">Spill</div>
+                            <div class="text-2xl">Spill</div>
                           </template>
                           <template #icon>
                             <i-close size="2rem" class="btn" @click="post = false"/>
                           </template>
                         </Item>
-                      </q-card-section>
+                      </div>
                       <hr class="border"/>
-                      <q-card-section>
+                      <div class="h-full min-h-xs max-h-xs">
                         <Spills/>
-                      </q-card-section>
-                    </q-card>
+                      </div>
+                    </div>
                    </q-dialog>
 
                   <RouterLink to="/login" class="nav__link" active-class="active" v-if="!$store.state.authenticated">

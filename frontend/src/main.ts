@@ -36,11 +36,12 @@ import 'quasar/dist/quasar.css'
 
 // My Components
 import Item from '@/components/Item.vue';
-import Themetoggle from '@/components/themetoggle.vue';
+import ThemeToggle from './components/ThemeToggle.vue'
 import ToolTips from '@/components/ToolTips.vue';
 import CircularProgress from './components/circularProgress.vue'
 import UploadedImage from '@/components/uploadedImg.vue';
 import imageCropper from '@/components/imageCropper.vue';
+import Loading from './components/Loading.vue'
 
 
 // my icons
@@ -93,8 +94,9 @@ app.component('i-upload-vid', UploadVideo);
 // components
 app.component('circular-progress', CircularProgress);
 app.component('uploaded-img', UploadedImage);
-app.component('theme-toggle', Themetoggle);
+app.component('theme-toggle', ThemeToggle);
 app.component('image-cropper', imageCropper);
+app.component('Loading', Loading);
 // app.component('adv-cropper', newCropper);
 
 

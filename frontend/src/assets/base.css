@@ -11,7 +11,7 @@
   --vt-c-black: #000000;
   /* --vt-c-green: #089e6a; */
   --vt-c-orange: rgb(253, 137, 137);
-  --vt-c-background-orange: rgb(255, 115, 115, .4);
+  --vt-c-background-orange: rgb(255, 115, 115);
   --vt-c-orange-hover: rgb(255, 115, 115, .6);
 
   --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);

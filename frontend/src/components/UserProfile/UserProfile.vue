@@ -52,6 +52,12 @@ export default defineComponent({
             errMsg: '',
             successMsg: '',
 
+            user_followers: new Array<User>(),
+            user_following: new Array<User>(),
+            show_followers: false,
+            show_following: false,
+
+            loading_follow: false,
         };
     },
     methods: {
@@ -88,6 +94,44 @@ export default defineComponent({
                 this.followed = false;
             });
             this.loading = false
+        },
+
+        getFollowers() {
+            if(this.user_followers.length) {
+                return
+            }
+            this.loading_follow = true;
+            http.get(`follow/get_followers_users/${this.username}`).then((res) => {
+                if(res.data.error) {
+                    return
+                }
+                // this.loading_follow = false
+                setTimeout(() => {
+                    this.loading_follow = false
+                }, 3000)
+                this.user_followers = res.data.users
+            }).catch((err) => {
+                console.log(err)
+            })
+        },
+
+        getFollowing() {
+            if(this.user_following.length) {
+                return
+            }
+            this.loading_follow = true;
+            http.get(`follow/get_following_users/${this.username}/`).then((res) => {
+                if(res.data.error) {
+                    return
+                }
+                // this.loading_follow = false
+                setTimeout(() => {
+                    this.loading_follow = false
+                }, 3000)
+                this.user_following = res.data.users
+            }).catch((err) => {
+                console.log(err)
+            })
         },
 
         toggleAvatar() {
@@ -242,10 +286,10 @@ export default defineComponent({
                     <img v-else class="profile-picture" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
                 </div>
                 <div class="edit-profile w-full h-fit flex flex-row-reverse p-2">
-                    <button v-if="$store.state.user.id != id && !loading" class="border btn rounded text-heading bg-transparent weight-900" @click="follow" :disabled="!$store.state.authenticated">{{ followed ? 'Unfollow' : 'Follow' }}</button>
+                    <button v-if="$store.state.user.id != id && !loading" class="border btn rounded-lg px-6 text-base text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated">{{ followed ? 'Unfollow' : 'Follow' }}</button>
                     <button v-if="$store.state.authenticated && $store.state.user.id == id" class="border btn rounded-lg px-6 text-base text-heading bg-theme weight-900" @click="editProfile = true">Edit Profile</button>
-                    <q-btn @click.stop="" v-if="followed && !loading" size="16px" class="less" flat dense round icon="notifications" />
-                    <q-btn @click.stop="" v-if="followed && !loading"  size="16px" class="more__vert" flat dense round icon="more_horiz" />
+                    <q-btn @click.stop="" v-if="followed && !loading" size="16px" dense round icon="notifications" />
+                    <q-btn @click.stop="" v-if="followed && !loading"  size="16px" dense round icon="more_horiz" />
                 </div>
             </div>
             <div class="h-full">
@@ -319,23 +363,104 @@ export default defineComponent({
                 </q-dialog>
             </div>
         
-            <div class="user-profile__info flex py-3 mb-5">
+            <div class="user-profile__info flex py-1 mb-5">
                 <div class="flex flex-col text-left" >
-                    <div class="user-name text-3xl weight-900 text-heading">{{ first_name }} {{ last_name }}</div>
+                    <div class="user-name text-2xl weight-900 text-heading">{{ first_name }} {{ last_name }}</div>
                     <div class="text-body text-base">@{{ username }}</div>
 
-                    <div class="user-bio text-xl py-3 text-heading weight-600">{{ bio }}</div>
+                    <div class="user-bio text-xl py-2 text-heading weight-600">{{ bio }}</div>
 
-                    <div class="user-date_joined my-2 flex items-center">
+                    <div class="user-date_joined mb-2 flex items-center">
                         <q-icon name="date_range" size="16px" class="mr-1 text-body" />
                         <div class="flex items-center text-base">
                             <span class="mr-1 text-body">Joined </span> <Timeago class="text-body" size="1rem" :date="date_joined" date_type="long" />
                         </div>
                     </div>
                     <div class="follows text-lg flex items-center gap-3">
-                        <span class="text-body"><span class="text-heading weight-900">{{ followers }} </span> Followers</span> 
-                        <span class="text-body"><span class="text-heading weight-900">{{ following }} </span> Following</span>
+                        <span class="text-body btn" @click="{show_followers = true; getFollowers()}"><span class="text-heading weight-900">{{ followers }} </span> Followers</span> 
+                        <span class="text-body btn" @click="{show_following = true; getFollowing()}"><span class="text-heading weight-900">{{ following }} </span> Following</span>
                     </div>
+
+                    <div class="relative w-full">
+                        <q-dialog class="w-full" v-model="show_followers">
+                            <div class="bg-theme-soft w-full max-w-xs h-full max-h-sm">
+                                <div class="p-1">
+                                    <Item>
+                                        <template #title>
+                                            <div class="text-h6">Followers</div>
+                                        </template>
+                                        <template #icon>
+                                            <div class="btn" @click="show_followers = !show_followers">
+                                                <i-close :vert-icon-center="true" fill="var(--color-heading)" stroke="none"  size="2rem"/>
+                                            </div>
+                                        </template>
+                                    </Item>
+                                </div>
+
+                                <div>
+                                    <hr/>
+                                </div>
+
+                                <div v-if="loading_follow" class="max-h-xs h-full flex justify-center items-center">
+                                    <Loading/>
+                                </div>
+
+                                <div class="results-even" v-else-if="!loading_follow && user_followers" v-for="user in user_followers">
+                                    <Item clickable :to="{ name: 'user-profile', params: { username: user.username } }">
+                                        <template #avatar>
+                                            <img :src="user.avatar" alt="user profile pic"/>
+                                        </template>
+                                        <template #title>
+                                            <div class="text-heading weight-900">{{ user.first_name }} {{ user.last_name }}</div>
+                                        </template>
+                                        <template #caption>
+                                            <div class="text-body">{{ user.username }}</div>
+                                        </template>
+                                    </Item>
+                                </div>
+                            </div>
+                        </q-dialog>
+
+                        <q-dialog class="w-full" v-model="show_following">
+                            <div class="bg-theme-soft w-full max-w-xs h-full max-h-sm">
+                                <div class="p-1">
+                                    <Item>
+                                        <template #title>
+                                            <div class="text-h6">Following</div>
+                                        </template>
+                                        <template #icon>
+                                            <div class="btn" @click="show_following = !show_following">
+                                                <i-close :vert-icon-center="true" fill="var(--color-heading)" stroke="none"  size="2rem"/>
+                                            </div>
+                                        </template>
+                                    </Item>
+                                </div>
+
+                                <div>
+                                    <hr/>
+                                </div>
+
+                                <div v-if="loading_follow" class="max-h-xs h-full flex justify-center items-center">
+                                    <Loading />
+                                </div>
+                                <div class="results-even" v-else-if="!loading_follow && user_following" v-for="user in user_following">
+                                    <Item clickable :to="{ name: 'user-profile', params: { username: user.username } }">
+                                        <template #avatar>
+                                            <img :src="user.avatar" alt="user profile pic"/>
+                                        </template>
+                                        <template #title>
+                                            <div class="text-heading weight-900">{{ user.first_name }} {{ user.last_name }}</div>
+                                        </template>
+                                        <template #caption>
+                                            <div class="text-body">{{ user.username }}</div>
+                                        </template>
+                                    </Item>
+                                </div>
+                            </div>
+                        </q-dialog>
+                    </div>
+
+                    
                 </div>
             </div>
 

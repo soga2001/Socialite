@@ -86,7 +86,7 @@ export default defineComponent({
       <header class="border-b" v-if="$store.state.desktop">
         Explore
       </header>
-      <q-infinite-scroll id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
+      <q-infinite-scroll class="overflow-scroll overflow-y-scroll h-full w-full" id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
         <div class="posts" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
           <PostsMap :post="post" />
         </div>
