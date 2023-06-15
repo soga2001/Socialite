@@ -33,3 +33,7 @@ export default defineComponent({
         </g>
     </svg>
 </template>
+
+
+<style scoped>
+</style>

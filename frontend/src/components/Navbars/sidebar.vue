@@ -99,7 +99,6 @@ export default defineComponent({
                   <RouterLink to="/home" class="nav__link" active-class="active" v-if="$store.state.authenticated">
                       <q-item class="hide">
                         <q-item-section avatar>
-                            <!-- <q-icon class="icon" size="2rem" :name="$route.fullPath == '/home' ? 'house' : 'o_house'"/> -->
                             <i-home size="2rem" :fill="$route.fullPath == '/home' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                         </q-item-section>
 
@@ -107,7 +106,23 @@ export default defineComponent({
                             Home
                         </q-item-section>
                       </q-item>
-                      <i-home class="show" size="2rem" :fill="$route.fullPath == '/home' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                      <div class="show p-2">
+                        <i-home size="2rem" :fill="$route.fullPath == '/home' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                      </div>
+
+                      <!-- <Item dense class="hide">
+                        <template #avatar>
+                          <i-home size="10px" :fill="$route.fullPath == '/home' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                        </template>
+                        <template #title>
+                          <div class="text-h6">Home</div>
+                        </template>
+                      </Item>
+                      <Item class="show">
+                        <template #avatar>
+                          <i-home size="2rem" :fill="$route.fullPath == '/home' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                        </template>
+                      </Item> -->
                   </RouterLink>
 
                   <RouterLink to="/explore" class="nav__link" active-class="active">
@@ -121,7 +136,10 @@ export default defineComponent({
                           Explore
                       </q-item-section>
                       </q-item>
-                      <i-explore class="show" size="2rem" :fill="$route.fullPath == '/explore' ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == '/explore' ? 'none' : 'var(--color-heading)'" />
+                      <div class="show p-2">
+                        <i-explore class="show" size="2rem" :fill="$route.fullPath == '/explore' ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == '/explore' ? 'none' : 'var(--color-heading)'" />                      
+                      </div>
+                      <!-- <i-explore class="show" size="2rem" :fill="$route.fullPath == '/explore' ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == '/explore' ? 'none' : 'var(--color-heading)'" /> -->
                   </RouterLink>
                   <RouterLink v-if="$store.state.authenticated" to="/notifications" class="nav__link" active-class="active">
                       <q-item class="hide">
@@ -134,7 +152,9 @@ export default defineComponent({
                             Notifications
                         </q-item-section>
                       </q-item>
-                      <i-notif class="show" size="2rem" :fill="$route.fullPath == '/notifications' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                      <div class="show p-2">
+                        <i-notif class="show" size="2rem" :fill="$route.fullPath == '/notifications' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                      </div>
                   </RouterLink>
 
 
@@ -151,7 +171,10 @@ export default defineComponent({
                         </q-item-section>
                       
                       </q-item>
-                      <i-search class="show" size="2rem" :fill="$route.fullPath == '/search' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                      <div class="show p-2">
+                        <i-search class="show" size="2rem" :fill="$route.fullPath == '/search' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                      </div>
+                      <!-- <i-search class="show" size="2rem" :fill="$route.fullPath == '/search' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" /> -->
                   </RouterLink>
 
                   <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
@@ -165,7 +188,9 @@ export default defineComponent({
                             Profile
                         </q-item-section>
                       </q-item>
-                      <i-profile class="show icon" size="2rem" :fill="$route.path.startsWith(`/${$store.state.user.username}/`) ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'"/>
+                      <div class="show p-2">
+                        <i-profile size="2rem" :fill="$route.path.startsWith(`/${$store.state.user.username}`) ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                      </div>
                   </RouterLink>
 
                   <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
@@ -179,10 +204,13 @@ export default defineComponent({
                           Settings
                       </q-item-section>
                       </q-item>
-                      <i-settings class="show" size="2rem" :fill="$route.fullPath == '/settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                      <div class="show p-2">
+                        <i-settings size="2rem" :fill="$route.fullPath == '/settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />                        
+                      </div>
+                      <!-- <i-settings class="show" size="2rem" :fill="$route.fullPath == '/settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" /> -->
                   </RouterLink>
                   
-                  <div v-if="$store.state.authenticated" class="w-full px-5 flex flex-rows" @click="post = !post">
+                  <div v-if="$store.state.authenticated" class="w-full py-2 px-5" @click="post = !post">
                    <button class=" hide w-full px-15 py-3 text-xl rounded-lg border-none btn btn-themed text-white weight-900 ">Spill</button>
                    <q-btn class="show btn-themed text-heading" round flat icon="add"/>
                   </div>
@@ -528,7 +556,7 @@ a {
 }
 
 
-@media (max-width: 800px) {
+@media (max-width: 880px) {
   .show {
     display:flex;
   }

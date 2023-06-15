@@ -286,10 +286,14 @@ export default defineComponent({
                     <img v-else class="profile-picture" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
                 </div>
                 <div class="edit-profile w-full h-fit flex flex-row-reverse p-2">
-                    <button v-if="$store.state.user.id != id && !loading" class="border btn rounded-lg px-6 text-base text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated">{{ followed ? 'Unfollow' : 'Follow' }}</button>
-                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="border btn rounded-lg px-6 text-base text-heading bg-theme weight-900" @click="editProfile = true">Edit Profile</button>
-                    <q-btn @click.stop="" v-if="followed && !loading" size="16px" dense round icon="notifications" />
-                    <q-btn @click.stop="" v-if="followed && !loading"  size="16px" dense round icon="more_horiz" />
+                    <button v-if="$store.state.user.id != id && !loading" class="border btn rounded-lg px-6 text-sm text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated">{{ followed ? 'Unfollow' : 'Follow' }}</button>
+                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="border btn rounded-lg px-6 text-sm text-heading bg-theme weight-900" @click="editProfile = true">Edit Profile</button>
+                    <button class="border btn rounded-lg text-sm text-heading bg-theme weight-900" v-if="followed && !loading">
+                        <q-icon size="1.5rem" name="notifications" />
+                    </button>
+                    <button class="border btn rounded-lg text-sm text-heading bg-theme weight-900" v-if="followed && !loading">
+                        <q-icon size="1.5rem" name="more_horiz" />
+                    </button>
                 </div>
             </div>
             <div class="h-full">

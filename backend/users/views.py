@@ -317,41 +317,6 @@ class Staff(APIView):
             return JsonResponse({"error": True}, safe=False)
 
 
-class SuperUser(APIView):
-    permission_classes = [IsAuthenticated,]
-
-    def get(self, request):
-        user = User.objects.get(id=request.user.id)
-        if user.is_superuser:
-            return JsonResponse({"message": True}, safe=False)
-        return JsonResponse({"message": False}, safe=False)
-
-    def post(self, request):
-        try:
-            user = User.objects.get(id=request.user.id)
-            user.is_superuser = True
-            user.save()
-            return JsonResponse({"success": True}, safe=False)
-        except:
-            return JsonResponse({"error": True}, safe=False)
-
-class Staff(APIView):
-    permission_classes = [IsAuthenticated,]
-
-    def get(self, request):
-        user = User.objects.get(id=request.user.id)
-        if user.is_staff:
-            return JsonResponse({"message": True}, safe=False)
-        return JsonResponse({"message": False}, safe=False)
-
-    def post(self, request):
-        try:
-            user = User.objects.get(id=request.user.id)
-            user.is_staff = True
-            user.save()
-            return JsonResponse({"success": True}, safe=False)
-        except:
-            return JsonResponse({"error": True}, safe=False)
 
 # Delete Endpoints
 class Delete_User(APIView):
@@ -371,3 +336,5 @@ class Delete_User(APIView):
 def delete_all(request):
     User.objects.all().delete()
     return JsonResponse({"success": True}, safe=False)
+
+

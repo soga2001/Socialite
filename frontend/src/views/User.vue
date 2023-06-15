@@ -19,6 +19,7 @@ export default defineComponent({
             avatar: '',
             tab: ref('User_Posted'),
             loading: true,
+            docState: 'saved',
         };
     },
     methods: {
@@ -51,7 +52,6 @@ export default defineComponent({
                     this.userInfo();
                 }
             }
-            
         }
     },
 })
@@ -76,20 +76,23 @@ export default defineComponent({
         </div>
         <div class="">
             <div class="">                
-                <div class="grid cols-2 border-b bg-theme-soft gap-1 w-full text-center">
-                    <RouterLink class="p-2 text-lg bg-theme" exact-active-class="text-heading weight-900" :to="{name: 'user-posted', params: {username: username}}" exact>
+                <div class="grid cols-2 text-base border-b bg-theme-soft gap-1 w-full text-center">
+                    <RouterLink class="p-2 bg-theme bg-hover" exact-active-class="text-heading weight-900" :to="{name: 'user-posted', params: {username: username}}" exact>
                         Spills
                     </RouterLink>
-                    <RouterLink class="p-2 text-lg bg-theme" exact-active-class="text-heading weight-900" :to="{name: 'user-liked', params: {username: username}}">
+                    <RouterLink class="p-2 bg-theme bg-hover" exact-active-class="text-heading weight-900" :to="{name: 'user-liked', params: {username: username}}">
                         Likes
                     </RouterLink>
+                    <!-- <RouterLink class="p-2 text-lg bg-theme bg-hover" :to="{name: 'comments', params: {username: username}}">
+                        Comments
+                    </RouterLink> -->
                 </div>
 
 
                 <div class="p-2">
                     <RouterView v-slot="{ Component }">
                         <KeepAlive :max="2" :include="['user-posted', 'user-liked']">
-                            <component :is="Component"  />
+                            <component :is="Component"/>
                         </KeepAlive>
                     </RouterView>
                 </div>

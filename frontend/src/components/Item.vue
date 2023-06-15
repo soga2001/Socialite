@@ -144,7 +144,7 @@ export default defineComponent({
     line-height: normal;
     gap: 10px;
     justify-content: center;
-    align-items: center; /* add this line */
+    align-items: center;
     height: 100%;
   }
   

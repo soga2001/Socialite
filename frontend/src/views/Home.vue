@@ -16,15 +16,25 @@ export default defineComponent({
         user_timestap: new Date().toISOString(),
         page: ref(0),
         hasMore: false,
-        scrollY: 0
       };
   },
   name: 'home',
+  props: {
+    scrollPosition: {
+      type: Number,
+      required: true,
+    },
+    height: {
+      type: Number,
+      required: true,
+    }
+  },
   setup() {
     const store = useStore()
   },
   created() {
     this.getData();
+    console.log(this.height)
   },
   
   mounted() {
@@ -61,8 +71,7 @@ export default defineComponent({
     },
     scroll() {
       const div = (document.getElementById("infinite-scroll") as HTMLDivElement)
-      this.scrollY = div.scrollTop
-      if(this.scrollY >= div.scrollHeight - 1000 && this.hasMore) {
+      if(this.scrollPosition >= div.scrollHeight - 1000 && this.hasMore) {
         this.page += 1
         this.getData()
       }

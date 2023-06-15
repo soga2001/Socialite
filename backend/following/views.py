@@ -3,6 +3,8 @@ from django.forms import ValidationError
 from django.http import JsonResponse
 
 from rest_framework.decorators import api_view, permission_classes
+from users.serializer import UserSerializer
+
 # from django.contrib.auth.models import User
 from users.models import User 
 from .models import UserFollowing
@@ -71,3 +73,27 @@ def get_followed_by_id(request, user_id):
         return JsonResponse({"success": False, "followed": followed}, safe=False)
     except:
         return JsonResponse({"error": True, "followed": False}, safe=False)
+    
+
+
+# get followers
+class GetFollowers(APIView):
+
+    def get(self, request, username):
+        user = User.objects.get(username=username)
+        # print(user)
+        followers = user.followers.values_list('following_user_id', flat=True)
+        followesSerialized = UserSerializer(User.objects.filter(id__in=followers), many=True).data
+        return JsonResponse({"success": True, "users": followesSerialized})
+    
+
+# get following
+class GetFollowing(APIView):
+        def get(self, request, username):
+            user = User.objects.get(username=username)
+            # print(user)
+            following = user.following.values_list('followed_user_id', flat=True)
+
+            followingSerialized = UserSerializer(User.objects.filter(id__in=following), many=True).data
+            return JsonResponse({"success": True, "users": followingSerialized})
+            # return JsonResponse({"success": True})

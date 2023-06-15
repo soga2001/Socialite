@@ -2290,6 +2290,10 @@
     background-color: var(--color-button-hover) !important;
 }
 
+.bg-hover:hover {
+    background-color: var(--color-hover) !important;
+}
+
 
 
 .pointer:hover {

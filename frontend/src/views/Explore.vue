@@ -7,7 +7,6 @@ import Search from './Search.vue';
 import Navbar from '../components/Navbar.vue';
 
 export default defineComponent({
-  title: 'Explore',
   data() {
       return {
         posts: new Array<Post>(),
@@ -15,18 +14,23 @@ export default defineComponent({
         user_timestap: new Date().toISOString(),
         page: ref(0),
         hasMore: false,
-        scrollY: 0,
         message: '',
         offset: 0,
       };
   },
+  props: {
+    scrollPosition: {
+      type: Number,
+      required: true,
+    },
+    height: {
+      type: Number,
+      required: true,
+    }
+  },
   name: 'explore',
   created() {
     this.getData();
-  },
-  
-  mounted() {
-    
   },
   methods: {
     async getData() {
@@ -61,21 +65,17 @@ export default defineComponent({
       }
       done()
     },
-    scroll() {
-      const div = (document.getElementById("infinite-scroll") as HTMLDivElement)
-      this.scrollY = div.scrollTop
-      if(this.scrollY >= div.scrollHeight - 1000 && this.hasMore) {
-        this.page += 1
-        this.getData()
-      }
-    },
-    scrollTo() {
-      (document.getElementById("infinite-scroll") as HTMLDivElement).scrollTo(0, this.scrollY)
-    }
   },
   components: { PostsMap, Search, Navbar },
   activated() {
-    this.scrollTo()
+  },
+  watch: {
+    scrollPosition(scrollPosition) {
+      // console.log(scrollPosition)
+    },
+    height(height) {
+      console.log(height)
+    }
   }
 })
 </script>
@@ -86,7 +86,7 @@ export default defineComponent({
       <header class="border-b" v-if="$store.state.desktop">
         Explore
       </header>
-      <q-infinite-scroll class="overflow-scroll overflow-y-scroll h-full w-full" id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
+      <q-infinite-scroll id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
         <div class="posts" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
           <PostsMap :post="post" />
         </div>

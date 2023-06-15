@@ -5,6 +5,7 @@ import Sidebar from '@/components/Navbars/sidebar.vue';
 import TopNav from '@/components/Navbars/topnav.vue';
 import BottomNav from '@/components/Navbars/bottomnav.vue';
 import Unauthenticated from '@/components/unauthenticated.vue';
+import { he } from 'date-fns/locale';
 
 export default defineComponent({
   title: 'Main',
@@ -13,11 +14,10 @@ export default defineComponent({
         $q: useQuasar(),
         scrollY: 0,
         topNavHeight: (document.getElementById("top-nav") as HTMLDivElement)?.offsetHeight,
-        scrollPos: {
-          "/home": 0,
-          "/settings": 0,
-          "/explore": 0,
-        } as { [key: string]: number },
+        scrollPos: new Map(),
+        scrollHeight: new Map(),
+        scrollPosition: 0,
+        height: 0,
       };
   },
   name: 'Main',
@@ -30,15 +30,29 @@ export default defineComponent({
     element.addEventListener("scroll", this.scroll)
   },
   activated() {
-    const element = (document.getElementById("main-div") as HTMLDivElement)
-    element.addEventListener("scroll", this.scroll)
   },
   computed: {
   },
   methods: {
+    setData() {
+      const element = (document.getElementById("main-div") as HTMLDivElement)
+      if(!this.scrollPos.get(this.$route.name)) {
+        this.scrollPos.set(this.$route.name, element.scrollTop);
+        this.scrollPosition = element.scrollTop
+      }
+      if(!this.scrollHeight.get(this.$route.name)) {
+        this.scrollHeight.set(this.$route.name, element.scrollHeight - element.clientHeight)
+        this.height = element.scrollHeight - element.clientHeight
+      }
+      
+    },
     scroll() {
       const element = (document.getElementById("main-div") as HTMLDivElement);
-      (this.scrollPos[(this.$route.fullPath)]) = element.scrollTop
+      this.scrollPos.set(this.$route.name, element.scrollTop);
+      this.scrollPosition = element.scrollTop
+      this.scrollHeight.set(this.$route.name, element.scrollHeight - element.clientHeight)
+      this.height = element.scrollHeight - element.clientHeight
+      
     },
     isMobile() {
       return this.$q.screen.lt.sm
@@ -78,10 +92,16 @@ export default defineComponent({
         }
     },
     '$route': function() {
+      // console.log((this.scrollPos))
+      // console.log(this.scrollHeight)
+      this.setData()
       this.$nextTick(() => {
         const element = document.getElementById("main-div") as HTMLDivElement;
-        element.scrollTop = this.scrollPos[this.$route.fullPath];
+        element.scrollTop = this.scrollPos.get(this.$route.name);
+        this.scrollPosition = this.scrollPos.get(this.$route.name);
+        this.height = this.scrollHeight.get(this.$route.name)
       });
+
     },
   }
 })
@@ -95,12 +115,19 @@ export default defineComponent({
     <div v-if="isMobile()" class="z-100 row-1 border-b">
       <TopNav/>
     </div>
-    <div id="main-div" :on-scroll="scroll" :class="(isMobile() && 'mobile-main min-h-full grid-row-2') + 'h-full w-full'">
+    <div id="main-div" :scroll="scroll" :class="(isMobile() && 'mobile-main min-h-full grid-row-2') + 'h-full w-full'">
       <div class="border-l border-r">
-        <RouterView v-slot="{Component}">
-          <KeepAlive :max="3" :include="['home','user-profile', 'search', 'explore']">
-            <component :is="Component" />
-          </KeepAlive>
+        <RouterView v-slot="{Component}" >
+          <template v-if="$route.name == 'user-profile'">
+            <KeepAlive :max="4" :include="['home', 'search', 'explore']" >
+              <component :is="Component" :key="$route.fullPath"  :height="height" :scrollPosition="scrollPosition" />
+            </KeepAlive>
+          </template>
+          <template v-else>
+            <KeepAlive :max="4" :include="['user-profile']" >
+              <component :is="Component"  :height="height" :scrollPosition="scrollPosition" />
+            </KeepAlive>
+          </template>
         </RouterView>
       </div>
 
@@ -151,7 +178,7 @@ export default defineComponent({
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   .main {
-    grid-template-columns: 80px 1fr;
+    grid-template-columns: 200px 1fr;
   }
 
   #main-div {
@@ -221,6 +248,17 @@ export default defineComponent({
   .right-bar {
     display: block;
   }
+}
+
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 </style>

@@ -112,17 +112,20 @@ export default defineComponent({
                   <q-btn flat round dense icon="close" size="16px" @click="closeNav" />
                 </template>
               </Item>
-              <Item class="item" avatar-size="fit-content">
-                <template #avatar>
-                  <div @click="() => {$router.push({name: 'user-profile', params: {username: $store.state.user.username}}), closeNav()}">
-                    <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
-                    <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
-                  </div>
-                </template>
-                <!-- <template #icon>
-                  <q-btn flat round dense icon="close" size="16px" @click="navSlideIn = false" />
-                </template> -->
-              </Item>
+              <div>
+                <Item class="item" :vert-icon-center="true">
+                  <template #avatar>
+                    <div @click="() => {$router.push({name: 'user-profile', params: {username: $store.state.user.username}}), closeNav()}">
+                      <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
+                      <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
+                    </div>
+                  </template>
+                  <template #icon>
+                    <q-btn flat round dense icon="add" size="16px" class="border" @click.stop="" />
+                  </template>
+                </Item>
+              </div>
+              
               <Item class="item">
                 <template #title>
                   {{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}
@@ -131,17 +134,14 @@ export default defineComponent({
                   @{{ $store.state.user.username }}
                 </template>
               </Item>
-              <Item class="item">
-                <template #caption>
-                  <div class="follow">
-                    <p> <span class="text-heading">{{ $store.state.user.total_following }} </span> Following</p>
-                    <p> <span class="text-heading">{{ $store.state.user.total_followers }} </span> Followers</p>
-                  </div>
-                </template>
-              </Item>
+              <div class="text-base flex items-center ml-2 gap-3">
+                <span class="text-body btn"><span class="text-heading weight-900">{{ $store.state.user.total_followers }} </span> Followers</span> 
+                <span class="text-body btn"><span class="text-heading weight-900">{{ $store.state.user.total_following }} </span> Following</span>
+              </div>
+                    
               <!-- <hr/> -->
 
-              <RouterLink @click="closeNav" :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
+              <RouterLink @click="closeNav" :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link w-full rounded-none" active-class="active" exact-active-class="exact-active">
                 <q-item>
                   <q-item-section avatar>
                       <!-- <q-icon class="icon" :name="$route.fullPath == `/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" /> -->
@@ -165,7 +165,7 @@ export default defineComponent({
                 </q-item>
               </RouterLink> -->
             </div>
-            <div class="pb-3">
+            <div class="pb-3 w-full">
               <q-item class="logout" clickable v-close-popup @click="logout">
                 <q-item-section avatar>
                   <!-- <q-icon name="logout" /> -->
@@ -217,7 +217,8 @@ header {
   height: fit-content;
 }
 .item img {
-  width: 3rem;
+  width: 3.5rem;
+  height: 3.5rem;
 }
 
 .slide-in-nav {

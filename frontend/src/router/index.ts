@@ -16,13 +16,13 @@ const router: Router = createRouter({
   routes: [
     {
       path: '/search',
-      name: 'Search',
+      name: 'search',
       component: () => import('../views/Search.vue'),
       props: route => ({ query: route.query.q })
     },
     {
       path: '/home',
-      name: 'Home',
+      name: 'home',
       alias: '/',
       component: () => import('../views/Home.vue'),
       meta: {
@@ -31,7 +31,7 @@ const router: Router = createRouter({
     },
     {
       path: '/explore',
-      name: 'Explore',
+      name: 'explore',
       component: () => import('../views/Explore.vue'),
     },
     {
