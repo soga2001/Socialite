@@ -211,7 +211,7 @@ export default defineComponent({
                   </RouterLink>
                   
                   <div v-if="$store.state.authenticated" class="w-full py-2 px-5" @click="post = !post">
-                   <button class=" hide w-full px-15 py-3 text-xl rounded-lg border-none btn btn-themed text-white weight-900 ">Spill</button>
+                   <button class=" hide w-full px-15 py-3 text-xl rounded-lg border-none pointer btn-themed weight-900 ">Spill</button>
                    <q-btn class="show btn-themed text-heading" round flat icon="add"/>
                   </div>
 

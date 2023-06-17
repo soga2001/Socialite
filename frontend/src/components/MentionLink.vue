@@ -1,5 +1,5 @@
 <script lang="ts">
-import {h, compile} from 'vue/dist/vue.esm-bundler.js';
+import {h, compile} from 'vue';
 
 
 

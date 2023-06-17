@@ -16,28 +16,65 @@ export default defineComponent({
             capt: "",
             chars: 0,
             imgURL: '',
+            disabled: true,
         };
+    },
+    props: {
+      placeholder: {
+        type: String,
+        default: "Spill your guts here",
+      },
+      btnString: {
+        type: String,
+        default: "Spill",
+      },
+      isComment: {
+        type: Boolean,
+        default: false,
+      },
+      spillId: {
+        type: Number,
+        default: 0,
+      },
+    },
+    computed: {
+      
     },
     methods: {
         submit() {
             this.submitting = true;
             const formData = new FormData();
-            console.log(this.image)
-            if (this.image) {
-                formData.append("image", this.image);
-                formData.append("caption", this.caption);
-                http.post("posts/post_content/", formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    }
-                }).then((res) => {
-                    this.submitting = false;
-                    this.image = null;
-                    this.imgURL = '';
-                    this.caption = "";
-                }).catch((err) => {
-                    console.log(err);
-                });
+            if (this.image && !this.isComment) {
+              formData.append("caption", this.caption);
+              formData.append("image", this.image);
+              http.post("posts/post_content/", formData, {
+                  headers: {
+                      "Content-Type": "multipart/form-data",
+                  }
+              }).then((res) => {
+                  this.submitting = false;
+                  this.image = null;
+                  this.imgURL = '';
+                  this.caption = "";
+              }).catch((err) => {
+                  console.log(err);
+              });
+            }
+            else {
+              if(!this.isComment) {
+                return
+              }
+              formData.append("comment", this.caption);
+              http.post(`comments/comment/${this.spillId}/`, formData, {
+                  headers: {
+                      "Content-Type": "multipart/form-data",
+                  }
+              }).then((res) => {
+                  this.submitting = false;
+                  this.caption = "";
+              }).catch((err) => {
+                  console.log(err);
+              });
             }
         },
         getImage(e: Event) {
@@ -57,6 +94,14 @@ export default defineComponent({
     mounted() {
     },
     watch: {
+      chars(chars) {
+        if(chars > 0 && chars <= 255) {
+          this.disabled = false;
+        }
+        else {
+          this.disabled = true;
+        }
+      }
     },
     components: { Mention, ProfileIcon }
 })
@@ -71,19 +116,22 @@ export default defineComponent({
           <profile-icon v-else size="4rem" />
       </q-avatar>
       <div class="grid gap-3">
-        <form class="post__form" autocorrect="on" autocomplete="off" @submit.prevent="submit">
-          <Mention @update:charsLeft="chars = $event" @update:val="caption = $event" :value="caption" input_type="text" id="caption" input_label="Caption" class="post__caption h-full" />
-          <div class="flex gap-2 col-span-2">
-            <label for="file" class="pointer btn-themed pt-2 px-2 rounded">
+        <form class="relative cols-5 grid gap-2 p-2" autocorrect="on" autocomplete="off" @submit.prevent="submit">
+          <Mention @update:charsLeft="chars = $event" @update:val="caption = $event" :value="caption" input_type="text" id="caption" :placeholder="placeholder" class="post__caption h-full" />
+          <div class="flex w-full gap-2 col-span-2">
+            <label :hidden="isComment" for="file" class="pointer btn-transition btn-hover pt-2 px-2 rounded">
               <i-upload-img  size="1.5rem" fill="rgb(253, 137, 137)" stroke="rbg(253,137,137)"/>
-              <input @change="getImage" type="file" id="file" style="display: none" name="image" accept="image/*" data-original-title="upload photos">
+              <input @change="getImage" type="file" id="file" style="display: none" name="image" accept="image/*" data-original-title="upload photos"/>
             </label>
-            <i-upload-vid size="2rem" fill="rgb(253, 137, 137)" stroke="rgb(253, 137, 137)" />
+            <label :hidden="isComment" for="file" class="pointer btn-transition btn-hover pt-2 px-2 rounded">
+              <i-upload-vid size="1.5rem" fill="rgb(253, 137, 137)" stroke="rgb(253, 137, 137)" />
+              <input @change="getImage" type="file" id="file" style="display: none" name="image" accept="image/*" data-original-title="upload photos"/>
+            </label>
           </div>
           <div class="col-5 col-span-3 flex flex-row-reverse items-center gap-2 bottom-0 right-0 mr-2">
-            <q-btn class="right bottom-0 right-0 mr-2 btn btn-themed text-heading rounded px-7 py-2 weight-900" flat dense :loading="submitting" type="submit" push :disable="image === null">
+            <q-btn class="right bottom-0 right-0 mr-2 btn btn-themed text-heading rounded px-7 py-2 weight-900" flat dense :loading="submitting" type="submit" push :disable="disabled">
               <div>
-                <span class="text-white text-base weight-900 text-capitalize">Spill</span>
+                <span class="text-white text-base weight-900 text-capitalize">{{ btnString }}</span>
               </div>
               <template v-slot:loading>
                 <q-spinner

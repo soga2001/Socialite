@@ -58,6 +58,7 @@ export default defineComponent({
             show_following: false,
 
             loading_follow: false,
+            loading_follow_request: false,
         };
     },
     methods: {
@@ -65,12 +66,15 @@ export default defineComponent({
             if (!this.$store.state.authenticated) {
                 return;
             }
-            await http.post(`follow/follow_user/${this.id}/`, {}, {
-            }).then((res) => {
+            this.loading_follow_request = true
+            await http.post(`follow/follow_user/${this.id}/`).then((res) => {
                 if (res.data.error) {
                     return;
                 }
                 this.followed = !this.followed;
+                setTimeout(() => {
+                    this.loading_follow_request = false
+                }, 4000)
                 if (!this.followed && this.following != 0) {
                     this.followers -= 1;
                 }
@@ -277,7 +281,7 @@ export default defineComponent({
     <div class="user">
         <div class="user__container col-12 col-md-auto">
             <div class=' grid cols-auto-fr rows-4 relative overflow-hidden'>
-                <div id="banner" class='p-0 col-start-1 col-span-full z-3 bg-theme-soft pointer'>
+                <div id="banner" class='p-0 col-start-1 col-span-full z-3 bg-theme-soft h-full pointer'>
                     <img v-if="banner" :src="banner" alt="banner"/>
                     <img v-else class="" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
                 </div>
@@ -286,12 +290,17 @@ export default defineComponent({
                     <img v-else class="profile-picture" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
                 </div>
                 <div class="edit-profile w-full h-fit flex flex-row-reverse p-2">
-                    <button v-if="$store.state.user.id != id && !loading" class="border btn rounded-lg px-6 text-sm text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated">{{ followed ? 'Unfollow' : 'Follow' }}</button>
-                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="border btn rounded-lg px-6 text-sm text-heading bg-theme weight-900" @click="editProfile = true">Edit Profile</button>
-                    <button class="border btn rounded-lg text-sm text-heading bg-theme weight-900" v-if="followed && !loading">
+                    <button v-if="$store.state.user.id != id && !loading" class="border btn bg-hover rounded-lg px-6 text-sm text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated || loading_follow_request">
+                        <span v-if="!loading_follow_request">{{ followed ? 'Unfollow' : 'Follow' }}</span>
+                        <span class="p-0" v-if="loading_follow_request">
+                            <Loading size="1.3rem" />
+                        </span>
+                    </button>
+                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="border btn bg-hover rounded-lg px-6 text-sm text-heading bg-theme weight-900" @click="editProfile = true">Edit Profile</button>
+                    <button class="border btn bg-hover rounded-lg text-sm text-heading bg-theme weight-900" v-if="followed && !loading">
                         <q-icon size="1.5rem" name="notifications" />
                     </button>
-                    <button class="border btn rounded-lg text-sm text-heading bg-theme weight-900" v-if="followed && !loading">
+                    <button class="border btn bg-hover rounded-lg text-sm text-heading bg-theme weight-900" v-if="followed && !loading">
                         <q-icon size="1.5rem" name="more_horiz" />
                     </button>
                 </div>
@@ -484,11 +493,6 @@ export default defineComponent({
 .user__container {
     max-width: 600px;
     width: 100%;
-}
-
-.user__container:not(:first-child) {
-    margin-left: 2vw;
-    background-color: aliceblue;
 }
 
 

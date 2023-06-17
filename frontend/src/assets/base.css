@@ -12,7 +12,7 @@
   /* --vt-c-green: #089e6a; */
   --vt-c-orange: rgb(253, 137, 137);
   --vt-c-background-orange: rgb(255, 115, 115);
-  --vt-c-orange-hover: rgb(255, 115, 115, .6);
+  --vt-c-orange-hover: rgb(255, 115, 115, .7);
 
   --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
   --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
@@ -24,8 +24,8 @@
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.8);
 
-  --vt-c-hover-dark: hsla(0, 0%, 15%, 0.5);
-  --vt-c-hover-light: hsla(0, 0%, 90%, 0.5);;
+  --vt-c-hover-dark: hsla(0, 0%, 20%, 0.2);
+  --vt-c-hover-light: hsla(0, 0%, 80%, 0.2);;
 }
 
 /* semantic color variables for this project */

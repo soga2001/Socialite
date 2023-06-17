@@ -1,5 +1,6 @@
 import re
 from time import time
+from django.db import DatabaseError
 from django.http import JsonResponse
 from django.utils.html import escape
 from rest_framework.decorators import api_view
@@ -18,6 +19,7 @@ from .models import Post
 from .serializer import PostSerializer
 from users.models import User
 from backend.authenticate import *
+from rest_framework import status
 
 
 import json
@@ -54,9 +56,8 @@ class Post_Content(APIView):
             regex = r'@(\w+)'
             # caption = re.sub(r'@(\w+)', r'<a href="/users/\1/">@\1</a>', caption)
             caption = re.sub(regex, replace, caption)
-            user, token = custom.authenticate(request)
             post = Post(
-                user = user,
+                user = request.user,
                 img_url = image,
                 caption=caption
             )
@@ -148,6 +149,16 @@ def total_user_posted(request, user_id):
     posts = Post.objects.filter(user_id=user_id).count()
     return JsonResponse({"posts": posts}, safe=False)
 
+
+@api_view(["GET"])
+def get_post_by_id(request, post_id):
+    try:
+        spill = Post.objects.get(pk=post_id)
+        return JsonResponse({"spill": PostSerializer(spill).data}, status=200)
+    except DatabaseError as e:
+        return JsonResponse({"error": True}, status=status.HTTP_404_NOT_FOUND)
+    except:
+        return JsonResponse({"error": True}, safe=False)
 
 
     

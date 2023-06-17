@@ -87,6 +87,11 @@ const router: Router = createRouter({
       ],
     },
     {
+      path: '/:username/spill/:post_id?',
+      name: 'view-spill',
+      component: () => import('../views/ViewSpill.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       component: () => import('../views/PageNotFound.vue'),
     }

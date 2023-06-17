@@ -23,7 +23,10 @@ def replace(val):
     try:
         user = User.objects.get(username=u)
         if user:
-            return r'<a href="/profile/user/{0}/">@{0}</a>'.format(u)
+            # result = r'<RouterLink :to="{name: `user-profile`, params: {username: {0}}}" :exact="true">@{0}</RouterLink>'.format(u)
+            result = '<RouterLink :to="{name: `user-profile`, params: {username: \'' + u + '\'}}" :exact="true">@' + u + '</RouterLink>'
+            return result
+            # return r'<a href="/{0}/">@{0}</a>'.format(u)
         else:
             return val
     except User.DoesNotExist:
@@ -34,19 +37,18 @@ class Comments(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = (CustomAuthentication,)
 
-
     # id here is post id
-    def post(self, request):
+    def post(self, request, id):
         try:
             user = request.user
-            post_id = request.data["post_id"]
-            comment = request.data['comment']
+            comment = request.POST['comment']
             comment = escape(comment)
             regex = r'@(\w+)'
+            # caption = re.sub(r'@(\w+)', r'<a href="/users/\1/">@\1</a>', caption)
             comment = re.sub(regex, replace, comment)
             comment = Comment(
                 user = user,
-                post = Post.objects.get(id=post_id),
+                post = Post.objects.get(pk=id),
                 comment = comment
             )
             comment.save()
@@ -66,7 +68,7 @@ class Comments(APIView):
     # id here is comment id    
     def delete(self, request, id):
         try:
-            comment = Comment.objects.get(id=id, user=request.user)
+            comment = Comment.objects.get(pk=id, user=request.user)
             if comment:
                 comment.delete()
                 return JsonResponse({'status': True, 'message': 'Comment deleted successfully'})
@@ -95,7 +97,7 @@ def comments_by_post(request, timestamp, page, post_id):
         comments = Comment.objects.filter(post__id=post_id)
         if(comments):
             serializer = CommentSerializer(comments, many=True)
-            return JsonResponse({'status': True, 'message': 'Comments fetched successfully', 'data': serializer.data})
+            return JsonResponse({'status': True, 'message': 'Comments fetched successfully', 'comments': serializer.data})
         return JsonResponse({"status": True, "message": 'Post has no comments.'})
     except Exception as e:
         return JsonResponse({'status': False, 'message': 'Error fetching comments'})

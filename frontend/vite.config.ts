@@ -6,6 +6,10 @@ import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
 import mkcert from 'vite-plugin-mkcert'
 
 // https://vitejs.dev/config/
+
+
+
+// https://vitejs.dev/config/
 export default defineConfig({
   server: { https: true },
   plugins: [
@@ -19,7 +23,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      'vue': 'vue/dist/vue.esm-bundler',
+    },
   }
 })

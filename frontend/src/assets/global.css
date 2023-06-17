@@ -2271,13 +2271,23 @@
     cursor: pointer !important;
 }
 
-.btn {
-    cursor: pointer !important;
+.btn-transition {
+    transition: all 0.2s ease-in-out !important;
+}
+
+.btn-hover:hover {
+    background-color: var(--color-button-hover) !important;
+
 }
 
 .btn-themed {
     color: var(--color-heading) !important;
     background-color: var(--color-button) !important;
+}
+
+.btn-hover-theme:hover {
+    color: var(--color-button) !important;
+    /* background-color: var(--color-button-hover) !important; */
 }
 
 .btn-themed:hover {
@@ -2292,6 +2302,14 @@
 
 .bg-hover:hover {
     background-color: var(--color-hover) !important;
+}
+
+.bg-hover-soft:hover {
+    background-color: var(--color-background-soft) !important;
+}
+
+.bg-hover-mute:hover {
+    background-color: var(--color-background-mute) !important;
 }
 
 
@@ -2310,6 +2328,15 @@
     left: 50%;
     transform: translate(-50%, -50%);
 
+}
+
+/* hover */
+.hover-underline:hover {
+    text-decoration: underline !important;
+}
+
+.hover-darker:hover {
+    filter: brightness(0.8);
 }
 
 

@@ -83,7 +83,7 @@ export default defineComponent({
       default: 1
     },
     captionLineClamp: {
-      type: Number,
+      type: Number || String,
       default: 2
     },
     avatarSize: {

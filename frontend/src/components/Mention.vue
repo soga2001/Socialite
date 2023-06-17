@@ -24,10 +24,10 @@ export default defineComponent({
             type: String,
             default: 'text'
         },
-        input_label: {
-            type: String,
-            required: true
-        },
+        // input_label: {
+        //     type: String,
+        //     required: true
+        // },
         required: {
             type: Boolean,
             default: false,

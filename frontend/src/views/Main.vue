@@ -116,10 +116,10 @@ export default defineComponent({
       <TopNav/>
     </div>
     <div id="main-div" :scroll="scroll" :class="(isMobile() && 'mobile-main min-h-full grid-row-2') + 'h-full w-full'">
-      <div class="border-l border-r">
+      <div class="border-l border-r pb-10">
         <RouterView v-slot="{Component}" >
-          <template v-if="$route.name == 'user-profile'">
-            <KeepAlive :max="4" :include="['home', 'search', 'explore']" >
+          <template v-if="$route.matched[0].name !== 'user-profile'">
+            <KeepAlive :max="4" :include="['home', 'search', 'explore', 'view-spill']" >
               <component :is="Component" :key="$route.fullPath"  :height="height" :scrollPosition="scrollPosition" />
             </KeepAlive>
           </template>

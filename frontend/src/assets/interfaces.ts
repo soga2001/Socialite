@@ -21,7 +21,7 @@ export interface User{
 
 
 export interface Post{
-user_id: any
+    user_id: any
     id: number,
     username: string,
     user_avatar: string,
@@ -31,4 +31,14 @@ user_id: any
     date_posted: string,
     date_updated: string,
     total_likes: number,
+}
+
+export interface Comment{
+    id: number,
+    username: string,
+    user_avatar: string,
+    post: number,
+    comment: string,
+    date_posted: string,
+    date_updated: string,
 }

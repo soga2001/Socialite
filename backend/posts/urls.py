@@ -4,6 +4,7 @@ from posts import views
 urlpatterns = [
     path('post_content/', views.Post_Content.as_view(), name='post_content'),
     path('delete_post/', views.Post_Content.as_view(), name="delete_post"),
+    re_path(r'^post_by_id/(?P<post_id>\d+)/$', views.get_post_by_id, name="post by id"),
     # re_path(r'^delete_post/(?P<post_id>\d+)/$', views.Delete_Post.as_view(), name="delete_post"),
     re_path(r'^posts_by_followed_users/(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z)/(?P<page>\w+)/$', views.post_by_followed_users, name='posts_by_followed_users'),
     re_path(r'^explore/(?P<offset>\d+)/$', views.explore, name="explore"),

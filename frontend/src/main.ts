@@ -42,6 +42,10 @@ import CircularProgress from './components/circularProgress.vue'
 import UploadedImage from '@/components/uploadedImg.vue';
 import imageCropper from '@/components/imageCropper.vue';
 import Loading from './components/Loading.vue'
+import MentionLink from '@/components/MentionLink.vue';
+import Timeago from './components/Timeago.vue';
+import Spills from './components/Spills.vue';
+import CommentMap from '@/components/CommentMap.vue';
 
 
 // my icons
@@ -58,7 +62,8 @@ import LogoutIcon from '@/icons/i-logout.vue';
 import UploadImage from '@/icons/i-uploadImg.vue';
 import UploadVideo from '@/icons/i-uploadVid.vue';
 import CloseIcon from '@/icons/i-close.vue';
-import SpillIcon from '@/icons/i-spill.vue'
+import SpillIcon from '@/icons/i-spill.vue';
+import CommentIcon from '@/icons/i-comment.vue'
 
 
 
@@ -90,6 +95,7 @@ app.component('i-close', CloseIcon);
 app.component('i-spill', SpillIcon);
 app.component('i-upload-img', UploadImage);
 app.component('i-upload-vid', UploadVideo);
+app.component('i-comment', CommentIcon);
 
 // components
 app.component('circular-progress', CircularProgress);
@@ -97,6 +103,10 @@ app.component('uploaded-img', UploadedImage);
 app.component('theme-toggle', ThemeToggle);
 app.component('image-cropper', imageCropper);
 app.component('Loading', Loading);
+app.component('Timeago', Timeago)
+app.component('MentionLink', MentionLink)
+app.component('Spills', Spills)
+app.component('CommentMap', CommentMap)
 // app.component('adv-cropper', newCropper);
 
 

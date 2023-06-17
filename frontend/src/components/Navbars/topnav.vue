@@ -115,7 +115,7 @@ export default defineComponent({
               <div>
                 <Item class="item" :vert-icon-center="true">
                   <template #avatar>
-                    <div @click="() => {$router.push({name: 'user-profile', params: {username: $store.state.user.username}}), closeNav()}">
+                    <div class="pointer" @click="() => {$router.push({name: 'user-profile', params: {username: $store.state.user.username}}), closeNav()}">
                       <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
                       <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                     </div>
@@ -145,7 +145,7 @@ export default defineComponent({
                 <q-item>
                   <q-item-section avatar>
                       <!-- <q-icon class="icon" :name="$route.fullPath == `/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" /> -->
-                      <i-profile size="2rem" :fill="$route.fullPath == `/${$store.state.user.username}/` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                      <i-profile size="2rem" :fill="$route.path.startsWith(`/${$store.state.user.username}`) ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                   </q-item-section>
 
                   <q-item-section class="bold">
@@ -153,23 +153,11 @@ export default defineComponent({
                   </q-item-section>
                 </q-item>
               </RouterLink>
-              <!-- <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon class="icon" :name="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" />
-                  </q-item-section>
-
-                  <q-item-section class="bold">
-                    Settings
-                  </q-item-section>
-                </q-item>
-              </RouterLink> -->
             </div>
             <div class="pb-3 w-full">
               <q-item class="logout" clickable v-close-popup @click="logout">
                 <q-item-section avatar>
-                  <!-- <q-icon name="logout" /> -->
-                  <i-logout size="3rem" :fill="'var(--color-heading)'" :stroke="'var(--color-heading)'" />
+                  <i-logout size="3rem" fill="none" stroke="var(--color-heading)" />
                 </q-item-section>
                 <q-item-section class="bold">
                   Logout
