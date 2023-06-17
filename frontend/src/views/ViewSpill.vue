@@ -95,7 +95,18 @@ export default defineComponent({
             })
         },
     },
-    components: { }
+    components: { },
+    watch: {
+        spill(spill) {
+            const websocket = new WebSocket(`wss://localhost:8000/ws/comments/${spill.id}/`)
+
+            websocket.onmessage = (e) => {
+                const data = JSON.parse(e.data)
+                console.log(data)
+                // this.comments.unshift(data) 
+            }
+        }
+    }
 })
 </script>
 
