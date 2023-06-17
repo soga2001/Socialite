@@ -39,6 +39,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'channels',
     'channels_postgres',
     'django.contrib.admin',
@@ -59,7 +60,6 @@ INSTALLED_APPS = [
     'comments.apps.CommentsConfig',
     'likes.apps.LikesConfig',
     'django.contrib.postgres',
-
 ]
 
 MIDDLEWARE = [
@@ -115,7 +115,12 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'backend.wsgi.application'
+# WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = "backend.asgi.application"
+
+# CHANNELS_WS_PROTOCOL = "http"  # Use "http" for regular HTTP proxy
+# CHANNELS_WS_HOST = "localhost"  # Proxy server host
+# CHANNELS_WS_PORT = 8000
 
 
 # Database
@@ -154,17 +159,20 @@ DATABASES = {
 }
 
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_postgres.core.PostgresChannelLayer',
-        'CONFIG': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': env('DATABASE_NAME'),
-            'USER': env('DATABASE_USERNAME'),
-            'PASSWORD': env('DATABASE_PASSWORD'),
-            'HOST': 'localhost',
-            'symmetric_encryption_keys': [SECRET_KEY],
-        },
-    },
+    # 'default': {
+    #     'BACKEND': 'channels_postgres.core.PostgresChannelLayer',
+    #     'CONFIG': {
+    #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #         'NAME': env('DATABASE_NAME'),
+    #         'USER': env('DATABASE_USERNAME'),
+    #         'PASSWORD': env('DATABASE_PASSWORD'),
+    #         'HOST': 'localhost',
+    #         'symmetric_encryption_keys': [SECRET_KEY],
+    #     },
+    # },
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
 }
 
 
