@@ -13,7 +13,7 @@ export default defineComponent({
     },
     data() {
         return {
-
+            edit: false,
         }
     },
     methods: {
@@ -24,20 +24,26 @@ export default defineComponent({
 
 <template>
     <div>
-        <Item class="bg-theme" alignItems="start" :captionLineClamp="4">
+        <Item class="bg-theme h-full w-full" alignItems="start" :captionLineClamp="4">
             <template #avatar>
                 <img class="pointer hover-darker" @click="$router.push({name: 'user-profile', params: {username: comment.username}})"  v-if="comment.user_avatar" :src="comment.user_avatar"/>
                 <!-- <ProfileIcon v-else/> -->
             </template>
             <template #title>
-                <div class="w-full">
-                    <span class="text-xl pointer hover-underline"  @click="$router.push({name: 'user-profile', params: {username: comment.username}})">@{{ comment.username }}</span>
+                <div class="w-full flex flex-cols gap-1 items-center">
+                    <div>
+                        <span class="text-xl pointer hover-underline text-heading weight-900"  @click="$router.push({name: 'user-profile', params: {username: comment.username}})">@{{ comment.username }}</span>
+                    </div>
+                    <span>&#183;</span>
+                    <div>
+                        <Timeago class="text-xs text-ligher weight-ligher" :date="comment.date_posted"/>
+                    </div>
+                    <div v-if="comment.date_updated" class="text-xs text-ligher weight-ligher">
+                        (edited)
+                    </div>
                 </div>
             </template>
             <template #caption>
-                <div class="flex">
-                    <span class="text-xs"><Timeago size="12px" :date="comment.date_posted"/> </span>
-                </div>
                 <div class="text-base w-fit" @click.stop="" >
                     <MentionLink :mention="comment.comment"/>
                 </div>

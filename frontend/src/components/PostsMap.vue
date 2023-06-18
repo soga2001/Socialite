@@ -149,7 +149,7 @@ export default defineComponent({
                         <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                     </div>
                 </template>
-                <template #title><span class="hover-underline" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">@{{ username }}</span></template>
+                <template #title><span class="text-xl pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">@{{ username }}</span></template>
                 <template #caption>
                     <Timeago size="12px" :date="date_posted"/>
                 </template>

@@ -56,6 +56,13 @@ export default defineComponent({
     mounted() {
     },
     methods: {
+      reset() {
+        this.val = ""
+        this.charsLeft = 0
+        this.savedUsers.clear()
+        this.index = -1
+        this.users = new Array<User>();
+      },
       emitData() {
         this.$emit('update:val', this.val)
         this.$emit('update:charsLeft', this.charsLeft)
@@ -175,6 +182,7 @@ export default defineComponent({
     watch: {
       val(val) { 
         this.updateRows()
+        console.log(val)
         if(val.length == 0) {
           this.charsLeft = 0
           this.savedUsers.clear()
@@ -204,7 +212,9 @@ export default defineComponent({
                   <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
                   <q-icon size="50px" v-else name="account_circle" class="rounded-full" />
               </template>
-              <template #title>{{user.first_name + ' ' + user.last_name}}</template>
+              <template #title>
+                <span class="text-xl text-heading weight-900">{{user.first_name + ' ' + user.last_name}}</span> 
+              </template>
               <template #caption>@{{ user.username }}</template>
           </Item>
         </div>

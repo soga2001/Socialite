@@ -1,35 +1,69 @@
-from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 
-class CommentConsumer(WebsocketConsumer):
+class SpillCommentConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        await self.accept()
 
-    def connect(self):
-        # Called on connection.
-        # To accept the connection call:
-        self.accept()
+        self.post_id = self.scope['url_route']['kwargs']['post_id']
+        self.room_group_name = f'comment_room_{self.post_id}'
 
-        self.send(text_data=json.dumps({
-            'status':'success',
-            'type': 'Connection Stablished',
-            'message': 'Hello world!'
+        # group add
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+
+
+
+    async def disconnect(self, close_code):
+        pass
+
+
+    async def comment_send(self, event):
+        # Handle the "Comment added" message
+        message = event['message']
+        await self.send(text_data=json.dumps({
+            'type': 'comment',
+            'message': message
         }))
-        # Or accept the connection and specify a chosen subprotocol.
-        # A list of subprotocols specified by the connecting client
-        # will be available in self.scope['subprotocols']
-        # await self.accept("subprotocol")
-        # To reject the connection, call:
-        # await self.close()
 
-    # async def receive(self, text_data=None, bytes_data=None):
-    #     # Called with either text_data or bytes_data for each frame
-    #     # You can call:
-    #     await self.send(text_data="Hello world!")
-    #     # Or, to send a binary frame:
-    #     await self.send(bytes_data="Hello world!")
-    #     # Want to force-close the connection? Call:
-    #     await self.close()
-    #     # Or add a custom WebSocket error code!
-    #     await self.close(code=4123)
 
-    # async def disconnect(self, close_code):
-    #     # Called when the socket close
+class CommentConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        await self.accept()
+
+        self.post_id = self.scope['url_route']['kwargs']['post_id']
+        self.room_group_name = f'comment_room_{self.post_id}'
+
+        # group add
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+
+
+    async def disconnect(self):
+        # group remove
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+        pass
+
+
+    async def comment_update(self, event):
+        # Handle the "Comment added" message
+        message = event['message']
+        await self.send(text_data=json.dumps({
+            'type': 'websocket.send',
+            'message': message
+        }))
+
+    async def comment_delete(self, event):
+        # Handle the "Comment added" message
+        message = event['message']
+        await self.send(text_data=json.dumps({
+            'type': 'websocket.send',
+            'message': message
+        }))

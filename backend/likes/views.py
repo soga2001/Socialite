@@ -16,6 +16,11 @@ from posts.serializer import PostSerializer
 import json
 from backend.authenticate import *
 
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+channel_layer = get_channel_layer()
+
+
 
 custom = CustomAuthentication()
 

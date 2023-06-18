@@ -166,7 +166,7 @@ export default defineComponent({
     display: flex;
   }
 
-  :slotted(*) {
+  .avatar :slotted(*) {
     border-radius: 50%;
     width: 100%;
     height: 100%;
@@ -184,14 +184,14 @@ export default defineComponent({
   }
   
   .title {
-    font-weight: 900;
-    font-size: 17px;
+    font-weight: inherit;
+    font-size: inherit;
     /* margin-bottom: .5rem;  */
   }
 
   .title :slotted(*) {
     font-size: inherit;
-    font-weight: 900;
+    font-weight: inherit;
     color: var(--color-heading);
   }
   

@@ -20,6 +20,10 @@ export default defineComponent({
         size: {
             type: String,
             default: '20px',
+        },
+        class: {
+            type: String,
+            default: 'text-xs',
         }
     },
     data() {
@@ -64,7 +68,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <p role="span" :style="'font-size: ' + size">{{ date_posted }}</p>
+    <p role="span" :class="class" :style="'font-size: ' + size">{{ date_posted }}</p>
 </template>
 
 

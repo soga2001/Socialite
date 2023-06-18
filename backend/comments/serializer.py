@@ -9,6 +9,7 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = '__all__'
 
+
     # total_likes = serializers.SerializerMethodField()
     
     # def get_total_likes(self, obj):

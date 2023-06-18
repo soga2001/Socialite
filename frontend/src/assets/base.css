@@ -13,6 +13,7 @@
   --vt-c-orange: rgb(253, 137, 137);
   --vt-c-background-orange: rgb(255, 115, 115);
   --vt-c-orange-hover: rgb(255, 115, 115, .7);
+  --vt-c-orange-hover-ligher: rgb(255, 115, 115, .4);
 
   --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
   --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
@@ -21,8 +22,11 @@
 
   --vt-c-text-light-1: var(--vt-c-black);
   --vt-c-text-light-2: rgba(60, 60, 60, 0.8);
+  --vt-c-text-light-3: rgba(103, 103, 103, 1);
+
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.8);
+  --vt-c-text-dark-3: rgba(152, 152, 152, 1);
 
   --vt-c-hover-dark: hsla(0, 0%, 20%, 0.2);
   --vt-c-hover-light: hsla(0, 0%, 80%, 0.2);;
@@ -41,10 +45,12 @@
 
   --color-heading: var(--vt-c-text-dark-1);
   --color-text: var(--vt-c-text-dark-2);
+  --color-lighter: var(--vt-c-text-dark-3);
 
   --color-button: var(--vt-c-orange);
   --color-button-background: var(--vt-c-background-orange);
   --color-button-hover: var(--vt-c-orange-hover);
+  --color-button-hover-ligher: var(--vt-c-orange-hover-ligher);
 
   --color-switch: var(--vt-c-black);
   --color-switch-slider: var(--vt-c-white);
@@ -62,10 +68,12 @@
 
   --color-heading: var(--vt-c-text-light-1);
   --color-text: var(--vt-c-text-light-2);
+  --color-lighter: var(--vt-c-text-light-3);
 
   --color-button: var(--vt-c-orange);
   --color-button-background: var(--vt-c-background-orange);
   --color-button-hover: var(--vt-c-orange-hover);
+  --color-button-hover-ligher: var(--vt-c-orange-hover-ligher);
 
   --color-switch: var(--vt-c-white);
   --color-switch-slider: var(--vt-c-black);

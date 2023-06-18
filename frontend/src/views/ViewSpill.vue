@@ -1,6 +1,7 @@
 <script lang="ts">
 import { http } from '@/assets/http';
-import type { Post } from '@/assets/interfaces';
+import type { Post, Comment } from '@/assets/interfaces';
+import PostsMap from '@/components/PostsMap.vue';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -13,7 +14,7 @@ export default defineComponent({
     data() {
         return {
             spill: {} as Post,
-            comments: Array<Comment>(),
+            comments: new Array<Comment>(),
             loading_post: true,
             liked: false,
             total_likes: 0,
@@ -22,6 +23,7 @@ export default defineComponent({
             loading_comments: true,
             date: new Date(),
             page: 0,
+            websocket: new WebSocket(`wss://localhost:8000/ws/comments/${this.$route.params.post_id}/`),
         };
     },
     created() {
@@ -34,7 +36,6 @@ export default defineComponent({
             await http.get(`posts/post_by_id/${this.$route.params.post_id}/`).then((res) => {
                 this.spill = res.data.spill;
                 this.total_likes = this.spill.total_likes;
-                // this.total_comments = this.spill.total_comments;
                 this.checkLiked();
             }).catch((err) => {
                 // console.log(err);
@@ -44,7 +45,15 @@ export default defineComponent({
         async getComments() {
             this.loading_comments = true;
             await http.get(`comments/comments_by_post/${this.date.toISOString()}/${this.page}/${this.$route.params.post_id}/`).then((res) => {
-                this.comments = res.data.comments;
+                if(res.data.comments) {
+                    if(this.comments) {
+                        this.comments.unshift(...res.data.comments)
+                    }
+                    else {
+                        this.comments = res.data.comments;
+                    }
+                }
+                    
             }).catch((err) => {
                 console.log(err);
             });
@@ -94,18 +103,50 @@ export default defineComponent({
                 console.log(err)
             })
         },
+        async websocketOpen() {
+            this.websocket = new WebSocket(`wss://localhost:8000/ws/comments/${this.$route.params.post_id}/`)
+            this.websocket.onopen = (e) => {
+                console.log('Websocket opened')
+            }
+        },
+        async websocketMessage() {
+            this.websocket.onmessage = (e) => {
+                const data = JSON.parse(e.data)
+                if(data.type == "comment") {
+                    const newComment = JSON.parse(data.message) as Comment
+                    console.log(newComment)
+                    if(this.comments.length !== 0) {
+                        this.comments.unshift(newComment)
+                    }
+                    else {
+                        this.comments.push(newComment)
+                    }
+                }
+            }
+        },
+        async websocketClose() {
+            this.websocket.close()
+
+            this.websocket.onclose = (e) => {
+                console.log('Websocket closed')
+            }
+        },
+    },
+    mounted() {
+        this.websocketOpen()
+    },
+    unmounted() {
+        this.websocketClose()
+    },
+    activated() {
+        this.websocketOpen();
+        this.websocketMessage()
+    },
+    deactivated() {
+        this.websocketClose();
     },
     components: { },
     watch: {
-        spill(spill) {
-            const websocket = new WebSocket(`wss://localhost:8000/ws/comments/${spill.id}/`)
-
-            websocket.onmessage = (e) => {
-                const data = JSON.parse(e.data)
-                console.log(data)
-                // this.comments.unshift(data) 
-            }
-        }
     }
 })
 </script>
@@ -119,7 +160,7 @@ export default defineComponent({
                         <q-btn size="16px" @click="$router.back" flat dense round class="text-heading" icon="arrow_back" />
                     </template>
                     <template #title>
-                        <span class="weight-900 text-2xl">Spill</span>
+                        <span class="text-2xl text-heading weight-900">Spill</span>
                     </template>
                 </Item>
             </header>
@@ -132,7 +173,7 @@ export default defineComponent({
                                 <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                             </div>
                         </template>
-                        <template #title><span class="hover-underline pointer" @click.stop="$router.push({name: 'user-profile', params: { username: spill.username }})">@{{ spill.username }}</span></template>
+                        <template #title><span class="text-xl pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: spill.username }})">@{{ spill.username }}</span></template>
                         <template #caption>
                             <Timeago size="12px" :date="spill.date_posted"/>
                         </template>
@@ -284,13 +325,15 @@ export default defineComponent({
                     </div>
                 </div>
                 <hr/>
-                <div class="border-b">
+                <div class="border-b" v-if="$store.state.authenticated">
                     <Spills placeholder="Reply to the spill" btnString="Reply" isComment :spillId="spill.id"/>
                 </div>
                 <div class="grid">
-                    <div class="border" v-if="comments" v-for="comment in comments">
-                        <CommentMap :comment="comment"/>
-                    </div>
+                    <TransitionGroup name="slide" mode="out-in">
+                        <div class="border" v-if="comments" v-for="comment in comments">
+                            <CommentMap :comment="comment"/>
+                        </div>
+                    </TransitionGroup>
                 </div>
             </div>
             <div v-else="loading_post" class="">

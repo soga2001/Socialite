@@ -93,7 +93,11 @@ export default defineComponent({
                         <img v-if="u.avatar" :src="u.avatar" alt="profile pic" />
                         <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="profile pic plage holder" class="rounded-full" />
                     </template>
-                    <template #title>{{u.first_name + ' ' + u.last_name}}</template>
+                    <template #title>
+                        <span class="text-xl text-heading weight-900">
+                            {{u.first_name + ' ' + u.last_name}}
+                        </span>
+                    </template>
                     <template #caption>@{{ u.username }}</template>
                 </Item>
             </div>

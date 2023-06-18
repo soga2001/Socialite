@@ -10,4 +10,4 @@ class Comment(models.Model):
     date_updated = models.DateTimeField(default=None, blank=True, null=True)
 
     class Meta:
-        ordering = ['date_posted']
+        ordering = ['-date_posted']

@@ -1,9 +1,14 @@
 <script lang="ts">
 import { http } from '@/assets/http';
-import { defineComponent } from 'vue';
+import { defineComponent, type ComponentPublicInstance, type Ref } from 'vue';
 import type { User } from '../assets/interfaces';
 import Mention from './Mention.vue';
 import ProfileIcon from '@/icons/i-profile.vue';
+
+type MentionComponentType = ComponentPublicInstance<{
+  caption: string;
+  // Add other properties or methods if necessary
+}>;
 
 
 export default defineComponent({
@@ -13,7 +18,6 @@ export default defineComponent({
             caption: "",
             submitting: false,
             users: new Array<User>(),
-            capt: "",
             chars: 0,
             imgURL: '',
             disabled: true,
@@ -44,7 +48,10 @@ export default defineComponent({
         submit() {
             this.submitting = true;
             const formData = new FormData();
-            if (this.image && !this.isComment) {
+            const mention = this.$refs.input as {
+                  reset: () => void;
+            };
+            if (this.image) {
               formData.append("caption", this.caption);
               formData.append("image", this.image);
               http.post("posts/post_content/", formData, {
@@ -53,15 +60,19 @@ export default defineComponent({
                   }
               }).then((res) => {
                   this.submitting = false;
-                  this.image = null;
-                  this.imgURL = '';
-                  this.caption = "";
+                  this.deleteImg()
+                  mention.reset()
+                  const childComponent = this.$refs.input as Ref<MentionComponentType>;
+
+                  // Clear the caption value in the child component
+                  childComponent.value.caption = '';
               }).catch((err) => {
                   console.log(err);
               });
             }
             else {
               if(!this.isComment) {
+                this.submitting = false;
                 return
               }
               formData.append("comment", this.caption);
@@ -71,7 +82,7 @@ export default defineComponent({
                   }
               }).then((res) => {
                   this.submitting = false;
-                  this.caption = "";
+                  mention.reset();
               }).catch((err) => {
                   console.log(err);
               });
@@ -84,7 +95,6 @@ export default defineComponent({
             this.imgURL = URL.createObjectURL(file);
         },
         deleteImg() {
-          console.log('here')
           this.image = null;
           this.imgURL = '';
         }
@@ -117,13 +127,13 @@ export default defineComponent({
       </q-avatar>
       <div class="grid gap-3">
         <form class="relative cols-5 grid gap-2 p-2" autocorrect="on" autocomplete="off" @submit.prevent="submit">
-          <Mention @update:charsLeft="chars = $event" @update:val="caption = $event" :value="caption" input_type="text" id="caption" :placeholder="placeholder" class="post__caption h-full" />
+          <Mention ref="input" @update:charsLeft="chars = $event" @update:val="caption = $event" :value="caption" input_type="text" id="caption" :placeholder="placeholder" class="post__caption h-full" />
           <div class="flex w-full gap-2 col-span-2">
-            <label :hidden="isComment" for="file" class="pointer btn-transition btn-hover pt-2 px-2 rounded">
+            <label :hidden="isComment" for="file" class="pointer btn-transition btn-hover-ligher pt-2 px-2 rounded">
               <i-upload-img  size="1.5rem" fill="rgb(253, 137, 137)" stroke="rbg(253,137,137)"/>
               <input @change="getImage" type="file" id="file" style="display: none" name="image" accept="image/*" data-original-title="upload photos"/>
             </label>
-            <label :hidden="isComment" for="file" class="pointer btn-transition btn-hover pt-2 px-2 rounded">
+            <label :hidden="isComment" for="file" class="pointer btn-transition btn-hover-ligher pt-2 px-2 rounded">
               <i-upload-vid size="1.5rem" fill="rgb(253, 137, 137)" stroke="rgb(253, 137, 137)" />
               <input @change="getImage" type="file" id="file" style="display: none" name="image" accept="image/*" data-original-title="upload photos"/>
             </label>

@@ -839,6 +839,14 @@
     align-self: stretch !important;
 }
 
+.vert-align-center {
+    vertical-align: center !important;
+}
+
+.line-height-1 {
+    line-height: 1 !important;
+}
+
 /* overflow */
 
 .overflow-auto {
@@ -1055,6 +1063,10 @@
 
 .text-body {
     color: var(--color-text) !important;
+}
+
+.text-ligher {
+    color: var(--color-lighter) !important;
 }
 
 .no-decor {
@@ -2278,6 +2290,10 @@
 .btn-hover:hover {
     background-color: var(--color-button-hover) !important;
 
+}
+
+.btn-hover-ligher:hover {
+    background-color: var(--color-button-hover-ligher) !important;
 }
 
 .btn-themed {

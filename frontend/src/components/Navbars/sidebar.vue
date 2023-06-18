@@ -282,7 +282,7 @@ export default defineComponent({
                                   <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                                 </template>
                                 <template #title>
-                                  <span class="title">{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</span>
+                                  <span class="text-xl text-heading weight-900">{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</span>
                                 </template>
                                 <template #caption>
                                   <span class="subtitle">@{{ $store.state.user.username }}</span>

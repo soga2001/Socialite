@@ -14,6 +14,9 @@ from django.utils.html import escape
 # From Rest
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+channel_layer = get_channel_layer()
 
 # Create your views here.
 
@@ -39,6 +42,7 @@ class Comments(APIView):
 
     # id here is post id
     def post(self, request, id):
+        print('here')
         try:
             user = request.user
             comment = request.POST['comment']
@@ -52,6 +56,11 @@ class Comments(APIView):
                 comment = comment
             )
             comment.save()
+            group_name = f'comment_room_{id}'
+            async_to_sync(channel_layer.group_send)(group_name, {
+                "type": "comment.send",
+                "message": json.dumps(CommentSerializer(comment).data)
+                })
             return JsonResponse({'status': True, 'message': 'Comment added successfully'})
         except Exception as e:
             return JsonResponse({'status': False, 'message': 'Error adding comment'})
