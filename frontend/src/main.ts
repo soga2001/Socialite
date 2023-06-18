@@ -47,6 +47,7 @@ import Timeago from './components/Timeago.vue';
 import Spills from './components/Spills.vue';
 import CommentMap from '@/components/CommentMap.vue';
 
+import Mention from './components/Mention.vue'
 
 // my icons
 import HomeIcon from '@/icons/i-home.vue';
@@ -107,6 +108,7 @@ app.component('Timeago', Timeago)
 app.component('MentionLink', MentionLink)
 app.component('Spills', Spills)
 app.component('CommentMap', CommentMap)
+app.component('Mention', Mention)
 // app.component('adv-cropper', newCropper);
 
 
