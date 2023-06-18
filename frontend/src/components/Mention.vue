@@ -3,7 +3,7 @@ import { defineComponent, ref } from 'vue';
 import { http } from '@/assets/http';
 import type { User } from '@/assets/interfaces';
 import Item from './Item.vue';
-import { roundToNearestMinutesWithOptions } from 'date-fns/fp';
+import getCaretCoordinates from '@/assets/caretCoord'
 
 
 export default defineComponent({
@@ -17,6 +17,8 @@ export default defineComponent({
             rows: 1,
             charsLeft: 0,
             savedUsers: new Map<string, Array<User>>(),
+
+            caretPosition: {top: 0, height: 0},
         }
     },
     props: {
@@ -56,6 +58,18 @@ export default defineComponent({
     mounted() {
     },
     methods: {
+      getCoordinates() {
+        const textarea = this.$refs.textarea as HTMLInputElement;
+        if (!textarea) return;
+
+        const selectionEnd = textarea.selectionEnd || 0;
+
+        const caret = getCaretCoordinates(textarea, selectionEnd);
+        this.caretPosition = {
+          top: caret.top,
+          height: caret.height,
+        };
+      },
       reset() {
         this.val = ""
         this.charsLeft = 0
@@ -140,6 +154,8 @@ export default defineComponent({
         if(this.val.length == 0) {
           this.emitData()
         }
+        this.getCoordinates()
+
         if(this.savedUsers.size == 0) {
           return
         }
@@ -165,6 +181,11 @@ export default defineComponent({
         this.rows = Math.min(this.val.split("\n").length, this.numRows);
         this.charsLeft = this.val.length
         this.emitData()
+      },
+      autogrow() {
+        const textarea = this.$refs.textarea as HTMLInputElement;
+        textarea.style.height = 'auto'
+        textarea.style.height = textarea.scrollHeight + 'px'
       },
       async getUsers(username: String) {
         let tempUsers = new Array<User>()
@@ -202,22 +223,22 @@ export default defineComponent({
 <template>
   <div class="main">
     <div class="wave-group">
-        <textarea :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars"  @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input"/>
-    </div>
-    <div class="results" v-if="users.length">
-        <div @click="replaceMention(user.username)" class="result__map" v-for="user in users" :key="user.id">
-          <Item>
-              <template #avatar>
-                  <!-- <img src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" /> -->
-                  <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
-                  <q-icon size="50px" v-else name="account_circle" class="rounded-full" />
-              </template>
-              <template #title>
-                <span class="text-xl text-heading weight-900">{{user.first_name + ' ' + user.last_name}}</span> 
-              </template>
-              <template #caption>@{{ user.username }}</template>
-          </Item>
-        </div>
+        <textarea ref="textarea" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars"  @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input"/>
+        <div :style="{ top: `${caretPosition.top + caretPosition.height}px` }" class="results" v-if="users.length">
+          <div @click="replaceMention(user.username)" class="result__map pointer" v-for="user in users" :key="user.id">
+            <Item>
+                <template #avatar>
+                    <!-- <img src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" /> -->
+                    <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
+                    <q-icon size="50px" v-else name="account_circle" class="rounded-full" />
+                </template>
+                <template #title>
+                  <span class="text-xl text-heading weight-900">{{user.first_name + ' ' + user.last_name}}</span> 
+                </template>
+                <template #caption>@{{ user.username }}</template>
+            </Item>
+          </div>
+      </div>
     </div>
   </div>
 </template>
@@ -235,28 +256,25 @@ export default defineComponent({
   display: grid;
 }
 
-.wave-group .input {
+textarea {
   font-size: 16px;
   padding: 10px 10px 10px 5px;
   display: block;
   width: 100%;
   border: none;
-  border-bottom: 1px solid #515151;
   background: transparent;
+
+  color: var(--color-heading);
+  position: relative;
+  resize: none;
+  border: 0;
+  outline: none;
 }
 
 .wave-group .input:focus {
   outline: none;
 }
 
-input {
-  color: var(--color-heading);
-  position: relative;
-}
-
-textarea {
-  color: var(--color-heading);
-}
 
 span {
   white-space: pre-line;
@@ -274,9 +292,12 @@ span {
 }
 
 .results {
+  /* border: 2px solid black; */
   background-color: var(--color-background-soft);
   z-index: 999;
-  /* border: none;  */
+  box-shadow: 0 5px 5px -5px var(--color-lighter),
+    0 5px 5px -5px var(--color-lighter), 0 5px 5px 0 var(--color-lighter),
+    0 5px 5px 0 var(--color-lighter);
   position: absolute;
   top: 100%;
   left: 0;
