@@ -118,13 +118,13 @@ export default defineComponent({
     <div id="main-div" :scroll="scroll" :class="(isMobile() && 'mobile-main min-h-full grid-row-2') + 'h-full w-full'">
       <div class="border-l border-r pb-10">
         <RouterView v-slot="{Component}" >
-          <template v-if="$route.matched[0].name !== 'user-profile'">
-            <KeepAlive :max="4" :include="['home', 'search', 'explore', 'view-spill']" >
+          <template :max="1" v-if="$route.matched[0].name !== 'user-profile'">
+            <KeepAlive :include="['home', 'search', 'explore', 'view-spill']" >
               <component :is="Component" :key="$route.fullPath"  :height="height" :scrollPosition="scrollPosition" />
             </KeepAlive>
           </template>
           <template v-else>
-            <KeepAlive :max="4" :include="['user-profile']" >
+            <KeepAlive :max="1" :include="['user-profile']" >
               <component :is="Component"  :height="height" :scrollPosition="scrollPosition" />
             </KeepAlive>
           </template>
@@ -149,8 +149,6 @@ export default defineComponent({
   width: 100%;
   transform: transition 1s;
   position: fixed;
-  /* overflow: scroll;
-  overflow-y: scroll; */
   height: 100%;
   grid-template-columns: auto 1fr;
 }

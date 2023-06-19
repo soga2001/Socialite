@@ -23,9 +23,8 @@ export default defineComponent({
 
 <template>
     <div class="container rounded">
-        <img :src="imgUrl" alt="Snow" class="w-full rounded">
-        <!-- <button @click="onDelete" class="top-right border-none btn bg-transparent text-2xl">X</button> -->
-        <i-close @click="onDelete" fill="black" stroke="white" size="2.5rem" class="top-right" />
+        <img :src="imgUrl" alt="Uploaded image" class="w-full rounded">
+        <i-close @click="onDelete" fill="black" stroke="white" size="2.5rem" class="top-right pointer" />
     </div>
 </template>
 

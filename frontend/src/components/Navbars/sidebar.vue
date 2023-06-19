@@ -181,7 +181,7 @@ export default defineComponent({
                       <q-item class="hide">
                         <q-item-section avatar>
                             <!-- <q-icon class="icon" :name="$route.fullPath == `/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" /> -->
-                            <i-profile size="2rem" :fill="$route.path.startsWith(`/${$store.state.user.username}`) ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                            <i-profile size="2rem" :fill="($route.path.startsWith(`/${$store.state.user.username}`) && $route.matched[0].name === 'user-profile') ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                         </q-item-section>
 
                         <q-item-section class="bold">
@@ -189,7 +189,7 @@ export default defineComponent({
                         </q-item-section>
                       </q-item>
                       <div class="show p-2">
-                        <i-profile size="2rem" :fill="$route.path.startsWith(`/${$store.state.user.username}`) ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                        <i-profile size="2rem" :fill="($route.path.startsWith(`/${$store.state.user.username}`) && $route.matched[0].name === 'user-profile') ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                       </div>
                   </RouterLink>
 
@@ -216,20 +216,20 @@ export default defineComponent({
                   </div>
 
                   <q-dialog class="min-h-sm" v-model="post" persistent>
-                    <div class="bg-theme-soft w-full max-w-sm h-full max-h-sm" >
+                    <div class="bg-theme-soft w-full min-h-fit max-w-sm h-fit overflow-visible" >
                       <div class="p-2">
                         <Item dense :vert-icon-center="true">
                           <template #title>
-                            <div class="text-2xl">Spill</div>
+                            <div class="text-2xl weight-900">Spill</div>
                           </template>
                           <template #icon>
-                            <i-close size="2rem" class="btn" @click="post = false"/>
+                            <i-close size="2rem" class="pointer" @click="post = false"/>
                           </template>
                         </Item>
                       </div>
                       <hr class="border"/>
-                      <div class="h-full min-h-xs max-h-xs">
-                        <Spills/>
+                      <div class="">
+                        <Spills :rows="4"/>
                       </div>
                     </div>
                    </q-dialog>

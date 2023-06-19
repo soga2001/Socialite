@@ -4,11 +4,7 @@ import { defineComponent, type ComponentPublicInstance, type Ref } from 'vue';
 import type { User } from '../assets/interfaces';
 import Mention from './Mention.vue';
 import ProfileIcon from '@/icons/i-profile.vue';
-
-type MentionComponentType = ComponentPublicInstance<{
-  caption: string;
-  // Add other properties or methods if necessary
-}>;
+import uploadedImg from './uploadedImg.vue';
 
 
 export default defineComponent({
@@ -40,6 +36,10 @@ export default defineComponent({
         type: Number,
         default: 0,
       },
+      rows: {
+        type: Number,
+        default: 1,
+      }
     },
     computed: {
       
@@ -62,10 +62,6 @@ export default defineComponent({
                   this.submitting = false;
                   this.deleteImg()
                   mention.reset()
-                  const childComponent = this.$refs.input as Ref<MentionComponentType>;
-
-                  // Clear the caption value in the child component
-                  childComponent.value.caption = '';
               }).catch((err) => {
                   console.log(err);
               });
@@ -88,11 +84,21 @@ export default defineComponent({
               });
             }
         },
-        getImage(e: Event) {
+        async getImage(e: Event) {
             const target = e.target as HTMLInputElement;
-            const file: File = (target.files as FileList)[0];
-            this.image = file;
-            this.imgURL = URL.createObjectURL(file);
+            const file = target.files?.[0];
+            if(file){
+              this.image = file;
+              this.imgURL = await this.toBase64(file);
+            }
+        },
+        async toBase64(file: File): Promise<string> {
+            return new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result as string);
+                reader.onerror = (error) => reject(error);
+            })
         },
         deleteImg() {
           this.image = null;
@@ -105,29 +111,30 @@ export default defineComponent({
     },
     watch: {
       chars(chars) {
-        if(chars > 0 && chars <= 255) {
+        if(chars <= 255) {
           this.disabled = false;
         }
         else {
           this.disabled = true;
         }
-      }
+      },
+
     },
-    components: { Mention, ProfileIcon }
+    components: { Mention, ProfileIcon, uploadedImg }
 })
 </script>
 
 <template>
   <div class="post bg-transparent">
     <div class="post__container">
-      <q-avatar class="post__avatar" size="65px" >
+      <q-avatar class="post__avatar" size="70px" >
           <img class="user__avatar" v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
           <!-- <q-icon v-else size="65px" name="face" /> -->
           <profile-icon v-else size="4rem" />
       </q-avatar>
       <div class="grid gap-3">
         <form class="relative cols-5 grid gap-2 p-2" autocorrect="on" autocomplete="off" @submit.prevent="submit">
-          <Mention ref="input" @update:charsLeft="chars = $event" @update:val="caption = $event" :value="caption" input_type="text" id="caption" :placeholder="placeholder" class="post__caption h-full" />
+          <Mention ref="input" @update:charsLeft="chars = $event" :rows="rows" @update:val="caption = $event" :value="caption" input_type="text" id="caption" :placeholder="placeholder" class="post__caption h-full" />
           <div class="flex w-full gap-2 col-span-2">
             <label :hidden="isComment" for="file" class="pointer btn-transition btn-hover-ligher pt-2 px-2 rounded">
               <i-upload-img  size="1.5rem" fill="rgb(253, 137, 137)" stroke="rbg(253,137,137)"/>
@@ -152,8 +159,8 @@ export default defineComponent({
             <circular-progress v-if="chars" :val="chars" size="30px" />
           </div>
         </form>
-        <div v-if="imgURL" class="flex rounded mr-3">
-          <uploaded-img class="rounded border btn" @update:delete="deleteImg" :imgUrl="imgURL"/>
+        <div v-if="imgURL" class="mr-3">
+          <uploadedImg :img-url="imgURL" @update:delete="deleteImg()"/>
         </div>
       </div>
     </div> 
@@ -246,5 +253,17 @@ input[type="text"]:focus {
 
 ::placeholder {
   color: var(--color-heading);
+}
+
+.container {
+  position: relative;
+  text-align: center;
+  color: black;
+}
+
+.top-right {
+  position: absolute;
+  top: 8px;
+  right: 16px;
 }
 </style>

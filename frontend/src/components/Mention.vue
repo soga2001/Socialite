@@ -14,7 +14,6 @@ export default defineComponent({
             val: ref(""),
             users: new Array<User>(),
             index: ref<number>(-1),
-            rows: 1,
             charsLeft: 0,
             savedUsers: new Map<string, Array<User>>(),
 
@@ -34,10 +33,6 @@ export default defineComponent({
             type: Boolean,
             default: false,
         },
-        numRows: {
-          type: Number,
-          default: 3
-        },
         maxChars: {
           type: Number,
           default: 255,
@@ -50,10 +45,14 @@ export default defineComponent({
           type: String,
           default: "Spill your guts here",
         },
+        rows: {
+          type: Number,
+          default: 1,
+        }
     },
     components: {Item},
     created() {
-      
+      console.log(this.rows)
     },
     mounted() {
     },
@@ -177,14 +176,9 @@ export default defineComponent({
           this.users = u
         }
       },
-      updateRows() {
-        this.rows = Math.min(this.val.split("\n").length, this.numRows);
-        this.charsLeft = this.val.length
-        this.emitData()
-      },
       autogrow() {
         const textarea = this.$refs.textarea as HTMLInputElement;
-        textarea.style.height = 'auto'
+        textarea.style.height = "auto"
         textarea.style.height = textarea.scrollHeight + 'px'
       },
       async getUsers(username: String) {
@@ -202,19 +196,15 @@ export default defineComponent({
     },
     watch: {
       val(val) { 
-        this.updateRows()
-        console.log(val)
+        this.autogrow()
         if(val.length == 0) {
-          this.charsLeft = 0
           this.savedUsers.clear()
           this.index = -1
           this.users = new Array<User>();
-          this.emitData()
         }
+        this.charsLeft = (val.trimStart(" ")).length
+        this.emitData()
       },
-      rows(rows) {
-        this.users = new Array<User>();
-      }
     }
 })
 
@@ -223,10 +213,10 @@ export default defineComponent({
 <template>
   <div class="main">
     <div class="wave-group">
-        <textarea ref="textarea" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars"  @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input"/>
-        <div :style="{ top: `${caretPosition.top + caretPosition.height}px` }" class="results" v-if="users.length">
+        <textarea ref="textarea" :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars"  @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input"/>
+        <div :style="{ top: `${caretPosition.top + caretPosition.height}px` }" class="results rounded-sm" v-if="users.length">
           <div @click="replaceMention(user.username)" class="result__map pointer" v-for="user in users" :key="user.id">
-            <Item>
+            <Item avatarSize="3.5rem">
                 <template #avatar>
                     <!-- <img src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" /> -->
                     <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
@@ -245,19 +235,9 @@ export default defineComponent({
 
 <style scoped>
 
-/* .main {
-  overflow: visible;
-  min-height: 50px;
-  display: grid;
-  grid-template-columns: 1fr;
-} */
-
-.wave-group {
-  display: grid;
-}
 
 textarea {
-  font-size: 16px;
+  font-size: 20px;
   padding: 10px 10px 10px 5px;
   display: block;
   width: 100%;
@@ -269,11 +249,11 @@ textarea {
   resize: none;
   border: 0;
   outline: none;
+  overflow: scroll;
+  overflow-y: scroll;
+  max-height: 10rem;
 }
 
-.wave-group .input:focus {
-  outline: none;
-}
 
 
 span {
@@ -293,23 +273,22 @@ span {
 
 .results {
   /* border: 2px solid black; */
-  background-color: var(--color-background-soft);
+  background-color: var(--color-background);
   z-index: 999;
-  box-shadow: 0 5px 5px -5px var(--color-lighter),
-    0 5px 5px -5px var(--color-lighter), 0 5px 5px 0 var(--color-lighter),
-    0 5px 5px 0 var(--color-lighter);
+  -webkit-box-shadow: 0 0 10px var(--color-heading);
+  box-shadow: 0 0 10px var(--color-heading);
   position: absolute;
   top: 100%;
   left: 0;
   z-index: 999;
-  max-height: 200px;
+  max-height: 300px;
   overflow-y: auto;
   width: 100%;
 }
 
-.result__map:nth-child(odd) {
+/* .result__map:nth-child(odd) {
   background-color: var(--color-background-mute);
-}
+} */
 
 ::placeholder {
   color: var(--color-heading);

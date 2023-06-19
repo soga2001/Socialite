@@ -29,6 +29,7 @@ export default defineComponent({
     created() {
         this.getSpill();
         this.getComments();
+        console.log(this.$route.fullPath)
     },
     methods: {
         async getSpill() {
@@ -138,13 +139,13 @@ export default defineComponent({
     unmounted() {
         this.websocketClose()
     },
-    activated() {
-        this.websocketOpen();
-        this.websocketMessage()
-    },
-    deactivated() {
-        this.websocketClose();
-    },
+    // activated() {
+    //     this.websocketOpen();
+    //     this.websocketMessage()
+    // },
+    // deactivated() {
+    //     this.websocketClose();
+    // },
     components: { },
     watch: {
     }

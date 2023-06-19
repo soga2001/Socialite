@@ -289,20 +289,22 @@ export default defineComponent({
                     <img v-if="avatar" class="profile-pic__image" :src="avatar" alt="Profibild" />
                     <img v-else class="profile-picture" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
                 </div>
-                <div class="edit-profile w-full h-fit flex flex-row-reverse p-2">
-                    <button v-if="$store.state.user.id != id && !loading" class="border btn bg-hover rounded-lg px-6 text-sm text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated || loading_follow_request">
+                <div class="edit-profile w-full h-fit flex justify-end p-2">
+                    <button class="border btn bg-hover rounded-lg text-sm text-heading bg-theme weight-900" v-if="followed && !loading">
+                        <q-icon size="1.5rem" name="more_horiz" />
+                    </button>
+                    <button class="border btn bg-hover rounded-lg text-sm text-heading bg-theme weight-900" v-if="followed && !loading">
+                        <q-icon size="1.5rem" name="notifications" />
+                    </button>
+                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="border pointer bg-hover rounded-lg px-6 text-sm text-heading bg-theme weight-900" @click="editProfile = true">Edit Profile</button>
+                    <button v-if="$store.state.user.id != id && !loading" class="border pointer bg-hover rounded-lg px-6 text-sm text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated || loading_follow_request">
                         <span v-if="!loading_follow_request">{{ followed ? 'Unfollow' : 'Follow' }}</span>
                         <span class="p-0" v-if="loading_follow_request">
                             <Loading size="1.3rem" />
                         </span>
                     </button>
-                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="border btn bg-hover rounded-lg px-6 text-sm text-heading bg-theme weight-900" @click="editProfile = true">Edit Profile</button>
-                    <button class="border btn bg-hover rounded-lg text-sm text-heading bg-theme weight-900" v-if="followed && !loading">
-                        <q-icon size="1.5rem" name="notifications" />
-                    </button>
-                    <button class="border btn bg-hover rounded-lg text-sm text-heading bg-theme weight-900" v-if="followed && !loading">
-                        <q-icon size="1.5rem" name="more_horiz" />
-                    </button>
+                    
+                    
                 </div>
             </div>
             <div class="h-full">
@@ -390,8 +392,8 @@ export default defineComponent({
                         </div>
                     </div>
                     <div class="follows text-lg flex items-center gap-3">
-                        <span class="text-body btn" @click="{show_followers = true; getFollowers()}"><span class="text-heading weight-900">{{ followers }} </span> Followers</span> 
-                        <span class="text-body btn" @click="{show_following = true; getFollowing()}"><span class="text-heading weight-900">{{ following }} </span> Following</span>
+                        <span class="text-body pointer" @click="{show_followers = true; getFollowers()}"><span class="text-heading weight-900">{{ followers }} </span> Followers</span> 
+                        <span class="text-body pointer" @click="{show_following = true; getFollowing()}"><span class="text-heading weight-900">{{ following }} </span> Following</span>
                     </div>
 
                     <div class="relative w-full">
