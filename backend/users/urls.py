@@ -1,5 +1,6 @@
 from django.urls import path, re_path
 from users import views
+from . import consumers
 
 urlpatterns = [
     path('', views.users, name="users"),
@@ -21,4 +22,9 @@ urlpatterns = [
     path('update_profile/', views.UpdateProfile.as_view(), name="make_superuser"),
     # path('upload_avatar/', views.UploadAvatar.as_view(), name="upload avatar"),
     # path('upload_banner/', views.UploadBanner.as_view(), name="upload banner"),
+]
+
+
+websocket_urlpatterns = [
+    re_path(r'^ws/user_consumer/(?P<post_id>\d+)/$', consumers.UserConsumer.as_asgi()),
 ]

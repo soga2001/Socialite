@@ -16,7 +16,11 @@ class SpillCommentConsumer(AsyncWebsocketConsumer):
 
 
 
-    async def disconnect(self, close_code):
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
         pass
 
 
@@ -33,8 +37,8 @@ class CommentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
 
-        self.post_id = self.scope['url_route']['kwargs']['post_id']
-        self.room_group_name = f'comment_room_{self.post_id}'
+        self.comment_id = self.scope['url_route']['kwargs']['comment_id']
+        self.room_group_name = f'comment_{self.comment_id}'
 
         # group add
         await self.channel_layer.group_add(
@@ -43,7 +47,7 @@ class CommentConsumer(AsyncWebsocketConsumer):
         )
 
 
-    async def disconnect(self):
+    async def disconnect(self, code):
         # group remove
         await self.channel_layer.group_discard(
             self.room_group_name,
@@ -56,7 +60,7 @@ class CommentConsumer(AsyncWebsocketConsumer):
         # Handle the "Comment added" message
         message = event['message']
         await self.send(text_data=json.dumps({
-            'type': 'websocket.send',
+            'type': 'update',
             'message': message
         }))
 
@@ -64,6 +68,6 @@ class CommentConsumer(AsyncWebsocketConsumer):
         # Handle the "Comment added" message
         message = event['message']
         await self.send(text_data=json.dumps({
-            'type': 'websocket.send',
+            'type': 'delete',
             'message': message
         }))

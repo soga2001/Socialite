@@ -80,6 +80,11 @@ class Comments(APIView):
             comment = Comment.objects.get(pk=id, user=request.user)
             if comment:
                 comment.delete()
+                group_name = f'comment_{id}'
+                async_to_sync(channel_layer.group_send)(group_name, {
+                    "type": "comment.delete",
+                    "message": "This comment has been deleted."
+                })
                 return JsonResponse({'status': True, 'message': 'Comment deleted successfully'})
             return JsonResponse({'status': False, 'message': 'Comment not found'})
         except Exception as e:
@@ -94,6 +99,11 @@ class Comments(APIView):
             if comment:
                 comment.comment = newCom
                 comment.save()
+                group_name = f'comment_{id}'
+                async_to_sync(channel_layer.group_send)(group_name, {
+                    "type": "comment.update",
+                    "message": json.dumps(CommentSerializer(comment).data)
+                })
                 return JsonResponse({'status': True, 'message': 'Comment updated successfully'})
             return JsonResponse({'status': False, 'message': 'Comment not found'})
         except Exception as e:

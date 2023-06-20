@@ -23,7 +23,7 @@ export default defineComponent({
             loading_comments: true,
             date: new Date(),
             page: 0,
-            websocket: new WebSocket(`wss://localhost:8000/ws/comments/${this.$route.params.post_id}/`),
+            websocket: new WebSocket(`wss://localhost:8000/ws/spill_comments/${this.$route.params.post_id}/`),
         };
     },
     created() {
@@ -105,7 +105,7 @@ export default defineComponent({
             })
         },
         async websocketOpen() {
-            this.websocket = new WebSocket(`wss://localhost:8000/ws/comments/${this.$route.params.post_id}/`)
+            this.websocket = new WebSocket(`wss://localhost:8000/ws/spill_comments/${this.$route.params.post_id}/`)
             this.websocket.onopen = (e) => {
                 console.log('Websocket opened')
             }
@@ -135,6 +135,7 @@ export default defineComponent({
     },
     mounted() {
         this.websocketOpen()
+        this.websocketMessage()
     },
     unmounted() {
         this.websocketClose()
