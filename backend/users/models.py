@@ -52,6 +52,7 @@ class User(AbstractUser):
 @receiver(models.signals.post_delete, sender=User)
 def remove_file_from_s3(sender, instance, using, **kwargs):
     instance.avatar.delete(save=False)
+    instance.banner.delete(save=False)
 
 @receiver(pre_save, sender=User)
 def auto_delete_files_on_change(sender, instance, **kwargs):

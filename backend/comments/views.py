@@ -56,6 +56,7 @@ class Comments(APIView):
             )
             comment.save()
             group_name = f'comment_room_{id}'
+            print(group_name)
             async_to_sync(channel_layer.group_send)(group_name, {
                 "type": "comment.send",
                 "message": json.dumps(CommentSerializer(comment).data)
@@ -65,9 +66,9 @@ class Comments(APIView):
             return JsonResponse({'status': False, 'message': 'Error adding comment'})
 
     # id here is post id
-    def get(self, request, id):
+    def get(self, request):
         try:
-            comments = Comment.objects.filter(post__id=id)
+            comments = Comment.objects.filter(user__id=request.user)
             serializer = CommentSerializer(comments, many=True)
             return JsonResponse({'status': True, 'message': 'Comments fetched successfully', 'comments': serializer.data})
         except Exception as e:

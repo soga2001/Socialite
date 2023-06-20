@@ -140,7 +140,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <q-card class="grid border-t border-b bg-theme bg-hover-mute pointer" @click="$router.push({name: 'view-spill', params: { username: username, post_id: id}})" v-if="!deleted">
+    <q-card class="grid border-t border-b bg-theme bg-hover-mute pointer" @click="$router.push({name: 'view-spill', params: { user: username, post_id: id}})" v-if="!deleted">
         <div class="post__main">
             <Item>
                 <template #avatar>

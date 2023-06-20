@@ -118,16 +118,9 @@ export default defineComponent({
     <div id="main-div" :scroll="scroll" :class="(isMobile() && 'mobile-main min-h-full grid-row-2') + 'h-full w-full'">
       <div class="border-l border-r pb-10">
         <RouterView v-slot="{Component}" >
-          <template :max="1" v-if="$route.matched[0].name !== 'user-profile'">
-            <KeepAlive :include="['home', 'search', 'explore', 'view-spill']" >
-              <component :is="Component" :key="$route.fullPath"  :height="height" :scrollPosition="scrollPosition" />
-            </KeepAlive>
-          </template>
-          <template v-else>
-            <KeepAlive :max="1" :include="['user-profile']" >
-              <component :is="Component"  :height="height" :scrollPosition="scrollPosition" />
-            </KeepAlive>
-          </template>
+          <KeepAlive :include="['home', 'search', 'explore', 'user-profile', 'view-spill']" >
+            <component :is="Component" :key="$route.matched[0].name !== 'user-profile' ? $route.fullPath : null"  :height="height" :scrollPosition="scrollPosition" />
+          </KeepAlive>
         </RouterView>
       </div>
 

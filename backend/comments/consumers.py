@@ -8,6 +8,9 @@ class SpillCommentConsumer(AsyncWebsocketConsumer):
         self.post_id = self.scope['url_route']['kwargs']['post_id']
         self.room_group_name = f'comment_room_{self.post_id}'
 
+        print(self.room_group_name)
+
+
         # group add
         await self.channel_layer.group_add(
             self.room_group_name,
