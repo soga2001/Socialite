@@ -29,7 +29,7 @@ export default defineComponent({
     created() {
         this.getSpill();
         this.getComments();
-        console.log(this.$route.fullPath)
+        // console.log(this.$route.fullPath)
     },
     methods: {
         async getSpill() {

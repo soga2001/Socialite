@@ -33,8 +33,8 @@ export default defineComponent({
         default: false,
       },
       spillId: {
-        type: Number,
-        default: 0,
+        type: String,
+        default: "",
       },
       rows: {
         type: Number,

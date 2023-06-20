@@ -22,7 +22,7 @@ export interface User{
 
 export interface Post{
     user_id: any
-    id: number,
+    id: string,
     username: string,
     user_avatar: string,
     user: number,
@@ -37,7 +37,7 @@ export interface Comment{
     id: number,
     username: string,
     user_avatar: string,
-    post: number,
+    post: string,
     comment: string,
     date_posted: string,
     date_updated: string,

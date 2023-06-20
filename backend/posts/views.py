@@ -113,8 +113,6 @@ def explore(request, offset):
         displayed_post_ids += list(post_ids)
         request.session['displayed_post_ids'] = displayed_post_ids
 
-    
-
     if len(posts) == 0:
         return JsonResponse({"message": "You have viewed all the unique posts."})
 

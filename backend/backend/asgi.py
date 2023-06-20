@@ -24,7 +24,7 @@ application = ProtocolTypeRouter({
         #     URLRouter(
         #         comments.urls.websocket_urlpatterns
         #     )
-        # )
+        # ),
         "websocket": URLRouter(comments.urls.websocket_urlpatterns)
         # Just HTTP for now. (We can add other protocols later.)
 

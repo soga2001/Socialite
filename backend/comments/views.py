@@ -42,7 +42,6 @@ class Comments(APIView):
 
     # id here is post id
     def post(self, request, id):
-        print('here')
         try:
             user = request.user
             comment = request.POST['comment']
