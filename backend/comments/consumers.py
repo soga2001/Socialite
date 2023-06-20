@@ -29,6 +29,7 @@ class SpillCommentConsumer(AsyncWebsocketConsumer):
 
     async def comment_send(self, event):
         # Handle the "Comment added" message
+        print('here')
         message = event['message']
         await self.send(text_data=json.dumps({
             'type': 'comment',

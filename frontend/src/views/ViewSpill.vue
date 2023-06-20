@@ -285,7 +285,7 @@ export default defineComponent({
                     <div>
                         <span >
                             <span>
-                            <transition name="slide" mode="out-in">
+                            <transition name="fade" mode="out-in">
                                 <span class="text-heading weight-900" v-if="total_likes % 2 == 0">{{ total_likes }}</span>
                                 <span class="text-heading weight-900" v-else>{{ total_likes }}</span>
                             </transition>
@@ -330,9 +330,9 @@ export default defineComponent({
                 <div class="border-b" v-if="$store.state.authenticated">
                     <Spills placeholder="Reply to the spill" btnString="Reply" isComment :spillId="spill.id"/>
                 </div>
-                <div class="grid">
-                    <TransitionGroup name="slide" mode="out-in">
-                        <div class="border" v-if="comments" v-for="comment in comments">
+                <div class="grid overflow-hidden">
+                    <TransitionGroup name="slide" mode="out-in" tag="div">
+                        <div class="border" v-if="comments" v-for="comment in comments" :key="comment.id">
                             <CommentMap :comment="comment"/>
                         </div>
                     </TransitionGroup>
@@ -359,28 +359,32 @@ export default defineComponent({
     position: relative;
 } */
 
-.slide-enter {
-  top: 10px !important;
-  opacity: 0.5 !important;
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
 }
 
-.slide-enter-active, .slide-leave-active {
-  transition: all .15s !important;
+.slide-move, /* apply transition to moving elements */
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.5s ease;
 }
 
-.slide-enter-to {
-  top: 0px !important;
-  opacity: 1 !important;
-}
-
-.slide-leave {
-  top: 0px !important;
-  opacity: 1 !important;
-}
-
+.slide-enter-from,
 .slide-leave-to {
-  top: -10px !important;
-  opacity: 0 !important;
-  transform: blur(8px) !important;
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* ensure leaving items are taken out of layout flow so that moving
+   animations can be calculated correctly. */
+.slide-leave-active {
+  position: absolute;
 }
 </style>

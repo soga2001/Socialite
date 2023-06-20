@@ -38,8 +38,8 @@ export default defineComponent({
             editProfile: false,
 
 
-            newAvatar: this.user.avatar as string,
-            newBanner: this.user.banner as string,
+            newAvatar: this.user.avatar as string || "",
+            newBanner: this.user.banner as string || "",
             new_FN: this.user.first_name,
             new_LN: this.user.last_name,
             newBio: this.user.bio,
