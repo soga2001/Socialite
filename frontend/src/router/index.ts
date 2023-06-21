@@ -63,25 +63,20 @@ const router: Router = createRouter({
       name: 'user-profile',
       component: () => import('../views/User.vue'),
       alias: '/:username?/*',
-      // meta: {basePath: '/:username?'},
       redirect: {
         name: 'user-posted'
       },
       children : [
         {
-          // path: getParentRouterPath(this), 
           path: '',
           alias: '*',
           name: 'user-posted',
-          // meta: {basePath: getParentRouterPath(this)},
           component: () => import('../components/UserProfile/UserPosted.vue'),
         },
         {
-          // path: getParentRouterPath(this) + '/likes',
           path: 'likes',
           alias: 'likes/*',
           name: 'user-liked',
-          // meta: {basePath: getParentRouterPath(this) + '/likes'},
           component: () => import('../components/UserProfile/UserLiked.vue'),
         },
       ],

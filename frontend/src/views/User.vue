@@ -7,7 +7,6 @@ import Search from './Search.vue';
 import UserPosted from '../components/UserProfile/UserPosted.vue';
 import UserLiked from '../components/UserProfile/UserLiked.vue';
 import Item from '@/components/Item.vue';
-import { getParentRouterPath } from '@/assets/parentPath';
 
 export default defineComponent({
     name: 'user-profile',
@@ -20,6 +19,7 @@ export default defineComponent({
             tab: ref('User_Posted'),
             loading: true,
             docState: 'saved',
+            websocket: new WebSocket(`wss://localhost:8000/ws/user_consumer/${this.$route.params.username}/`),
         };
     },
     methods: {
@@ -92,7 +92,7 @@ export default defineComponent({
                 <div class="p-2">
                     <RouterView v-slot="{ Component }">
                         <KeepAlive :max="2" :include="['user-posted', 'user-liked']">
-                            <component :is="Component"/>
+                            <component :is="Component" :websocket="websocket"/>
                         </KeepAlive>
                     </RouterView>
                 </div>

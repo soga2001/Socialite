@@ -37,7 +37,7 @@ export default defineComponent({
             await http.get(`posts/post_by_id/${this.$route.params.post_id}/`).then((res) => {
                 this.spill = res.data.spill;
                 this.total_likes = this.spill.total_likes;
-                this.checkLiked();
+                // this.checkLiked();
             }).catch((err) => {
                 // console.log(err);
             });
@@ -332,7 +332,7 @@ export default defineComponent({
                 </div>
                 <div class="grid overflow-hidden">
                     <TransitionGroup name="slide" mode="out-in" tag="div">
-                        <div class="border" v-if="comments" v-for="comment in comments" :key="comment.id">
+                        <div v-if="comments" v-for="comment in comments" :key="comment.id">
                             <CommentMap :comment="comment"/>
                         </div>
                     </TransitionGroup>
@@ -360,31 +360,7 @@ export default defineComponent({
 } */
 
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.5s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
 
-.slide-move, /* apply transition to moving elements */
-.slide-enter-active,
-.slide-leave-active {
-  transition: all 0.5s ease;
-}
 
-.slide-enter-from,
-.slide-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
 
-/* ensure leaving items are taken out of layout flow so that moving
-   animations can be calculated correctly. */
-.slide-leave-active {
-  position: absolute;
-}
 </style>

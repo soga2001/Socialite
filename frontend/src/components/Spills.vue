@@ -129,11 +129,10 @@ export default defineComponent({
     <div class="post__container">
       <q-avatar class="post__avatar" size="70px" >
           <img class="user__avatar" v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
-          <!-- <q-icon v-else size="65px" name="face" /> -->
           <profile-icon v-else size="4rem" />
       </q-avatar>
       <div class="grid gap-3">
-        <form class="relative cols-5 grid gap-2 p-2" autocorrect="on" autocomplete="off" @submit.prevent="submit">
+        <form class="relative cols-5 grid gap-2 px-2" autocorrect="on" autocomplete="off" @submit.prevent="submit">
           <Mention ref="input" @update:charsLeft="chars = $event" :rows="rows" @update:val="caption = $event" :value="caption" input_type="text" id="caption" :placeholder="placeholder" class="post__caption h-full" />
           <div class="flex w-full gap-2 col-span-2">
             <label :hidden="isComment" class="pointer btn-transition btn-hover-ligher pt-2 px-2 rounded">

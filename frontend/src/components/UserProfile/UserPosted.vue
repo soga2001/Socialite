@@ -4,12 +4,18 @@ import { http } from '@/assets/http';
 import type { Post } from '@/assets/interfaces';
 import UserPostedMap from './UserPostedMap.vue';
 import Loading from '../Loading.vue';
+import type { PropType } from 'vue';
+
 
 
 export default defineComponent({
     name: 'user-posted',
     props: {
         // user_avatar: {type: String, required: true},
+        websocket: {
+            type: Object as PropType<WebSocket>,
+            required: true,
+        }
     },
     data() {
         return {
@@ -55,11 +61,15 @@ export default defineComponent({
 
 <template>
     <div class="user__posted__main" id="main">
-        <div class="user__posted">
-            <div class="posts" v-if="user_posted.length > 0" v-for="post in user_posted" :key="post.id">
-                <!-- <UserPostedMap class="post" :post="post" :user_avatar="avatar"/> -->
+        <div class="">
+            <!-- <div class="posts" v-if="user_posted.length > 0" v-for="post in user_posted" :key="post.id">
                 <UserPostedMap class="post" :post="post"/>
-            </div>
+            </div> -->
+            <TransitionGroup name="slide" mode="out-in" tag="div">
+                <div class="user__posted" v-if="user_posted" v-for="user in user_posted" :key="user.id">
+                    <UserPostedMap class="post" :post="user"/>
+                </div>
+            </TransitionGroup>
         </div>
         <div class="col-12" v-if="user_posted.length == 0 && !loading">
             <h3 class="text-center">User hasn't made any post.</h3>

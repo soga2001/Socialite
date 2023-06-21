@@ -276,7 +276,7 @@ export default defineComponent({
                     <div class="dropdown-btn">
                         <q-btn no-caps dense rounded flat class="dropdown" v-if="$store.state.authenticated">
                           <div class="hide item">
-                            <Item  dense>
+                            <Item dense avatarSize="3rem">
                                 <template #avatar>
                                   <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
                                   <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
@@ -360,69 +360,18 @@ header {
 }
 
 
-.topNav .dropdown-btn {
+.dropdown-btn {
   padding: 0;
-  width: 3rem;
+  width: 100%;
 }
 
   
-.bottomNav {
-  width: 100%;
-  background-color: var(--color-background);
-  border-top: 1px solid var(--color-text);
-  z-index: 0;
-  display: inline-flex;
-}
-
-.mobile-nav {
-  padding: 0;
-}
 
 .item {
   height: fit-content;
 }
 .item img {
   width: 3rem;
-}
-
-.slide-in-nav {
-  height: 100%;
-  width: 0;
-  position: fixed;
-  z-index: 999;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  background-color: var(--color-background);
-  border-right: 3px solid var(--color-border);
-  overflow-x: hidden;
-  transition: 0.5s;
-  /* padding-top: .1rem; */
-
-  display: grid;
-}
-
-.slide-in-nav a {
-  padding: 0 10px 0 10px;
-  text-decoration: none;
-  font-size: 25px;
-  /* color: #818181; */
-  color: var(--color-heading);
-  display: block;
-}
-
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--color-hover); /* Set the opacity value for the background */
-  z-index: 999; /* Set the z-index to a value higher than the slide-in menu */
-}
-
-.slide-in-nav a:hover {
-  color: #f1f1f1;
 }
 
 .logout {
@@ -527,7 +476,7 @@ a {
   justify-content: center;
 }
 
-.top-nav .dropdown {
+.dropdown {
   position: relative;
   display: inline-block;
 }

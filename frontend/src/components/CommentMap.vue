@@ -85,7 +85,7 @@ export default defineComponent({
 
 <template>
     <Transition name="fade" class="overflow-hidden">
-        <div v-if="!deleted">
+        <div v-if="!deleted" class="border">
             <Item class="bg-theme h-full w-full" alignItems="start" :captionLineClamp="4">
                 <template #avatar>
                     <img class="pointer hover-darker" @click="$router.push({name: 'user-profile', params: {username: commentData.username}})"  v-if="commentData.user_avatar" :src="commentData.user_avatar"/>
@@ -200,20 +200,8 @@ export default defineComponent({
                 </template>
             </Item>
         </div>
-        <div v-else="deleted" class=" flex justify-center items-center h-full w-full">
-        </div>
     </Transition>
 </template>
 
 <style scoped>
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.5s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
 </style>

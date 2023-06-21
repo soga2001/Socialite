@@ -2386,3 +2386,34 @@
 .results-odd:nth-child(odd) {
     background-color: var(--color-background);
 }
+
+
+/* transition classes */
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.15s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.slide-move, /* apply transition to moving elements */
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.5s ease;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* ensure leaving items are taken out of layout flow so that moving
+   animations can be calculated correctly. */
+.slide-leave-active {
+  position: absolute;
+}

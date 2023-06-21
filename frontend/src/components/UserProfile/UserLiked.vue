@@ -42,9 +42,11 @@ export default defineComponent({
 <template>
     <div class="user__liked__main">
         <div class="user__liked">
-            <div class="posts" v-if="user_liked.length > 0" v-for="post in user_liked" :key="post.id">
-                <UserPostedMap class="post" :post="post"/>
-            </div>
+            <TransitionGroup name="slide" mode="out-in" tag="div">
+                <div v-if="user_liked" v-for="user in user_liked" :key="user.id">
+                    <UserPostedMap class="post" :post="user"/>
+                </div>
+            </TransitionGroup>
         </div>
         <div class="loading" v-if="loading">
             <Loading :stroke-width="5"/>
