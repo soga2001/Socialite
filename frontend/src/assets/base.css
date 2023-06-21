@@ -47,6 +47,8 @@
   --color-text: var(--vt-c-text-dark-2);
   --color-lighter: var(--vt-c-text-dark-3);
 
+  --color-theme: var(--vt-c-orange);
+
   --color-button: var(--vt-c-orange);
   --color-button-background: var(--vt-c-background-orange);
   --color-button-hover: var(--vt-c-orange-hover);
@@ -69,6 +71,8 @@
   --color-heading: var(--vt-c-text-light-1);
   --color-text: var(--vt-c-text-light-2);
   --color-lighter: var(--vt-c-text-light-3);
+
+  --color-theme: var(--vt-c-orange);
 
   --color-button: var(--vt-c-orange);
   --color-button-background: var(--vt-c-background-orange);

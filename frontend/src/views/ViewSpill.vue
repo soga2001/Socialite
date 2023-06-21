@@ -23,7 +23,7 @@ export default defineComponent({
             loading_comments: true,
             date: new Date(),
             page: 0,
-            websocket: new WebSocket(`wss://localhost:8000/ws/spill_comments/${this.$route.params.post_id}/`),
+            websocket: new WebSocket(`wss://localhost:8000/ws/spill/${this.$route.params.post_id}/`),
         };
     },
     created() {
@@ -105,7 +105,7 @@ export default defineComponent({
             })
         },
         async websocketOpen() {
-            this.websocket = new WebSocket(`wss://localhost:8000/ws/spill_comments/${this.$route.params.post_id}/`)
+            this.websocket = new WebSocket(`wss://localhost:8000/ws/spill/${this.$route.params.post_id}/`)
             this.websocket.onopen = (e) => {
                 console.log('Websocket opened')
             }
@@ -132,6 +132,9 @@ export default defineComponent({
                 console.log('Websocket closed')
             }
         },
+        deleteComment(index: number) {
+            this.comments.splice(index, 1)
+        }
     },
     mounted() {
         this.websocketOpen()
@@ -330,10 +333,10 @@ export default defineComponent({
                 <div class="border-b" v-if="$store.state.authenticated">
                     <Spills placeholder="Reply to the spill" btnString="Reply" isComment :spillId="spill.id"/>
                 </div>
-                <div class="grid overflow-hidden">
+                <div class="grid overflow-hidden w-100">
                     <TransitionGroup name="slide" mode="out-in" tag="div">
-                        <div v-if="comments" v-for="comment in comments" :key="comment.id">
-                            <CommentMap :comment="comment"/>
+                        <div v-if="comments" v-for="(comment, index) in comments" :key="comment.id">
+                            <CommentMap :comment="comment" @deleted="deleteComment(index)"/>
                         </div>
                     </TransitionGroup>
                 </div>

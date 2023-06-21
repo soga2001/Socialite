@@ -64,7 +64,8 @@ import UploadImage from '@/icons/i-uploadImg.vue';
 import UploadVideo from '@/icons/i-uploadVid.vue';
 import CloseIcon from '@/icons/i-close.vue';
 import SpillIcon from '@/icons/i-spill.vue';
-import CommentIcon from '@/icons/i-comment.vue'
+import CommentIcon from '@/icons/i-comment.vue';
+import EmptyFolder from '@/icons/i-folder.vue';
 
 
 
@@ -97,6 +98,7 @@ app.component('i-spill', SpillIcon);
 app.component('i-upload-img', UploadImage);
 app.component('i-upload-vid', UploadVideo);
 app.component('i-comment', CommentIcon);
+app.component('i-folder', EmptyFolder);
 
 // components
 app.component('circular-progress', CircularProgress);

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, getCurrentInstance } from 'vue';
 import type { Comment } from '@/assets/interfaces'
 import { http } from '@/assets/http';
 
@@ -37,7 +37,6 @@ export default defineComponent({
             console.log(this.reason);
         },
         async websocketOpen() {
-            this.websocket = new WebSocket(`wss://localhost:8000/ws/comment/${this.comment.id}/`)
             this.websocket.onopen = (e) => {
                 console.log('Websocket opened')
             }
@@ -47,8 +46,10 @@ export default defineComponent({
                 console.log(e.data)
                 const data = JSON.parse(e.data)
                 if(data.type == "delete") {
-                    this.deleted = true
-                    this.deletedMsg = data.message
+                    // this.$.appContext.app.unmount();
+                    this.$emit("deleted")
+                    // this.deleted = true
+                    // this.deletedMsg = data.message
                 }
             }
         },
@@ -60,10 +61,15 @@ export default defineComponent({
             }
         },
     },
-    mounted() {
+    created() {
         this.websocketOpen()
         this.websocketMessage()
+        console.log(getCurrentInstance())
     },
+    // mounted() {
+    //     this.websocketOpen()
+    //     this.websocketMessage()
+    // },
     unmounted() {
         this.websocketClose()
     },
@@ -76,6 +82,7 @@ export default defineComponent({
         },
         deleted(deleted) {
             if(deleted) {
+                this.$emit('deleted', this.comment.id)
                 this.websocket.close()
             }
         }

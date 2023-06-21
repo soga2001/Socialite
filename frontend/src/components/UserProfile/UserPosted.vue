@@ -29,6 +29,9 @@ export default defineComponent({
             isLoggedUser: false,
             page: 0,
             loading: true,
+
+            deleted: false,
+            deletedMsg: '',
         };
     },
     setup() {
@@ -42,12 +45,26 @@ export default defineComponent({
                 console.log(err);
             });
         },
+        async websocketMessage() {
+            this.websocket.onmessage = (e) => {
+                console.log(e.data)
+                const data = JSON.parse(e.data)
+                if(data.type == "posted") {
+                    this.user_posted.unshift(JSON.parse(data.message))
+                }
+                if(data.type == "deleted") {
+                    this.$emit("deleted")
+                }
+            }
+        },
+        deleteSpill(index: number) {
+            this.user_posted.splice(index, 1)
+        }
     },
 
     created() {
-        setTimeout(() => {
-            this.getUserPosted();
-        }, 2000);
+        this.getUserPosted()
+        this.websocketMessage()
     },
     mounted() {
     },
@@ -61,21 +78,18 @@ export default defineComponent({
 
 <template>
     <div class="user__posted__main" id="main">
-        <div class="">
-            <!-- <div class="posts" v-if="user_posted.length > 0" v-for="post in user_posted" :key="post.id">
-                <UserPostedMap class="post" :post="post"/>
-            </div> -->
-            <TransitionGroup name="slide" mode="out-in" tag="div">
-                <div class="user__posted" v-if="user_posted" v-for="user in user_posted" :key="user.id">
-                    <UserPostedMap class="post" :post="user"/>
-                </div>
-            </TransitionGroup>
-        </div>
-        <div class="col-12" v-if="user_posted.length == 0 && !loading">
-            <h3 class="text-center">User hasn't made any post.</h3>
+        <TransitionGroup name="slide" mode="out-in" tag="div">
+                <UserPostedMap class="post my-2" :post="user" v-if="user_posted" v-for="(user, index) in user_posted" :key="user.id" @deleted="deleteSpill(index)"/>
+        </TransitionGroup>
+        <div class="w-full flex flex-center flex-col" v-if="user_posted.length == 0 && !loading">
+            <div>
+                <i-folder :fill="'black'" stroke="black"/>
+            </div>
+            <div class="text-3xl weight-900">
+                User hasn't liked anything.
+            </div>
         </div>
         <div class="loading" v-if="loading">
-            <!-- <q-spinner-oval class="spinner"/> -->
             <Loading :stroke-width="5"/>
         </div>
     </div>
@@ -86,16 +100,6 @@ export default defineComponent({
 #main {
     height: 100%;
 }
-.user__posted {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 5px;
-    width: 100%;
-}
-
-/* .user__posted__main {
-
-} */
 
 .loading {
     width: 100%;

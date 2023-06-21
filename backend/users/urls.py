@@ -23,8 +23,3 @@ urlpatterns = [
     # path('upload_avatar/', views.UploadAvatar.as_view(), name="upload avatar"),
     # path('upload_banner/', views.UploadBanner.as_view(), name="upload banner"),
 ]
-
-
-websocket_urlpatterns = [
-    re_path(r'^ws/user_consumer/(?P<post_id>\d+)/$', consumers.UserConsumer.as_asgi()),
-]

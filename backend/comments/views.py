@@ -56,7 +56,6 @@ class Comments(APIView):
             )
             comment.save()
             group_name = f'comment_room_{id}'
-            print(json.dumps(CommentSerializer(comment).data))
             async_to_sync(channel_layer.group_send)(group_name, {
                 "type": "comment.send",
                 "message": json.dumps(CommentSerializer(comment).data)

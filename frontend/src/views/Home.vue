@@ -16,6 +16,7 @@ export default defineComponent({
         user_timestap: new Date().toISOString(),
         page: ref(0),
         hasMore: false,
+        loading: true,
       };
   },
   name: 'home',
@@ -45,6 +46,7 @@ export default defineComponent({
   },
   methods: {
     async getData() {
+      this.loading = true
       http.get(`posts/posts_by_followed_users/${this.user_timestap}/${this.page}/`).then((res) => {
         if(res.data.posts.length === 5) {
           this.hasMore = true
@@ -55,8 +57,11 @@ export default defineComponent({
         if((res.data.posts).length > 0){
           this.posts = [...this.posts, ...res.data.posts]
         }
+
+        this.loading = false
       }).catch((err) => {
           console.log(err);
+          this.loading = false
       });
     },
     async search() {
@@ -101,6 +106,14 @@ export default defineComponent({
             </div>
           </template>
         </q-infinite-scroll>
+        <div class="w-full flex flex-center flex-col" v-if="posts.length == 0 && !loading">
+            <div>
+                <i-folder :fill="'black'" stroke="black"/>
+            </div>
+            <div class="text-xl weight-900">
+                Follow more users to see their posts here.
+            </div>
+        </div>
       </div>
     </div>
     

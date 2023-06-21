@@ -42,7 +42,10 @@ export default defineComponent({
       }
     },
     computed: {
-      
+      lessThan20() {
+        console.log('here')
+        return (255 - this.chars) <= 20;
+      },
     },
     methods: {
         submit() {
@@ -155,7 +158,21 @@ export default defineComponent({
                 />
               </template>
             </q-btn> 
-            <circular-progress v-if="chars" :val="chars" size="30px" />
+            <circular-progress v-if="chars" :val="chars" size="30px" :showVal="true" />
+            <!-- <q-circular-progress
+              v-if="chars"
+              show-value
+              font-size="12px"
+              :value="chars"
+              size="30px"
+              :thickness="0.22"
+              color="pink"
+              track-color="grey-3"
+              :min="0"
+              :max="255"
+            >
+              <span v-if="lessThan20">{{ 255 - chars }}</span>
+            </q-circular-progress> -->
           </div>
         </form>
         <div v-if="imgURL" class="mr-3">

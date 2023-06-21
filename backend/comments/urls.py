@@ -13,11 +13,3 @@ urlpatterns = [
     # re_path(r'^total_comments_by_post/(?P<post_id>\d+)/$', views.total_comments_by_post, name='total_comments_by_post'),
     # path('delete_all_comments/', views.delete_all_comments, name="delete_all_comments"),
 ]
-
-
-
-
-websocket_urlpatterns = [
-    re_path(r'^ws/spill_comments/(?P<post_id>[0-9a-f-]+)/$', consumers.SpillCommentConsumer.as_asgi()),
-    re_path(r'^ws/comment/(?P<comment_id>\d+)/$', consumers.CommentConsumer.as_asgi()),
-]

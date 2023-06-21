@@ -4,9 +4,16 @@ import type { Post } from '@/assets/interfaces';
 import { defineComponent } from 'vue';
 import UserPostedMap from './UserPostedMap.vue';
 import Loading from '../Loading.vue';
+import type { PropType } from 'vue';
 
 export default defineComponent({
     name: "user-liked",
+    props: {
+        websocket: {
+            type: Object as PropType<WebSocket>,
+            required: true,
+        }
+    },
     data() {
         return {
             // user_id: this.$route.query.id,
@@ -19,7 +26,7 @@ export default defineComponent({
         };
     },
     methods: {
-        async getUserPosted() {
+        async getUserLiked() {
             this.loading = true
             await http.get(`like/view_liked/${this.user_timestap}/${this.page}/${(this.username)}/`).then((res) => {
                 this.user_liked = [...this.user_liked, ...res.data.posts];
@@ -27,13 +34,20 @@ export default defineComponent({
                 console.log(err);
             });
             this.loading = false
-        }
+        },
+        async websocketMessage() {
+            this.websocket.onmessage = (e) => {
+                console.log(e.data)
+                const data = JSON.parse(e.data)
+                if(data.type == "liked") {
+                    this.user_liked.unshift(JSON.parse(data.message))
+                }
+            }
+        },
     },
     created() {
-        setTimeout(() => {
-            this.getUserPosted();
-        }, 3000);
-        // this.getUserPosted();
+        this.getUserLiked()
+        this.websocketMessage()
     },
     components: { UserPostedMap, Loading }
 })
@@ -41,12 +55,19 @@ export default defineComponent({
 
 <template>
     <div class="user__liked__main">
-        <div class="user__liked">
-            <TransitionGroup name="slide" mode="out-in" tag="div">
-                <div v-if="user_liked" v-for="user in user_liked" :key="user.id">
-                    <UserPostedMap class="post" :post="user"/>
-                </div>
-            </TransitionGroup>
+        <TransitionGroup name="slide" mode="out-in" tag="div">
+            <div v-if="user_liked" v-for="user in user_liked" :key="user.id">
+                <UserPostedMap class="post" :post="user"/>
+            </div>
+        </TransitionGroup>
+        <div class="w-full flex flex-center flex-col" v-if="user_liked.length == 0 && !loading">
+            <div>
+                <i-folder :fill="'black'" stroke="black"/>
+
+            </div>
+            <div class="text-3xl weight-900">
+                User hasn't liked anything.
+            </div>
         </div>
         <div class="loading" v-if="loading">
             <Loading :stroke-width="5"/>

@@ -23,6 +23,15 @@ export default defineComponent({
             type: String,
             default: '50px'
         },
+        showVal: {
+            type: Boolean,
+            default: false
+        },
+    },
+    computed: {
+        lessThan20() {
+            return (255 - this.val) <= 20;
+        }
     },
     methods: {
         changeStyle(): CSSProperties {
@@ -46,6 +55,7 @@ export default defineComponent({
 <template>
     <!-- <div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div> -->
     <div class="progress-bar" :style="changeStyle()" role="progressbar" :aria-valuenow="val" :aria-valuemin="minVal" :aria-valuemax="maxVal">
+        <span class="text-xs weight-900" v-if="showVal && lessThan20" >{{ 255 - val }}</span>
     </div>
 </template>
 
@@ -54,5 +64,9 @@ export default defineComponent({
   width: 100px;
   height: 100px;
   border-radius: 50%; 
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

@@ -3,12 +3,10 @@ from time import time
 from django.db import DatabaseError
 from django.http import JsonResponse
 from django.utils.html import escape
-from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 # From Django
 from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt, csrf_protect, requires_csrf_token
-# from django.contrib.auth.models import User
+
 
 # From rest_framework
 from rest_framework.views import APIView
@@ -21,9 +19,11 @@ from users.models import User
 from backend.authenticate import *
 from rest_framework import status
 
-
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 import json
 
+channel_layer = get_channel_layer()
 custom = CustomAuthentication()
 
 def replace(val):
@@ -62,6 +62,12 @@ class Post_Content(APIView):
                 caption=caption
             )
             post.save()
+            group_name = f'user_{post.user.username}'
+            async_to_sync(channel_layer.group_send)(group_name, {
+                "type": "user_update",
+                "updateType": 'posted',
+                "message": json.dumps(PostSerializer(post).data)
+            })
             # return JsonResponse({"success": True, "post": PostSerializer(post).data}, safe=False)
             return JsonResponse({"error": False}, safe=False)
         except:
@@ -71,6 +77,12 @@ class Post_Content(APIView):
         data = json.loads(request.body)
         try:
             Post.objects.filter(user_id=request.user.id).filter(id=data["id"]).delete()
+            group_name = f'user_{request.user.username}'
+            async_to_sync(channel_layer.group_send)(group_name, {
+                "type": "user_update",
+                "updateType": 'deleted',
+                "message": "Post deleted"
+            })
             return JsonResponse({"success": True}, safe=False)
         except:
             return JsonResponse({"success": False}, safe=False)

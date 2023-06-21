@@ -36,6 +36,16 @@ export default defineComponent({
             });
             this.loading = false
         },
+        async websocketOpen() {
+            this.websocket = new WebSocket(`wss://localhost:8000/ws/user_consumer/${this.$route.params.username}/`)
+        },
+        async websocketClose() {
+            this.websocket.close()
+
+            this.websocket.onclose = (e) => {
+                console.log('Websocket closed')
+            }
+        },
     },
     created() {
         this.userInfo();
@@ -49,7 +59,11 @@ export default defineComponent({
                 if(to.params.username != this.username) {
                     this.username = to.params.username
                     this.user = {} as User;
+                    this.websocketClose()
                     this.userInfo();
+                    this.websocketOpen()
+                    // const instance = getCurrentInstance()
+                    // instance?.proxy?.$forceUpdate()
                 }
             }
         }
@@ -89,7 +103,7 @@ export default defineComponent({
                 </div>
 
 
-                <div class="p-2">
+                <div class="p-2 w-full overflow-hidden">
                     <RouterView v-slot="{ Component }">
                         <KeepAlive :max="2" :include="['user-posted', 'user-liked']">
                             <component :is="Component" :websocket="websocket"/>

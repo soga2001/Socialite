@@ -22,7 +22,9 @@ export default defineComponent({
             liked: false,
             comments: [],
             img_loading: true,
-            avatar_loading: true
+            avatar_loading: true,
+
+            websocket: new WebSocket(`wss://localhost:8000/ws/spill/${this.post.id}/`),
         }
     },
     methods: {
