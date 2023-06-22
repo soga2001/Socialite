@@ -1,14 +1,12 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 
-class SpillCommentConsumer(AsyncWebsocketConsumer):
+class SpillConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
 
         self.post_id = self.scope['url_route']['kwargs']['post_id']
-        self.room_group_name = f'comment_room_{self.post_id}'
-
-        print(self.room_group_name)
+        self.room_group_name = f'spill_{self.post_id}'
 
 
         # group add
@@ -26,15 +24,22 @@ class SpillCommentConsumer(AsyncWebsocketConsumer):
         )
         pass
 
+    async def post_update(self, event):
+        # Handle the "Comment added" message
+        message = event['message']
+        updateType = event['updateType']
+        await self.send(text_data=json.dumps({
+            'type': updateType,
+            'message': message
+        }))
 
     async def comment_send(self, event):
         # Handle the "Comment added" message
-        print('here')
         message = event['message']
         await self.send(text_data=json.dumps({
             'type': 'comment',
             'message': message
-        }))
+    }))
 
 
 class CommentConsumer(AsyncWebsocketConsumer):

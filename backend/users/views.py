@@ -155,7 +155,7 @@ def user_login(request):
 @api_view(["GET"])
 def get_session(request):
     if "access_token" in request.COOKIES:
-        print(request.COOKIES.get('access_token'))
+        request.COOKIES.get('access_token')
     return JsonResponse({"success": True})
 
     

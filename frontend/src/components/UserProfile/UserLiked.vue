@@ -44,6 +44,11 @@ export default defineComponent({
                 }
             }
         },
+        dislikeSpill(index: number) {
+            console.log(index)
+            this.user_liked.splice(index, 1)
+        }
+        
     },
     created() {
         this.getUserLiked()
@@ -56,9 +61,7 @@ export default defineComponent({
 <template>
     <div class="user__liked__main">
         <TransitionGroup name="slide" mode="out-in" tag="div">
-            <div v-if="user_liked" v-for="user in user_liked" :key="user.id">
-                <UserPostedMap class="post" :post="user"/>
-            </div>
+                <UserPostedMap class="post m-2"  v-if="user_liked" v-for="(user, index) in user_liked" :key="user.id" :post="user" @disliked="dislikeSpill(index)"/>
         </TransitionGroup>
         <div class="w-full flex flex-center flex-col" v-if="user_liked.length == 0 && !loading">
             <div>

@@ -47,13 +47,9 @@ export default defineComponent({
         },
         async websocketMessage() {
             this.websocket.onmessage = (e) => {
-                console.log(e.data)
                 const data = JSON.parse(e.data)
                 if(data.type == "posted") {
                     this.user_posted.unshift(JSON.parse(data.message))
-                }
-                if(data.type == "deleted") {
-                    this.$emit("deleted")
                 }
             }
         },
@@ -79,7 +75,7 @@ export default defineComponent({
 <template>
     <div class="user__posted__main" id="main">
         <TransitionGroup name="slide" mode="out-in" tag="div">
-                <UserPostedMap class="post my-2" :post="user" v-if="user_posted" v-for="(user, index) in user_posted" :key="user.id" @deleted="deleteSpill(index)"/>
+                <UserPostedMap class="post m-2" :post="user" v-if="user_posted" v-for="(user, index) in user_posted" :key="user.id" @deleted="deleteSpill(index)"/>
         </TransitionGroup>
         <div class="w-full flex flex-center flex-col" v-if="user_posted.length == 0 && !loading">
             <div>

@@ -46,10 +46,7 @@ export default defineComponent({
                 console.log(e.data)
                 const data = JSON.parse(e.data)
                 if(data.type == "delete") {
-                    // this.$.appContext.app.unmount();
                     this.$emit("deleted")
-                    // this.deleted = true
-                    // this.deletedMsg = data.message
                 }
             }
         },
@@ -74,12 +71,6 @@ export default defineComponent({
         this.websocketClose()
     },
     watch: {
-        commentData: {
-            handler: function(val, oldVal) {
-                this.websocketMessage()
-            },
-            deep: true
-        },
         deleted(deleted) {
             if(deleted) {
                 this.$emit('deleted', this.comment.id)
@@ -91,8 +82,8 @@ export default defineComponent({
 </script>
 
 <template>
-    <Transition name="fade" class="overflow-hidden">
-        <div v-if="!deleted" class="border">
+    <Transition name="fade">
+        <div class="border">
             <Item class="bg-theme h-full w-full" alignItems="start" :captionLineClamp="4">
                 <template #avatar>
                     <img class="pointer hover-darker" @click="$router.push({name: 'user-profile', params: {username: commentData.username}})"  v-if="commentData.user_avatar" :src="commentData.user_avatar"/>

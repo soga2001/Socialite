@@ -44,19 +44,19 @@ class Like_Post(APIView):
             like.save()
             group_name = f'user_{like.user.username}'
             async_to_sync(channel_layer.group_send)(group_name, {
-                "type": "user_update",
+                "type": "user.update",
                 "updateType": 'liked',
                 "message": json.dumps(PostSerializer(post).data)
             })
             return JsonResponse({"liked": True, "message": "Post liked."}, safe=False)
         except IntegrityError as e:
-            group_name = f'user_{request.user.username}'
+            PostLikes.objects.get(post=post_id, user=request.user.id).delete()
+            group_name = f'spill_{post_id}'
             async_to_sync(channel_layer.group_send)(group_name, {
-                "type": "user_update",
+                "type": "post.update",
                 "updateType": 'disliked',
-                "message": json.dumps(PostSerializer(post).data)
+                "message": "Post disliked"
             })
-            PostLikes.objects.filter(post=post_id, user=request.user.id).delete()
             return JsonResponse({"liked": False, "message": 'Post unliked.'}, safe=False)
         except Exception as e:
             return JsonResponse({"error": True, "message": 'An error occured while trying to like this post. Please try again later.'}, safe=False)

@@ -25,10 +25,9 @@ class UserConsumer(AsyncWebsocketConsumer):
 
     async def user_update(self, event):
         # Handle the "Comment added" message
-        print('here')
         message = event['message']
         updateType = event['updateType']
         await self.send(text_data=json.dumps({
             'type': updateType,
             'message': message
-    }))
+        }))

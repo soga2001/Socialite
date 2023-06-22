@@ -20,13 +20,14 @@ export default defineComponent({
             loading: true,
             docState: 'saved',
             websocket: new WebSocket(`wss://localhost:8000/ws/user_consumer/${this.$route.params.username}/`),
+            headerHeight: '',
         };
     },
     methods: {
         async userInfo() {
             this.loading = true
             console.log('here')
-            await http.get(`users/username/${this.$route.params.username}/${false}/`).then((res) => {
+            await http.get(`users/username/${this.$route.params.username}/${false}/`).then(async (res) => {
                 if (res.data.success) {
                     this.user = res.data.users;
                     this.avatar = this.user.avatar || '';
@@ -34,6 +35,8 @@ export default defineComponent({
             }).catch((err) => {
                 // console.log(err);
             });
+            await this.getHeightOfHeader()
+            console.log(this.headerHeight)
             this.loading = false
         },
         async websocketOpen() {
@@ -46,11 +49,18 @@ export default defineComponent({
                 console.log('Websocket closed')
             }
         },
+        getHeightOfHeader() {
+            if (this.$refs.header) {
+                const headerElement: HTMLDivElement = this.$refs.header as HTMLDivElement;
+                const headerHeight = headerElement.offsetHeight;
+                this.headerHeight = headerHeight + 'px'
+            }
+        },
     },
     created() {
         this.userInfo();
     },
-    mounted() {
+    computed: {
     },
     components: { UserProfile, Search, UserPosted, UserLiked, Item },
     watch: {
@@ -62,8 +72,6 @@ export default defineComponent({
                     this.websocketClose()
                     this.userInfo();
                     this.websocketOpen()
-                    // const instance = getCurrentInstance()
-                    // instance?.proxy?.$forceUpdate()
                 }
             }
         }
@@ -73,36 +81,34 @@ export default defineComponent({
 
 <template>
     <div :class="'user__main ' + !$store.state.desktop && 'mobile'" v-if="Object.keys(user).length > 0">
-        <Item class="user__name pl-2" dense :vert-icon-center="true">
-                <template #avatar>
-                    <q-btn size="16px" @click="$router.back" flat dense round class="text-heading" icon="arrow_back" />
-                </template>
-                <template #title>
-                    <h5 className="text-left">{{ user.first_name }} {{ user.last_name }}</h5>
-                </template>
-                <template #caption>
-                    <div class="text-left">{{ user.total_posted }} Spills</div>
-                </template>
-        </Item>
+        <header ref="header" class="user__name">
+            <Item class="pl-2" dense :vert-icon-center="true">
+                    <template #avatar>
+                        <q-btn size="16px" @click="$router.back" flat dense round class="text-heading" icon="arrow_back" />
+                    </template>
+                    <template #title>
+                        <h5 className="text-left">{{ user.first_name }} {{ user.last_name }}</h5>
+                    </template>
+                    <template #caption>
+                        <div class="text-left">{{ user.total_posted }} Spills</div>
+                    </template>
+            </Item>
+        </header>
         
+
         <div v-if="Object.keys(user).length > 0" >
             <UserProfile :user="user"/>
         </div>
         <div class="">
             <div class="">                
-                <div class="grid cols-2 text-base border-b bg-theme-soft gap-1 w-full text-center">
-                    <RouterLink class="p-2 bg-theme bg-hover" exact-active-class="text-heading weight-900" :to="{name: 'user-posted', params: {username: username}}" exact>
+                <div :style="{top: headerHeight}" class="sticky z-5 grid cols-2 text-xl bg-theme w-full text-center relative">
+                    <RouterLink class="h-full p-2 bg-theme bg-hover relative" exact-active-class="text-heading weight-900 link" :to="{name: 'user-posted', params: {username: username}}" exact>
                         Spills
                     </RouterLink>
-                    <RouterLink class="p-2 bg-theme bg-hover" exact-active-class="text-heading weight-900" :to="{name: 'user-liked', params: {username: username}}">
+                    <RouterLink class="h-full p-2 bg-theme bg-hover relative" exact-active-class="text-heading weight-900 link" :to="{name: 'user-liked', params: {username: username}}">
                         Likes
                     </RouterLink>
-                    <!-- <RouterLink class="p-2 text-lg bg-theme bg-hover" :to="{name: 'comments', params: {username: username}}">
-                        Comments
-                    </RouterLink> -->
                 </div>
-
-
                 <div class="p-2 w-full overflow-hidden">
                     <RouterView v-slot="{ Component }">
                         <KeepAlive :max="2" :include="['user-posted', 'user-liked']">
@@ -166,6 +172,16 @@ a {
     bottom: 0;
     margin: auto;
     cursor: pointer;
+}
+
+
+.link:after {
+    content: '';
+    display: flex;
+    width: 100px;
+    margin: 0 auto;
+    border: 2px solid rgb(253, 137, 137);
+    bottom: 0;
 }
 
 </style>

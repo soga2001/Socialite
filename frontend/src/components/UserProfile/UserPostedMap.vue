@@ -41,8 +41,24 @@ export default defineComponent({
         onAvatarLoaded() {
             this.avatar_loading = false
         },
+        async websocketMessage() {
+            this.websocket.onmessage = (e) => {
+                const data = JSON.parse(e.data)
+                if(data.type == "delete") {
+                    this.$emit("deleted")
+                }
+                if(data.type == "disliked") {
+                    console.log('here')
+                    this.$emit("disliked")
+                }
+            }
+        },
     },
     created() {
+        // this.websocket.onopen = ((e) => {
+        //     console.log(e)
+        // })
+        this.websocketMessage()
     }
 })
 </script>

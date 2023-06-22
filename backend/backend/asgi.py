@@ -15,7 +15,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from django.urls import re_path
 django.setup()
-from comments.consumers import SpillCommentConsumer, CommentConsumer
+from comments.consumers import SpillConsumer, CommentConsumer
 from users.consumers import UserConsumer
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
@@ -28,7 +28,7 @@ application = ProtocolTypeRouter({
         #     )
         # ),
         "websocket": URLRouter([
-            re_path(r'^ws/spill/(?P<post_id>[0-9a-f-]+)/$', SpillCommentConsumer.as_asgi()),
+            re_path(r'^ws/spill/(?P<post_id>[0-9a-f-]+)/$', SpillConsumer.as_asgi()),
             re_path(r'^ws/comment/(?P<comment_id>\d+)/$', CommentConsumer.as_asgi()),
             re_path(r'^ws/user_consumer/(?P<username>\w+)/$', UserConsumer.as_asgi()),
         ])

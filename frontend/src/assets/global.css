@@ -32,8 +32,64 @@
     top: 0 !important;
 }
 
+.top-1 {
+    top: 10px !important;
+}
+
+.top-2 {
+    top: 20px !important;
+}
+
+.top-3 {
+    top: 30px !important;
+}
+
+.top-4 {
+    top: 40px !important;
+}
+
 .right-0 {
     right: 0 !important;
+}
+
+.right-1 {
+    right: 1% !important;
+}
+
+.right-2 {
+    right: 2% !important;
+}
+
+.right-3 {
+    right: 3% !important;
+}
+
+.right-4 {
+    right: 4% !important;
+}
+
+.right-5 {
+    right: 5% !important;
+}
+
+.right-6 {
+    right: 6% !important;
+}
+
+.right-7 {
+    right: 7% !important;
+}
+
+.right-8 {
+    right: 8% !important;
+}
+
+.right-9 {
+    right: 9% !important;
+}
+
+.right-10 {
+    right: 10% !important;
 }
 
 .bottom-0 {
@@ -43,6 +99,48 @@
 .left-0 {
     left: 0 !important;
 }
+
+.left-1 {
+    left: 10px !important;
+}
+
+.left-2 {
+    left: 20px !important;
+}
+
+.left-3 {
+    left: 30px !important;
+}
+
+.left-4 {
+    left: 40px !important;
+}
+
+.left-5 {
+    left: 50px !important;
+}
+
+.left-6 {
+    left: 60px !important;
+}
+
+.left-7 {
+    left: 70px !important;
+}
+
+.left-8 {
+    left: 80px !important;
+}
+
+.left-9 {
+    left: 90px !important;
+}
+
+.left-10 {
+    left: 100px !important;
+}
+
+
 
 /* display */
 
@@ -1337,6 +1435,59 @@
     min-height: 100dvh !important;
 }
 
+.min-h-4 {
+    min-height: 1rem !important;
+}
+
+.min-h-8 {
+    min-height: 2rem !important;
+}
+
+.min-h-12 {
+    min-height: 3rem !important;
+}
+
+.min-h-13 {
+    min-height: 3.25rem !important;
+}
+
+.min-h-16 {
+    min-height: 4rem !important;
+}
+
+.min-h-20 {
+    min-height: 5rem !important;
+}
+
+.min-h-24 {
+    min-height: 6rem !important;
+}
+
+.min-h-28 {
+    min-height: 7rem !important;
+}
+
+.min-h-32 {
+    min-height: 8rem !important;
+}
+
+.min-h-36 {
+    min-height: 9rem !important;
+}
+
+.min-h-40 {
+    min-height: 10rem !important;
+}
+
+.min-h-44 {
+    min-height: 11rem !important;
+}
+
+.min-h-48 {
+    min-height: 12rem !important;
+}
+
+
 .min-h-52 {
     min-height: 13rem !important;
 }
@@ -2407,7 +2558,7 @@
 .slide-move, /* apply transition to moving elements */
 .slide-enter-active,
 .slide-leave-active {
-  transition: all 0.25s ease;
+  transition: all 1s ease;
 }
 
 .slide-enter-from{
@@ -2417,8 +2568,8 @@
 
 
 .slide-leave-to {
-    opacity: 0;
-    /* transform: translateY(20%); */
+    /* opacity: 0; */
+    transform: translateY(20%);
 }
 
 /* ensure leaving items are taken out of layout flow so that moving
