@@ -89,7 +89,7 @@ export default defineComponent({
         const endIndex = this.index + u.length
         const ending = this.val.substring(endIndex)
         this.val = beginning + this.val.substring(at, space < at ? length : space).replace(u, '@' + username + ' ') + ending
-        const input = document.getElementById('input') as HTMLInputElement;
+        const input = this.$refs.textarea as HTMLInputElement;
         this.emitData()
         const data = await this.getUsers(username)
         await this.savedUsers.set(username, data)
@@ -214,7 +214,7 @@ export default defineComponent({
   <div class="main">
     <div class="wave-group">
         <textarea ref="textarea" :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars"  @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input"/>
-        <div :style="{ top: `${caretPosition.top + caretPosition.height}px` }" class="results rounded-sm" v-if="users.length">
+        <div :style="{ top: (caretPosition.top + caretPosition.height <= ($refs.textarea as HTMLInputElement).offsetHeight) ? `${caretPosition.top + caretPosition.height}px` : (($refs.textarea as HTMLInputElement).offsetHeight) + 'px' }" class="results flex flex-col shrink rounded-sm" v-if="users.length">
           <div @click="replaceMention(user.username)" class="result__map pointer" v-for="user in users" :key="user.id">
             <Item avatarSize="3.5rem">
                 <template #avatar>
@@ -283,7 +283,8 @@ span {
   z-index: 999;
   max-height: 300px;
   overflow-y: auto;
-  width: 100%;
+  width: 90%;
+  max-width: 300px;
 }
 
 /* .result__map:nth-child(odd) {

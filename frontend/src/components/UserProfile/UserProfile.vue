@@ -392,8 +392,8 @@ export default defineComponent({
                         </div>
                     </div>
                     <div class="follows text-lg flex items-center gap-3">
-                        <span class="text-body pointer" @click="{show_followers = true; getFollowers()}"><span class="text-heading weight-900">{{ followers }} </span> Followers</span> 
-                        <span class="text-body pointer" @click="{show_following = true; getFollowing()}"><span class="text-heading weight-900">{{ following }} </span> Following</span>
+                        <span class="text-body pointer hover-underline" @click="{show_followers = true; getFollowers()}"><span class="text-heading weight-900">{{ followers }} </span> Followers</span> 
+                        <span class="text-body pointer hover-underline" @click="{show_following = true; getFollowing()}"><span class="text-heading weight-900">{{ following }} </span> Following</span>
                     </div>
 
                     <div class="relative w-full">

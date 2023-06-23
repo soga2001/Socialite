@@ -115,7 +115,6 @@ export default defineComponent({
         },
         commentToggle() {
             this.showComments = !this.showComments;
-            alert("clicked")
         },
         captionChange() {
 
@@ -287,6 +286,25 @@ export default defineComponent({
                         <label>{{total_comments}}</label>
                     </div>
                 </div>
+
+                <q-dialog class="min-h-sm" v-model="showComments" persistent>
+                    <div class="bg-theme-soft w-full min-h-fit max-w-sm h-fit overflow-visible" >
+                        <div class="p-2">
+                            <Item dense :vert-icon-center="true">
+                                <template #title>
+                                    <div class="text-2xl weight-900">Comment</div>
+                                </template>
+                                <template #icon>
+                                    <i-close size="2rem" class="pointer" @click="showComments = false"/>
+                                </template>
+                            </Item>
+                        </div>
+                        <hr class="border"/>
+                        <div class="">
+                            <Spills  placeholder="Reply to the spill" btnString="Reply" isComment :spillId="id" :rows="4"/>
+                        </div>
+                    </div>
+                </q-dialog>
             </div>
             
             <!-- <q-btn :icon="total_comments == 0 ? 'sym_o_chat_bubble' : 'sym_o_chat'" round flat>

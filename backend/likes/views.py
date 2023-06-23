@@ -4,9 +4,10 @@ from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.decorators import api_view, permission_classes
-from django.contrib.auth.models import User
-from posts.models import Post
+# from django.contrib.auth.models import User
+from django.db.models import Prefetch
 from .models import PostLikes
+from users.models import User
 from rest_framework.views import APIView
 from .serializer import PostLikesSerializer
 
@@ -93,6 +94,9 @@ def get_liked_post(request, timestamp, page, username):
     try:
         posts = PostLikes.objects.filter(user__username=username).select_related('post')
         liked_posts = [PostSerializer(p.post).data for p in posts]
+
+
+        # liked_posts = [PostSerializer(p.post).data for p in posts]
         return JsonResponse({"success": True, "posts": liked_posts}, safe=False)
     except:
         return JsonResponse({"error": True, "message": "An error occured while trying to get user's liked post."}, safe=False)

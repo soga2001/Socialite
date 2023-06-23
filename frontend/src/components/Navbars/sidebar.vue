@@ -2,9 +2,8 @@
 import { useCookies } from 'vue3-cookies';
 import { defineComponent } from 'vue'
 import {http} from '../../assets/http'
-import { RouterLink, RouterView } from 'vue-router';
+import { RouterLink } from 'vue-router';
 import router from '../../router';
-import { useStore } from '../../store/store';
 import Spills from '../Spills.vue';
 export default defineComponent({
     props: {},

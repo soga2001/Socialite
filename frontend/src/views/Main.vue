@@ -5,7 +5,6 @@ import Sidebar from '@/components/Navbars/sidebar.vue';
 import TopNav from '@/components/Navbars/topnav.vue';
 import BottomNav from '@/components/Navbars/bottomnav.vue';
 import Unauthenticated from '@/components/unauthenticated.vue';
-import { he } from 'date-fns/locale';
 
 export default defineComponent({
   title: 'Main',
@@ -14,10 +13,13 @@ export default defineComponent({
         $q: useQuasar(),
         scrollY: 0,
         topNavHeight: (document.getElementById("top-nav") as HTMLDivElement)?.offsetHeight,
+        bottomNavHeight: (document.getElementById("bottom-nav") as HTMLDivElement)?.offsetHeight,
         scrollPos: new Map(),
         scrollHeight: new Map(),
         scrollPosition: 0,
         height: 0,
+        mobile: false,
+        spill: false,
       };
   },
   name: 'Main',
@@ -55,6 +57,7 @@ export default defineComponent({
       
     },
     isMobile() {
+      this.mobile = this.$q.screen.lt.sm
       return this.$q.screen.lt.sm
     }
   },
@@ -103,6 +106,13 @@ export default defineComponent({
       });
 
     },
+    mobile(mobile) {
+      if(mobile) {
+        console.log(this.$refs.spillButton)
+        this.bottomNavHeight = ((this.$refs.spillButton) as HTMLDivElement)?.offsetHeight
+        console.log(this.bottomNavHeight)
+      }
+    },
   }
 })
 </script>
@@ -115,14 +125,39 @@ export default defineComponent({
     <div v-if="isMobile()" class="z-100 row-1 border-b">
       <TopNav/>
     </div>
-    <div id="main-div" :scroll="scroll" :class="(isMobile() && 'mobile-main min-h-full grid-row-2') + 'h-full w-full'">
+    <div id="main-div" :scroll="scroll" :class="(isMobile() && 'mobile-main min-h-full grid-row-2') + 'h-full w-full relative'">
       <div class="border-l border-r pb-10">
         <RouterView v-slot="{Component}" >
           <KeepAlive :include="['home', 'search', 'explore', 'user-profile', 'view-spill']" >
             <component :is="Component" :key="$route.matched[0].name !== 'user-profile' ? $route.fullPath : null"  :height="height" :scrollPosition="scrollPosition" />
           </KeepAlive>
         </RouterView>
+
+        <div ref="spillButton" class="fixed z-10 right-2 bottom-7 bg-theme rounded-lg" :style="{bottom: bottomNavHeight + 'px'}" v-if="isMobile()">
+          <q-btn class="show btn-themed text-heading" round flat icon="add" @click="spill = true"/>
+        </div>
       </div>
+
+      <q-dialog class="min-h-sm" v-model="spill" persistent>
+        <div class="bg-theme-soft w-full min-h-fit max-w-sm h-fit overflow-visible" >
+          <div class="p-2">
+            <Item dense :vert-icon-center="true">
+              <template #title>
+                <div class="text-2xl weight-900">Spill</div>
+              </template>
+              <template #icon>
+                <i-close size="2rem" class="pointer" @click="spill = false"/>
+              </template>
+            </Item>
+          </div>
+          <hr class="border"/>
+          <div class="">
+            <Spills :rows="4"/>
+          </div>
+        </div>
+      </q-dialog>
+
+      
 
       <div v-if="!isMobile()" class="right-bar sticky top-0 h-fit px-4 py-2 max-w-xs">
         <div v-if="!$store.state.authenticated" class="border rounded-sm w-fit">
@@ -130,7 +165,7 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <nav v-if="isMobile()" class="row-3 z-2">
+    <nav v-if="isMobile()" ref="bottomBar" class="row-3 z-2">
       <BottomNav/>
     </nav>
   </div>
