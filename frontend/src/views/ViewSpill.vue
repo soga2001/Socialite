@@ -37,7 +37,7 @@ export default defineComponent({
             await http.get(`posts/post_by_id/${this.$route.params.post_id}/`).then((res) => {
                 this.spill = res.data.spill;
                 this.total_likes = this.spill.total_likes;
-                // this.checkLiked();
+                this.checkLiked();
             }).catch((err) => {
                 // console.log(err);
             });
@@ -64,6 +64,7 @@ export default defineComponent({
             if(!this.$store.state.authenticated) {
                 return false;
             }
+            console.log('here')
             http.get(`like/check_liked/${this.spill.id}/`).then((res) => {
                 if(res.data.liked) {
                     this.liked = res.data.liked;

@@ -78,8 +78,8 @@ export default defineComponent({
               <i-login size="3rem" :fill="$route.fullPath == `/login` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
             </RouterLink>
 
-            <RouterLink to="/Register" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
-              <i-register size="2.3rem" :fill="$route.fullPath == `/login` ? 'var(--color-heading)' : 'none'"  stroke="var(--color-heading)" />
+            <RouterLink to="/register" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
+              <i-register size="2.3rem" :fill="$route.fullPath == `/login` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
             </RouterLink>
         </slot>
       </div>

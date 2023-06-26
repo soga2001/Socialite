@@ -84,7 +84,7 @@ export default defineComponent({
 
 <template>
     <nav>
-        <div class="topNav" v-if="$store.state.authenticated">
+        <div class="topNav px-3 py-2" v-if="$store.state.authenticated">
           <div class="dropdown-btn">
             <q-btn no-caps flat dense round class="dropdown" @click="openNav" v-if="$store.state.authenticated">
                 <Item class="item" dense avatar-size="fit-content">
@@ -173,30 +173,16 @@ export default defineComponent({
 <style scoped>
 @import '@/assets/base.css';
 
-header {
-  position: -webkit-sticky;
-	position: sticky;
-  max-height: 100vh;
-  max-height: 100dvh;
-  height: 100%;
-  width: 100%;
-	top: 0;
-  z-index: 20;
-  overflow-y: scroll;
-}
 
 .topNav {
-  padding: 0 10px 0 10px ;
   width: 100%;
   background-color: var(--color-background);
   margin: 0;
   z-index: 0;
-  display: inline-flex;
 }
 
 
 .topNav .dropdown-btn {
-  padding: 0;
   width: 3rem;
 }
 
@@ -205,8 +191,8 @@ header {
   height: fit-content;
 }
 .item img {
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 3rem;
+  height: 3rem;
 }
 
 .slide-in-nav {

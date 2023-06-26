@@ -76,7 +76,7 @@ export default defineComponent({
 img {
     object-fit: cover;
     border: 2px solid #FF7373;
-    border-radius: 5px;
+    /* border-radius: 5px; */
     
 }
 </style>

@@ -215,7 +215,7 @@ export default defineComponent({
                   </div>
 
                   <q-dialog class="min-h-sm" v-model="post" persistent>
-                    <div class="bg-theme-soft w-full min-h-fit max-w-sm h-fit overflow-visible" >
+                    <div class="bg-theme box-shadow w-full min-h-fit max-w-sm h-fit overflow-visible" >
                       <div class="p-2">
                         <Item dense :vert-icon-center="true">
                           <template #title>

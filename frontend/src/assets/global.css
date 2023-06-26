@@ -1308,6 +1308,48 @@
     width: 2rem !important;
 }
 
+.w-3 {
+    width: 3rem !important;
+}
+
+.w-4 {
+    width: 4rem !important;
+}
+
+.w-5 {
+    width: 5rem !important;
+}
+
+.w-6 {
+    width: 6rem !important;
+}
+
+.w-7 {
+    width: 7rem !important;
+}
+
+.w-8 {
+    width: 8rem !important;
+}
+
+.w-9 {
+    width: 9rem !important;
+}
+
+.w-10 {
+    width: 10rem !important;
+}
+
+.w-11 {
+    width: 11rem !important;
+}
+
+.w-12 {
+    width: 12rem !important;
+}
+
+
+
 .w-full {
     width: 100% !important;
 }
@@ -1544,6 +1586,10 @@
 
 .bg-theme-mute {
     background-color: var(--color-background-mute) !important;
+}
+
+.bg-theme-opacity {
+    background-color: var(--color-background-opacity) !important;
 }
 
 .bg-gray-op {
@@ -2583,4 +2629,16 @@
    animations can be calculated correctly. */
 .slide-leave-active {
   position: absolute;
+}
+
+.box-shadow {
+    -moz-box-shadow: 0 0 5px var(--color-heading);
+    -webkit-box-shadow: 0 0 5px var(--color-heading);
+    box-shadow: 0 0 5px var(--color-heading);
+}
+
+.box-shadow-soft {
+    -moz-box-shadow: 0 0 5px var(--color-text);
+    -webkit-box-shadow: 0 0 5px var(--color-text);
+    box-shadow: 0 0 5px var(--color-text);
 }

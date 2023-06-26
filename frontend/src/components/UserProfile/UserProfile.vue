@@ -277,28 +277,27 @@ export default defineComponent({
 </script>
 
 <template>
-    
     <div class="user">
         <div class="user__container col-12 col-md-auto">
             <div class=' grid cols-auto-fr rows-4 relative overflow-hidden'>
-                <div id="banner" class='p-0 col-start-1 col-span-full z-3 bg-theme-soft h-full pointer'>
+                <div id="banner" class='p-0 col-start-1 col-span-full z-2 bg-theme-soft h-full pointer'>
                     <img v-if="banner" :src="banner" alt="banner"/>
                     <img v-else class="" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
                 </div>
-                <div class="profile-img profile-pic z-3 pointer overflow-hidden">
+                <div class="profile-img profile-pic z-2 pointer overflow-hidden">
                     <img v-if="avatar" class="profile-pic__image" :src="avatar" alt="Profibild" />
                     <img v-else class="profile-picture" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
                 </div>
-                <div class="edit-profile w-full h-fit flex justify-end p-2">
-                    <button class="border btn bg-hover rounded-lg text-sm text-heading bg-theme weight-900" v-if="followed && !loading">
+                <div class="edit-profile text-base w-full h-fit flex justify-end p-2">
+                    <button class="border pointer bg-hover rounded-lg text-heading bg-theme weight-900" v-if="followed && !loading">
                         <q-icon size="1.5rem" name="more_horiz" />
                     </button>
-                    <button class="border btn bg-hover rounded-lg text-sm text-heading bg-theme weight-900" v-if="followed && !loading">
+                    <button class="border pointer bg-hover rounded-lg text-heading bg-theme weight-900" v-if="followed && !loading">
                         <q-icon size="1.5rem" name="notifications" />
                     </button>
-                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="border pointer bg-hover rounded-lg px-6 text-sm text-heading bg-theme weight-900" @click="editProfile = true">Edit Profile</button>
-                    <button v-if="$store.state.user.id != id && !loading" class="border pointer bg-hover rounded-lg px-6 text-sm text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated || loading_follow_request">
-                        <span v-if="!loading_follow_request">{{ followed ? 'Unfollow' : 'Follow' }}</span>
+                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="border pointer bg-hover rounded-lg px-6 text-heading bg-theme weight-900" @click="editProfile = true">Edit Profile</button>
+                    <button v-if="$store.state.user.id != id && !loading" :class="{followed: 'followed'}" class="border w-8 pointer bg-hover rounded-lg px-6 text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated || loading_follow_request">
+                        <span class="weight-900"  v-if="!loading_follow_request">{{ followed ? 'Following' : 'Follow' }}</span>
                         <span class="p-0" v-if="loading_follow_request">
                             <Loading size="1.3rem" />
                         </span>
@@ -336,7 +335,7 @@ export default defineComponent({
                                         </button>
                                         <input ref="bannerUpload" type="file" id="file" @change="launchCropper" hidden/>
                                     </div>
-                                    <div class="z-100 hidden">
+                                    <div class=" hidden">
                                         <!-- <image-cropper ref="bannerDialog" :aspect-ratio="3/1" :filename="fileName" :chosen-img="newBanner" @close="newBanner = null" @onReset="{$refs.bannerUpload.value = null; showBanner = false}" @file="bannerFile = $event" @onCrop="(croppedImage) => {newBanner = croppedImage}"/> -->
                                             <image-cropper ref="bannerDialog" :aspect-ratio="3/1" :fileName="fileName" :chosen-img="newBanner" @onReset="{($refs.bannerUpload as HTMLInputElement).value = ''; showBanner = false}" @file="bannerFile = $event" @onCrop="(croppedImage: string) => {newBanner = croppedImage}" />
                                     </div>
@@ -496,8 +495,6 @@ export default defineComponent({
     max-width: 600px;
     width: 100%;
 }
-
-
 
 
 .user__username {
@@ -669,6 +666,23 @@ h6 {
     width: 100%;
     
 }
+
+.followed:hover span {
+    display: none;
+}
+
+.followed:hover {
+    border: 1px solid red !important;
+    background-color: rgba(255, 0, 0, .1) !important;
+}
+
+.followed:hover::before {
+    content: 'Unfollow';
+    color: red;
+    font-weight: 900;
+}
+
+
 
 .edit-profile {
     /* padding-top: 30px !important; */

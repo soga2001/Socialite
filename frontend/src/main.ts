@@ -66,6 +66,7 @@ import CloseIcon from '@/icons/i-close.vue';
 import SpillIcon from '@/icons/i-spill.vue';
 import CommentIcon from '@/icons/i-comment.vue';
 import EmptyFolder from '@/icons/i-folder.vue';
+import RegisterIcon from '@/icons/i-register.vue';
 
 
 
@@ -92,6 +93,7 @@ app.component('i-heart', HeartIcon);
 app.component('i-share', ShareIcon);
 app.component('tool-tips', ToolTips);
 app.component('i-login', LoginIcon);
+app.component('i-register', RegisterIcon);
 app.component('i-logout', LogoutIcon);
 app.component('i-close', CloseIcon);
 app.component('i-spill', SpillIcon);

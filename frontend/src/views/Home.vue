@@ -90,10 +90,10 @@ export default defineComponent({
   <div class="home" id="home">
     <div class="home__center">
       <div class="">
-        <header class="border-b" v-if="$store.state.desktop">
+        <header class="border-b bg-theme-opacity" v-if="!$q.screen.lt.sm">
           Home
         </header>
-        <div v-if="$store.state.authenticated && $store.state.desktop" class="border-b">
+        <div v-if="$store.state.authenticated && !$q.screen.lt.sm">
           <Spills :rows="1" />
         </div>
         <q-infinite-scroll class="grid gap-3 " id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">

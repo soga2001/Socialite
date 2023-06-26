@@ -74,9 +74,12 @@ export default defineComponent({
 
 <template>
     <div class="user__posted__main" id="main">
-        <TransitionGroup name="slide" mode="out-in" tag="div">
-                <UserPostedMap class="post m-2" :post="user" v-if="user_posted" v-for="(user, index) in user_posted" :key="user.id" @deleted="deleteSpill(index)"/>
-        </TransitionGroup>
+        <!-- <TransitionGroup name="slide" mode="out-in" tag="div">
+                
+        </TransitionGroup> -->
+        <div class="grid gap-1 cols-3">
+            <UserPostedMap class="post" :post="user" v-if="user_posted" v-for="(user, index) in user_posted" :key="user.id" @deleted="deleteSpill(index)"/>
+        </div>
         <div class="w-full flex flex-center flex-col" v-if="user_posted.length == 0 && !loading">
             <div>
                 <i-folder :fill="'black'" stroke="black"/>

@@ -52,7 +52,6 @@ export default defineComponent({
     },
     components: {Item},
     created() {
-      console.log(this.rows)
     },
     mounted() {
     },
@@ -214,7 +213,7 @@ export default defineComponent({
   <div class="main">
     <div class="wave-group">
         <textarea ref="textarea" :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars"  @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input"/>
-        <div :style="{ top: (caretPosition.top + caretPosition.height <= ($refs.textarea as HTMLInputElement).offsetHeight) ? `${caretPosition.top + caretPosition.height}px` : (($refs.textarea as HTMLInputElement).offsetHeight) + 'px' }" class="results flex flex-col shrink rounded-sm" v-if="users.length">
+        <div :style="{ top: (caretPosition.top + caretPosition.height <= ($refs.textarea as HTMLInputElement).offsetHeight) ? `${caretPosition.top + caretPosition.height}px` : (($refs.textarea as HTMLInputElement).offsetHeight) + 'px' }" class="results box-shadow-soft flex flex-col shrink rounded-sm" v-if="users.length">
           <div @click="replaceMention(user.username)" class="result__map pointer" v-for="user in users" :key="user.id">
             <Item avatarSize="3.5rem">
                 <template #avatar>
@@ -275,8 +274,6 @@ span {
   /* border: 2px solid black; */
   background-color: var(--color-background);
   z-index: 999;
-  -webkit-box-shadow: 0 0 10px var(--color-heading);
-  box-shadow: 0 0 10px var(--color-heading);
   position: absolute;
   top: 100%;
   left: 0;
@@ -284,7 +281,7 @@ span {
   max-height: 300px;
   overflow-y: auto;
   width: 90%;
-  max-width: 300px;
+  max-width: 500px;
 }
 
 /* .result__map:nth-child(odd) {

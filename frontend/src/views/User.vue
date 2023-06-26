@@ -20,7 +20,7 @@ export default defineComponent({
             loading: true,
             docState: 'saved',
             websocket: new WebSocket(`wss://localhost:8000/ws/user_consumer/${this.$route.params.username}/`),
-            headerHeight: '',
+            headerHeight: '' || 0,
         };
     },
     methods: {
@@ -53,7 +53,7 @@ export default defineComponent({
             if (this.$refs.header) {
                 const headerElement: HTMLDivElement = this.$refs.header as HTMLDivElement;
                 const headerHeight = headerElement.offsetHeight;
-                this.headerHeight = headerHeight + 'px'
+                this.headerHeight = headerHeight
             }
         },
     },
@@ -64,24 +64,24 @@ export default defineComponent({
     },
     components: { UserProfile, Search, UserPosted, UserLiked, Item },
     watch: {
-        '$route'(to, from) {
-            if(to.matched[0].name === "user-profile") {
-                if(to.params.username != this.username) {
-                    this.username = to.params.username
-                    this.user = {} as User;
-                    this.websocketClose()
-                    this.userInfo();
-                    this.websocketOpen()
-                }
-            }
-        }
+        // '$route'(to, from) {
+        //     if(to.matched[0].name === "user-profile") {
+        //         if(to.params.username != this.username) {
+        //             this.username = to.params.username
+        //             this.user = {} as User;
+        //             this.websocketClose()
+        //             this.userInfo();
+        //             this.websocketOpen()
+        //         }
+        //     }
+        // }
     },
 })
 </script>
 
 <template>
-    <div :class="'user__main ' + !$store.state.desktop && 'mobile'" v-if="Object.keys(user).length > 0">
-        <header ref="header" class="user__name">
+    <div :class="'user__main '" v-if="Object.keys(user).length > 0">
+        <header ref="header" class="user__name z-5 bg-theme w-full">
             <Item class="pl-2" dense :vert-icon-center="true">
                     <template #avatar>
                         <q-btn size="16px" @click="$router.back" flat dense round class="text-heading" icon="arrow_back" />
@@ -96,17 +96,20 @@ export default defineComponent({
         </header>
         
 
-        <div v-if="Object.keys(user).length > 0" >
+        <div ref="profile" >
             <UserProfile :user="user"/>
         </div>
-        <div class="">
-            <div class="">                
-                <div :style="{top: headerHeight}" class="sticky z-5 grid cols-2 text-xl bg-theme w-full text-center relative">
-                    <RouterLink class="h-full p-2 bg-theme bg-hover relative" exact-active-class="text-heading weight-900 link" :to="{name: 'user-posted', params: {username: username}}" exact>
+
+        <div>
+            <div>                
+                <div :style="{top: `${headerHeight}px`}"  class="sticky z-5 grid cols-2 text-xl bg-theme w-full text-center border-b relative">
+                    <RouterLink class="h-full py-3 px-2 bg-theme bg-hover relative w-full" exact-active-class="text-heading weight-900 link" :to="{name: 'user-posted', params: {username: username}}" exact>
                         Spills
+                        <hr class="active border-none absolute left-3 right-3 bottom-0 "/>
                     </RouterLink>
-                    <RouterLink class="h-full p-2 bg-theme bg-hover relative" exact-active-class="text-heading weight-900 link" :to="{name: 'user-liked', params: {username: username}}">
+                    <RouterLink class="h-full py-3 px-2 bg-theme bg-hover relative w-full" exact-active-class="text-heading weight-900 link" :to="{name: 'user-liked', params: {username: username}}">
                         Likes
+                        <hr class="active border-none absolute left-3 right-3 bottom-0 "/>
                     </RouterLink>
                 </div>
                 <div class="p-2 w-full overflow-hidden">
@@ -126,11 +129,6 @@ export default defineComponent({
 
 .user__main {
     height: 100%;
-    padding: 0;
-}
-
-.mobile {
-    margin-bottom: 70px;
 }
 
 .user__not__found, .loading {
@@ -149,8 +147,6 @@ a {
 
 
 .user__name {
-    text-align: center;
-    position: relative;
     font-size: 30px;
     font-weight: bolder;
 
@@ -161,8 +157,6 @@ a {
     width: 100%;
     z-index: 20;
     background-color: var(--color-background);
-    /* backdrop-filter: blur(50px); */
-
 }
 
 .back {
@@ -175,12 +169,20 @@ a {
 }
 
 
-.link:after {
+/* .link:after {
     content: '';
     display: flex;
     width: 100px;
     margin: 0 auto;
     border: 2px solid rgb(253, 137, 137);
+    bottom: 0;
+} */
+
+.link .active {
+    border: 3px solid rgb(253, 137, 137) !important;
+    border-radius: 6px 6px 0 0;
+    width: 50%;
+    margin: auto;
     bottom: 0;
 }
 

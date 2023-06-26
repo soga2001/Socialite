@@ -139,7 +139,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <q-card class="grid border-t border-b bg-theme bg-hover-mute pointer" @click="$router.push({name: 'view-spill', params: { user: username, post_id: id}})" v-if="!deleted">
+    <q-card class="grid border-t border-b rounded-none bg-theme bg-hover-mute pointer" @click="$router.push({name: 'view-spill', params: { user: username, post_id: id}})" v-if="!deleted">
         <div class="post__main">
             <Item>
                 <template #avatar>
@@ -256,7 +256,7 @@ export default defineComponent({
         </Item>
 
         <q-separator :dark="$store.state.dark"/>
-        <q-card-actions class="p-0 m-0 flex gap-2 justify-center z-index-2">
+        <q-card-actions class="p-0 m-0 flex gap-2 justify-center z-2">
             <div>
                 <div class="flex justify-center items-center gap-1">
                     <div>
@@ -288,7 +288,7 @@ export default defineComponent({
                 </div>
 
                 <q-dialog class="min-h-sm" v-model="showComments" persistent>
-                    <div class="bg-theme-soft w-full min-h-fit max-w-sm h-fit overflow-visible" >
+                    <div class="bg-theme box-theme-soft w-full min-h-fit max-w-sm h-fit overflow-visible" >
                         <div class="p-2">
                             <Item dense :vert-icon-center="true">
                                 <template #title>
@@ -346,14 +346,7 @@ export default defineComponent({
 
 <style scoped>
 
-.z-index-2 {
-    z-index: 2;
-}
 
-.post__info {
-    padding: 5px 10px;
-    background-color: transparent !important;
-}
 .username {
     font-size: 20px;
     color: var(--color-heading);
@@ -451,7 +444,7 @@ export default defineComponent({
 
 .card {
     background-color: var(--color-background);
-    box-shadow:0 4px 20px 0 var(--color-border);
+    /* box-shadow:0 4px 20px 0 var(--color-border); */
     width: 100%;
     max-width: 500px;
 }

@@ -5,6 +5,7 @@ import Sidebar from '@/components/Navbars/sidebar.vue';
 import TopNav from '@/components/Navbars/topnav.vue';
 import BottomNav from '@/components/Navbars/bottomnav.vue';
 import Unauthenticated from '@/components/unauthenticated.vue';
+import { useRoute, useRouter } from 'vue-router';
 
 export default defineComponent({
   title: 'Main',
@@ -20,6 +21,9 @@ export default defineComponent({
         height: 0,
         mobile: false,
         spill: false,
+        hideNav: false,
+        pages: ['user-profile', 'view-spill']
+
       };
   },
   name: 'Main',
@@ -34,6 +38,13 @@ export default defineComponent({
   activated() {
   },
   computed: {
+    hideNavBar() {
+      const component = this.$route.matched[0].name || this.$route.name || ''
+      if(this.pages.includes(component.toString())) {
+        return true
+      }
+      return false
+    }
   },
   methods: {
     setData() {
@@ -97,49 +108,65 @@ export default defineComponent({
     '$route': function() {
       // console.log((this.scrollPos))
       // console.log(this.scrollHeight)
+      console.log(this.$route.meta.depth)
       this.setData()
       this.$nextTick(() => {
         const element = document.getElementById("main-div") as HTMLDivElement;
         element.scrollTop = this.scrollPos.get(this.$route.name);
         this.scrollPosition = this.scrollPos.get(this.$route.name);
         this.height = this.scrollHeight.get(this.$route.name)
+        this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 10
+        this.topNavHeight = ((this.$refs.topNav as HTMLDivElement)?.offsetHeight) || 0
       });
-
     },
     mobile(mobile) {
-      if(mobile) {
-        console.log(this.$refs.spillButton)
-        this.bottomNavHeight = ((this.$refs.spillButton) as HTMLDivElement)?.offsetHeight
-        console.log(this.bottomNavHeight)
-      }
-    },
+      this.$nextTick(() => {
+        this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 10
+        this.topNavHeight = ((this.$refs.topNav as HTMLDivElement)?.offsetHeight) || 0
+      })
+    }
   }
 })
 </script>
 
 <template>
-  <div :class="!isMobile() ? 'main' : 'mobile w-full fixed grid min-h-viewport max-h-viewport h-full'">
-    <div v-if="!isMobile()" class="relative min-h-viewport h-full w-full bg-theme">
+  <div :class="!isMobile() ? 'main' : 'fixed w-full h-full'">
+    <div v-if="!$q.screen.lt.sm" class="min-h-viewport h-full w-full bg-theme">
       <Sidebar/>
     </div>
-    <div v-if="isMobile()" class="z-100 row-1 border-b">
+
+    <div ref="topNav" :hidden="hideNavBar" v-if="isMobile()" class="sticky top-0 bg-theme top-0 w-full z-5 border-b">
       <TopNav/>
     </div>
-    <div id="main-div" :scroll="scroll" :class="(isMobile() && 'mobile-main min-h-full grid-row-2') + 'h-full w-full relative'">
-      <div class="border-l border-r pb-10">
+    <div id="main-div" class="h-full w-full relative">
+      <div :style="{paddingBottom: `${bottomNavHeight + topNavHeight}px`}"  class="border-l border-r">
         <RouterView v-slot="{Component}" >
-          <KeepAlive :include="['home', 'search', 'explore', 'user-profile', 'view-spill']" >
-            <component :is="Component" :key="$route.matched[0].name !== 'user-profile' ? $route.fullPath : null"  :height="height" :scrollPosition="scrollPosition" />
+          <KeepAlive :max="4" :include="['home', 'search', 'explore', 'user-profile', 'view-spill']" >
+            <component :is="Component" :key="$route.matched[0].name !== 'user-profile' ? $route.fullPath : $route.params.username"  :height="height" :scrollPosition="scrollPosition" />
           </KeepAlive>
         </RouterView>
-
-        <div ref="spillButton" class="fixed z-10 right-2 bottom-7 bg-theme rounded-lg" :style="{bottom: bottomNavHeight + 'px'}" v-if="isMobile()">
-          <q-btn class="show btn-themed text-heading" round flat icon="add" @click="spill = true"/>
-        </div>
       </div>
 
-      <q-dialog class="min-h-sm" v-model="spill" persistent>
-        <div class="bg-theme-soft w-full min-h-fit max-w-sm h-fit overflow-visible" >
+  
+
+      
+
+      <!-- <div v-if="$q.screen.lt.sm" class="right-bar sticky top-0 h-fit px-4 py-2 max-w-xs">
+        <div v-if="!$store.state.authenticated" class="border rounded-sm w-fit">
+          <Unauthenticated />
+        </div>
+      </div> -->
+    </div>
+    <nav v-if="$q.screen.lt.sm && !hideNavBar" ref="bottomBar" class="sticky bottom-0 w-full z-2">
+      <BottomNav/>
+    </nav>
+
+    <div ref="spillButton" class="fixed box-shadow z-100 right-1 bg-theme rounded-lg" :style="{bottom: `${bottomNavHeight}px`}" v-if="isMobile() && $route.name !== 'view-spill'">
+      <q-btn size="16px" class="show btn-themed text-heading" round flat icon="add" @click="spill = true"/>
+    </div>
+
+    <q-dialog class="min-h-sm" v-model="spill" persistent>
+        <div class="bg-theme w-full min-h-fit max-w-sm h-fit overflow-visible" >
           <div class="p-2">
             <Item dense :vert-icon-center="true">
               <template #title>
@@ -156,33 +183,31 @@ export default defineComponent({
           </div>
         </div>
       </q-dialog>
-
       
-
-      <div v-if="!isMobile()" class="right-bar sticky top-0 h-fit px-4 py-2 max-w-xs">
-        <div v-if="!$store.state.authenticated" class="border rounded-sm w-fit">
-          <Unauthenticated />
-        </div>
-      </div>
-    </div>
-    <nav v-if="isMobile()" ref="bottomBar" class="row-3 z-2">
-      <BottomNav/>
-    </nav>
   </div>
+
+  
 </template>
 
 <style scoped>
+
+* {
+  padding: 0;
+  margin: 0;
+}
 .main {
   display: grid;
+  width: 100%;
+  position: fixed;
+  height: 100%;
+  grid-template-columns: auto 600px auto;
+}
+
+.mobile {
   width: 100%;
   transform: transition 1s;
   position: fixed;
   height: 100%;
-  grid-template-columns: auto 1fr;
-}
-
-.mobile {
-  grid-template-rows: auto 1fr auto;
 }
 
 .mobile-main {
@@ -197,15 +222,12 @@ export default defineComponent({
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-columns: 600px 1fr;
+  grid-template-columns: 600px;
 }
 
 
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
-  .main {
-    grid-template-columns: 200px 1fr;
-  }
 
   #main-div {
     grid-template-columns: 1fr 0px;
@@ -238,7 +260,7 @@ export default defineComponent({
   }
 
   #main-div {
-    grid-template-columns: 600px 0px;
+    grid-template-columns: 600px;
   }
 
   .right-bar {

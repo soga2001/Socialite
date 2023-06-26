@@ -60,15 +60,18 @@ export default defineComponent({
 
 <template>
     <div class="user__liked__main">
-        <TransitionGroup name="slide" mode="out-in" tag="div">
-                <UserPostedMap class="post m-2"  v-if="user_liked" v-for="(user, index) in user_liked" :key="user.id" :post="user" @disliked="dislikeSpill(index)"/>
-        </TransitionGroup>
+        <!-- <TransitionGroup name="slide" mode="out-in" tag="div">
+                
+        </TransitionGroup> -->
+        <div class="grid gap-1 cols-3">
+            <UserPostedMap class="post"  v-if="user_liked" v-for="(user, index) in user_liked" :key="user.id" :post="user" @disliked="dislikeSpill(index)"/>
+        </div>
         <div class="w-full flex flex-center flex-col" v-if="user_liked.length == 0 && !loading">
             <div>
                 <i-folder :fill="'black'" stroke="black"/>
 
             </div>
-            <div class="text-3xl weight-900">
+            <div class="text-3xl text-center weight-900">
                 User hasn't liked anything.
             </div>
         </div>
