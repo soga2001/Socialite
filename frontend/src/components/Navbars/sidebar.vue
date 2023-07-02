@@ -6,7 +6,6 @@ import { RouterLink } from 'vue-router';
 import router from '../../router';
 import Spills from '../Spills.vue';
 export default defineComponent({
-    props: {},
     data() {
         return {
             theme: false,

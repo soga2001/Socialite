@@ -93,11 +93,11 @@ export default defineComponent({
         <header class="border-b bg-theme-opacity" v-if="!$q.screen.lt.sm">
           Home
         </header>
-        <div v-if="$store.state.authenticated && !$q.screen.lt.sm">
+        <div class="border-b" v-if="$store.state.authenticated && !$q.screen.lt.sm">
           <Spills :rows="1" />
         </div>
         <q-infinite-scroll class="grid gap-3 " id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
-          <div class="" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
+          <div class="post_map" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
             <PostsMap :post="post" />
           </div>
           <template v-slot:loading>
@@ -150,6 +150,15 @@ header {
 
 .home {
   width: 100%;
+}
+
+.post_map {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.post_map:not(:first-child) {
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
 }
 
 /* .posts:not(:first-child) {

@@ -72,9 +72,10 @@ export default defineComponent({
                     return;
                 }
                 this.followed = !this.followed;
-                setTimeout(() => {
-                    this.loading_follow_request = false
-                }, 4000)
+                this.loading_follow_request = false;
+                // setTimeout(() => {
+                //     this.loading_follow_request = false
+                // }, 4000)
                 if (!this.followed && this.following != 0) {
                     this.followers -= 1;
                 }
@@ -109,10 +110,10 @@ export default defineComponent({
                 if(res.data.error) {
                     return
                 }
-                // this.loading_follow = false
-                setTimeout(() => {
-                    this.loading_follow = false
-                }, 3000)
+                this.loading_follow = false
+                // setTimeout(() => {
+                //     this.loading_follow = false
+                // }, 3000)
                 this.user_followers = res.data.users
             }).catch((err) => {
                 console.log(err)
@@ -296,7 +297,7 @@ export default defineComponent({
                         <q-icon size="1.5rem" name="notifications" />
                     </button>
                     <button v-if="$store.state.authenticated && $store.state.user.id == id" class="border pointer bg-hover rounded-lg px-6 text-heading bg-theme weight-900" @click="editProfile = true">Edit Profile</button>
-                    <button v-if="$store.state.user.id != id && !loading" :class="{followed: 'followed'}" class="border w-8 pointer bg-hover rounded-lg px-6 text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated || loading_follow_request">
+                    <button v-if="$store.state.user.id != id && !loading" :class="{'followed': followed}" class="border w-8 pointer bg-hover rounded-lg px-6 text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated || loading_follow_request">
                         <span class="weight-900"  v-if="!loading_follow_request">{{ followed ? 'Following' : 'Follow' }}</span>
                         <span class="p-0" v-if="loading_follow_request">
                             <Loading size="1.3rem" />
@@ -667,6 +668,10 @@ h6 {
     
 }
 
+.followed {
+    transition: .1s ease-in;
+}
+
 .followed:hover span {
     display: none;
 }
@@ -680,6 +685,7 @@ h6 {
     content: 'Unfollow';
     color: red;
     font-weight: 900;
+    transition: opacity 0.3s ease-in-out;
 }
 
 

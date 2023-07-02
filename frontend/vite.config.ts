@@ -26,5 +26,12 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       'vue': 'vue/dist/vue.esm-bundler',
     },
-  }
+  },
+  css: {
+    preprocessorOptions: {
+      // scss: {
+      //   additionalData: `@import 'src/quasar-variables.scss';`, // Add the import statement here
+      // },
+    },
+  },
 })

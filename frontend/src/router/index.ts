@@ -93,9 +93,10 @@ const router: Router = createRouter({
   ]
 })
 
-// router.beforeEach((to, from) => {
-//   from.meta?.scrollPos && (from.meta.scrollPos.top = document.documentElement.scrollTop)
-// })
+router.beforeEach((to, from) => {
+  console.log(from)
+  // from.meta?.scrollPos && (from.meta.scrollPos.top = document.documentElement.scrollTop)
+})
 
 router.beforeResolve((to, next) => {
   if(to.matched.some(record => record.meta.hideForAuth) && store.state.authenticated) {

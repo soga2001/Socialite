@@ -31,6 +31,7 @@ export interface Post{
     date_posted: string,
     date_updated: string,
     total_likes: number,
+    total_comments: number,
 }
 
 export interface Comment{

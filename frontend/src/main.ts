@@ -33,6 +33,7 @@ import '@quasar/extras/line-awesome/line-awesome.css'
 import '@quasar/extras/bootstrap-icons/bootstrap-icons.css'
 // Import Quasar css
 import 'quasar/dist/quasar.css'
+import 'quasar/src/css/index.sass'
 
 // My Components
 import Item from '@/components/Item.vue';
@@ -46,8 +47,9 @@ import MentionLink from '@/components/MentionLink.vue';
 import Timeago from './components/Timeago.vue';
 import Spills from './components/Spills.vue';
 import CommentMap from '@/components/CommentMap.vue';
-
+import PostsMap from '@/components/PostsMap.vue'
 import Mention from './components/Mention.vue'
+
 
 // my icons
 import HomeIcon from '@/icons/i-home.vue';
@@ -113,6 +115,7 @@ app.component('MentionLink', MentionLink)
 app.component('Spills', Spills)
 app.component('CommentMap', CommentMap)
 app.component('Mention', Mention)
+app.component('PostsMap', PostsMap)
 // app.component('adv-cropper', newCropper);
 
 

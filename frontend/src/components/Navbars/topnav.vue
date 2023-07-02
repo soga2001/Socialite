@@ -10,9 +10,6 @@ import Item from '../Item.vue';
 import ProfileIcon from '@/icons/i-profile.vue'
 
 export default defineComponent({
-    
-  props: {
-  },
   data() {
       return {
           theme: false,

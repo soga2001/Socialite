@@ -6,7 +6,7 @@
       size: {
         type: String,
         default: '3rem',
-        validator:  (value: String) :boolean => /^[0-9]+(px|em|rem|vh|vw|%)$/.test(value.toString()),
+        // validator:  (value: String) :boolean => /^[0-9]+(px|em|rem|vh|vw|%)$/.test(value.toString()),
       },
       color: {
         type: String,

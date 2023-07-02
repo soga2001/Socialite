@@ -76,6 +76,18 @@ export default defineComponent({
         //     }
         // }
     },
+    // beforeRouteUpdate(to, from, next) {
+    //     if(to.matched[0].name === "user-profile") {
+    //         if(to.params.username != this.username) {
+    //             this.username = to.params.username
+    //             this.user = {} as User;
+    //             this.websocketClose()
+    //             this.userInfo();
+    //             this.websocketOpen()
+    //         }
+    //     }
+    //     next()
+    // },
 })
 </script>
 
@@ -101,18 +113,32 @@ export default defineComponent({
         </div>
 
         <div>
-            <div>                
-                <div :style="{top: `${headerHeight}px`}"  class="sticky z-5 grid cols-2 text-xl bg-theme w-full text-center border-b relative">
-                    <RouterLink class="h-full py-3 px-2 bg-theme bg-hover relative w-full" exact-active-class="text-heading weight-900 link" :to="{name: 'user-posted', params: {username: username}}" exact>
-                        Spills
-                        <hr class="active border-none absolute left-3 right-3 bottom-0 "/>
+            <div>
+                <nav :style="{top: `${headerHeight - 1}px`}" class="slidemenu sticky z-5 m-0 bg-theme">
+  
+                    <!-- Item 1 -->
+                    <input ref="spill" type="radio" name="slideItem" id="slide-item-1" class="slide-toggle" checked/>
+                    <RouterLink @click="($refs.spill as HTMLInputElement).click()" class="h-full bg-hover-soft relative text-xl" exact-active-class="text-heading weight-900 link" :to="{name: 'user-posted', params: {username: username}}" exact>
+                            Spills
                     </RouterLink>
-                    <RouterLink class="h-full py-3 px-2 bg-theme bg-hover relative w-full" exact-active-class="text-heading weight-900 link" :to="{name: 'user-liked', params: {username: username}}">
-                        Likes
-                        <hr class="active border-none absolute left-3 right-3 bottom-0 "/>
+                    
+                    <!-- Item 2 -->
+                    <input ref="likes" type="radio" name="slideItem" id="slide-item-2" class="slide-toggle"/>
+                    <RouterLink @click="($refs.likes as HTMLInputElement).click()" class="h-full bg-hover-soft  relative text-xl" exact-active-class="text-heading weight-900 link" :to="{name: 'user-liked', params: {username: username}}" exact>
+                            Likes
                     </RouterLink>
-                </div>
-                <div class="p-2 w-full overflow-hidden">
+
+                    
+                    
+                    <div class="clear"></div>
+                    
+                    <!-- Bar -->
+                    <div class="slider">
+                        <div class="bar"></div>
+                    </div>
+                
+                </nav>
+                <div class="w-full overflow-hidden">
                     <RouterView v-slot="{ Component }">
                         <KeepAlive :max="2" :include="['user-posted', 'user-liked']">
                             <component :is="Component" :websocket="websocket"/>
@@ -125,65 +151,155 @@ export default defineComponent({
 </template>
 
 
-<style scoped>
+<style scoped lang="scss">
+
 
 .user__main {
-    height: 100%;
-}
+  height: 100%;
 
-.user__not__found, .loading {
+  .user__not__found,
+  .loading {
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+  }
 }
-
 
 a {
-    text-decoration: none;
-    color: var(--color-text);
+  text-decoration: none;
+  color: var(--color-text);
 }
-
 
 .user__name {
-    font-size: 30px;
-    font-weight: bolder;
+  font-size: 30px;
+  font-weight: bolder;
 
-    display: relative;
-    position: -webkit-sticky;
-    top: 0px;
-    position: sticky;
-    width: 100%;
-    z-index: 20;
-    background-color: var(--color-background);
-}
+  display: relative;
+  position: -webkit-sticky;
+  top: 0px;
+  position: sticky;
+  width: 100%;
+  z-index: 20;
+  background-color: var(--color-background);
 
-.back {
+  .back {
     position: absolute;
     left: 10px;
     top: 0;
     bottom: 0;
     margin: auto;
     cursor: pointer;
+  }
 }
 
-
-/* .link:after {
-    content: '';
-    display: flex;
-    width: 100px;
-    margin: 0 auto;
-    border: 2px solid rgb(253, 137, 137);
-    bottom: 0;
-} */
-
-.link .active {
+.link {
+  .active {
     border: 3px solid rgb(253, 137, 137) !important;
     border-radius: 6px 6px 0 0;
     width: 50%;
     margin: auto;
     bottom: 0;
+  }
 }
+
+
+// *{
+//   margin: 0;
+//   padding: 0;
+// }
+
+.clear{
+  clear: both;
+}
+
+
+.slide-toggle{
+  display: none;
+}
+
+.slidemenu{
+//   font-family: arial, sans-serif;
+  width: 100%;
+  overflow: hidden;
+}
+
+.slidemenu {
+    a {
+        width: 50%;
+        text-align: center;
+        display: block;
+        float: left;
+        color: var(--coolor-ligher);
+        opacity: 1;
+        padding: 10px 0;
+    }
+
+    a:hover{
+        cursor: pointer;
+        color: var(--coolor-heading);
+    }
+}
+
+// .slidemenu 
+
+// .slidemenu a span{
+//   display: block;
+//   padding: 10px;    
+// }
+
+// .slidemenu label .icon{
+//   font-size: 20px;
+//   border: solid 2px #333;
+//   text-align: center;
+//   height: 50px;
+//   width: 50px;
+//   display: block;
+//   margin: 0 auto;
+//   line-height: 50px;
+//   border-radius: 50%;
+// }
+
+/*Bar Style*/
+
+// .slider{
+    
+// }
+
+.slider {
+    width: 100%;
+    height: 5px;
+    display: block;
+    background: var(--color-border);
+    // margin-top: 10px;
+    border-radius: 5px;
+
+    .bar{
+        width: 50%;
+        height: 5px;
+        background: var(--color-theme);
+        border-radius: 5px;
+    }
+}
+
+/*Animations*/
+.slidemenu a, .slider .bar {
+  transition: all .15s linear;
+  -webkit-transition: all .15s linear;
+  -moz-transition: all .15s linear;
+}
+
+/*Toggle*/
+
+.slidemenu .slide-toggle:checked + a{
+  opacity: 1;
+}
+
+
+
+.slidemenu #slide-item-1:checked ~ .slider .bar{ margin-left: 0; }
+.slidemenu #slide-item-2:checked ~ .slider .bar{ margin-left: 50%; }
+
 
 </style>

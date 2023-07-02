@@ -1596,6 +1596,26 @@
     background-color: rgba(0, 0, 0, 0.3) !important;
 }
 
+.bg-blur-1 {
+    backdrop-filter: blur(10px);
+}
+
+.bg-blur-2 {
+    backdrop-filter: blur(20px);
+}
+
+.bg-blur-3 {
+    backdrop-filter: blur(30px);
+}
+
+.bg-blur-4 {
+    backdrop-filter: blur(40px);
+}
+
+.bg-blur-5 {
+    backdrop-filter: blur(50px);
+}
+
 .bg-black {
     background-color: #000 !important;
 }
@@ -2611,17 +2631,17 @@
 .slide-move, /* apply transition to moving elements */
 .slide-enter-active,
 .slide-leave-active {
-  transition: all 1s ease;
+  transition: all .1s ease;
 }
 
 .slide-enter-from{
   opacity: 0;
-  transform: translateX(100%);
+  transform: translateY(-100%);
 }
 
 
 .slide-leave-to {
-    /* opacity: 0; */
+    opacity: 0;
     transform: translateY(20%);
 }
 

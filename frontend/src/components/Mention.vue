@@ -215,7 +215,7 @@ export default defineComponent({
         <textarea ref="textarea" :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars"  @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input"/>
         <div :style="{ top: (caretPosition.top + caretPosition.height <= ($refs.textarea as HTMLInputElement).offsetHeight) ? `${caretPosition.top + caretPosition.height}px` : (($refs.textarea as HTMLInputElement).offsetHeight) + 'px' }" class="results box-shadow-soft flex flex-col shrink rounded-sm" v-if="users.length">
           <div @click="replaceMention(user.username)" class="result__map pointer" v-for="user in users" :key="user.id">
-            <Item avatarSize="3.5rem">
+            <Item class="bg-hover-mute" avatarSize="3.5rem">
                 <template #avatar>
                     <!-- <img src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" /> -->
                     <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />

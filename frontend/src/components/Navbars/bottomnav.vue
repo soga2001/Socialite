@@ -1,23 +1,9 @@
 <script lang="ts">
 import { useCookies } from 'vue3-cookies';
 import { defineComponent } from 'vue'
-import {http} from '../../assets/http'
-import { RouterLink, RouterView } from 'vue-router';
-import router from '../../router';
-import { useStore } from '../../store/store';
-import Item from '../Item.vue';
-import HomeIcon from '@/icons/i-home.vue'
-import ExploreIcon from '@/icons/i-explore.vue';
-import SearchIcon from '@/icons/i-search.vue';
-import NotificationIcon from '@/icons/i-notif.vue';
-import SettingIcon from '@/icons/i-settings.vue';
-import LoginIcon from '@/icons/i-login.vue';
-import RegisterIcon from '@/icons/i-register.vue';
+import { RouterLink } from 'vue-router';
 
 export default defineComponent({
-    
-  props: {
-  },
   data() {
       return {
           theme: false,

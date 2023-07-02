@@ -3,6 +3,7 @@ import { http } from '@/assets/http';
 import type { Post, Comment } from '@/assets/interfaces';
 import PostsMap from '@/components/PostsMap.vue';
 import { defineComponent } from 'vue';
+import { AbbreviateNumber } from '@/assets/abbreviate';
 
 export default defineComponent({
     name: "view-spill",
@@ -29,7 +30,6 @@ export default defineComponent({
     created() {
         this.getSpill();
         this.getComments();
-        // console.log(this.$route.fullPath)
     },
     methods: {
         async getSpill() {
@@ -39,7 +39,6 @@ export default defineComponent({
                 this.total_likes = this.spill.total_likes;
                 this.checkLiked();
             }).catch((err) => {
-                // console.log(err);
             });
             this.loading_post = false;
         },
@@ -47,12 +46,7 @@ export default defineComponent({
             this.loading_comments = true;
             await http.get(`comments/comments_by_post/${this.date.toISOString()}/${this.page}/${this.$route.params.post_id}/`).then((res) => {
                 if(res.data.comments) {
-                    if(this.comments) {
-                        this.comments.unshift(...res.data.comments)
-                    }
-                    else {
-                        this.comments = res.data.comments;
-                    }
+                    this.comments = [...res.data.comments, ...this.comments]
                 }
                     
             }).catch((err) => {
@@ -64,7 +58,6 @@ export default defineComponent({
             if(!this.$store.state.authenticated) {
                 return false;
             }
-            console.log('here')
             http.get(`like/check_liked/${this.spill.id}/`).then((res) => {
                 if(res.data.liked) {
                     this.liked = res.data.liked;
@@ -99,7 +92,7 @@ export default defineComponent({
                     this.total_likes -= 1;
                 }
                 else {
-                    console.log(res.data)
+                    // console.log(res.data)
                 }
             }).catch((err) => {
                 console.log(err)
@@ -112,13 +105,14 @@ export default defineComponent({
             }
         },
         async websocketMessage() {
-            this.websocket.onmessage = (e) => {
+            this.websocket.onmessage = async (e) => {
                 const data = JSON.parse(e.data)
                 if(data.type == "comment") {
                     const newComment = JSON.parse(data.message) as Comment
-                    console.log(newComment)
+
                     if(this.comments.length !== 0) {
-                        this.comments.unshift(newComment)
+                        this.comments = [newComment, ...this.comments];
+                        this.total_comments = this.comments.length
                     }
                     else {
                         this.comments.push(newComment)
@@ -153,6 +147,15 @@ export default defineComponent({
     // },
     components: { },
     watch: {
+        // comments: {
+        //     handler: function(comments) {
+        //         this.total_comments = comments.length;
+        //     },
+        //     immediate: true // Trigger the watcher immediately when the component is created
+        // }
+        comments(comments) {
+            this.total_comments = comments.length;
+        }
     }
 })
 </script>
@@ -300,7 +303,7 @@ export default defineComponent({
                     </div>
                     <div>
                         <!-- <span><span class="text-heading weight-900"> {{ spill.total_likes }}</span> Comments</span> -->
-                        <span><span class="text-heading weight-900"> 0</span> Comments</span>
+                        <span><span class="text-heading weight-900">{{ total_comments }}</span> Comments</span>
                     </div>
                 </div>
                 <hr/>
@@ -316,7 +319,7 @@ export default defineComponent({
                     <div>
                         <q-btn flat round :class="(liked ? 'liked' : '')"  @click.stop="">
                             <q-tooltip :offset="[0,0]">
-                                Like
+                                Comment
                             </q-tooltip>
                             <i-comment size="1.5rem" fill="var(--color-text)" stroke="var(--color-heading)" />
                         </q-btn>

@@ -80,15 +80,20 @@ def get_followed_by_id(request, user_id):
 class GetFollowers(APIView):
 
     def get(self, request, username):
-        followers = User.objects.filter(username=username).prefetch_related('followers')
-        followersSerialized = UserSerializer(followers, many=True).data
-        return JsonResponse({"success": True, "users": followersSerialized})
+        user = User.objects.get(username=username)
+        # print(user)
+        followers = user.followers.values_list('following_user_id', flat=True)
+        followesSerialized = UserSerializer(User.objects.filter(id__in=followers), many=True).data
+        return JsonResponse({"success": True, "users": followesSerialized})
     
 
 # get following
 class GetFollowing(APIView):
         def get(self, request, username):
-            following = User.objects.filter(username=username).prefetch_related('following')
+            user = User.objects.get(username=username)
+            # print(user)
+            following = user.following.values_list('followed_user_id', flat=True)
 
-            followingSerialized = UserSerializer(following, many=True).data
+            followingSerialized = UserSerializer(User.objects.filter(id__in=following), many=True).data
             return JsonResponse({"success": True, "users": followingSerialized})
+            # return JsonResponse({"success": True})

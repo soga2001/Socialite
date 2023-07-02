@@ -10,6 +10,7 @@ import Item from './Item.vue';
 import MentionLink from './MentionLink.vue';
 import ToolTips from './ToolTips.vue';
 import HeartIcon from '@/icons/i-heart.vue';
+import { AbbreviateNumber } from '@/assets/abbreviate';
 
 
 export default defineComponent({
@@ -32,7 +33,7 @@ export default defineComponent({
             avatar: this.post.user_avatar,
             dropdown: false,
             liked: this.checkLiked(),
-            total_comments: 0,
+            total_comments: this.post.total_comments,
             total_likes: this.post.total_likes || 0,
             comments: [],
             img_loading: true,
@@ -43,6 +44,10 @@ export default defineComponent({
             reason: ref(""),
             moment: moment,
             showComments: false,
+
+            abbreviateLikes: AbbreviateNumber(this.post.total_likes),
+            abbreviateComments: AbbreviateNumber(this.post.total_comments),
+
         };
     },
     methods: {
@@ -132,6 +137,12 @@ export default defineComponent({
             } else {
                 this.liked = false;
             }
+        },
+        total_likes(total_likes) {
+            this.abbreviateLikes = AbbreviateNumber(total_likes);
+        },
+        total_comments(total_comments) {
+            this.abbreviateComments = AbbreviateNumber(total_comments);
         }
     },
     components: { Timeago, Heart, Item, MentionLink, ToolTips, HeartIcon }
@@ -139,7 +150,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <q-card class="grid border-t border-b rounded-none bg-theme bg-hover-mute pointer" @click="$router.push({name: 'view-spill', params: { user: username, post_id: id}})" v-if="!deleted">
+    <q-card class="grid rounded-none bg-theme bg-hover-mute pointer" @click="$router.push({name: 'view-spill', params: { user: username, post_id: id}})" v-if="!deleted">
         <div class="post__main">
             <Item>
                 <template #avatar>
@@ -268,7 +279,7 @@ export default defineComponent({
                         </q-btn>
                     </div>
                     <div>
-                        <label>{{total_likes}}</label>
+                        <span :style="{color: liked ? 'red' : 'none'}">{{abbreviateLikes}}</span>
                     </div>
                 </div>
             </div>
