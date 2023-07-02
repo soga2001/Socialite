@@ -86,7 +86,7 @@ export default defineComponent({
       <header class="border-b" v-if="$store.state.desktop">
         Explore
       </header>
-      <q-infinite-scroll id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
+      <!-- <q-infinite-scroll id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
         <div class="posts" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
           <PostsMap :post="post" />
         </div>
@@ -95,7 +95,10 @@ export default defineComponent({
             <q-spinner-oval class="loading" size="40px" />
           </div>
         </template>
-      </q-infinite-scroll>
+      </q-infinite-scroll> -->
+      <div class="grid gap-2" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
+          <PostsMap :post="post" />
+        </div>
       </div>
       <div v-if="!hasMore" class="text-center message">
         <p>{{message}}</p>
@@ -132,9 +135,9 @@ header {
 }
 
 
-.posts:not(:first-child) {
+/* .posts:not(:first-child) {
   margin: 20px 0;
-}
+} */
 
 /* .posts:is(:last-child) {
   margin-bottom: 70px;
