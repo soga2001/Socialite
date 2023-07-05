@@ -213,8 +213,8 @@ export default defineComponent({
                    <q-btn class="show btn-themed text-heading" round flat icon="add"/>
                   </div>
 
-                  <q-dialog class="min-h-sm" v-model="post" persistent>
-                    <div class="bg-theme box-shadow w-full min-h-fit max-w-sm h-fit overflow-visible" >
+                  <q-dialog class="min-h-sm" v-model="post" position="top" persistent>
+                    <div class="mt-12 bg-theme box-shadow w-full min-h-fit max-w-sm h-fit overflow-visible" >
                       <div class="p-2">
                         <Item dense :vert-icon-center="true">
                           <template #title>

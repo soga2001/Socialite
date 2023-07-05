@@ -16,6 +16,7 @@ export default defineComponent({
         hasMore: false,
         message: '',
         offset: 0,
+        searchModal: false,
       };
   },
   props: {
@@ -75,27 +76,24 @@ export default defineComponent({
     },
     height(height) {
       console.log(height)
-    }
+    },
   }
 })
 </script>
 
 <template>
-  <div class="home" id="home">
-    <div class="home__center">
-      <header class="border-b" v-if="$store.state.desktop">
-        Explore
+  <div class="explore" id="explore">
+    <div class="">
+      <header class="sticky top-0 p-2 m-0 border-b max-h-12 overflow-visible bg-theme-opacity" v-if="$store.state.desktop">
+        <Item align-items="center" dense v-if="$store.state.authenticated" class="w-full overflow-visible bg-transparent">
+                <template v-if="$route.name=='explore'" #title>
+                  <SearchBar />
+                </template>
+                <template #icon>
+                  <q-btn flat round dense icon="settings" size="16px" class="border" @click.stop="" />
+                </template>
+            </Item>
       </header>
-      <!-- <q-infinite-scroll id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
-        <div class="posts" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
-          <PostsMap :post="post" />
-        </div>
-        <template v-slot:loading>
-          <div class="row justify-center q-my-md">
-            <q-spinner-oval class="loading" size="40px" />
-          </div>
-        </template>
-      </q-infinite-scroll> -->
       <div class="grid gap-2" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
           <PostsMap :post="post" />
         </div>
@@ -111,35 +109,24 @@ export default defineComponent({
 
 header {
   display: relative;
-  position: -webkit-sticky;
-	position: sticky;
   
   width: 100%;
 	top: 0;
   z-index: 10;
-  padding: 0 10px;
+  /* padding: 0 10px; */
 
   font-size: 25px;
   font-weight: 900;
-  backdrop-filter: blur(10px);
+  
   color: var(--color-heading);
-
-  text-shadow: -1px 1px 0 var(--color-background),
-                          1px 1px 0 var(--color-background),
-                         1px -1px 0 var(--color-background),
-                        -1px -1px 0 var(--color-background);
+  /* From https://css.glass */
+  /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); */
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .message {
     padding: 1rem;
 }
 
-
-/* .posts:not(:first-child) {
-  margin: 20px 0;
-} */
-
-/* .posts:is(:last-child) {
-  margin-bottom: 70px;
-} */
 </style>

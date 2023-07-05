@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent, ref} from 'vue';
+import {defineComponent, ref, getCurrentInstance} from 'vue';
 import  type {Post} from '@/assets/interfaces';
 import { http } from '@/assets/http';
 import PostsMap from '../components/PostsMap.vue';
@@ -37,12 +37,12 @@ export default defineComponent({
     this.getData();
     console.log(this.height)
   },
-  
   mounted() {
     const element = (document.getElementById("infinite-scroll") as HTMLDivElement)
     element.addEventListener("scroll", function() {
       console.log('x')
     })
+    this.update()
   },
   methods: {
     async getData() {
@@ -81,6 +81,21 @@ export default defineComponent({
         this.getData()
       }
     },
+    update() {
+      // const instance = getCurrentInstance()
+      // instance?.proxy?.$forceUpdate
+      this.$router.push(this.$router.currentRoute.value)
+    }
+  },
+  watch: {
+    '$store.state.authenticated': async function() {
+      await this.$nextTick();
+      
+      if(this.$store.state.authenticated) {
+        this.update()
+      }
+      
+    }
   },
   components: { PostsMap, Spills, Search },
 })
@@ -120,7 +135,7 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 
 header {
   display: relative;
@@ -134,7 +149,6 @@ header {
 
   font-size: 25px;
   font-weight: 900;
-  backdrop-filter: blur(10px);
   color: var(--color-heading);
 
   text-shadow: -1px 1px 0 var(--color-background),
@@ -143,10 +157,6 @@ header {
                         -1px -1px 0 var(--color-background);
 }
 
-/* #infinite-scroll {
-  height: 100vh;
-  overflow-y: scroll;
-} */
 
 .home {
   width: 100%;
@@ -165,3 +175,4 @@ header {
   margin: 20px 0;
 } */
 </style>
+

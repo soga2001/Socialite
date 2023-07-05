@@ -135,7 +135,7 @@ export default defineComponent({
       <Sidebar/>
     </div>
 
-    <div ref="topNav" :hidden="hideNavBar" v-if="isMobile()" class="sticky top-0 bg-theme top-0 w-full z-5 border-b">
+    <div ref="topNav" :hidden="hideNavBar" v-if="isMobile()" class="sticky top-0 w-full z-5 border-b bg-theme-opacity overflow-visible">
       <TopNav/>
     </div>
     <div id="main-div" class="h-full w-full relative">
@@ -165,8 +165,8 @@ export default defineComponent({
       <q-btn size="16px" class="show btn-themed text-heading" round flat icon="add" @click="spill = true"/>
     </div>
 
-    <q-dialog class="min-h-sm" v-model="spill" persistent>
-        <div class="bg-theme w-full min-h-fit max-w-sm h-fit overflow-visible" >
+    <q-dialog class="min-h-sm" v-model="spill" persistent :maximized="$q.screen.lt.sm ? true : false">
+        <div class="bg-theme w-full h-fit overflow-visible" >
           <div class="p-2">
             <Item dense :vert-icon-center="true">
               <template #title>

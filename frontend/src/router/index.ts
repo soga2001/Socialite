@@ -94,15 +94,24 @@ const router: Router = createRouter({
 })
 
 router.beforeEach((to, from) => {
-  console.log(from)
+  
+  // console.log(from)
   // from.meta?.scrollPos && (from.meta.scrollPos.top = document.documentElement.scrollTop)
 })
 
 router.beforeResolve((to, next) => {
+  console.log(to.query)
+  if(to.name == 'search' && Object.keys(to.query).length == 0) {
+    return {path: '/explore'}
+  }
+
+  if(to.name == 'explore' && Object.keys(to.query).length == 0) {
+    to.query = {}
+  }
+  
   if(to.matched.some(record => record.meta.hideForAuth) && store.state.authenticated) {
     return {path: '/home'}
   }
-
   if(to.matched.some(record => record.meta.auth) && !store.state.authenticated) {
     return {path: '/login'}
   }

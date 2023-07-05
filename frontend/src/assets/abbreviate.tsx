@@ -1,6 +1,6 @@
 export function AbbreviateNumber(val: Number | String) {
     try {
-        const abbreviations = ['', 'K', 'M', 'B', 'T']; // Add more as needed
+        const abbreviations = ['', 'k', 'm', 'b', 't']; // Add more as needed
         const tier = Math.log10(Math.abs(Number(val))) / 3 | 0;
         
         if (tier === 0) return Number(val).toString();

@@ -1349,6 +1349,13 @@
 }
 
 
+.w-half {
+    width: 50% !important;
+}
+
+.w-3q {
+    width: 75% !important;
+}
 
 .w-full {
     width: 100% !important;
@@ -2582,6 +2589,19 @@
 .hover-darker:hover {
     filter: brightness(0.8);
 }
+
+.hover-bold:hover {
+    font-weight: 900;
+}
+
+.hover-text-heading:hover {
+    color: var(--color-heading);
+}
+
+.hover-text-body:hover {
+    color: var(--color-body);
+}
+
 
 
 /* opacity */

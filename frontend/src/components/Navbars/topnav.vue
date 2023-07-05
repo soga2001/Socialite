@@ -9,6 +9,7 @@ import Item from '../Item.vue';
 // import Themetoggle from '../themetoggle.vue';
 import ProfileIcon from '@/icons/i-profile.vue'
 
+import Search from '@/views/Search.vue';
 export default defineComponent({
   data() {
       return {
@@ -75,22 +76,33 @@ export default defineComponent({
   },
   watch: {
   },
-  components: { Item, ProfileIcon }
+  components: { Item, ProfileIcon, Search }
 })
 </script>
 
 <template>
-    <nav>
-        <div class="topNav px-3 py-2" v-if="$store.state.authenticated">
-          <div class="dropdown-btn">
-            <q-btn no-caps flat dense round class="dropdown" @click="openNav" v-if="$store.state.authenticated">
-                <Item class="item" dense avatar-size="fit-content">
-                    <template #avatar>
-                      <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
-                      <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
-                    </template>
-                </Item>
-            </q-btn>
+    <nav class="overflow-visible">
+        <div class="topNav overflow-visible p-2 bg-transparent" v-if="$store.state.authenticated">
+          <div class="dropdown-btn overflow-visible w-full bg-transparent">
+            <Item align-items="center" dense v-if="$store.state.authenticated" class="w-full overflow-visible bg-transparent">
+                <template #avatar>
+                  <div @click="openNav">
+                    <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
+                    <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
+                  </div>
+                </template>
+                <template v-if="['explore', 'search'].includes(($route.name)?.toString() || ' ')" #title>
+                  <Search dense/>
+                </template>
+                <template #icon v-if="['explore', 'search'].includes(($route.name)?.toString() || ' ')">
+                  <q-btn flat round dense icon="settings" size="16px" class="border" @click.stop="" />
+                </template>
+                <template #icon v-else>
+                </template>
+            </Item>
+              <div class="brand text-2xl weight-900 text-heading" v-if="!['explore', 'search'].includes(($route.name)?.toString() || ' ')">
+                Socialite
+              </div>
           </div>
 
           <!-- <div className="brand">
@@ -173,13 +185,12 @@ export default defineComponent({
 
 .topNav {
   width: 100%;
-  background-color: var(--color-background);
   margin: 0;
   z-index: 0;
 }
 
 
-.topNav .dropdown-btn {
+.topNav .dropdown-btn img {
   width: 3rem;
 }
 
@@ -207,6 +218,13 @@ export default defineComponent({
   /* padding-top: .1rem; */
 
   display: grid;
+}
+
+.brand {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .slide-in-nav a {
@@ -305,7 +323,6 @@ a {
 .dropdown-btn {
   width: 100%;
   display: flex;
-  justify-content: center;
 }
 
 .top-nav .dropdown {

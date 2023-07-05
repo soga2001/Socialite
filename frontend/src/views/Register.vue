@@ -117,95 +117,94 @@ export default defineComponent({
 </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .register {
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    text-align: center;
-}
-
-.register__main {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+  
+  &__main {
     min-width: fit-content;
     border-radius: 10px;
-    /* background-color: var(--color-background-soft); */
-}
-
-.register__header {
+    // background-color: var(--color-background-soft);
+  }
+  
+  &__header {
     font-size: 70px;
     color: var(--color-heading);
-}
-
-.register__form {
+  }
+  
+  &__form {
     display: grid;
     gap: 20px;
     grid-template-columns: repeat(8, 1fr);
     width: 100%;
     margin: auto;
     padding: 10px;
-}
-.fname, .lname {
-    grid-column: auto / span 4;
-    color: var(--color-heading) !important;
-}
-
-.email {
-    grid-column: auto / span 8;
-}
-
-.username {
-    grid-column: auto / span 8;
-}
-
-.password, .c_password {
-    grid-column: auto / span 4;
-}
-
-.errMsg {
-    background-color: rgba(255, 0, 0, 0.566);
-    grid-column: auto / span 8;
-    padding: 10px;
-    border-radius: 10px;
-    color: var(--color-heading);
-}
-
-.submit {
-    grid-column: 4 / span 2;
-}
-
-.form__check {
-    grid-column: 3 / span 2;
-    color: var(--color-heading);
-    font-size: 16px;
-    text-align: left;
-}
-
-
-.register__info {
+    
+    .fname, .lname {
+      grid-column: auto / span 4;
+      color: var(--color-heading) !important;
+    }
+  
+    .email {
+      grid-column: auto / span 8;
+    }
+  
+    .username {
+      grid-column: auto / span 8;
+    }
+  
+    .password, .c_password {
+      grid-column: auto / span 4;
+    }
+  
+    .errMsg {
+      background-color: rgba(255, 0, 0, 0.566);
+      grid-column: auto / span 8;
+      padding: 10px;
+      border-radius: 10px;
+      color: var(--color-heading);
+    }
+  
+    .submit {
+      grid-column: 4 / span 2;
+    }
+  
+    .form__check {
+      grid-column: 3 / span 2;
+      color: var(--color-heading);
+      font-size: 16px;
+      text-align: left;
+    }
+  }
+  
+  &__info {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-}
-
-.register__contact {
+  }
+  
+  &__contact {
     display: grid;
     grid-template-columns: 1fr;
-}
-
-.register__credentials {
+  }
+  
+  &__credentials {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* input {
-    font-size: 20px;
-    padding: 10px;
-    background-color: var(--color-background);
-    color: var(--color-text);
-    border: var(--color-border);
-    border-radius: 10px;
+  font-size: 20px;
+  padding: 10px;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  border: var(--color-border);
+  border-radius: 10px;
 } */
-
 
 button {
   width: 10em;
@@ -219,50 +218,52 @@ button {
   border-radius: 0.3em;
   font-size: 16px;
   font-weight: bold;
-}
 
-button::after {
-  content: "";
-  position: absolute;
-  top: -10px;
-  left: 3%;
-  width: 95%;
-  height: 40%;
-  background-color: var(--color-background);
-  transition: 0.5s;
-  transform-origin: center;
-}
+  &::after {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 3%;
+    width: 95%;
+    height: 40%;
+    background-color: var(--color-background);
+    transition: 0.5s;
+    transform-origin: center;
+  }
 
-button::before {
-  content: "";
-  transform-origin: center;
-  position: absolute;
-  top: 80%;
-  left: 3%;
-  width: 95%;
-  height: 40%;
-  background-color: var(--color-background);
-  transition: 0.5s;
-}
+  &::before {
+    content: "";
+    transform-origin: center;
+    position: absolute;
+    top: 80%;
+    left: 3%;
+    width: 95%;
+    height: 40%;
+    background-color: var(--color-background);
+    transition: 0.5s;
+  }
 
-button:hover::before, button:hover::after {
-  transform: scale(0)
-}
+  &:hover::before, &:hover::after {
+    transform: scale(0);
+  }
 
-button:hover {
-  box-shadow: inset 0px 0px 25px #1479EA;
+  &:hover {
+    box-shadow: inset 0px 0px 25px #1479EA;
+  }
 }
 
 ::placeholder {
-    color: var(--color-text);
+  color: var(--color-text);
 }
 
 .valid {
-    color: green;
+  color: green;
 }
 
 .invalid {
-    color: red;
+  color: red;
 }
+
+
 
 </style>

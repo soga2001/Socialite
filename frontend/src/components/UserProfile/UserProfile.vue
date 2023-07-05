@@ -308,8 +308,8 @@ export default defineComponent({
                 </div>
             </div>
             <div class="h-full">
-                <q-dialog class="h-full w-full" v-model="editProfile" persistent>
-                    <q-card :dark="theme">
+                <q-dialog class="h-full w-full" v-model="editProfile" persistent :maximized="$q.screen.lt.sm ? true : false">
+                    <q-card :dark="theme" class="h-fit">
                         <q-card-section>
                             <Item>
                                 <template #title>
@@ -397,7 +397,7 @@ export default defineComponent({
                     </div>
 
                     <div class="relative w-full">
-                        <q-dialog class="w-full" v-model="show_followers">
+                        <q-dialog class="w-full" v-model="show_followers" :maximized="$q.screen.lt.sm ? true : false">
                             <div class="bg-theme-soft w-full max-w-xs h-full max-h-sm">
                                 <div class="p-1">
                                     <Item>
@@ -436,7 +436,7 @@ export default defineComponent({
                             </div>
                         </q-dialog>
 
-                        <q-dialog class="w-full" v-model="show_following">
+                        <q-dialog class="w-full" v-model="show_following" :maximized="$q.screen.lt.sm ? true : false">
                             <div class="bg-theme-soft w-full max-w-xs h-full max-h-sm">
                                 <div class="p-1">
                                     <Item>

@@ -93,7 +93,7 @@ export default defineComponent({
 
 <template>
     <div :class="'user__main '" v-if="Object.keys(user).length > 0">
-        <header ref="header" class="user__name z-5 bg-theme w-full">
+        <header ref="header" class="user__name z-5 w-full bg-theme-opacity">
             <Item class="pl-2" dense :vert-icon-center="true">
                     <template #avatar>
                         <q-btn size="16px" @click="$router.back" flat dense round class="text-heading" icon="arrow_back" />
@@ -114,17 +114,16 @@ export default defineComponent({
 
         <div>
             <div>
-                <nav :style="{top: `${headerHeight - 1}px`}" class="slidemenu sticky z-5 m-0 bg-theme">
-  
+                <nav :style="{top: `${headerHeight}px`}" class="slidemenu sticky z-5 m-0 bg-theme-opacity">
                     <!-- Item 1 -->
                     <input ref="spill" type="radio" name="slideItem" id="slide-item-1" class="slide-toggle" checked/>
-                    <RouterLink @click="($refs.spill as HTMLInputElement).click()" class="h-full bg-hover-soft relative text-xl" exact-active-class="text-heading weight-900 link" :to="{name: 'user-posted', params: {username: username}}" exact>
+                    <RouterLink @click="($refs.spill as HTMLInputElement).click()" class="h-full bg-hover-soft bg-transparent relative text-xl" exact-active-class="text-heading weight-900 link" :to="{name: 'user-posted', params: {username: username}}" exact>
                             Spills
                     </RouterLink>
                     
                     <!-- Item 2 -->
                     <input ref="likes" type="radio" name="slideItem" id="slide-item-2" class="slide-toggle"/>
-                    <RouterLink @click="($refs.likes as HTMLInputElement).click()" class="h-full bg-hover-soft  relative text-xl" exact-active-class="text-heading weight-900 link" :to="{name: 'user-liked', params: {username: username}}" exact>
+                    <RouterLink @click="($refs.likes as HTMLInputElement).click()" class="h-full bg-hover-soft bg-transparent relative text-xl" exact-active-class="text-heading weight-900 link" :to="{name: 'user-liked', params: {username: username}}" exact>
                             Likes
                     </RouterLink>
 
@@ -241,31 +240,6 @@ a {
         color: var(--coolor-heading);
     }
 }
-
-// .slidemenu 
-
-// .slidemenu a span{
-//   display: block;
-//   padding: 10px;    
-// }
-
-// .slidemenu label .icon{
-//   font-size: 20px;
-//   border: solid 2px #333;
-//   text-align: center;
-//   height: 50px;
-//   width: 50px;
-//   display: block;
-//   margin: 0 auto;
-//   line-height: 50px;
-//   border-radius: 50%;
-// }
-
-/*Bar Style*/
-
-// .slider{
-    
-// }
 
 .slider {
     width: 100%;

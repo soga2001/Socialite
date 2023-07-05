@@ -1,12 +1,35 @@
 <script lang="ts">
 import { http } from '@/assets/http';
-import { defineComponent, ref, toHandlers } from 'vue';
+import { defineComponent, ref, toHandlers, type Ref, getCurrentInstance, type ComponentInternalInstance } from 'vue';
 import type { User } from '@/assets/interfaces';
 import { useStore } from '../store/store';
 import { TouchSwipe } from 'quasar';
 import Item from '../components/Item.vue';
 
+import SearchBar from '@/components/SearchBar.vue';
 export default defineComponent({
+    props: {
+        size: {
+            type: Number,
+            default: 1,
+        },
+        dense: {
+            type: Boolean,
+            default: false,
+        },
+        scrollPosition: {
+            type: Number,
+            default: 0,
+        },
+        height: {
+            type: Number,
+            default: 0,
+        },
+        query: {
+            type: String,
+            default: '',
+        },
+    },
     data() {
         return {
             results: new Array<User>(),
@@ -14,7 +37,11 @@ export default defineComponent({
             input: ref(''),
             loading: false,
             noResults: false,
-            q: this.$route.query.q,
+            q: this.$route.query.q as string,
+            searchModal: false,
+            alwaysTrue: this.$route.name == 'search',
+            instance: null as ComponentInternalInstance | null,
+            isDense: this.dense,
         };
     },
     name: 'search',
@@ -22,12 +49,17 @@ export default defineComponent({
         const store = useStore()
     },
     created() {
-        if(this.q) {
-            this.input = this.q.toString()
-            this.search()
-        }
+        this.input = this.q;
+        this.search()
     },
     mounted() {
+        this.instance = getCurrentInstance()
+    },
+    activated() {
+        this.input = this.q;
+        this.search()
+        this.instance = getCurrentInstance()
+        this.alwaysTrue = true
     },
     methods: {
       async search() {
@@ -55,208 +87,146 @@ export default defineComponent({
         this.input = ""
         this.results = new Array<User>()
         this.noResults = false
+        const searchBar = this.$refs.bar as {
+            resetInput: () => void
+        }
+        searchBar.resetInput()
       },
       submit() {
-
-      }
+        this.$router.push({ name: 'search', query: { q: this.input } })
+        this.resetInput()
+      },
+      searchFocus() {
+        this.searchModal = true
+      },
+      closeSearch() {
+        this.searchModal = false;
+        this.resetInput()
+      },
     },
-    components: {Item},
+    components: { Item, SearchBar },
+    watch: {
+        input(input) {
+            if(input === "") {
+                this.results = new Array<User>()
+                this.noResults = false
+                return
+            }
+            this.search()
+        },
+    }
 })
 </script>
 
 
 <template>
-    <div class="search">
-        <form v-on:submit.prevent="">
-            <q-input
-                v-model="input"
-                dense
-                :dark="$store.state.dark"
-                :autofocus="true"
-                placeholder="Search by username"
-                v-debounce:1ms="search"
-            >
-                <template #prepend>
-                    <q-icon @click="$router.go(-1)" class="back" name="arrow_back" />
+    <div v-if="instance?.parent?.type.name != 'KeepAlive'">
+        <SearchBar search-page ref="bar" @update:focus="searchModal = $event" :dense="dense"/>
+    </div>
+
+    <div >
+        <div class="results"  v-if="results.length > 0" v-for="u in results">
+            <Item clickable :to="{ name: 'user-profile', params: { username: u.username } }" >
+                <template #avatar>
+                    <img v-if="u.avatar" :src="u.avatar" alt="profile pic" />
+                    <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="profile pic plage holder" class="rounded-full" />
                 </template>
-                <template #append>
-                    <q-icon size="30px" v-if="input.length == 0" name="search" />
-                    <q-icon class="close" size="30px" v-else-if="input.length > 0 && !loading" name="close" @click="resetInput" />
-                    <q-spinner-tail v-else size="30px" color="blue-grey" />
+                <template #title>
+                    <span class="text-xl text-heading weight-900">
+                        {{u.first_name + ' ' + u.last_name}}
+                    </span>
                 </template>
-            </q-input>
-        </form>
-        <div id="results">
-            <div class="results" v-if="results.length > 0" v-for="u in results">
-                <Item clickable :to="{ name: 'user-profile', params: { username: u.username } }" >
-                    <template #avatar>
-                        <img v-if="u.avatar" :src="u.avatar" alt="profile pic" />
-                        <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="profile pic plage holder" class="rounded-full" />
-                    </template>
-                    <template #title>
-                        <span class="text-xl text-heading weight-900">
-                            {{u.first_name + ' ' + u.last_name}}
-                        </span>
-                    </template>
-                    <template #caption>@{{ u.username }}</template>
-                </Item>
-            </div>
-            <div v-if="noResults">
-                <q-item class="">
-                    <q-item-section>
-                        <q-item-label>No results found</q-item-label>
-                    </q-item-section>
-                </q-item>
-            </div> 
+                <template #caption>@{{ u.username }}</template>
+            </Item>
         </div>
+    </div>
+    <div>
+        <q-dialog transition-show="false" transition-hide="false" v-if="$q.screen.lt.sm && searchModal && !($route.name == 'search')" class="w-full h-full modal" v-model="searchModal" :maximized="true">
+            <div class="bg-theme w-full h-full">
+                <div class="p-2">
+                    <Item align-items="center" dense v-if="$store.state.authenticated" class="w-full overflow-visible bg-transparent">
+                        <template #avatar>
+                            <!-- <div :style="{width: '3rem', height: '3rem'}">
+                            </div> -->
+                            <q-btn v-if="$route.name != 'search'" size="20px" @click="closeSearch" flat dense round class="text-heading" icon="arrow_back" />
+                            <q-btn v-else size="20px" @click="{resetInput(); $router.back()}" flat dense round class="text-heading" icon="arrow_back" />
+                        </template>
+                        <template #title>
+                            <SearchBar ref="bar" autofocus @update:input="input = $event" search-page :dense="dense"/>
+                        </template>
+                        <template #icon>
+                            <q-btn flat round dense icon="settings" size="16px" class="border" @click.stop="" />
+                        </template>
+                    </Item>
+                </div>
+
+                <div>
+                    <hr/>
+                </div>
+
+                <div >
+                    <div class="results"  v-if="results.length > 0" v-for="u in results">
+                        <Item clickable :to="{ name: 'user-profile', params: { username: u.username } }" >
+                            <template #avatar>
+                                <img v-if="u.avatar" :src="u.avatar" alt="profile pic" />
+                                <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="profile pic plage holder" class="rounded-full" />
+                            </template>
+                            <template #title>
+                                <span class="text-xl text-heading weight-900">
+                                    {{u.first_name + ' ' + u.last_name}}
+                                </span>
+                            </template>
+                            <template #caption>@{{ u.username }}</template>
+                        </Item>
+                    </div>
+                </div>
+            </div>
+        </q-dialog>
+
+        <q-dialog transition-show="false" transition-hide="false" v-if="$q.screen.lt.sm && $route.name == 'search'" class="w-full h-full modal" v-model="alwaysTrue" :maximized="true">
+            <div class="bg-theme w-full h-full">
+                <div class="p-2">
+                    <Item align-items="center" dense v-if="$store.state.authenticated" class="w-full overflow-visible bg-transparent">
+                        <template #avatar>
+                            <!-- <div :style="{width: '3rem', height: '3rem'}">
+                            </div> -->
+                            <!-- <q-btn v-if="$route.name != 'search'" size="20px" @click="closeSearch" flat dense round class="text-heading" icon="arrow_back" /> -->
+                            <q-btn size="20px" @click="{resetInput(); $router.back()}" flat dense round class="text-heading" icon="arrow_back" />
+                        </template>
+                        <template #title>
+                            <SearchBar ref="bar" autofocus @update:input="input = $event" search-page :dense="true"/>
+                        </template>
+                        <template #icon>
+                            <q-btn flat round dense icon="settings" size="16px" class="border" @click.stop="" />
+                        </template>
+                    </Item>
+                </div>
+
+                <div>
+                    <hr/>
+                </div>
+
+                <div >
+                    <div class="results"  v-if="results.length > 0" v-for="u in results">
+                        <Item clickable :to="{ name: 'user-profile', params: { username: u.username } }" >
+                            <template #avatar>
+                                <img v-if="u.avatar" :src="u.avatar" alt="profile pic" />
+                                <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="profile pic plage holder" class="rounded-full" />
+                            </template>
+                            <template #title>
+                                <span class="text-xl text-heading weight-900">
+                                    {{u.first_name + ' ' + u.last_name}}
+                                </span>
+                            </template>
+                            <template #caption>@{{ u.username }}</template>
+                        </Item>
+                    </div>
+                </div>
+            </div>
+        </q-dialog>
     </div>
 </template>
 
-<style scoped>
-* {
-    color: var(--color-heading) !important;
-}
-.search {
-    padding: 20px;
-    width: 100%;
-    /* position: -webkit-sticky;
-	position: sticky; */
-    top: 0;
-    
-}
+<style scoped lang="scss">
 
-.back {
-    cursor: pointer;
-}
-
-#results {
-    max-height: 350px; 
-    overflow: auto;  
-}
-
-.search-box{
-  width: fit-content;
-  height: fit-content;
-  position: relative;
-}
-.input-search{
-  height: 50px;
-  width: 50px;
-  border-style: none;
-  padding: 10px;
-  font-size: 18px;
-  letter-spacing: 2px;
-  outline: none;
-  border-radius: 25px;
-  transition: all .5s ease-in-out;
-  background-color: var(--color-background);
-  padding-right: 40px;
-  color:white;
-}
-::placeholder{
-  color: var(--color-text);
-  font-size: 15px;
-  font-weight: 500;
-}
-.btn-search{
-  width: 50px;
-  height: 50px;
-  border-style: none;
-  font-size: 20px;
-  font-weight: bold;
-  outline: none;
-  cursor: pointer;
-  border-radius: 50%;
-  position: absolute;
-  right: 0px;
-  color: black;
-  background-color:transparent;
-  pointer-events: painted;  
-}
-.input-search{
-  width: 300px;
-  border-radius: 0px;
-  background-color: transparent;
-  border-bottom:1px solid var(--color-heading);
-}
-.input-search:focus{
-  width: 300px;
-  border-radius: 0px;
-  background-color: transparent;
-  border-bottom: 2px solid var(--color-heading);
-  transition: all 1s cubic-bezier(0, 0.110, 0.35, 2);
-}
-
-.search-container{
-    background: var(--color-background);
-    height: 30px;
-    border-radius: 30px;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: 0.8s;
-    /*box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
-    inset -7px -7px 10px 0px rgba(0,0,0,.1),
-   7px 7px 20px 0px rgba(0,0,0,.1),
-   4px 4px 5px 0px rgba(0,0,0,.1);
-   text-shadow:  0px 0px 6px rgba(255,255,255,.3),
-              -4px -4px 6px rgba(116, 125, 136, .2);
-  text-shadow: 2px 2px 3px rgba(255,255,255,0.5);*/
-  box-shadow:  4px 4px 6px 0 rgba(255,255,255,.3),
-              -4px -4px 6px 0 rgba(116, 125, 136, .2), 
-    inset -4px -4px 6px 0 rgba(255,255,255,.2),
-    inset 4px 4px 6px 0 rgba(0, 0, 0, .2);
-}
-
-.search-container:hover > .search-input{
-    width: 200px;
-}
-
-.search-container .search-input{
-    background: transparent;
-    border: none;
-    outline:none;
-    width: 0px;
-    font-weight: 500;
-    font-size: 16px;
-    transition: 0.8s;
-
-}
-
-.search-container .search-btn .fas{
-    color: var(--color-text) !important;
-    font-size: 30px;
-    padding: 0px;
-}
-
-@keyframes hoverShake {
-  0% {transform: skew(0deg,0deg);}
-  25% {transform: skew(5deg, 5deg);}
-  75% {transform: skew(-5deg, -5deg);}
-  100% {transform: skew(0deg,0deg);}
-}
-
-.search-container:hover{
-  animation: hoverShake 0.15s linear 3;
-}
-
-#results {
-    border: 1px solid var(--color-border);
-}
-
-.results:nth-child(even) {
-    background-color: var(--color-background-mute);
-}
-
-.avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-}
-
-.close {
-    cursor: pointer;
-}
 </style>

@@ -47,7 +47,7 @@ export default defineComponent({
 
 <template>
     <div>
-        <q-item class="toggleWrapper">
+        <div class="toggleWrapper">
             <input type="checkbox" v-model="theme" @click="switchTheme" class="dn" id="dn">
             <label for="dn" class="toggle">
                 <span class="toggle__handler">
@@ -62,7 +62,7 @@ export default defineComponent({
                 <span class="star star--5"></span>
                 <span class="star star--6"></span>
             </label>
-          </q-item>
+        </div>
     </div>
 </template>
 

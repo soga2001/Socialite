@@ -11,6 +11,7 @@ import MentionLink from './MentionLink.vue';
 import ToolTips from './ToolTips.vue';
 import HeartIcon from '@/icons/i-heart.vue';
 import { AbbreviateNumber } from '@/assets/abbreviate';
+import createIntersectObserver from '@/assets/intersectionObserver'
 
 
 export default defineComponent({
@@ -34,7 +35,7 @@ export default defineComponent({
             dropdown: false,
             liked: this.checkLiked(),
             total_comments: this.post.total_comments,
-            total_likes: this.post.total_likes || 0,
+            total_likes: this.post.total_likes + 100000,
             comments: [],
             img_loading: true,
             avatar_loading: true,
@@ -47,6 +48,8 @@ export default defineComponent({
 
             abbreviateLikes: AbbreviateNumber(this.post.total_likes),
             abbreviateComments: AbbreviateNumber(this.post.total_comments),
+
+            visibleNumb: 0,
 
         };
     },
@@ -124,12 +127,18 @@ export default defineComponent({
         captionChange() {
 
         },
+        viewed() {
+            
+        }
         
     },
     created() {
     },
-    mounted() {
+    async mounted() {
+        await this.$nextTick()
+        const observer = createIntersectObserver(this.$el, this.viewed, {threshold: 1})
     },
+    
     watch: {
         '$store.state.authenticated': function () {
             if(this.$store.state.authenticated) {
@@ -150,8 +159,8 @@ export default defineComponent({
 </script>
 
 <template>
-    <q-card class="grid rounded-none bg-theme bg-hover-mute pointer" @click="$router.push({name: 'view-spill', params: { user: username, post_id: id}})" v-if="!deleted">
-        <div class="post__main">
+    <q-card ref="spill" id="spill"  class="grid rounded-none bg-theme bg-hover-mute pointer" @click="$router.push({name: 'view-spill', params: { user: username, post_id: id}})" v-if="!deleted">
+        <div  class="post__main">
             <Item>
                 <template #avatar>
                     <div class="hover-darker" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">
@@ -294,7 +303,7 @@ export default defineComponent({
                         </q-btn>
                     </div>
                     <div>
-                        <label>{{total_comments}}</label>
+                        <label>{{abbreviateComments}}</label>
                     </div>
                 </div>
 

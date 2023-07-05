@@ -49,6 +49,7 @@ import Spills from './components/Spills.vue';
 import CommentMap from '@/components/CommentMap.vue';
 import PostsMap from '@/components/PostsMap.vue'
 import Mention from './components/Mention.vue'
+import SearchBar from '@/components/SearchBar.vue';
 
 
 // my icons
@@ -116,6 +117,7 @@ app.component('Spills', Spills)
 app.component('CommentMap', CommentMap)
 app.component('Mention', Mention)
 app.component('PostsMap', PostsMap)
+app.component('SearchBar', SearchBar)
 // app.component('adv-cropper', newCropper);
 
 

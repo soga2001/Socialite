@@ -49,9 +49,11 @@ export default defineComponent({
           <RouterLink to="/explore" class="nav__link" active-class="active">
             <i-explore size="2rem" :fill="$route.fullPath == `/explore` ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == `/explore` ? 'none' : 'var(--color-heading)'"/>
           </RouterLink>
-          <RouterLink to="/search" class="nav__link" active-class="active">
+          
+          <!-- <RouterLink to="/search" class="nav__link" active-class="active">
             <i-search size="2rem" :fill="$route.fullPath == `/search` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)"/>
-          </RouterLink>
+          </RouterLink> -->
+
           <RouterLink to="/notifications" class="nav__link" active-class="active">
             <i-notif size="2rem" :fill="$route.fullPath == `/notifications` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
           </RouterLink>
