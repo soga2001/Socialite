@@ -62,18 +62,34 @@ export default defineComponent({
     },
     computed: {
     },
+    activated() {
+        if(this.$route.params.username != this.username) {
+            this.username = this.$route.params.username
+            this.user = {} as User;
+            this.websocketClose()
+            this.userInfo();
+            this.websocketOpen()
+        }
+    },
     components: { UserProfile, Search, UserPosted, UserLiked, Item },
     watch: {
         // '$route'(to, from) {
         //     if(to.matched[0].name === "user-profile") {
-        //         if(to.params.username != this.username) {
-        //             this.username = to.params.username
-        //             this.user = {} as User;
-        //             this.websocketClose()
-        //             this.userInfo();
-        //             this.websocketOpen()
-        //         }
+                // if(to.params.username != this.username) {
+                //     this.username = to.params.username
+                //     this.user = {} as User;
+                //     this.websocketClose()
+                //     this.userInfo();
+                //     this.websocketOpen()
+                // }
         //     }
+        // }
+        // '$route.params.username':function() {
+        //     this.username = this.$route.params.username
+        //     this.user = {} as User;
+        //     this.websocketClose()
+        //     this.userInfo();
+        //     this.websocketOpen()
         // }
     },
     // beforeRouteUpdate(to, from, next) {
@@ -93,7 +109,7 @@ export default defineComponent({
 
 <template>
     <div :class="'user__main '" v-if="Object.keys(user).length > 0">
-        <header ref="header" class="user__name z-5 w-full bg-theme-opacity">
+        <header ref="header" class="user__name z-5 w-full bg-theme">
             <Item class="pl-2" dense :vert-icon-center="true">
                     <template #avatar>
                         <q-btn size="16px" @click="$router.back" flat dense round class="text-heading" icon="arrow_back" />
@@ -114,14 +130,13 @@ export default defineComponent({
 
         <div>
             <div>
-                <nav :style="{top: `${headerHeight}px`}" class="slidemenu sticky z-5 m-0 bg-theme-opacity">
-                    <!-- Item 1 -->
+                <nav :style="{top: `${headerHeight - .4}px`}" class="slidemenu sticky z-5 m-0 bg-theme">
+                    
                     <input ref="spill" type="radio" name="slideItem" id="slide-item-1" class="slide-toggle" checked/>
                     <RouterLink @click="($refs.spill as HTMLInputElement).click()" class="h-full bg-hover-soft bg-transparent relative text-xl" exact-active-class="text-heading weight-900 link" :to="{name: 'user-posted', params: {username: username}}" exact>
                             Spills
                     </RouterLink>
                     
-                    <!-- Item 2 -->
                     <input ref="likes" type="radio" name="slideItem" id="slide-item-2" class="slide-toggle"/>
                     <RouterLink @click="($refs.likes as HTMLInputElement).click()" class="h-full bg-hover-soft bg-transparent relative text-xl" exact-active-class="text-heading weight-900 link" :to="{name: 'user-liked', params: {username: username}}" exact>
                             Likes

@@ -114,7 +114,8 @@ def post_by_followed_users(request, timestamp, page):
 
 @api_view(["GET"])
 def explore(request, offset):
-    posts = Post.objects.annotate(total_likes=Count('post_likes'), total_comments=Count('post_comments')).order_by('-total_likes', '-total_comments')[0]
+    offset = int(offset)
+    posts = Post.objects.annotate(total_likes=Count('post_likes'), total_comments=Count('post_comments')).order_by('-total_likes', '-total_comments')[offset*10:10]
     posts = PostSerializer(posts, many=True)
     return JsonResponse({"success": True, "posts": posts.data})
 

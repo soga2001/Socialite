@@ -10,6 +10,7 @@ export async function get_user_from_cookie() {
         if(res.data.success) {
             await store.commit("setUser", res.data.user)
             await store.commit('authenticate', true)
+            await store.commit('setLoading', false)
         }
         
     }).catch(async (err) => {

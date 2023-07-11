@@ -4,6 +4,8 @@ import { Cookies } from 'quasar';
 import Main from './views/Main.vue';
 import { get_user_from_cookie } from './assets/userFromCookie';
 import Loading from './components/Loading.vue';
+import { http } from './assets/http';
+import { store } from './store/store';
 
 
 export default defineComponent({
@@ -67,7 +69,7 @@ export default defineComponent({
 
 <template>
   <!-- <h1>Potato</h1> -->
-  <div class="text-left w-full min-h-viewport" v-if="!loading">
+  <div class="text-left w-full min-h-viewport" v-if="!$store.state.isLoading">
     <Main />
   </div>
   <div class="flex items-center justify-center w-full h-viewport text-heading" v-else>

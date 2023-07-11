@@ -12,7 +12,8 @@ export interface State {
   dark: boolean,
   posts_main: Array<Post>,
   desktop: boolean,
-  csrf: string
+  csrf: string,
+  isLoading: boolean,
 }
 
 // define injection key
@@ -65,6 +66,7 @@ export const store = createStore<State>({
     },
     desktop: true,
     csrf: "",
+    isLoading: true,
 
   },
   mutations: {
@@ -94,6 +96,11 @@ export const store = createStore<State>({
     },
     changeBanner(state, payload) {
       state.user.banner = payload
+    },
+    setLoading(state, payload) {
+      setTimeout(() => {
+        state.isLoading = payload
+      }, 100)
     }
   }
 })

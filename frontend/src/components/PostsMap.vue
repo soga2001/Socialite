@@ -35,7 +35,8 @@ export default defineComponent({
             dropdown: false,
             liked: this.checkLiked(),
             total_comments: this.post.total_comments,
-            total_likes: this.post.total_likes + 100000,
+            total_likes: this.post.total_likes,
+            total_views: 0,
             comments: [],
             img_loading: true,
             avatar_loading: true,
@@ -46,10 +47,9 @@ export default defineComponent({
             moment: moment,
             showComments: false,
 
-            abbreviateLikes: AbbreviateNumber(this.post.total_likes),
-            abbreviateComments: AbbreviateNumber(this.post.total_comments),
-
-            visibleNumb: 0,
+            abbreviateLikes: AbbreviateNumber(this.post.total_likes) as Number,
+            abbreviateComments: AbbreviateNumber(this.post.total_comments) as Number,
+            abbreviateViews: AbbreviateNumber(0) as Number,
 
         };
     },
@@ -128,7 +128,18 @@ export default defineComponent({
 
         },
         viewed() {
-            
+            console.log(this.id)
+            setTimeout(() => {
+                // http.post('posts/viewed/', {
+                //     post_id: this.id
+                // }, {
+                // }).then((res) => {
+                //     this.abbreviateViews = AbbreviateNumber(res.data.views);
+                // }).catch((err) => {
+                //     console.log(err)
+                // })
+                this.total_views += 1;
+            }, 1000);
         }
         
     },
@@ -136,7 +147,7 @@ export default defineComponent({
     },
     async mounted() {
         await this.$nextTick()
-        const observer = createIntersectObserver(this.$el, this.viewed, {threshold: 1})
+        const observer = createIntersectObserver(this.$el, this.viewed, {threshold: .75})
     },
     
     watch: {
@@ -148,10 +159,13 @@ export default defineComponent({
             }
         },
         total_likes(total_likes) {
-            this.abbreviateLikes = AbbreviateNumber(total_likes);
+            this.abbreviateLikes = AbbreviateNumber(total_likes) as Number;
         },
         total_comments(total_comments) {
-            this.abbreviateComments = AbbreviateNumber(total_comments);
+            this.abbreviateComments = AbbreviateNumber(total_comments) as Number;
+        },
+        total_views(total_views) {
+            this.abbreviateViews = AbbreviateNumber(total_views) as Number;
         }
     },
     components: { Timeago, Heart, Item, MentionLink, ToolTips, HeartIcon }
@@ -333,12 +347,34 @@ export default defineComponent({
                 </q-tooltip>
             </q-btn> -->
 
+            
+
+            <div>
+                <div class="flex justify-center items-center gap-1">
+                    <div>
+                        <q-btn round flat @click.stop="">
+                            <q-tooltip :offset="[0,0]">
+                                Views
+                            </q-tooltip>
+                            <q-icon class="text-body" name="visibility"/>
+                        </q-btn>
+                    </div>
+                    <!-- <div>
+                        <span :style="{color: liked ? 'red' : 'none'}">{{abbreviateViews}}</span>
+                    </div> -->
+                    <transition name="fade" mode="out-in">
+                        <span class="text-heading" v-if="total_views % 2 == 0">{{ abbreviateViews }}</span>
+                        <span class="text-heading" v-else>{{ abbreviateViews }}</span>
+                    </transition>
+                </div>
+            </div>
+
             <q-btn round flat>
                 <q-tooltip :offset="[0,0]">
                     Copy Link
                 </q-tooltip>
                 <i-share fill="var(--color-text)" />
-            </q-btn> 
+            </q-btn>  
         </q-card-actions>
         <!-- <q-separator :dark="$store.state.dark"/>
         <div class="comments">

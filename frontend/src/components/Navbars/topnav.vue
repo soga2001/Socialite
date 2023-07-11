@@ -109,7 +109,7 @@ export default defineComponent({
               BB
             </div> -->
 
-          <div class="overlay" v-if="navSlideIn" @click="closeNav"></div>
+          <div class="overlay bg-blur-1" v-if="navSlideIn" @click="closeNav"></div>
 
           <div class="slide-in-nav list" :style="slideIn">
             <div class="rest_nav">

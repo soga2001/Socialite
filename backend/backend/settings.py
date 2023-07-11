@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'following.apps.FollowingConfig',
     'comments.apps.CommentsConfig',
     'likes.apps.LikesConfig',
+    'postviews.apps.PostviewsConfig',
     'django.contrib.postgres',
 ]
 

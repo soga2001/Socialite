@@ -75,7 +75,7 @@ export default defineComponent({
       // console.log(scrollPosition)
     },
     height(height) {
-      console.log(height)
+      // console.log(height)
     },
   }
 })

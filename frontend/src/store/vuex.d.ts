@@ -11,6 +11,7 @@ declare module '@vue/runtime-core' {
     posts_main: Array<Post>,
     desktop: boolean,
     csrf: string,
+    isLoading: boolean,
   }
 
   // provide typings for `this.$store`

@@ -35,13 +35,9 @@ export default defineComponent({
   },
   created() {
     this.getData();
-    console.log(this.height)
+    // console.log(this.height)
   },
   mounted() {
-    const element = (document.getElementById("infinite-scroll") as HTMLDivElement)
-    element.addEventListener("scroll", function() {
-      console.log('x')
-    })
     this.update()
   },
   methods: {

@@ -125,7 +125,7 @@ export default defineComponent({
         this.topNavHeight = ((this.$refs.topNav as HTMLDivElement)?.offsetHeight) || 0
       })
     }
-  }
+  },
 })
 </script>
 
@@ -142,7 +142,7 @@ export default defineComponent({
       <div :style="{paddingBottom: `${bottomNavHeight + topNavHeight}px`}"  class="border-l border-r">
         <RouterView v-slot="{Component}" >
           <KeepAlive :max="4" :include="['home', 'search', 'explore', 'user-profile', 'view-spill']" >
-            <component :is="Component" :key="$route.matched[0].name !== 'user-profile' ? $route.fullPath : $route.params.username"  :height="height" :scrollPosition="scrollPosition" />
+            <component :is="Component" :key="$route.matched[0].name !== 'user-profile' ? $route.fullPath : null"  :height="height" :scrollPosition="scrollPosition" />
           </KeepAlive>
         </RouterView>
       </div>
@@ -161,7 +161,7 @@ export default defineComponent({
       <BottomNav/>
     </nav>
 
-    <div ref="spillButton" class="fixed box-shadow z-100 right-1 bg-theme rounded-lg" :style="{bottom: `${bottomNavHeight}px`}" v-if="isMobile() && $route.name !== 'view-spill'">
+    <div ref="spillButton" class="fixed box-shadow right-1 bg-theme rounded-lg" :style="{bottom: `${bottomNavHeight}px`}" v-if="isMobile() && $route.name !== 'view-spill'">
       <q-btn size="16px" class="show btn-themed text-heading" round flat icon="add" @click="spill = true"/>
     </div>
 

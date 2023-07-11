@@ -26,15 +26,7 @@ export default defineComponent({
                 this.errMsg = "Please don't leave username or password blank!";
                 return;
             }
-
-            // Crypter.decryption(dis)
-            // const u = Crypter.encrypter(this.username);
-            // const p = Crypter.encrypter(this.password);
-            // console.log(Crypter.decrypter(u), Crypter.decrypter(p));
-            // console.log()
             http.post("users/login/", {
-                // username: Crypter.encrypt(this.username),
-                // password: Crypter.encrypt(this.password)
                 username: this.username,
                 password: this.password,
             }, {
