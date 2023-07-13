@@ -94,14 +94,21 @@ export default defineComponent({
                 <template v-if="['explore', 'search'].includes(($route.name)?.toString() || ' ')" #title>
                   <Search dense/>
                 </template>
+                <template v-if="['all-notif', 'mentions'].includes(($route.name)?.toString() || ' ')" #title>
+                  <div class="text-2xl weight-900 text-heading">
+                    Notifications
+                  </div>
+                </template>
+                
                 <template #icon v-if="['explore', 'search'].includes(($route.name)?.toString() || ' ')">
                   <q-btn flat round dense icon="settings" size="16px" class="border" @click.stop="" />
                 </template>
                 <template #icon v-else>
                 </template>
             </Item>
-              <div class="brand text-2xl weight-900 text-heading" v-if="!['explore', 'search'].includes(($route.name)?.toString() || ' ')">
-                Socialite
+              <div class="brand text-2xl weight-900 text-heading" v-if="!['explore', 'search', 'all-notif', 'mentions'].includes(($route.name)?.toString() || ' ')">
+                {{ $route.name }}
+                <!-- Socialite -->
               </div>
           </div>
 

@@ -43,3 +43,26 @@ export interface Comment{
     date_posted: string,
     date_updated: string,
 }
+
+export interface Notifications {
+    id: number;
+    level: string;
+    actor: string,
+    actor_avatar: string,
+    unread: boolean;
+    actor_object_id: string;
+    verb: string;
+    description: string;
+    target_object_id: string;
+    action_object_object_id: string;
+    timestamp: string;
+    public: boolean;
+    deleted: boolean;
+    emailed: boolean;
+    data: string;
+    link: string;
+    recipient: number;
+    actor_content_type: number;
+    target_content_type: string;
+    action_object_content_type: string;
+}

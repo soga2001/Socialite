@@ -113,13 +113,14 @@ export default defineComponent({
         !this.$slots.caption &&
         !this.$slots.icon
     );
+    // console.log(this.$refs.item)
   }
 });
 </script>
   
 
 <template>
-  <div :class="'user-card ' + (isAvatarOnly ? 'circular' : '')" :style="style" @click="router">
+  <div ref="item" class="user-card" :class="{'circular': isAvatarOnly, 'bg-hover-soft': clickable}" :style="style" @click="router">
     <div class="avatar" :style="avatarStyle" v-if="$slots.avatar" @click="router">
       <slot name="avatar" />
     </div>

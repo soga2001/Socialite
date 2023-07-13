@@ -109,7 +109,7 @@ export default defineComponent({
 
 <template>
     <div :class="'user__main '" v-if="Object.keys(user).length > 0">
-        <header ref="header" class="user__name z-5 w-full bg-theme">
+        <header ref="header" class="user__name z-5 w-full bg-theme-opacity bg-blur-2">
             <Item class="pl-2" dense :vert-icon-center="true">
                     <template #avatar>
                         <q-btn size="16px" @click="$router.back" flat dense round class="text-heading" icon="arrow_back" />
@@ -130,27 +130,18 @@ export default defineComponent({
 
         <div>
             <div>
-                <nav :style="{top: `${headerHeight - .4}px`}" class="slidemenu sticky z-5 m-0 bg-theme">
-                    
-                    <input ref="spill" type="radio" name="slideItem" id="slide-item-1" class="slide-toggle" checked/>
-                    <RouterLink @click="($refs.spill as HTMLInputElement).click()" class="h-full bg-hover-soft bg-transparent relative text-xl" exact-active-class="text-heading weight-900 link" :to="{name: 'user-posted', params: {username: username}}" exact>
-                            Spills
-                    </RouterLink>
-                    
-                    <input ref="likes" type="radio" name="slideItem" id="slide-item-2" class="slide-toggle"/>
-                    <RouterLink @click="($refs.likes as HTMLInputElement).click()" class="h-full bg-hover-soft bg-transparent relative text-xl" exact-active-class="text-heading weight-900 link" :to="{name: 'user-liked', params: {username: username}}" exact>
-                            Likes
-                    </RouterLink>
-
-                    
-                    
-                    <div class="clear"></div>
-                    
-                    <!-- Bar -->
-                    <div class="slider">
-                        <div class="bar"></div>
-                    </div>
-                
+                <nav :style="{top: `${headerHeight - .4}px`}" class="w-full sticky z-5 m-0 bg-theme-opacity bg-blur-2">
+                    <q-tabs
+                        class="bg-transparent w-full text-lg text-capitalize border-b"
+                        active-class="text-heading"
+                    >
+                        <q-route-tab class="text-capitalize bg-transparent" active-class="active" :to="{name: 'user-posted', params: {username: username}}" exact replace>
+                            <span>Spills</span>
+                        </q-route-tab>
+                        <q-route-tab class="text-capitalize bg-transparent" active-class="active"  :to="{name: 'user-liked', params: {username: username}}" exact replace>
+                            <span>Likes</span>
+                        </q-route-tab>
+                    </q-tabs>
                 </nav>
                 <div class="w-full overflow-hidden">
                     <RouterView v-slot="{ Component }">
@@ -166,6 +157,19 @@ export default defineComponent({
 
 
 <style scoped lang="scss">
+
+
+.active {
+    span {
+        color: var(--color-heading);
+        font-weight: 900;
+    }
+}
+
+span {
+    color: var(--color-text);
+    font-weight: 900;
+}
 
 
 .user__main {
@@ -207,88 +211,6 @@ a {
     cursor: pointer;
   }
 }
-
-.link {
-  .active {
-    border: 3px solid rgb(253, 137, 137) !important;
-    border-radius: 6px 6px 0 0;
-    width: 50%;
-    margin: auto;
-    bottom: 0;
-  }
-}
-
-
-// *{
-//   margin: 0;
-//   padding: 0;
-// }
-
-.clear{
-  clear: both;
-}
-
-
-.slide-toggle{
-  display: none;
-}
-
-.slidemenu{
-//   font-family: arial, sans-serif;
-  width: 100%;
-  overflow: hidden;
-}
-
-.slidemenu {
-    a {
-        width: 50%;
-        text-align: center;
-        display: block;
-        float: left;
-        color: var(--coolor-ligher);
-        opacity: 1;
-        padding: 10px 0;
-    }
-
-    a:hover{
-        cursor: pointer;
-        color: var(--coolor-heading);
-    }
-}
-
-.slider {
-    width: 100%;
-    height: 5px;
-    display: block;
-    background: var(--color-border);
-    // margin-top: 10px;
-    border-radius: 5px;
-
-    .bar{
-        width: 50%;
-        height: 5px;
-        background: var(--color-theme);
-        border-radius: 5px;
-    }
-}
-
-/*Animations*/
-.slidemenu a, .slider .bar {
-  transition: all .15s linear;
-  -webkit-transition: all .15s linear;
-  -moz-transition: all .15s linear;
-}
-
-/*Toggle*/
-
-.slidemenu .slide-toggle:checked + a{
-  opacity: 1;
-}
-
-
-
-.slidemenu #slide-item-1:checked ~ .slider .bar{ margin-left: 0; }
-.slidemenu #slide-item-2:checked ~ .slider .bar{ margin-left: 50%; }
 
 
 </style>

@@ -70,6 +70,7 @@ import SpillIcon from '@/icons/i-spill.vue';
 import CommentIcon from '@/icons/i-comment.vue';
 import EmptyFolder from '@/icons/i-folder.vue';
 import RegisterIcon from '@/icons/i-register.vue';
+import MentionIcon from '@/icons/i-mention.vue';
 
 
 
@@ -104,6 +105,7 @@ app.component('i-upload-img', UploadImage);
 app.component('i-upload-vid', UploadVideo);
 app.component('i-comment', CommentIcon);
 app.component('i-folder', EmptyFolder);
+app.component('i-mention', MentionIcon);
 
 // components
 app.component('circular-progress', CircularProgress);

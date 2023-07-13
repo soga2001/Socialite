@@ -139,20 +139,23 @@ export default defineComponent({
                       </div>
                       <!-- <i-explore class="show" size="2rem" :fill="$route.fullPath == '/explore' ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == '/explore' ? 'none' : 'var(--color-heading)'" /> -->
                   </RouterLink>
-                  <RouterLink v-if="$store.state.authenticated" to="/notifications" class="nav__link" active-class="active">
-                      <q-item class="hide">
+                  <RouterLink v-if="$store.state.authenticated" to="/notifications" class="nav__link relative" active-class="active">
+                      <q-item class="hide relative">
                         <q-item-section avatar>
                             <!-- <q-icon class="icon" :name="$route.fullPath == '/notifications' ? 'notifications' : 'o_notifications'" /> -->
-                            <i-notif size="2rem" :fill="$route.fullPath == '/notifications' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                            <i-notif size="2rem" :fill="$route.matched[0].name == `notifications` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                         </q-item-section>
 
-                        <q-item-section class="bold">
+                        <q-item-section class="bold relative">
                             Notifications
                         </q-item-section>
+                        <q-badge class="bg-web-theme" rounded floating />
                       </q-item>
-                      <div class="show p-2">
+                      <div class="show relative">
                         <i-notif class="show" size="2rem" :fill="$route.fullPath == '/notifications' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                        <q-badge class="bg-web-theme" rounded floating />
                       </div>
+
                   </RouterLink>
 
 
@@ -271,7 +274,7 @@ export default defineComponent({
 
                 <div class="rest__nav">
                     <theme-toggle/>
-                    <div class="dropdown-btn">
+                    <div class="dropdown-btn flex w-full justify-center">
                         <q-btn no-caps dense rounded flat class="dropdown" v-if="$store.state.authenticated">
                           <div class="hide item">
                             <Item dense avatarSize="3rem">
@@ -291,17 +294,17 @@ export default defineComponent({
                             </Item>
                           </div>
 
-                        <div class="show item">
-                          <Item :border="false" dense >
+                        <div class="show item p-0 m-0">
+                          <Item :border="false" dense avatarSize="3rem" >
                               <template #avatar>
-                              <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
-                              <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="w-full h-full" />
+                                <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
+                                <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="w-full h-full" />
                               </template>
                           </Item>
                         </div>
                         
-                        <q-menu fit square self="top left" anchor="bottom left">
-                            <q-list class="dropdown__main" dense>
+                        <q-menu fit square anchor="bottom left">
+                            <q-list class="bg-theme border" dense>
                             <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
                                 <q-item-section avatar>
                                   <q-avatar icon="logout" />
@@ -340,7 +343,6 @@ header {
   height: 100dvh;
   width: 100%;
   display: flex;
-  width: 100%;  
   justify-content: center;
   padding: 0 16px;
   background-color: transparent;
@@ -348,28 +350,11 @@ header {
   
 }
 
-.topNav {
-  padding: 0 10px 0 10px ;
-  width: 100%;
-  background-color: var(--color-background);
-  margin: 0;
-  z-index: 0;
-  display: inline-flex;
-}
-
-
-.dropdown-btn {
-  padding: 0;
-  width: 100%;
-}
 
   
 
 .item {
   height: fit-content;
-}
-.item img {
-  width: 3rem;
 }
 
 .logout {
@@ -467,21 +452,10 @@ a {
   font-weight: 900;
 } */
 
-.dropdown-btn {
-  width: 100%;
-  /* border-radius: 30px; */
-  display: flex;
-  justify-content: center;
-}
-
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
 
 .dropdown__main {
   background-color: var(--color-background-mute);
-  color: var(--text-heading);
+  /* color: var(--text-heading); */
 }
 
 .avatar {
@@ -509,8 +483,7 @@ a {
   }
 
   .nav {
-    justify-content: center;
-    
+    padding: 0;
   }
 
   .item {

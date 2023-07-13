@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'comments.apps.CommentsConfig',
     'likes.apps.LikesConfig',
     'postviews.apps.PostviewsConfig',
+    'notification.apps.NotificationConfig',
     'django.contrib.postgres',
 ]
 
@@ -96,6 +97,8 @@ CORS_ALLOW_METHODS = [
     "POST",
     "PUT",
 ]
+
+NOTIFICATIONS_NOTIFICATION_MODEL = 'notification.Notification'
 
 
 ROOT_URLCONF = 'backend.urls'

@@ -12,10 +12,18 @@
 
   --vt-c-black: #000000;
   /* --vt-c-green: #089e6a; */
-  --vt-c-orange: rgb(253, 137, 137);
-  --vt-c-background-orange: rgb(255, 115, 115);
-  --vt-c-orange-hover: rgb(255, 115, 115, .7);
-  --vt-c-orange-hover-ligher: rgb(255, 115, 115, .4);
+  --vt-c-orange: rgb(253, 134, 134);
+  --vt-c-background-orange: rgba(255, 115, 115);
+  --vt-c-orange-hover: rgba(255, 115, 115, .7);
+  --vt-c-orange-hover-lighter: rgba(255, 115, 115, .4);
+  --vt-c-orange-extreme-light: rgba(255,115,115,.1);
+
+  /* --vt-c-green: rgb(28, 179, 126);
+  --vt-c-background-green: rgb(28, 179, 126);
+  --vt-c-green-hover: rgba(28, 179, 126 .7);
+  --vt-c-green-hover-ligher: rgba(28, 179, 126 .4); */
+
+
 
   --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
   --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
@@ -51,11 +59,22 @@
   --color-lighter: var(--vt-c-text-dark-3);
 
   --color-theme: var(--vt-c-orange);
+  --color-theme-soft: var(--vt-c-orange-hover);
+  --color-theme-mute: var(--vt-c-orange-hover-lighter);
+  --color-theme-opacity: var(--vt-c-orange-extreme-light);
+
 
   --color-button: var(--vt-c-orange);
   --color-button-background: var(--vt-c-background-orange);
   --color-button-hover: var(--vt-c-orange-hover);
   --color-button-hover-ligher: var(--vt-c-orange-hover-ligher);
+
+  /* --color-theme: var(--vt-c-green);
+  --color-button: var(--vt-c-green);
+  --color-button-background: var(--vt-c-background-green);
+  --color-button-hover: var(--vt-c-green-hover);
+  --color-button-hover-ligher: var(--vt-c-green-hover-ligher); */
+
 
   --color-switch: var(--vt-c-black);
   --color-switch-slider: var(--vt-c-white);
@@ -77,11 +96,21 @@
   --color-lighter: var(--vt-c-text-light-3);
 
   --color-theme: var(--vt-c-orange);
+  --color-theme-soft: var(--vt-c-orange-hover);
+  --color-theme-mute: var(--vt-c-orange-hover-lighter);
+  --color-theme-opacity: var(--vt-c-orange-hover-lighter);
 
   --color-button: var(--vt-c-orange);
   --color-button-background: var(--vt-c-background-orange);
   --color-button-hover: var(--vt-c-orange-hover);
   --color-button-hover-ligher: var(--vt-c-orange-hover-ligher);
+
+  /* --color-theme: var(--vt-c-green);
+  --color-button: var(--vt-c-green);
+  --color-button-background: var(--vt-c-background-green);
+  --color-button-hover: var(--vt-c-green-hover);
+  --color-button-hover-ligher: var(--vt-c-green-hover-ligher); */
+
 
   --color-switch: var(--vt-c-white);
   --color-switch-slider: var(--vt-c-black);

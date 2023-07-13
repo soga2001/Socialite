@@ -1174,6 +1174,10 @@
     color: var(--color-lighter) !important;
 }
 
+.text-theme {
+    color: var(--color-theme) !important;
+}
+
 .no-decor {
     text-decoration: none !important;
 }
@@ -2548,7 +2552,15 @@
 }
 
 .bg-web-theme {
-    color: var(--color-theme);
+    background-color: var(--color-theme) !important;
+}
+
+.bg-web-theme-soft {
+    background-color: var(--color-theme-soft) !important;
+}
+
+.bg-web-theme-mute {
+    background-color: var(--color-theme-opacity) !important;
 }
 
 .bg-hover:hover {

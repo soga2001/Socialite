@@ -35,6 +35,25 @@ const router: Router = createRouter({
       component: () => import('../views/Explore.vue'),
     },
     {
+      path: '/notifications',
+      name: 'notifications',
+      component: () => import('../views/Notifications.vue'),
+      children : [
+        {
+          path: '',
+          alias: '*',
+          name: 'all-notif',
+          component: () => import('../components/Notifications/All.vue')
+        },
+        {
+          path: 'mentions',
+          alias: 'mentions/*',
+          name: 'mentions',
+          component: () => import('../components/Notifications/Mentions.vue'),
+        },
+      ],
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('../views/Login.vue'),

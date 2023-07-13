@@ -47,7 +47,7 @@ export default defineComponent({
     async loadUser() {
       await get_user_from_cookie()
       setTimeout(() => {
-        this.loading = false
+        this.$store.commit('setLoading', false)
       }, 3000)
       // this.loading = false
     }

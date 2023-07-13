@@ -141,8 +141,8 @@ export default defineComponent({
     <div id="main-div" class="h-full w-full relative">
       <div :style="{paddingBottom: `${bottomNavHeight + topNavHeight}px`}"  class="border-l border-r">
         <RouterView v-slot="{Component}" >
-          <KeepAlive :max="4" :include="['home', 'search', 'explore', 'user-profile', 'view-spill']" >
-            <component :is="Component" :key="$route.matched[0].name !== 'user-profile' ? $route.fullPath : null"  :height="height" :scrollPosition="scrollPosition" />
+          <KeepAlive :max="5" :include="['home', 'search', 'explore', 'user-profile', 'view-spill', 'notification']" >
+            <component :is="Component" :key="!['user-profile', 'notifications'].includes(($route.matched[0].name) as string) ? $route.fullPath : null"  :height="height" :scrollPosition="scrollPosition" />
           </KeepAlive>
         </RouterView>
       </div>

@@ -41,7 +41,7 @@ export default defineComponent({
 <template>
     <nav>
         <div class="bottomNav">
-        <slot name="bottomNav">
+        <!-- <slot name="bottomNav">
           <RouterLink to="/home" class="nav__link" active-class="active" v-if="$store.state.authenticated">
             <i-home size="2rem" :fill="$route.fullPath == `/home` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'"/>
           </RouterLink>
@@ -49,10 +49,6 @@ export default defineComponent({
           <RouterLink to="/explore" class="nav__link" active-class="active">
             <i-explore size="2rem" :fill="$route.fullPath == `/explore` ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == `/explore` ? 'none' : 'var(--color-heading)'"/>
           </RouterLink>
-          
-          <!-- <RouterLink to="/search" class="nav__link" active-class="active">
-            <i-search size="2rem" :fill="$route.fullPath == `/search` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)"/>
-          </RouterLink> -->
 
           <RouterLink to="/notifications" class="nav__link" active-class="active">
             <i-notif size="2rem" :fill="$route.fullPath == `/notifications` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
@@ -60,6 +56,7 @@ export default defineComponent({
 
             <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
               <i-settings size="2rem" :fill="$route.fullPath == `/settings` ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == `/settings` ? 'none' : 'var(--color-heading)'" />
+              <q-badge color="red" floating>10+</q-badge>
             </RouterLink>
 
             <RouterLink to="/login" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
@@ -69,7 +66,30 @@ export default defineComponent({
             <RouterLink to="/register" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
               <i-register size="2.3rem" :fill="$route.fullPath == `/login` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
             </RouterLink>
-        </slot>
+        </slot> -->
+        <q-tabs
+          no-caps
+          class="bg-theme w-full"
+          active-class="bg-theme-mute"
+          dense
+          :breakpoint="0"
+          narrow-indicator
+          switch-indicator
+        >
+          <q-route-tab  v-if="$store.state.authenticated" to="/home" exact replace>
+            <i-home size="2rem" :fill="$route.fullPath == `/home` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'"/>
+          </q-route-tab>
+          <q-route-tab to="/explore" exact replace>
+            <i-explore size="2rem" :fill="$route.fullPath == `/explore` ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == `/explore` ? 'none' : 'var(--color-heading)'"/>
+          </q-route-tab>
+          <q-route-tab class="relative" active-class="text-heading" to="/notifications" replace>
+            <i-notif size="2rem" :fill="$route.matched[0].name == `notifications` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
+            <q-badge class="bg-web-theme" rounded floating />
+          </q-route-tab>
+          <q-route-tab to="/settings" exact replace>
+            <i-settings size="2rem" :fill="$route.fullPath == `/settings` ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == `/settings` ? 'none' : 'var(--color-heading)'" />
+          </q-route-tab> 
+        </q-tabs>
       </div>
     </nav>
 </template>
@@ -231,18 +251,18 @@ a {
 }
 
 
-.nav__link.active {
+.active {
   color: var(--color-heading) !important;
   font-weight: 900;
   /* background-color: var(--color-background-mute); */
   border-radius: 30px;
 }
 
-.nav__link.active .bold {
+.active .bold {
   font-weight: 900;
 }
 
-.nav__link.exact-active {
+.exact-active {
   color: var(--color-heading) !important;
   /* background-color: var(--color-background-mute); */
   border-radius: 30px;

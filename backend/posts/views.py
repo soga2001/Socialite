@@ -7,6 +7,9 @@ from rest_framework.views import APIView
 # From Django
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Count
+from notification.models import Notification
+
+from notifications.signals import notify
 
 
 # From rest_framework
@@ -27,15 +30,14 @@ import json
 channel_layer = get_channel_layer()
 custom = CustomAuthentication()
 
-def replace(val):
+def replace(val, user_list: list):
     u = re.sub(r'@', '', val.group())
     try:
         user = User.objects.get(username=u)
         if user:
-            # result = r'<RouterLink :to="{name: `user-profile`, params: {username: {0}}}" :exact="true">@{0}</RouterLink>'.format(u)
             result = '<RouterLink :to="{name: `user-profile`, params: {username: \'' + u + '\'}}" :exact="true">@' + u + '</RouterLink>'
+            user_list.append(user)
             return result
-            # return r'<a href="/{0}/">@{0}</a>'.format(u)
         else:
             return val
     except User.DoesNotExist:
@@ -56,13 +58,22 @@ class Post_Content(APIView):
             caption = escape(caption)
             regex = r'@(\w+)'
             # caption = re.sub(r'@(\w+)', r'<a href="/users/\1/">@\1</a>', caption)
-            caption = re.sub(regex, replace, caption)
+            user_list = []
+            caption = re.sub(regex, lambda val: replace(val, user_list), caption)
+            user = User.objects.get(pk=request.user.id)
             post = Post(
-                user = request.user,
+                user = user,
                 img_url = image,
                 caption=caption
             )
             post.save()
+            if(user_list):
+                link = "{}/spill/{}".format(user.username, post.id)
+                notifications = notify.send(user, recipient=user_list, verb='mention', description='{} {} mentioned you on their post.'.format(user.first_name, user.last_name), link=link)
+                for notification in notifications[0][1]:
+                    notification.link = link
+                    notification.save()
+
             group_name = f'user_{post.user.username}'
             async_to_sync(channel_layer.group_send)(group_name, {
                 "type": "user_update",
@@ -71,7 +82,8 @@ class Post_Content(APIView):
             })
             # return JsonResponse({"success": True, "post": PostSerializer(post).data}, safe=False)
             return JsonResponse({"error": False}, safe=False)
-        except:
+        except Exception as e:
+            print(e)
             return JsonResponse({"error": True}, safe=False)
 
     def delete(self, request):
