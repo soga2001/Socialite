@@ -147,7 +147,7 @@ export default defineComponent({
     },
     async mounted() {
         await this.$nextTick()
-        const observer = createIntersectObserver(this.$el, this.viewed, {threshold: .75})
+        const observer = createIntersectObserver(this.$el, this.viewed, {threshold: 1})
     },
     
     watch: {

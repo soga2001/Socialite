@@ -71,7 +71,6 @@ export default defineComponent({
           no-caps
           class="bg-theme w-full"
           active-class="bg-theme-mute"
-          dense
           :breakpoint="0"
           narrow-indicator
           switch-indicator

@@ -1148,6 +1148,16 @@
     font-size: 6rem !important;
 }
 
+/* text shadow */
+.text-shadow {
+    text-shadow: -1px 1px 0 var(--color-background),
+                          1px 1px 0 var(--color-background),
+                         1px -1px 0 var(--color-background),
+                        -1px -1px 0 var(--color-background) !important;
+}
+
+
+
 /* text type */
 .text-uppercase {
     text-transform: uppercase !important;
@@ -1605,6 +1615,14 @@
 
 .bg-gray-op {
     background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.bg-blur-xs {
+    backdrop-filter: blur(1px);
+}
+
+.bg-blur-half {
+    backdrop-filter: blur(5px);
 }
 
 .bg-blur-1 {
@@ -2694,3 +2712,41 @@
     -webkit-box-shadow: 0 0 5px var(--color-text);
     box-shadow: 0 0 5px var(--color-text);
 }
+
+
+/* aspect ratios */
+
+.aspect-ratio-1-1 {
+    aspect-ratio: 1;
+}
+
+.aspect-ratio-4-3 {
+    aspect-ratio: 4/3;
+}
+
+.aspect-ratio-3-1 {
+    aspect-ratio: 3/1;
+}
+
+.aspect-ratio-16-9 {
+    aspect-ratio: 16/9;
+}
+
+.aspect-ratio-21-9 {
+    aspect-ratio: 21/9;
+}
+
+/* scroll bar */
+/* 
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: default;
+}
+
+::-webkit-scrollbar-thumb {
+    background: default;
+} */
+

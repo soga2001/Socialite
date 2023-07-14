@@ -135,13 +135,13 @@ export default defineComponent({
       <Sidebar/>
     </div>
 
-    <div ref="topNav" :hidden="hideNavBar" v-if="isMobile()" class="sticky top-0 w-full z-5 border-b bg-theme-opacity overflow-visible">
+    <div ref="topNav" :hidden="hideNavBar" v-if="isMobile()" class="sticky top-0 w-full z-20 border-b bg-theme-opacity overflow-visible">
       <TopNav/>
     </div>
     <div id="main-div" class="h-full w-full relative">
       <div :style="{paddingBottom: `${bottomNavHeight + topNavHeight}px`}"  class="border-l border-r">
         <RouterView v-slot="{Component}" >
-          <KeepAlive :max="5" :include="['home', 'search', 'explore', 'user-profile', 'view-spill', 'notification']" >
+          <KeepAlive :max="6" :include="['home', 'search', 'explore', 'user-profile', 'view-spill', 'notifications']" >
             <component :is="Component" :key="!['user-profile', 'notifications'].includes(($route.matched[0].name) as string) ? $route.fullPath : null"  :height="height" :scrollPosition="scrollPosition" />
           </KeepAlive>
         </RouterView>
@@ -157,11 +157,11 @@ export default defineComponent({
         </div>
       </div> -->
     </div>
-    <nav v-if="$q.screen.lt.sm && !hideNavBar" ref="bottomBar" class="sticky bottom-0 w-full z-2">
+    <nav v-if="$q.screen.lt.sm && !hideNavBar" ref="bottomBar" class="sticky bottom-0 w-full z-5">
       <BottomNav/>
     </nav>
 
-    <div ref="spillButton" class="fixed box-shadow right-1 bg-theme rounded-lg" :style="{bottom: `${bottomNavHeight}px`}" v-if="isMobile() && $route.name !== 'view-spill'">
+    <div ref="spillButton" class="fixed z-5 box-shadow right-1 bg-theme rounded-lg" :style="{bottom: `${bottomNavHeight}px`}" v-if="isMobile() && $route.name !== 'view-spill'">
       <q-btn size="16px" class="show btn-themed text-heading" round flat icon="add" @click="spill = true"/>
     </div>
 

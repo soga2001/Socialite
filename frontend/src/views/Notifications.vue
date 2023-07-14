@@ -5,7 +5,7 @@ import type { Notifications } from '@/assets/interfaces';
 
 import TimeagoVue from '@/components/Timeago.vue';
 export default defineComponent({
-  name: 'notification',
+  name: 'notifications',
   data() {
     return {
     };
@@ -25,7 +25,7 @@ export default defineComponent({
 
 <template>
   <div class="w-full">
-    <header class="sticky z-4 top-0 border-b bg-blur-2">
+    <header class="sticky z-5 top-0 border-b bg-blur-2">
       <div v-if="!$q.screen.lt.sm">
         <Item>
           <template #title>

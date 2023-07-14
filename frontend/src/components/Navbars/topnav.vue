@@ -83,7 +83,7 @@ export default defineComponent({
 <template>
     <nav class="overflow-visible">
         <div class="topNav overflow-visible p-2 bg-transparent" v-if="$store.state.authenticated">
-          <div class="dropdown-btn overflow-visible w-full bg-transparent">
+          <div class="dropdown-btn z-1000 overflow-visible w-full bg-transparent">
             <Item align-items="center" dense v-if="$store.state.authenticated" class="w-full overflow-visible bg-transparent">
                 <template #avatar>
                   <div @click="openNav">
@@ -107,8 +107,7 @@ export default defineComponent({
                 </template>
             </Item>
               <div class="brand text-2xl weight-900 text-heading" v-if="!['explore', 'search', 'all-notif', 'mentions'].includes(($route.name)?.toString() || ' ')">
-                {{ $route.name }}
-                <!-- Socialite -->
+                Socialite
               </div>
           </div>
 

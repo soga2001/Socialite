@@ -7,6 +7,7 @@ import Timeago from '../Timeago.vue';
 import { useCookies } from 'vue3-cookies';
 import Item from '../Item.vue';
 import Notify from '../Notify.vue';
+import createIntersectObserver from '@/assets/intersectionObserver'
 
 export default defineComponent({
     props: {
@@ -248,12 +249,24 @@ export default defineComponent({
             this.editProfile = false
 
         },
+
+        async notIntersecting(e: IntersectionObserverEntry) {
+            // emit that it isn't intersecting
+            if(e.isIntersecting) {
+                this.$emit('update:intersecting', true)
+            }
+            else {
+                this.$emit('update:intersecting', false)
+            }
+        }
     },
     created() {
         this.if_followed();
         
     },
-    mounted() {
+    async mounted() {
+        await this.$nextTick()
+        const observer = createIntersectObserver(this.$el, this.notIntersecting, {threshold: .66}, false)
     },
     computed: {
         theme() {

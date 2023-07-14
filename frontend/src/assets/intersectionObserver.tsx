@@ -1,20 +1,28 @@
 type IntersectionCallback = (entry: IntersectionObserverEntry) => void;
+type NotIntersectingCallback = (entry: IntersectionObserverEntry) => void;
 
 // Create a reusable Intersection Observer function
 function createIntersectionObserver(
   target: Element,
   callback: IntersectionCallback,
-  options?: IntersectionObserverInit
+  options?: IntersectionObserverInit,
+  observeOnce: boolean = true
 ): IntersectionObserver {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
         if (entry.isIntersecting) {
-            // console.log(entry.intersectionRatio)
-            // if (entry.intersectionRatio >= 0.75) {
-                
-            // }
+          if(observeOnce){
             callback(entry);
             observer.disconnect()
+          }
+          else{
+            callback(entry);
+          }
+        }
+        else{
+          if(!observeOnce) {
+            callback(entry);
+          }
         }
     });
   }, options);
