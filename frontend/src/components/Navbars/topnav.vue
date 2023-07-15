@@ -81,10 +81,10 @@ export default defineComponent({
 </script>
 
 <template>
-    <nav class="overflow-visible">
-        <div class="topNav overflow-visible p-2 bg-transparent" v-if="$store.state.authenticated">
-          <div class="dropdown-btn z-1000 overflow-visible w-full bg-transparent">
-            <Item align-items="center" dense v-if="$store.state.authenticated" class="w-full overflow-visible bg-transparent">
+    <nav  class="bg-theme-opacity">
+        <div class="topNav p-2 bg-transparent" v-if="$store.state.authenticated">
+          <div class="dropdown-btn z-1000 w-full bg-transparent">
+            <Item align-items="center" dense v-if="$store.state.authenticated" class="w-full bg-transparent">
                 <template #avatar>
                   <div @click="openNav">
                     <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
@@ -111,10 +111,6 @@ export default defineComponent({
               </div>
           </div>
 
-          <!-- <div className="brand">
-              BB
-            </div> -->
-
           <div class="overlay bg-blur-1" v-if="navSlideIn" @click="closeNav"></div>
 
           <div class="slide-in-nav list" :style="slideIn">
@@ -128,7 +124,7 @@ export default defineComponent({
                 </template>
               </Item>
               <div>
-                <Item class="item" :vert-icon-center="true">
+                <Item :vert-icon-center="true">
                   <template #avatar>
                     <div class="pointer" @click="() => {$router.push({name: 'user-profile', params: {username: $store.state.user.username}}), closeNav()}">
                       <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
@@ -154,12 +150,10 @@ export default defineComponent({
                 <span class="text-body btn"><span class="text-heading weight-900">{{ $store.state.user.total_following }} </span> Following</span>
               </div>
                     
-              <!-- <hr/> -->
 
               <RouterLink @click="closeNav" :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link w-full rounded-none" active-class="active" exact-active-class="exact-active">
                 <q-item>
                   <q-item-section avatar>
-                      <!-- <q-icon class="icon" :name="$route.fullPath == `/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" /> -->
                       <i-profile size="2rem" :fill="$route.path.startsWith(`/${$store.state.user.username}`) ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                   </q-item-section>
 
@@ -182,18 +176,22 @@ export default defineComponent({
           </div>
       </div>
     </nav>
+
+    <nav class="bg-transparent">
+      <div>
+
+      </div>
+    </nav>
 </template>
 
 
 <style scoped>
 @import '@/assets/base.css';
 
-
-.topNav {
-  width: 100%;
-  margin: 0;
-  z-index: 0;
-}
+/* .nav {
+  transition-delay: .25s;
+  transition: backdrop-filter .25s linear;
+} */
 
 
 .topNav .dropdown-btn img {
@@ -220,7 +218,7 @@ export default defineComponent({
   background-color: var(--color-background);
   border-right: 3px solid var(--color-border);
   overflow-x: hidden;
-  transition: 0.5s;
+  transition: 0.25s;
   /* padding-top: .1rem; */
 
   display: grid;

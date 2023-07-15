@@ -7,6 +7,7 @@ import Search from './Search.vue';
 import UserPosted from '../components/UserProfile/UserPosted.vue';
 import UserLiked from '../components/UserProfile/UserLiked.vue';
 import Item from '@/components/Item.vue';
+import type { RouteRecordName } from 'vue-router';
 
 export default defineComponent({
     name: 'user-profile',
@@ -16,7 +17,7 @@ export default defineComponent({
             username: this.$route.params.username,
             user: {} as User,
             avatar: '',
-            tab: ref('User_Posted'),
+            tab: this.$route.name as string,
             loading: true,
             docState: 'saved',
             websocket: new WebSocket(`wss://localhost:8000/ws/user_consumer/${this.$route.params.username}/`),
@@ -71,6 +72,8 @@ export default defineComponent({
             this.userInfo();
             this.websocketOpen()
         }
+        console.log(this.$route.name)
+        this.tab = this.$route.name as string
     },
     components: { UserProfile, Search, UserPosted, UserLiked, Item },
     watch: {
@@ -137,15 +140,17 @@ export default defineComponent({
 
         <div>
             <div>
-                <nav :style="{top: `${headerHeight - .4}px`}" class="w-full sticky z-5 m-0 bg-transparent">
+                <nav :style="{top: `${headerHeight - .4}px`}" class="w-full sticky z-5 m-0">
                     <q-tabs
-                        class="bg-theme-opacity bg-blur-half w-full text-lg text-capitalize border-b"
+                        class="bg-theme bg-blur-half w-full text-lg text-capitalize inset-shadow-down"
                         active-class="text-heading"
+                        v-model="tab"
+                    
                     >
-                        <q-route-tab class="text-capitalize text-body bg-transparent" active-class="active" :to="{name: 'user-posted', params: {username: username}}" exact replace>
+                        <q-route-tab name="user-posted" class="text-capitalize text-body bg-transparent" active-class="active" :to="{name: 'user-posted', params: {username: username}}" exact replace>
                             <span class="text-shadow ">Spills</span>
                         </q-route-tab>
-                        <q-route-tab class="text-capitalize text-body bg-transparent" active-class="active"  :to="{name: 'user-liked', params: {username: username}}" exact replace>
+                        <q-route-tab name="user-liked" class="text-capitalize text-body bg-transparent" active-class="active"  :to="{name: 'user-liked', params: {username: username}}" exact replace>
                             <span class="text-shadow ">Likes</span>
                         </q-route-tab>
                     </q-tabs>

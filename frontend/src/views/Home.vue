@@ -23,11 +23,11 @@ export default defineComponent({
   props: {
     scrollPosition: {
       type: Number,
-      required: true,
+      default: 0,
     },
     height: {
       type: Number,
-      required: true,
+      default: 0,
     }
   },
   setup() {
@@ -101,7 +101,7 @@ export default defineComponent({
   <div class="home" id="home">
     <div class="home__center">
       <div class="">
-        <header class="border-b bg-theme-opacity" v-if="!$q.screen.lt.sm">
+        <header class="border-b bg-theme-opacity bg-blur-1" v-if="!$q.screen.lt.sm">
           Home
         </header>
         <div class="border-b" v-if="$store.state.authenticated && !$q.screen.lt.sm">

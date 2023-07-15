@@ -65,6 +65,7 @@ export default defineComponent({
     mounted() {
     },
     activated() {
+        this.websocketMessage()
     },
     deactivated() {
     },

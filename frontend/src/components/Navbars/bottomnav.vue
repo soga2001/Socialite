@@ -40,39 +40,12 @@ export default defineComponent({
 
 <template>
     <nav>
-        <div class="bottomNav">
-        <!-- <slot name="bottomNav">
-          <RouterLink to="/home" class="nav__link" active-class="active" v-if="$store.state.authenticated">
-            <i-home size="2rem" :fill="$route.fullPath == `/home` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'"/>
-          </RouterLink>
-
-          <RouterLink to="/explore" class="nav__link" active-class="active">
-            <i-explore size="2rem" :fill="$route.fullPath == `/explore` ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == `/explore` ? 'none' : 'var(--color-heading)'"/>
-          </RouterLink>
-
-          <RouterLink to="/notifications" class="nav__link" active-class="active">
-            <i-notif size="2rem" :fill="$route.fullPath == `/notifications` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
-          </RouterLink>
-
-            <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
-              <i-settings size="2rem" :fill="$route.fullPath == `/settings` ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == `/settings` ? 'none' : 'var(--color-heading)'" />
-              <q-badge color="red" floating>10+</q-badge>
-            </RouterLink>
-
-            <RouterLink to="/login" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
-              <i-login size="3rem" :fill="$route.fullPath == `/login` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
-            </RouterLink>
-
-            <RouterLink to="/register" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
-              <i-register size="2.3rem" :fill="$route.fullPath == `/login` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
-            </RouterLink>
-        </slot> -->
+        <div class="bottomNav bg-theme-opacity bg-blur-1">
         <q-tabs
           no-caps
-          class="bg-theme w-full"
-          active-class="bg-theme-mute"
+          class="bg-transparent w-full"
+          active-class="bg-transparent"
           :breakpoint="0"
-          narrow-indicator
           switch-indicator
         >
           <q-route-tab  v-if="$store.state.authenticated" to="/home" exact replace>
@@ -109,25 +82,10 @@ export default defineComponent({
   
 }
 
-.topNav {
-  padding: 0 10px 0 10px ;
-  width: 100%;
-  background-color: var(--color-background);
-  margin: 0;
-  z-index: 0;
-  display: inline-flex;
-}
 
-
-.topNav .dropdown-btn {
-  padding: 0;
-  width: 3rem;
-}
-
-  
 .bottomNav {
   width: 100%;
-  background-color: var(--color-background);
+  /* background-color: var(--color-background); */
   border-top: 1px solid var(--color-text);
   z-index: 0;
   display: inline-flex;

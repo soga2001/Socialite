@@ -67,12 +67,22 @@ class Post_Content(APIView):
                 caption=caption
             )
             post.save()
-            if(user_list):
-                link = "{}/spill/{}".format(user.username, post.id)
-                notifications = notify.send(user, recipient=user_list, verb='mention', description='{} {} mentioned you on their post.'.format(user.first_name, user.last_name), link=link)
-                for notification in notifications[0][1]:
-                    notification.link = link
-                    notification.save()
+            link = "{}/spill/{}".format(user.username, post.id)
+
+            for u in user_list:
+                if(u.username != user.username):
+                    notif = Notification(
+                        actor=user,
+                        recipient=user_list,
+                        verb='follow',
+                        description='Followed you.',
+                        link=link
+                    )
+                    notif.save()
+                # notifications = notify.send(user, recipient=user_list, verb='mention', description='{} {} mentioned you on their post.'.format(user.first_name, user.last_name), link=link, save_fields=['link'])
+                # for notification in notifications[0][1]:
+                #     notification.link = link
+                #     notification.save()
 
             group_name = f'user_{post.user.username}'
             async_to_sync(channel_layer.group_send)(group_name, {

@@ -152,10 +152,9 @@ export default defineComponent({
                         <q-badge class="bg-web-theme" rounded floating />
                       </q-item>
                       <div class="show relative">
-                        <i-notif class="show" size="2rem" :fill="$route.fullPath == '/notifications' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                        <i-notif class="show" size="2rem" :fill="$route.matched[0].name == `notifications` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                         <q-badge class="bg-web-theme" rounded floating />
                       </div>
-
                   </RouterLink>
 
 
@@ -273,7 +272,23 @@ export default defineComponent({
                 </div>
 
                 <div class="rest__nav">
-                    <theme-toggle/>
+                    <q-item>
+                      <q-item-section avatar top>
+                        <!-- <q-icon name="account_tree" color="black" size="34px" /> -->
+                        <theme-toggle/>
+                      </q-item-section>
+
+                      <q-item-section class="hide">
+                        <q-item-label lines="1">
+                          <span class="text-bold text-heading text-xl">Theme</span>
+      
+                        </q-item-label>
+                        <q-item-label caption lines="1">
+                          <span class="text-body weight-800">{{ $store.state.dark ? 'Dark' : 'Light' }}</span>
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+
                     <div class="dropdown-btn flex w-full justify-center">
                         <q-btn no-caps dense rounded flat class="dropdown" v-if="$store.state.authenticated">
                           <div class="hide item">

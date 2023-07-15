@@ -8,25 +8,41 @@ export default defineComponent({
   name: 'notifications',
   data() {
     return {
+      scrollPos: this.scrollPosition || 0,
+      scrollHeight: this.scrollHeight || 0,
     };
+  },
+  props: {
+    scrollPosition: {
+      type: Number,
+      default: 0,
+    },
+    height: {
+      type: Number,
+      default: 0,
+    },
   },
   methods: {
 
   },
   created() {
-    console.log('here')
+    console.log(this.$parent?.$parent?.$parent?.$route.name)
+
   },
   mounted() {
+    console.log((this.$refs.header as HTMLDivElement)?.offsetLeft)
+    console.log((this.$refs.router as HTMLDivElement)?.offsetLeft)
   },
   watch: {
+
   },
 });
 </script>
 
 <template>
-  <div class="w-full">
-    <header class="sticky z-5 top-0 border-b bg-blur-2">
-      <div v-if="!$q.screen.lt.sm">
+  <div class="w-full relative">
+    <header ref="header" class="sticky top-0 w-full z-5 border-b bg-blur-1">
+      <div v-if="!$q.screen.lt.sm" >
         <Item>
           <template #title>
             <span class="text-2xl weight-900">Notifications</span>
@@ -38,6 +54,7 @@ export default defineComponent({
       </div>
       <q-tabs
           class="bg-transparent w-full text-lg text-capitalize"
+          ref="tabs"
       >
           <q-route-tab class="text-capitalize" active-class="active" :to="{name: 'all-notif'}" exact replace>
               <span>All</span>
@@ -48,7 +65,8 @@ export default defineComponent({
       </q-tabs>
     </header>
     <div>
-      <div class="w-full overflow-hidden min-h-viewport">
+      <!-- :style="{marginTop: `${($refs.header as HTMLDivElement)?.offsetHeight}px`}" -->
+      <div ref="router" class="w-full overflow-hidden min-h-viewport">
         <RouterView v-slot="{ Component }">
             <KeepAlive :max="2" :include="['all-notif', 'mentions']">
                 <component :is="Component"/>

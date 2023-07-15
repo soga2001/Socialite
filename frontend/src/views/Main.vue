@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue';
-import { useQuasar } from 'quasar';
+import { TouchSwipe, useQuasar } from 'quasar';
 import Sidebar from '@/components/Navbars/sidebar.vue';
 import TopNav from '@/components/Navbars/topnav.vue';
 import BottomNav from '@/components/Navbars/bottomnav.vue';
@@ -22,7 +22,9 @@ export default defineComponent({
         mobile: false,
         spill: false,
         hideNav: false,
-        pages: ['user-profile', 'view-spill']
+        pages: ['user-profile', 'view-spill'],
+        lastScrollPos: 0,
+        hideTopNav: false,
 
       };
   },
@@ -49,18 +51,30 @@ export default defineComponent({
   methods: {
     setData() {
       const element = (document.getElementById("main-div") as HTMLDivElement)
-      if(!this.scrollPos.get(this.$route.name)) {
-        this.scrollPos.set(this.$route.name, element.scrollTop);
-        this.scrollPosition = element.scrollTop
+      if(element) {
+
+        if(!this.scrollPos.get(this.$route.name)) {
+          this.scrollPos.set(this.$route.name, element.scrollTop);
+          this.scrollPosition = element.scrollTop
+        }
+        if(!this.scrollHeight.get(this.$route.name)) {
+          this.scrollHeight.set(this.$route.name, element.scrollHeight - element.clientHeight)
+          this.height = element.scrollHeight - element.clientHeight
+        }
       }
-      if(!this.scrollHeight.get(this.$route.name)) {
-        this.scrollHeight.set(this.$route.name, element.scrollHeight - element.clientHeight)
-        this.height = element.scrollHeight - element.clientHeight
-      }
+      
       
     },
     scroll() {
       const element = (document.getElementById("main-div") as HTMLDivElement);
+      // && element.scrollTop > this.topNavHeight
+      if(this.lastScrollPos < element.scrollTop ) {
+        this.hideTopNav = true
+      } else {
+        this.hideTopNav = false
+      }
+
+      this.lastScrollPos = element.scrollTop
       this.scrollPos.set(this.$route.name, element.scrollTop);
       this.scrollPosition = element.scrollTop
       this.scrollHeight.set(this.$route.name, element.scrollHeight - element.clientHeight)
@@ -70,7 +84,10 @@ export default defineComponent({
     isMobile() {
       this.mobile = this.$q.screen.lt.sm
       return this.$q.screen.lt.sm
-    }
+    },
+    hideTop() {
+
+    },
   },
   components: { Sidebar, TopNav, BottomNav, Unauthenticated },
   watch: {
@@ -106,17 +123,12 @@ export default defineComponent({
         }
     },
     '$route': function() {
-      // console.log((this.scrollPos))
-      // console.log(this.scrollHeight)
-      console.log(this.$route.meta.depth)
-      this.setData()
       this.$nextTick(() => {
+        this.hideTopNav = false;
         const element = document.getElementById("main-div") as HTMLDivElement;
         element.scrollTop = this.scrollPos.get(this.$route.name);
         this.scrollPosition = this.scrollPos.get(this.$route.name);
         this.height = this.scrollHeight.get(this.$route.name)
-        this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 10
-        this.topNavHeight = ((this.$refs.topNav as HTMLDivElement)?.offsetHeight) || 0
       });
     },
     mobile(mobile) {
@@ -124,22 +136,35 @@ export default defineComponent({
         this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 10
         this.topNavHeight = ((this.$refs.topNav as HTMLDivElement)?.offsetHeight) || 0
       })
+    },
+    lastScrollPos(lastScrollPos) {
+      const topNav = (this.$refs.topNav as HTMLDivElement)
+      if(this.hideTopNav) {
+        const element = document.getElementById("main-div") as HTMLDivElement;
+        // topNav.style.top = (this.topNavHeight > this.lastScrollPos) ? `unset` : `0`
+        topNav.style.top = 'unset'
+        topNav.style.marginTop = ((this.topNavHeight > this.lastScrollPos) ? `${-this.lastScrollPos}px` : `${-this.topNavHeight}px`)
+      } else {
+        topNav.style.transition = (this.topNavHeight > this.lastScrollPos ? '' : 'all .4s') ;
+        topNav.style.marginTop = ((this.topNavHeight > this.lastScrollPos && topNav.style.marginTop != '0px') ? `${-this.lastScrollPos}px` : `0`);
+      }
+      
     }
   },
 })
 </script>
 
 <template>
-  <div :class="!isMobile() ? 'main' : 'fixed w-full h-full'">
-    <div v-if="!$q.screen.lt.sm" class="min-h-viewport h-full w-full bg-theme">
+  <div :class="!isMobile() ? 'main' : 'fixed w-full h-viewport'">
+    <div v-if="!$q.screen.lt.sm" class="min-h-viewport h-full w-full">
       <Sidebar/>
     </div>
 
-    <div ref="topNav" :hidden="hideNavBar" v-if="isMobile()" class="sticky top-0 w-full z-20 border-b bg-theme-opacity overflow-visible">
+    <div ref="topNav" v-if="$q.screen.lt.sm && !hideNavBar" id="top-nav" :class="{'border-b': $route.matched[0].name != 'notifications'}" class="sticky w-full bg-transparent z-20">
       <TopNav/>
     </div>
     <div id="main-div" class="h-full w-full relative">
-      <div :style="{paddingBottom: `${bottomNavHeight + topNavHeight}px`}"  class="border-l border-r">
+      <div :style="{marginTop: !hideNav ? `${topNavHeight}` : '0px',paddingBottom: `${bottomNavHeight - 10}px`}"  class="border-l border-r">
         <RouterView v-slot="{Component}" >
           <KeepAlive :max="6" :include="['home', 'search', 'explore', 'user-profile', 'view-spill', 'notifications']" >
             <component :is="Component" :key="!['user-profile', 'notifications'].includes(($route.matched[0].name) as string) ? $route.fullPath : null"  :height="height" :scrollPosition="scrollPosition" />
@@ -161,7 +186,7 @@ export default defineComponent({
       <BottomNav/>
     </nav>
 
-    <div ref="spillButton" class="fixed z-5 box-shadow right-1 bg-theme rounded-lg" :style="{bottom: `${bottomNavHeight}px`}" v-if="isMobile() && $route.name !== 'view-spill'">
+    <div ref="spillButton" class="fixed z-15 box-shadow right-1 bg-theme rounded-lg" :style="{bottom: `${bottomNavHeight}px`}" v-if="isMobile() && $route.name !== 'view-spill'">
       <q-btn size="16px" class="show btn-themed text-heading" round flat icon="add" @click="spill = true"/>
     </div>
 
@@ -209,6 +234,7 @@ export default defineComponent({
   position: fixed;
   height: 100%;
 }
+
 
 .mobile-main {
   overflow: hidden;
