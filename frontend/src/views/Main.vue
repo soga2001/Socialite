@@ -47,16 +47,6 @@ export default defineComponent({
       }
       return false
     },
-    transform(): CSSProperties {
-      const navPos = ((this.topNavHeight > this.lastScrollPos) ? `${-this.lastScrollPos}px` : `${-this.topNavHeight}px`)
-      const element = (this.$refs.mainDiv as HTMLDivElement)
-
-      console.log(navPos, element.scrollTop)
-      return {
-        transform: this.hideTopNav ? `translateY(${navPos})` : 'none',
-        transition: 'transform .3s'
-      } as CSSProperties
-    },
   },
   methods: {
     setData() {
@@ -149,13 +139,18 @@ export default defineComponent({
     lastScrollPos() {
       const topNav = (this.$refs.topNav as HTMLDivElement)
       const navPos = ((this.topNavHeight < this.lastScrollPos) && `${-this.topNavHeight}`)
+
       if(topNav) {
         if(this.hideTopNav) {
           topNav.style.transform = `translate3d(0px, 0px, 0px) translateY(${navPos}px)`;
         } 
         else {
           const elementPos = ((this.topNavHeight > this.lastScrollPos) ? `${this.lastScrollPos}` : 0);
-          topNav.style.transform = `translate3d(0px, 0px, 0px) translateY(-${elementPos}px)`;
+          const visible = topNav.style.transform == `translate3d(0px, 0px, 0px) translateY(0px)`;
+
+          if(!visible) {
+            topNav.style.transform = `translate3d(0px, 0px, 0px) translateY(-${elementPos}px)`;
+          }
         }
       }
       
@@ -170,9 +165,12 @@ export default defineComponent({
       <Sidebar/>
     </div>
 
-    
-
-    <div  ref="mainDiv"  id="main-div" class="w-full sticky">
+    <!-- <Transition name="topNav">
+      <div ref="topNav" v-if="!hideTopNav" id="top-nav" class="w-full top-0 bg-transparent z-20">
+          <TopNav @update:navHeight="topNavHeight = $event"/>
+        </div>
+    </Transition> -->
+    <div  ref="mainDiv"  id="main-div" class="w-full">
       <div>
         <div ref="topNav" v-if="!hideNavBar" id="top-nav" :class="{'border-b': $route.matched[0].name != 'notification'}" class="sticky top-0 w-full h-fit bg-transparent bg-blur-1 z-20">
           <TopNav @update:navHeight="topNavHeight = $event"/>
@@ -224,7 +222,7 @@ export default defineComponent({
 * {
   padding: 0;
   margin: 0;
-  transition: .2s;
+  transition: .1s ease-in-out;
 }
 .main {
   display: grid;
@@ -252,6 +250,10 @@ export default defineComponent({
   width: 100%;
   display: grid;
   grid-template-columns: auto 1fr;
+}
+
+.transform {
+  transform: translateY(0);
 }
 
 

@@ -206,7 +206,6 @@ a {
     font-size: 30px;
     font-weight: bolder;
 
-    display: relative;
     position: -webkit-sticky;
     top: 0px;
     position: sticky;
@@ -219,14 +218,14 @@ a {
     -ms-transition: background .15s ease-in-out;
     transition: background .15s ease-in-out;
 
-    .back {
-        position: absolute;
-        left: 10px;
-        top: 0;
-        bottom: 0;
-        margin: auto;
-        cursor: pointer;
-    }
+    // .back {
+    //     position: absolute;
+    //     left: 10px;
+    //     top: 0;
+    //     bottom: 0;
+    //     margin: auto;
+    //     cursor: pointer;
+    // }
 }
 
 

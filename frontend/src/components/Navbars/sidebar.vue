@@ -76,6 +76,7 @@ export default defineComponent({
       '$route': function() {
 
       },
+      // watch quasar dev's screen size changes in vue3 component ?
     },
     components: { Spills }
 })
@@ -274,7 +275,6 @@ export default defineComponent({
                 <div class="rest__nav">
                     <q-item>
                       <q-item-section avatar top>
-                        <!-- <q-icon name="account_tree" color="black" size="34px" /> -->
                         <theme-toggle/>
                       </q-item-section>
 
@@ -523,9 +523,14 @@ a {
 
 
 /* Reference: https://uiverse.io/alexruix/splendid-liger-23 */
-/* theme */
-/* The switch - the box around the slider */
 
-/* Theme toggle */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
 
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 </style>

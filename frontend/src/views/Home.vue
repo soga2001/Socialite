@@ -101,9 +101,9 @@ export default defineComponent({
   <div class="home" id="home">
     <div class="home__center">
       <div class="">
-        <header class="border-b bg-theme-opacity bg-blur-1" v-if="!$q.screen.lt.sm">
+        <!-- <header class="border-b bg-theme-opacity bg-blur-1" v-if="!$q.screen.lt.sm">
           Home
-        </header>
+        </header> -->
         <div class="border-b" v-if="$store.state.authenticated && !$q.screen.lt.sm">
           <Spills :rows="1" />
         </div>
@@ -139,7 +139,7 @@ header {
 	position: sticky;
   
   width: 100%;
-	top: 0;
+	top: 0px;
   z-index: 10;
   padding: 0 10px;
 

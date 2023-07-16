@@ -17,7 +17,8 @@ export default defineComponent({
           dark_mode: false,
           include: ["home", "explore"],
           iconSize: "5rem",
-          navSlideIn: false
+          navSlideIn: false,
+          screen: this.$q.screen.lt.sm,
       };
   },
   setup() {
@@ -30,11 +31,11 @@ export default defineComponent({
         justifyContent: this.$store.state.authenticated ? "right" : "center"
       }
     },
-    slideIn(): {width: string} {
-      return {
-          width: this.navSlideIn ? '70vw' : '0vw'
-      }
-    }
+    // slideIn(): {width: string} {
+    //   return {
+    //       width: this.navSlideIn ? '70vw' : '0vw'
+    //   }
+    // }
     
 
   },
@@ -77,15 +78,21 @@ export default defineComponent({
     this.$emit('update:navHeight', topNav?.offsetHeight)
   },
   watch: {
+    '$q.screen.lt.sm': async function() {
+      await this.$nextTick()
+      const topNav = this.$refs.topNav as HTMLDivElement;
+      this.$emit('update:navHeight', topNav?.offsetHeight)
+    },
   },
   components: { Item, ProfileIcon, Search }
 })
 </script>
 
 <template>
-    <nav  class="bg-theme-opacity">
-      <div ref="topNav" class="topNav p-2 bg-transparent" v-if="$store.state.authenticated && $q.screen.lt.sm">
-          <div class="dropdown-btn z-1000 w-full bg-transparent">
+    <nav class="border-l border-r">
+      <div class="bg-theme-opacity bg-blur-1">
+        <div ref="topNav" class="topNav bg-transparent p-2" v-if="$store.state.authenticated && $q.screen.lt.sm">
+          <div class="dropdown-btn w-full">
             <Item align-items="center" dense v-if="$store.state.authenticated" class="w-full bg-transparent">
                 <template #avatar>
                   <div @click="openNav">
@@ -107,15 +114,62 @@ export default defineComponent({
                 </template>
                 <template #icon v-else>
                 </template>
-            </Item>
+              </Item>
               <div class="brand text-2xl weight-900 text-heading" v-if="!['explore', 'search', 'all-notif', 'mentions'].includes(($route.name)?.toString() || ' ')">
                 Socialite
               </div>
+            </div>
+        </div>
+        <header v-if="$route.matched[0].name == 'notifications'" ref="header" class="w-full z-5">
+          <div :style="{height: '66px'}" v-if="!$q.screen.lt.sm" >
+            <Item>
+              <template #title>
+                <span class="text-2xl weight-900">Notifications</span>
+              </template>
+              <template #icon>
+                <q-btn flat round dense icon="settings" size="16px" @click.stop="" />
+              </template>
+            </Item>
           </div>
+          <q-tabs
+              class=" w-full text-lg text-capitalize"
+              ref="tabs"
+          >
+              <q-route-tab class="text-capitalize" active-class="active" :to="{name: 'all-notif'}" exact replace>
+                  <span>All</span>
+              </q-route-tab>
+              <q-route-tab class="text-capitalize" active-class="active"  :to="{name: 'mentions'}" exact replace>
+                  <span>Mentions</span>
+              </q-route-tab>
+          </q-tabs>
+        </header>
+        <header v-if="$route.matched[0].name == 'home' && !$q.screen.lt.sm" ref="header" class="text-2xl weight-900">
+          <Item>
+              <template #title>
+                <span class="text-2xl weight-900">Home</span>
+              </template>
+              <!-- <template #icon>
+                <q-btn flat round dense icon="settings" size="16px" @click.stop="" />
+              </template> -->
+            </Item>
+        </header>
+        <header class="sticky top-0 p-2 m-0 border-b max-h-12 overflow-visible bg-theme-opacity" v-if="!$q.screen.lt.sm && $route.matched[0].name == 'explore'">
+          <Item align-items="center" dense v-if="$store.state.authenticated" class="w-full overflow-visible bg-transparent">
+                  <template v-if="$route.name=='explore'" #title>
+                    <SearchBar />
+                  </template>
+                  <!-- <template #icon>
+                    <q-btn flat round dense icon="settings" size="16px" class="border" @click.stop="" />
+                  </template> -->
+              </Item>
+        </header>
+      </div>
 
-          <div class="overlay bg-blur-1" v-if="navSlideIn" @click="closeNav"></div>
+      <q-dialog class="w-viewport h-viewport" :maximized="true" v-model="navSlideIn" :position="'left'">
+        <div>
+          <div class="overlay bg-blur-1" @click="closeNav"></div>
 
-          <div class="slide-in-nav list" :style="slideIn">
+          <div class="slide-in-nav list">
             <div class="rest_nav">
               <Item class="item">
                 <template #title>
@@ -176,30 +230,12 @@ export default defineComponent({
               </q-item>
             </div>
           </div>
-      </div>
-      <header v-if="$route.matched[0].name == 'notifications'" ref="header" class="w-full z-5 border-b">
-        <div :style="{height: '66px'}" v-if="!$q.screen.lt.sm" >
-          <Item>
-            <template #title>
-              <span class="text-2xl weight-900">Notifications</span>
-            </template>
-            <template #icon>
-              <q-btn flat round dense icon="settings" size="16px" @click.stop="" />
-            </template>
-          </Item>
         </div>
-        <q-tabs
-            class=" w-full text-lg text-capitalize"
-            ref="tabs"
-        >
-            <q-route-tab class="text-capitalize" active-class="active" :to="{name: 'all-notif'}" exact replace>
-                <span>All</span>
-            </q-route-tab>
-            <q-route-tab class="text-capitalize" active-class="active"  :to="{name: 'mentions'}" exact replace>
-                <span>Mentions</span>
-            </q-route-tab>
-        </q-tabs>
-      </header>
+      </q-dialog>
+
+      <!-- <div>
+        
+      </div> -->
     </nav>
 </template>
 
@@ -228,18 +264,12 @@ export default defineComponent({
 
 .slide-in-nav {
   height: 100%;
-  width: 0;
-  position: fixed;
+  width: 60vw;
   z-index: 999;
-  top: 0;
-  left: 0;
-  bottom: 0;
   background-color: var(--color-background);
   border-right: 3px solid var(--color-border);
   overflow-x: hidden;
   transition: 0.25s;
-  /* padding-top: .1rem; */
-
   display: grid;
 }
 
@@ -257,17 +287,6 @@ export default defineComponent({
   /* color: #818181; */
   color: var(--color-heading);
   display: block;
-}
-
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  /* background-color: var(--color-hover); */
-  background-color: rgba(0,0,0,0.5);
-  z-index: 999; /* Set the z-index to a value higher than the slide-in menu */
 }
 
 .slide-in-nav a:hover {
