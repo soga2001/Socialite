@@ -43,7 +43,6 @@ export default defineComponent({
     hideNavBar() {
       const component = this.$route.matched[0].name || this.$route.name || ''
       if(this.pages.includes(component as string)) {
-        console.log('here')
         return true
       }
       return false
@@ -225,7 +224,7 @@ export default defineComponent({
 * {
   padding: 0;
   margin: 0;
-  transition: .5s;
+  transition: .2s;
 }
 .main {
   display: grid;

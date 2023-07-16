@@ -177,8 +177,8 @@ export default defineComponent({
             </div>
           </div>
       </div>
-        <header v-if="$route.matched[0].name == 'notifications'" ref="header" class="w-full z-5 border-b">
-        <div v-if="!$q.screen.lt.sm" >
+      <header v-if="$route.matched[0].name == 'notifications'" ref="header" class="w-full z-5 border-b">
+        <div :style="{height: '66px'}" v-if="!$q.screen.lt.sm" >
           <Item>
             <template #title>
               <span class="text-2xl weight-900">Notifications</span>
