@@ -73,6 +73,8 @@ export default defineComponent({
       document.documentElement.setAttribute("data-theme", this.theme ? "dark" : "light");
   },
   mounted() {
+    const topNav = this.$refs.topNav as HTMLDivElement;
+    this.$emit('update:navHeight', topNav?.offsetHeight)
   },
   watch: {
   },
@@ -82,7 +84,7 @@ export default defineComponent({
 
 <template>
     <nav  class="bg-theme-opacity">
-        <div class="topNav p-2 bg-transparent" v-if="$store.state.authenticated">
+      <div ref="topNav" class="topNav p-2 bg-transparent" v-if="$store.state.authenticated && $q.screen.lt.sm">
           <div class="dropdown-btn z-1000 w-full bg-transparent">
             <Item align-items="center" dense v-if="$store.state.authenticated" class="w-full bg-transparent">
                 <template #avatar>
@@ -175,12 +177,29 @@ export default defineComponent({
             </div>
           </div>
       </div>
-    </nav>
-
-    <nav class="bg-transparent">
-      <div>
-
-      </div>
+        <header v-if="$route.matched[0].name == 'notifications'" ref="header" class="w-full z-5 border-b">
+        <div v-if="!$q.screen.lt.sm" >
+          <Item>
+            <template #title>
+              <span class="text-2xl weight-900">Notifications</span>
+            </template>
+            <template #icon>
+              <q-btn flat round dense icon="settings" size="16px" @click.stop="" />
+            </template>
+          </Item>
+        </div>
+        <q-tabs
+            class=" w-full text-lg text-capitalize"
+            ref="tabs"
+        >
+            <q-route-tab class="text-capitalize" active-class="active" :to="{name: 'all-notif'}" exact replace>
+                <span>All</span>
+            </q-route-tab>
+            <q-route-tab class="text-capitalize" active-class="active"  :to="{name: 'mentions'}" exact replace>
+                <span>Mentions</span>
+            </q-route-tab>
+        </q-tabs>
+      </header>
     </nav>
 </template>
 

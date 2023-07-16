@@ -84,7 +84,7 @@ export default defineComponent({
 <template>
   <div class="explore" id="explore">
     <div class="">
-      <header class="sticky top-0 p-2 m-0 border-b max-h-12 overflow-visible bg-theme-opacity" v-if="$store.state.desktop">
+      <header class="sticky top-0 p-2 m-0 border-b max-h-12 overflow-visible bg-theme-opacity" v-if="!$q.screen.lt.sm">
         <Item align-items="center" dense v-if="$store.state.authenticated" class="w-full overflow-visible bg-transparent">
                 <template v-if="$route.name=='explore'" #title>
                   <SearchBar />

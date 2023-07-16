@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent, ref} from 'vue';
+import {defineComponent, ref, type CSSProperties} from 'vue';
 import { TouchSwipe, useQuasar } from 'quasar';
 import Sidebar from '@/components/Navbars/sidebar.vue';
 import TopNav from '@/components/Navbars/topnav.vue';
@@ -42,11 +42,22 @@ export default defineComponent({
   computed: {
     hideNavBar() {
       const component = this.$route.matched[0].name || this.$route.name || ''
-      if(this.pages.includes(component.toString())) {
+      if(this.pages.includes(component as string)) {
+        console.log('here')
         return true
       }
       return false
-    }
+    },
+    transform(): CSSProperties {
+      const navPos = ((this.topNavHeight > this.lastScrollPos) ? `${-this.lastScrollPos}px` : `${-this.topNavHeight}px`)
+      const element = (this.$refs.mainDiv as HTMLDivElement)
+
+      console.log(navPos, element.scrollTop)
+      return {
+        transform: this.hideTopNav ? `translateY(${navPos})` : 'none',
+        transition: 'transform .3s'
+      } as CSSProperties
+    },
   },
   methods: {
     setData() {
@@ -134,22 +145,22 @@ export default defineComponent({
     mobile(mobile) {
       this.$nextTick(() => {
         this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 10
-        this.topNavHeight = ((this.$refs.topNav as HTMLDivElement)?.offsetHeight) || 0
       })
     },
-    lastScrollPos(lastScrollPos) {
+    lastScrollPos() {
       const topNav = (this.$refs.topNav as HTMLDivElement)
-      if(this.hideTopNav) {
-        const element = document.getElementById("main-div") as HTMLDivElement;
-        // topNav.style.top = (this.topNavHeight > this.lastScrollPos) ? `unset` : `0`
-        topNav.style.top = 'unset'
-        topNav.style.marginTop = ((this.topNavHeight > this.lastScrollPos) ? `${-this.lastScrollPos}px` : `${-this.topNavHeight}px`)
-      } else {
-        topNav.style.transition = (this.topNavHeight > this.lastScrollPos ? '' : 'all .4s') ;
-        topNav.style.marginTop = ((this.topNavHeight > this.lastScrollPos && topNav.style.marginTop != '0px') ? `${-this.lastScrollPos}px` : `0`);
+      const navPos = ((this.topNavHeight < this.lastScrollPos) && `${-this.topNavHeight}`)
+      if(topNav) {
+        if(this.hideTopNav) {
+          topNav.style.transform = `translate3d(0px, 0px, 0px) translateY(${navPos}px)`;
+        } 
+        else {
+          const elementPos = ((this.topNavHeight > this.lastScrollPos) ? `${this.lastScrollPos}` : 0);
+          topNav.style.transform = `translate3d(0px, 0px, 0px) translateY(-${elementPos}px)`;
+        }
       }
       
-    }
+    },
   },
 })
 </script>
@@ -160,27 +171,22 @@ export default defineComponent({
       <Sidebar/>
     </div>
 
-    <div ref="topNav" v-if="$q.screen.lt.sm && !hideNavBar" id="top-nav" :class="{'border-b': $route.matched[0].name != 'notifications'}" class="sticky w-full bg-transparent z-20">
-      <TopNav/>
-    </div>
-    <div id="main-div" class="h-full w-full relative">
-      <div :style="{marginTop: !hideNav ? `${topNavHeight}` : '0px',paddingBottom: `${bottomNavHeight - 10}px`}"  class="border-l border-r">
-        <RouterView v-slot="{Component}" >
-          <KeepAlive :max="6" :include="['home', 'search', 'explore', 'user-profile', 'view-spill', 'notifications']" >
-            <component :is="Component" :key="!['user-profile', 'notifications'].includes(($route.matched[0].name) as string) ? $route.fullPath : null"  :height="height" :scrollPosition="scrollPosition" />
-          </KeepAlive>
-        </RouterView>
-      </div>
+    
 
-  
-
-      
-
-      <!-- <div v-if="$q.screen.lt.sm" class="right-bar sticky top-0 h-fit px-4 py-2 max-w-xs">
-        <div v-if="!$store.state.authenticated" class="border rounded-sm w-fit">
-          <Unauthenticated />
+    <div  ref="mainDiv"  id="main-div" class="w-full sticky">
+      <div>
+        <div ref="topNav" v-if="!hideNavBar" id="top-nav" :class="{'border-b': $route.matched[0].name != 'notification'}" class="sticky top-0 w-full h-fit bg-transparent bg-blur-1 z-20">
+          <TopNav @update:navHeight="topNavHeight = $event"/>
         </div>
-      </div> -->
+        <div :style="{paddingBottom: `${bottomNavHeight - 10}px`}"  class="w-full border-l border-r">
+          <RouterView v-slot="{Component}" >
+            <KeepAlive :max="6" :include="['home', 'search', 'explore', 'user-profile', 'view-spill', 'notifications']" >
+              <component :is="Component" :key="!['user-profile', 'notifications'].includes(($route.matched[0].name) as string) ? $route.fullPath : null"  :height="height" :scrollPosition="scrollPosition" />
+            </KeepAlive>
+          </RouterView>
+        </div>
+      </div>
+      
     </div>
     <nav v-if="$q.screen.lt.sm && !hideNavBar" ref="bottomBar" class="sticky bottom-0 w-full z-5">
       <BottomNav/>
@@ -219,6 +225,7 @@ export default defineComponent({
 * {
   padding: 0;
   margin: 0;
+  transition: .5s;
 }
 .main {
   display: grid;
@@ -228,13 +235,10 @@ export default defineComponent({
   grid-template-columns: auto 600px auto;
 }
 
-.mobile {
-  width: 100%;
-  transform: transition 1s;
-  position: fixed;
-  height: 100%;
-}
 
+/* #top-nav {
+  transition: .5s;
+} */
 
 .mobile-main {
   overflow: hidden;
@@ -248,7 +252,7 @@ export default defineComponent({
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-columns: 600px;
+  grid-template-columns: auto 1fr;
 }
 
 
@@ -325,14 +329,14 @@ export default defineComponent({
 }
 
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 2s ease;
+.topNav-enter-active,
+.topNav-leave-active {
+  transition: all 1s ease;
 }
 
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+.topNav-enter-from,
+.topNav-leave-to {
+  transform: translateY(-100%);
 }
 
 </style>
