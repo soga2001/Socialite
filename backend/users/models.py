@@ -26,6 +26,7 @@ def rename_banner(instance, filename):
 
 # Create your models here.
 class User(AbstractUser):
+    _DATABASE = 'supabase'
     bio = models.CharField(max_length=300, null=True, blank=True, editable=True)
     avatar = models.FileField(upload_to=rename_avatar, blank=True, null=True, editable=True)
     banner = models.FileField(upload_to=rename_banner, blank=True, null=True, editable=True)

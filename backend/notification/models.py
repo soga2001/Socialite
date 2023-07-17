@@ -8,6 +8,7 @@ from following.models import UserFollowing
 
 
 class Notification(AbstractNotification):
+    _DATABASE = 'supabase'
     link = models.CharField(max_length=200, blank=False, null=False)
     # followed = models.ForeignKey(UserFollowing, blank=True, null=True, related_name='followed')
 

@@ -6,6 +6,7 @@ from posts.models import Post
 
 # Create your models here.
 class PostLikes(models.Model):
+    _DATABASE = 'supabase'
     post = models.ForeignKey(Post, on_delete=models.CASCADE, null=False, blank=False, related_name='post_likes')
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False, related_name='user_liked')
     date_liked = models.DateTimeField(auto_now_add=True, null=False, blank=False)

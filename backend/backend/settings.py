@@ -152,6 +152,17 @@ DATABASES = {
         'HOST': 'localhost',
 
     },
+
+    'supabase' : {                                    # conveniently, postgres on supabase as well
+        'ENGINE' : 'django.db.backends.postgresql',
+        'NAME' : 'postgres',
+        'HOST' : os.environ.get('SUPABASE_HOST'),
+        'PASSWORD': os.environ.get('SUPABASE_PW'),
+        'PORT': 5432,
+        'USER': 'postgres',
+        'CERT' : 'prod-ca-2021.crt',             # download this from database/settings and put in your main app folder
+    },
+
     'channels_postgres': {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
 		'NAME': env('DATABASE_NAME'),
@@ -161,6 +172,7 @@ DATABASES = {
 	}
 
 }
+
 
 CHANNEL_LAYERS = {
     # 'default': {

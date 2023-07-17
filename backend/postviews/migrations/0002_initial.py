@@ -11,13 +11,17 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('comments', '0002_initial'),
+        ('postviews', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='comment',
+            model_name='postviews',
             name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_comments', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_viewing', to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.AddConstraint(
+            model_name='postviews',
+            constraint=models.UniqueConstraint(fields=('post', 'user'), name='unique_views'),
         ),
     ]

@@ -33,6 +33,8 @@ from rest_framework.decorators import authentication_classes
 
 from users.models import User
 from .serializer import UserSerializer
+from backend.supabase import *
+print(supabase)
 
 
 import datetime
