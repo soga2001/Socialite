@@ -39,6 +39,9 @@ export default defineComponent({
   mounted() {
   },
   watch: {
+    '$store.state.dark': function() {
+      this.theme = this.$store.state.dark
+    }
   },
   components: { Item }
 })

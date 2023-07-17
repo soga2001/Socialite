@@ -20,6 +20,7 @@ export default defineComponent({
         display: '-webkit-box',
         '-webkit-box-orient': 'vertical',
         '-webkit-line-clamp': this.titleLineClamp,
+        // 'line-clamp': this.titleLineClamp,
         overflow: 'hidden',
         color: "var(--color-heading)",
       } as CSSProperties,
@@ -84,7 +85,7 @@ export default defineComponent({
     },
     captionLineClamp: {
       type: Number || String,
-      default: 2
+      default: 1
     },
     avatarSize: {
       type: String,
@@ -113,7 +114,6 @@ export default defineComponent({
         !this.$slots.caption &&
         !this.$slots.icon
     );
-    // console.log(this.$refs.item)
   }
 });
 </script>
@@ -127,6 +127,9 @@ export default defineComponent({
     <div class="info" :style="infoStyle" v-if="!isAvatarOnly">
       <div class="title" :style="titleStyle">
         <slot name="title" v-if="$slots.title" />
+      </div>
+      <div class="subTitle">
+        <slot name="subTitle" v-if="$slots.default" />
       </div>
       <div class="caption" :style="captionStyle">
         <slot name="caption" v-if="$slots.caption" />

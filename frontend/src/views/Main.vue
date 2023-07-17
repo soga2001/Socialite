@@ -149,7 +149,8 @@ export default defineComponent({
           const visible = topNav.style.transform == `translate3d(0px, 0px, 0px) translateY(0px)`;
 
           if(!visible) {
-            topNav.style.transform = `translate3d(0px, 0px, 0px) translateY(-${elementPos}px)`;
+            // topNav.style.removeProperty('transform');
+            topNav.removeAttribute('style')
           }
         }
       }

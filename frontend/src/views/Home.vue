@@ -43,7 +43,7 @@ export default defineComponent({
   methods: {
     async getData() {
       this.loading = true
-      http.get(`posts/posts_by_followed_users/${this.user_timestap}/${this.page}/`).then((res) => {
+      await http.get(`posts/posts_by_followed_users/${this.user_timestap}/${this.page}/`).then((res) => {
         if(res.data.posts.length === 5) {
           this.hasMore = true
         }
@@ -53,12 +53,10 @@ export default defineComponent({
         if((res.data.posts).length > 0){
           this.posts = [...this.posts, ...res.data.posts]
         }
-
-        this.loading = false
       }).catch((err) => {
           console.log(err);
-          this.loading = false
       });
+      this.loading = false
     },
     async search() {
       this.input = ""
@@ -78,8 +76,6 @@ export default defineComponent({
       }
     },
     update() {
-      // const instance = getCurrentInstance()
-      // instance?.proxy?.$forceUpdate
       this.$router.push(this.$router.currentRoute.value)
     }
   },
@@ -101,9 +97,6 @@ export default defineComponent({
   <div class="home" id="home">
     <div class="home__center">
       <div class="">
-        <!-- <header class="border-b bg-theme-opacity bg-blur-1" v-if="!$q.screen.lt.sm">
-          Home
-        </header> -->
         <div class="border-b" v-if="$store.state.authenticated && !$q.screen.lt.sm">
           <Spills :rows="1" />
         </div>

@@ -77,20 +77,15 @@ export default defineComponent({
             </q-avatar>
         </template>
         <template #title>
-            <!-- <div class="w-full flex items-center">
-                <span @click.stop="$router.push({name: 'user-profile', params: {username: notification.actor}})"  class="text-base pointer hover-underline text-heading weight-900">@{{notification.actor}}</span>
-                <span class="text-body"> - </span>
-                <span class="text-lighter"><Timeago :date="notification.timestamp"/></span>
-            </div> -->
-            <div class="w-full flex flex-cols gap-1 items-center">
-                        <div>
-                            <span class="text-base pointer hover-underline text-heading weight-900"  @click.stop="$router.push({name: 'user-profile', params: {username: notification.actor}})">@{{ notification.actor }}</span>
-                        </div>
-                        <span>&#183;</span>
-                        <div>
-                            <Timeago class="text-xs text-ligher weight-ligher" :date="notification.timestamp"/>
-                        </div>
-                    </div>
+            <span class="w-full flex flex-cols gap-1 items-center">
+                <div>
+                    <span class="text-base pointer hover-underline text-heading weight-900"  @click.stop="$router.push({name: 'user-profile', params: {username: notification.actor}})">@{{ notification.actor }}</span>
+                </div>
+                <span>&#183;</span>
+                <div>
+                    <Timeago class="text-xs text-ligher weight-ligher" :date="notification.timestamp"/>
+                </div>
+            </span>
         </template>
         <template #caption>
             <span class="text-body">{{ notification.description }}</span>

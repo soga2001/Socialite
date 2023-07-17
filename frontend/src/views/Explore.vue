@@ -17,6 +17,7 @@ export default defineComponent({
         message: '',
         offset: 0,
         searchModal: false,
+        loading: true,
       };
   },
   props: {
@@ -35,14 +36,15 @@ export default defineComponent({
   },
   methods: {
     async getData() {
-      http.get(`posts/explore/${this.offset}/`).then((res) => {
+      this.loading = true
+     await http.get(`posts/explore/${this.offset}/`).then((res) => {
         if(res.data.message) {
             this.message = res.data.message
             this.hasMore = false
         }
-        else {
-          this.hasMore = true
-        }
+        // else {
+        //   this.hasMore = true
+        // }
         if(res.data.posts) {
             this.posts = [...this.posts, ...res.data.posts]
             this.offset = (this.posts).length
@@ -50,6 +52,7 @@ export default defineComponent({
       }).catch((err) => {
           console.log(err);
       });
+      this.loading = false
     },
     async flushSession() {
         http.get(`users/flush_session/`).then((res) => {
@@ -84,49 +87,28 @@ export default defineComponent({
 <template>
   <div class="explore" id="explore">
     <div class="">
-      <!-- <header class="sticky top-0 p-2 m-0 border-b max-h-12 overflow-visible bg-theme-opacity" v-if="!$q.screen.lt.sm">
-        <Item align-items="center" dense v-if="$store.state.authenticated" class="w-full overflow-visible bg-transparent">
-                <template v-if="$route.name=='explore'" #title>
-                  <SearchBar />
-                </template>
-                <template #icon>
-                  <q-btn flat round dense icon="settings" size="16px" class="border" @click.stop="" />
-                </template>
-            </Item>
-      </header> -->
-      <div class="grid gap-2" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
+      <q-infinite-scroll class="grid gap-3 " id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
+        <div class="post_map" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
           <PostsMap :post="post" />
         </div>
-      </div>
-      <div v-if="!hasMore" class="text-center message">
-        <p>{{message}}</p>
-        <button class="btn btn-themed border-none text-heading px-3 py-3 rounded weight-900" @click="flushSession">Reset Session Data</button>
-      </div>
+        <template v-slot:loading>
+          <div class="row justify-center q-my-md">
+            <q-spinner-oval class="loading" size="40px" />
+          </div>
+        </template>
+      </q-infinite-scroll>
+    </div>
+    <div v-if="!hasMore" class="text-center message">
+      <p>{{message}}</p>
+      <button class="btn btn-themed border-none text-heading px-3 py-3 rounded weight-900" @click="flushSession">Reset Session Data</button>
+    </div>
   </div>
 </template>
 
 <style scoped>
 
-header {
-  display: relative;
-  
-  width: 100%;
-	top: 0;
-  z-index: 10;
-  /* padding: 0 10px; */
-
-  font-size: 25px;
-  font-weight: 900;
-  
-  color: var(--color-heading);
-  /* From https://css.glass */
-  /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); */
-  backdrop-filter: blur(50px);
-  -webkit-backdrop-filter: blur(20px);
-}
-
-.message {
+/* .message {
     padding: 1rem;
-}
+} */
 
 </style>

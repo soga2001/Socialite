@@ -95,7 +95,7 @@ export default defineComponent({
           <div class="dropdown-btn w-full">
             <Item align-items="center" dense v-if="$store.state.authenticated" class="w-full bg-transparent">
                 <template #avatar>
-                  <div @click="openNav">
+                  <div @click="openNav" class="pointer">
                     <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
                     <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                   </div>
@@ -113,6 +113,7 @@ export default defineComponent({
                   <q-btn flat round dense icon="settings" size="16px" class="border" @click.stop="" />
                 </template>
                 <template #icon v-else>
+
                 </template>
               </Item>
               <div class="brand text-2xl weight-900 text-heading" v-if="!['explore', 'search', 'all-notif', 'mentions'].includes(($route.name)?.toString() || ' ')">
@@ -158,25 +159,25 @@ export default defineComponent({
                   <template v-if="$route.name=='explore'" #title>
                     <SearchBar />
                   </template>
-                  <!-- <template #icon>
+                  <template #icon>
                     <q-btn flat round dense icon="settings" size="16px" class="border" @click.stop="" />
-                  </template> -->
+                  </template>
               </Item>
         </header>
       </div>
 
-      <q-dialog class="w-viewport h-viewport" :maximized="true" v-model="navSlideIn" :position="'left'">
+      <q-dialog class="w-viewport h-viewport"  :maximized="true" v-model="navSlideIn" :position="'left'">
         <div>
           <div class="overlay bg-blur-1" @click="closeNav"></div>
 
           <div class="slide-in-nav list">
             <div class="rest_nav">
-              <Item class="item">
+              <Item class="item ">
                 <template #title>
-                  Account Info
+                  <span class="weight-900 text-xl text-heading" >Account Info</span>
                 </template>
                 <template #icon>
-                  <q-btn flat round dense icon="close" size="16px" @click="closeNav" />
+                  <i-close class="pointer" fill="var(--color-heading)" stroke="none" size="2rem" @click="closeNav" />
                 </template>
               </Item>
               <div>
@@ -220,6 +221,21 @@ export default defineComponent({
               </RouterLink>
             </div>
             <div class="pb-3 w-full">
+              <q-item>
+                  <q-item-section avatar top>
+                    <theme-toggle/>
+                  </q-item-section>
+
+                  <q-item-section class="hide">
+                    <q-item-label lines="1">
+                      <span class="text-bold text-heading text-xl">Theme</span>
+  
+                    </q-item-label>
+                    <q-item-label caption lines="1">
+                      <span class="text-body weight-800">{{ $store.state.dark ? 'Dark' : 'Light' }}</span>
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
               <q-item class="logout" clickable v-close-popup @click="logout">
                 <q-item-section avatar>
                   <i-logout size="3rem" fill="none" stroke="var(--color-heading)" />

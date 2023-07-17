@@ -184,7 +184,7 @@ export default defineComponent({
                 </template>
                 <template #title><span class="text-xl pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">@{{ username }}</span></template>
                 <template #caption>
-                    <Timeago size="12px" :date="date_posted"/>
+                    <span><Timeago size="12px" :date="date_posted"/></span>
                 </template>
                 <template #icon>
                     <div>
