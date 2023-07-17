@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'postviews.apps.PostviewsConfig',
     'notification.apps.NotificationConfig',
     'django.contrib.postgres',
+    'django_storage_supabase',
 ]
 
 MIDDLEWARE = [
@@ -172,6 +173,8 @@ DATABASES = {
 	}
 
 }
+
+DATABASE_ROUTERS = ["backend.routers.CustomRouter"]
 
 
 CHANNEL_LAYERS = {
@@ -306,7 +309,8 @@ SIMPLE_JWT = {
     'AUTH_COOKIE_SAMESITE': 'Lax',  # Whether to set the flag restricting cookie leaks on cross-site requests. This can be 'Lax', 'Strict', or None to disable the flag.
 }
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'django_storage_supabase.supabase'
 
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
