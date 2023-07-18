@@ -403,6 +403,8 @@ header {
 }
 
 .list {
+  padding: 0;
+  margin: 0;
   display: grid;
   grid-template-rows: 1fr auto;
 }
@@ -415,7 +417,9 @@ a {
   text-decoration: none;
   transition: 0.2s;
   width: 100%;
-  font-size: calc(.8em + 1vw);;
+  /* font-size: calc(.8em + 1vw); */
+  font-size: 1.8em;
+  font-weight: 700 !important;
 }
 
 .nav__link {
@@ -499,6 +503,7 @@ a {
 
   .nav {
     padding: 0;
+    margin: 0;
   }
 
   .item {

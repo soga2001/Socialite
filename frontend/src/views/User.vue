@@ -117,7 +117,7 @@ export default defineComponent({
 
 <template>
     <div :class="'user__main '" v-if="Object.keys(user).length > 0">
-        <header ref="header" :style="{background: (!bannerIntersecting ? `url(${user.banner}) center / cover no-repeat` : 'none')}" class="user__name aspect-ratio- z-5 w-full">
+        <header ref="header" :style="{background: (!bannerIntersecting ? `url(${user.banner}) center / cover no-repeat ` : 'none')}" class="user__name aspect-ratio- z-5 w-full">
             <Item :class="bannerIntersecting ? 'bg-blur-1': 'bg-blur-xs'" class="w-full bg-theme-opacity pl-2" dense :vert-icon-center="true">
                     <template #avatar>
                         <q-btn size="16px" @click="$router.back" flat dense round class="text-heading" icon="arrow_back" />
@@ -142,7 +142,7 @@ export default defineComponent({
             <div>
                 <nav :style="{top: `${headerHeight - .4}px`}" class="w-full sticky z-5 m-0">
                     <q-tabs
-                        class="bg-theme bg-blur-half w-full text-lg text-capitalize inset-shadow-down"
+                        class="bg-theme bg-blur-half w-full text-lg text-capitalize border-b"
                         active-class="text-heading"
                         v-model="tab"
                     

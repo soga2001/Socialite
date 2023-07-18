@@ -138,19 +138,34 @@ export default defineComponent({
     },
     lastScrollPos() {
       const topNav = (this.$refs.topNav as HTMLDivElement)
+      const bottomNav = (this.$refs.bottomBar as HTMLDivElement)
       const navPos = ((this.topNavHeight < this.lastScrollPos) && `${-this.topNavHeight}`)
 
       if(topNav) {
         if(this.hideTopNav) {
           topNav.style.transform = `translate3d(0px, 0px, 0px) translateY(${navPos}px)`;
+        
         } 
         else {
           const elementPos = ((this.topNavHeight > this.lastScrollPos) ? `${this.lastScrollPos}` : 0);
           const visible = topNav.style.transform == `translate3d(0px, 0px, 0px) translateY(0px)`;
 
           if(!visible) {
-            // topNav.style.removeProperty('transform');
             topNav.removeAttribute('style')
+          }
+        }
+      }
+
+      if(bottomNav) {
+        if(this.hideTopNav) {
+          bottomNav.style.transform = `translate3d(0px, 0px, 0px) translateY(${-navPos}px)`;
+        } 
+        else {
+          const elementPos = ((this.topNavHeight > this.lastScrollPos) ? `${this.lastScrollPos}` : 0);
+          const visible = bottomNav.style.transform == `translate3d(0px, 0px, 0px) translateY(0px)`;
+
+          if(!visible) {
+            bottomNav.removeAttribute('style')
           }
         }
       }
