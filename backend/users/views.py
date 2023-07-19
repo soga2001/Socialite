@@ -33,8 +33,8 @@ from rest_framework.decorators import authentication_classes
 
 from users.models import User
 from .serializer import UserSerializer
-from backend.supabase import *
-print(supabase)
+from backend.database import *
+# print(supabase.storage.get_bucket('Socialite'))
 
 
 import datetime
@@ -133,10 +133,11 @@ def user_register(request):
 def user_login(request):
     data = json.loads(request.body)
     user = authenticate(username=data['username'], password=data['password'])
+    u = supabase.auth.sign_in({"username": data['username'], "password": data['password']})
+    print(u)
     if(user):
         login(request, user)
         token = RefreshToken.for_user(user)
-        request.session.set_test_cookie()
         
         response = HttpResponse({"success": True}, content_type="application/json")
         # response.set_cookie("testing", "true", secure=True, httponly=True)
@@ -167,9 +168,11 @@ class UserFromCookie(APIView):
 
     def get(self, request):
         try:
+            # print(supabase.table('users_user').select('*').execute())
             user = UserSerializer(request.user).data
             return JsonResponse({"success": True, "user": user})
-        except:
+        except Exception as e:
+            print(e)
             return JsonResponse({"success": False, "message": "User not found."})
         # if 'user' in request.COOKIES:
         #     user = json.loads(request.COOKIES.get('user'))
@@ -226,12 +229,17 @@ class UpdateProfile(APIView):
                 user.avatar = avatar
             if(banner):
                 user.banner = banner
-            user.save()
+
+            print(supabase.auth.current_session)
+            # print( supabase.storage().get_bucket('Socialite'))
+            print('there')
+            # user.save()
             
-            updatedUser = UserSerializer(user).data
-            return JsonResponse({"success": True, "user": updatedUser,  "message": "Profile Updated."})
+            # updatedUser = UserSerializer(user).data
+            # return JsonResponse({"success": True, "user": updatedUser,  "message": "Profile Updated."})
+            return JsonResponse({"success": True}, status=200)
         except Exception as e:
-            print(e)
+            print('here',e)
             return JsonResponse({"error": True, "message": str(e)}, status=500)
         except:
             return JsonResponse({"error": True}, status=404)
