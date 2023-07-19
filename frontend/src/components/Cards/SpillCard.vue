@@ -26,7 +26,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="grid cols-auto-fr gap-2 w-full">
+    <div class="grid main gap-1 p-2 w-full relative">
         <div class="avatar col-1" :style="avatarStyle" v-if="$slots.avatar">
             <slot name="avatar" />
         </div>
@@ -37,7 +37,7 @@ export default defineComponent({
             <div class="w-full sub">
                 <slot name="subtitle"/>
             </div>
-            <div class="w-full body">
+            <div class="w-full body ">
                 <slot name="body"/>
             </div>
             <div class="w-full action">
@@ -49,27 +49,29 @@ export default defineComponent({
 
 <style scoped>
 
-.avatar {
-    /* width: 100%;
-    height: 100%; */
-    display: flex;
-    place-items: center;
+.main {
+    display: grid;
+    grid-template-columns: 70px 1fr;
 }
 
-.avatar img {
-    border-radius: 50%;
-    width: 100%;
-    height: 100%;
+.avatar {
+    display: flex;
+    place-items: center;
+    width: 70px;
+    height: 70px;
 }
 
 .avatar :slotted(*) {
     border-radius: 50%;
-    width: 3rem;
-    height: 3rem;
+    width: 60px;
+    height: 60px;
 }
 
 .body :slotted(img) {
-    border-radius: 50%;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 10px;
+    border: 1px solid var(--color-heading)
 }
 
 :slotted(*:deep(a)) {
@@ -86,19 +88,12 @@ export default defineComponent({
 
 .action {
     display: flex;
-    /* justify-content: space-evenly; */
-    /* align-items: center;
-    margin-top:.2em!important ; */
+    justify-content: space-evenly;
+    align-items: stretch;
+    position: relative;
 }
 
 .action :slotted(*) {
-    margin: 0 .2em!important;
+  width: fit-content;
 }
-
-/* 
-::slotted(img) {
-    border-radius: 50%;
-    width: 5rem !important;
-    height: 3rem !important;
-} */
 </style>

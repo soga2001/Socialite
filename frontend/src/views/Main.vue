@@ -129,9 +129,10 @@ export default defineComponent({
         element.scrollTop = this.scrollPos.get(this.$route.name);
         this.scrollPosition = this.scrollPos.get(this.$route.name);
         this.height = this.scrollHeight.get(this.$route.name)
+        this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 10
       });
     },
-    mobile(mobile) {
+    '$q.screen.lt.sm'() {
       this.$nextTick(() => {
         this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 10
       })
@@ -139,37 +140,31 @@ export default defineComponent({
     lastScrollPos() {
       const topNav = (this.$refs.topNav as HTMLDivElement)
       const bottomNav = (this.$refs.bottomBar as HTMLDivElement)
-      const navPos = ((this.topNavHeight < this.lastScrollPos) && `${-this.topNavHeight}`)
+      const spillBtn = (this.$refs.spillButton as HTMLDivElement)
+      const topNavPos = ((this.topNavHeight < this.lastScrollPos) && `${-this.topNavHeight}`)
+      const bottomNavPos = ((this.bottomNavHeight < this.lastScrollPos) && `${-this.bottomNavHeight + 10}`)
+
 
       if(topNav) {
         if(this.hideTopNav) {
-          topNav.style.transform = `translate3d(0px, 0px, 0px) translateY(${navPos}px)`;
+          topNav.style.transform = `translate3d(0px, 0px, 0px) translateY(${topNavPos}px)`;
         
         } 
         else {
-          const elementPos = ((this.topNavHeight > this.lastScrollPos) ? `${this.lastScrollPos}` : 0);
-          const visible = topNav.style.transform == `translate3d(0px, 0px, 0px) translateY(0px)`;
-
-          if(!visible) {
-            topNav.removeAttribute('style')
-          }
+          topNav.removeAttribute('style')
         }
       }
 
       if(bottomNav) {
         if(this.hideTopNav) {
-          bottomNav.style.transform = `translate3d(0px, 0px, 0px) translateY(${-navPos}px)`;
+          bottomNav.style.transform = `translate3d(0px, 0px, 0px) translateY(${-bottomNavPos}px)`;
+          spillBtn.style.transform = `translate3d(0px, 0px, 0px) translateY(${-bottomNavPos}px)`;
         } 
         else {
-          const elementPos = ((this.topNavHeight > this.lastScrollPos) ? `${this.lastScrollPos}` : 0);
-          const visible = bottomNav.style.transform == `translate3d(0px, 0px, 0px) translateY(0px)`;
-
-          if(!visible) {
-            bottomNav.removeAttribute('style')
-          }
+          bottomNav.removeAttribute('style')
+          spillBtn.style.removeProperty('transform')
         }
       }
-      
     },
   },
 })
@@ -181,17 +176,12 @@ export default defineComponent({
       <Sidebar/>
     </div>
 
-    <!-- <Transition name="topNav">
-      <div ref="topNav" v-if="!hideTopNav" id="top-nav" class="w-full top-0 bg-transparent z-20">
-          <TopNav @update:navHeight="topNavHeight = $event"/>
-        </div>
-    </Transition> -->
     <div  ref="mainDiv"  id="main-div" class="w-full">
       <div>
         <div ref="topNav" v-if="!hideNavBar" id="top-nav" :class="{'border-b': $route.matched[0].name != 'notification'}" class="sticky top-0 w-full h-fit bg-transparent bg-blur-1 z-20">
           <TopNav @update:navHeight="topNavHeight = $event"/>
         </div>
-        <div :style="{paddingBottom: `${bottomNavHeight - 10}px`}"  class="w-full border-l border-r">
+        <div :style="{paddingBottom: `${bottomNavHeight - 10}px`}"  class="w-full min-h-viewport border-l border-r">
           <RouterView v-slot="{Component}" >
             <KeepAlive :max="6" :include="['home', 'search', 'explore', 'user-profile', 'view-spill', 'notifications']" >
               <component :is="Component" :key="!['user-profile', 'notifications'].includes(($route.matched[0].name) as string) ? $route.fullPath : null"  :height="height" :scrollPosition="scrollPosition" />

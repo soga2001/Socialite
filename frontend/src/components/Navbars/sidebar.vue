@@ -84,7 +84,7 @@ export default defineComponent({
 
 <template>
     <header>
-        <nav class="nav sticky" :style="navStyle">
+        <nav class="nav" :style="navStyle">
             <q-list class="list">
                 <div class="">
                   <!-- <RouterLink to="/home" class="brand">
@@ -108,20 +108,6 @@ export default defineComponent({
                       <div class="show p-2">
                         <i-home size="2rem" :fill="$route.fullPath == '/home' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                       </div>
-
-                      <!-- <Item dense class="hide">
-                        <template #avatar>
-                          <i-home size="10px" :fill="$route.fullPath == '/home' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
-                        </template>
-                        <template #title>
-                          <div class="text-h6">Home</div>
-                        </template>
-                      </Item>
-                      <Item class="show">
-                        <template #avatar>
-                          <i-home size="2rem" :fill="$route.fullPath == '/home' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
-                        </template>
-                      </Item> -->
                   </RouterLink>
 
                   <RouterLink to="/explore" class="nav__link" active-class="active">
@@ -156,26 +142,6 @@ export default defineComponent({
                         <i-notif class="show" size="2rem" :fill="$route.matched[0].name == `notifications` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                         <q-badge class="bg-web-theme" rounded floating />
                       </div>
-                  </RouterLink>
-
-
-
-                  <RouterLink to="/search" class="nav__link" active-class="active">
-                      <q-item class="hide">
-                        <q-item-section avatar>
-                            <!-- <q-icon class="icon search" :name="$route.fullPath == '/search' ? 'search' : 'o_search'" /> -->
-                            <i-search size="2rem" :fill="$route.fullPath == '/search' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
-                        </q-item-section>
-
-                        <q-item-section class="bold">
-                            Search
-                        </q-item-section>
-                      
-                      </q-item>
-                      <div class="show p-2">
-                        <i-search class="show" size="2rem" :fill="$route.fullPath == '/search' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
-                      </div>
-                      <!-- <i-search class="show" size="2rem" :fill="$route.fullPath == '/search' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" /> -->
                   </RouterLink>
 
                   <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
@@ -284,7 +250,10 @@ export default defineComponent({
       
                         </q-item-label>
                         <q-item-label caption lines="1">
-                          <span class="text-body weight-800">{{ $store.state.dark ? 'Dark' : 'Light' }}</span>
+                          <transition name="fade" mode="out-in">
+                              <span class="text-body weight-700" v-if="$store.state.dark">Dark</span>
+                              <span class="text-body weight-700" v-else>Light</span>
+                          </transition>
                         </q-item-label>
                       </q-item-section>
                     </q-item>

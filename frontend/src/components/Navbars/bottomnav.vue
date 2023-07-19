@@ -54,12 +54,15 @@ export default defineComponent({
           <q-route-tab to="/explore" exact replace>
             <i-explore size="2rem" :fill="$route.fullPath == `/explore` ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == `/explore` ? 'none' : 'var(--color-heading)'"/>
           </q-route-tab>
-          <q-route-tab class="relative" active-class="text-heading" to="/notifications" replace>
+          <q-route-tab v-if="$store.state.authenticated" class="relative" active-class="text-heading" to="/notifications" replace>
             <i-notif size="2rem" :fill="$route.matched[0].name == `notifications` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
             <q-badge class="bg-web-theme" rounded floating />
           </q-route-tab>
-          <q-route-tab to="/settings" exact replace>
+          <q-route-tab v-if="$store.state.authenticated" to="/settings" exact replace>
             <i-settings size="2rem" :fill="$route.fullPath == `/settings` ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == `/settings` ? 'none' : 'var(--color-heading)'" />
+          </q-route-tab> 
+          <q-route-tab v-if="!$store.state.authenticated" to="/login" exact replace>
+            <i-login size="2rem" :fill="$route.fullPath == `/login` ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == `/login` ? 'none' : 'var(--color-heading)'" />
           </q-route-tab> 
         </q-tabs>
       </div>

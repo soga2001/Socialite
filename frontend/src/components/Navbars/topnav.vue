@@ -91,10 +91,10 @@ export default defineComponent({
 <template>
     <nav class="border-l border-r">
       <div class="bg-theme-opacity bg-blur-1">
-        <div ref="topNav" class="topNav bg-transparent p-2" v-if="$store.state.authenticated && $q.screen.lt.sm">
+        <div ref="topNav" class="topNav bg-transparent p-2" v-if="$q.screen.lt.sm">
           <div class="dropdown-btn w-full">
-            <Item align-items="center" dense v-if="$store.state.authenticated" class="w-full bg-transparent">
-                <template #avatar>
+            <Item align-items="center" dense class="w-full bg-transparent">
+                <template #avatar v-if="$store.state.authenticated">
                   <div @click="openNav" class="pointer">
                     <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
                     <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
@@ -119,9 +119,9 @@ export default defineComponent({
               <div class="brand text-2xl weight-900 text-heading" v-if="!['explore', 'search', 'all-notif', 'mentions'].includes(($route.name)?.toString() || ' ')">
                 Socialite
               </div>
-            </div>
+          </div>
         </div>
-        <header v-if="$route.matched[0].name == 'notifications'" ref="header" class="w-full z-5">
+        <header v-if="$route.matched[0].name == 'notifications' && $store.state.authenticated" ref="header" class="w-full z-5">
           <div :style="{height: '66px'}" v-if="!$q.screen.lt.sm" >
             <Item>
               <template #title>
@@ -154,15 +154,15 @@ export default defineComponent({
               </template> -->
             </Item>
         </header>
-        <header class="sticky top-0 p-2 m-0 border-b max-h-12 overflow-visible bg-theme-opacity" v-if="!$q.screen.lt.sm && $route.matched[0].name == 'explore'">
-          <Item align-items="center" dense v-if="$store.state.authenticated" class="w-full overflow-visible bg-transparent">
-                  <template v-if="$route.name=='explore'" #title>
-                    <SearchBar />
-                  </template>
-                  <template #icon>
-                    <q-btn flat round dense icon="settings" size="16px" class="border" @click.stop="" />
-                  </template>
-              </Item>
+        <header class="sticky top-0 p-2 m-0 max-h-12 overflow-visible bg-theme-opacity" v-if="!$q.screen.lt.sm && $route.matched[0].name == 'explore'">
+          <Item align-items="center" dense class="w-full overflow-visible bg-transparent">
+              <template v-if="$route.name=='explore'" #title>
+                <SearchBar dense />
+              </template>
+              <template #icon>
+                <q-btn flat round dense icon="settings" size="16px" class="border" @click.stop="" />
+              </template>
+            </Item>
         </header>
       </div>
 
@@ -248,10 +248,6 @@ export default defineComponent({
           </div>
         </div>
       </q-dialog>
-
-      <!-- <div>
-        
-      </div> -->
     </nav>
 </template>
 

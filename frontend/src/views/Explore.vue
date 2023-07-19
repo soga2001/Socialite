@@ -87,7 +87,7 @@ export default defineComponent({
 <template>
   <div class="explore" id="explore">
     <div class="">
-      <q-infinite-scroll class="grid gap-3 " id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
+      <q-infinite-scroll class="grid " id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
         <div class="post_map" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
           <PostsMap :post="post" />
         </div>
@@ -106,6 +106,15 @@ export default defineComponent({
 </template>
 
 <style scoped>
+
+.post_map {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.post_map:not(:first-child) {
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
 
 /* .message {
     padding: 1rem;

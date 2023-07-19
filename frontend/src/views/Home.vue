@@ -100,7 +100,7 @@ export default defineComponent({
         <div class="border-b" v-if="$store.state.authenticated && !$q.screen.lt.sm">
           <Spills :rows="1" />
         </div>
-        <q-infinite-scroll class="grid gap-3 " id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
+        <q-infinite-scroll class="grid" id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
           <div class="post_map" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
             <PostsMap :post="post" />
           </div>

@@ -14,6 +14,8 @@ import { AbbreviateNumber } from '@/assets/abbreviate';
 import createIntersectObserver from '@/assets/intersectionObserver'
 
 import SpillCard from './Cards/SpillCard.vue';
+import Favorite from './Buttons/Favorite.vue';
+
 
 
 export default defineComponent({
@@ -149,7 +151,7 @@ export default defineComponent({
     },
     async mounted() {
         await this.$nextTick()
-        const observer = createIntersectObserver(this.$el, this.viewed, {threshold: 1})
+        const observer = createIntersectObserver(this.$el, this.viewed, {threshold: .75})
     },
     
     watch: {
@@ -170,12 +172,12 @@ export default defineComponent({
             this.abbreviateViews = AbbreviateNumber(total_views) as Number;
         }
     },
-    components: { Timeago, Heart, Item, MentionLink, ToolTips, HeartIcon, SpillCard }
+    components: { Timeago, Heart, Item, MentionLink, ToolTips, HeartIcon, SpillCard, Favorite }
 })
 </script>
 
 <template>
-    <div class="p-2">
+    <div class="grid rounded-none bg-theme bg-hover-mute pointer" @click="$router.push({name: 'view-spill', params: { user: username, post_id: id}})" v-if="!deleted">
         <SpillCard class="w-full h-full relative">
             <template #avatar>
                 <q-avatar class="hover-darker relative pointer" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">
@@ -185,7 +187,7 @@ export default defineComponent({
             </template>
             <template #title>
                 <Item dense align-items="start">
-                    <template #title><span class="text-xl pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">@{{ username }}</span></template>
+                    <template #title><span class="text-lg pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">@{{ username }}</span></template>
                     <template #caption>
                         <span><Timeago size="12px" :date="date_posted"/></span>
                     </template>
@@ -274,35 +276,37 @@ export default defineComponent({
                                 </q-card>
                             </q-dialog>
                         </div>
-                        
                     </template>
                 </Item>
 
             </template>
             <template #subtitle>
-                <div class="text-base w-fit" @click.stop="" >
-                    <MentionLink   :mention="caption"/>
+                <div class="text-base w-fit" >
+                    <MentionLink @click.stop="" :mention="caption"/>
                 </div>
             </template>
             <template #body>
                 <div class="w-full relative h-full">
-                    <q-img class="w-full relative" :src="img_url" alt="Post Image" />
+                    <img class="w-full relative" :src="img_url" alt="Spill image" loading="lazy"/>
                 </div>
             </template>
             <template #actions>
-                <!-- <div> -->
                     <div>
-                        <div class="flex justify-center items-center gap-1">
+                        <div class="flex justify-center items-center gap-3">
                             <div>
                                 <q-btn flat round :class="'action like__btn ' + (liked ? 'liked' : '')"  @click.stop="like">
-                                    <q-tooltip :offset="[0,0]">
+                                    <q-tooltip v-if="!$q.screen.lt.sm" :offset="[0,0]">
                                         Like
                                     </q-tooltip>
-                                    <i-heart size="1.5rem" :fill="liked ? 'red' : 'var(--color-text)'"  stroke="red" />
+                                    <i-heart size="1.4rem" :fill="liked ? 'red' : 'var(--color-text)'"  stroke="red" />
                                 </q-btn>
                             </div>
                             <div>
-                                <span v-if="total_likes !== 0" :style="{color: liked ? 'red' : 'none'}">{{abbreviateLikes}}</span>
+                                <!-- <span :style="{color: liked ? 'red' : 'inherit'}">{{ abbreviateLikes}}</span> -->
+                                <transition name="fade" mode="out-in">
+                                    <span :style="{color: liked ? 'red' : 'inherit'}" class="weight-900" v-if="total_likes % 2 == 0">{{ abbreviateLikes}}</span>
+                                    <span :style="{color: liked ? 'red' : 'inherit'}" class="weight-900" v-else>{{ abbreviateLikes}}</span>
+                                </transition>
                             </div>
                         </div>
                     </div>
@@ -310,19 +314,20 @@ export default defineComponent({
                         <div class="flex justify-center items-center gap-2">
                             <div>
                                 <q-btn flat round class="action comment" @click.stop="commentToggle">
-                                    <q-tooltip :offset="[0,0]">
+                                    <q-tooltip v-if="!$q.screen.lt.sm" :offset="[0,0]">
                                         Comment
                                     </q-tooltip>
                                     <i-comment fill="var(--color-text)" />
                                 </q-btn>
                             </div>
-                            <div>
-                                <label>{{abbreviateComments}}</label>
-                            </div>
+                            <transition name="fade" mode="out-in">
+                                <span class="text-heading weight-900" v-if="total_comments % 2 == 0">{{ abbreviateComments }}</span>
+                                <span class="text-heading weight-900" v-else>{{ abbreviateComments }}</span>
+                            </transition>
                         </div>
 
                         <q-dialog class="min-h-sm" v-model="showComments" persistent>
-                            <div class="bg-theme box-theme-soft w-full min-h-fit max-w-sm h-fit overflow-visible" >
+                            <div class="bg-theme box-shadow box-theme-soft w-full min-h-fit max-w-sm h-fit overflow-visible" >
                                 <div class="p-2">
                                     <Item dense :vert-icon-center="true">
                                         <template #title>
@@ -345,26 +350,25 @@ export default defineComponent({
                         <div class="flex justify-center items-center gap-1">
                             <div>
                                 <q-btn round flat @click.stop="">
-                                    <q-tooltip :offset="[0,0]">
+                                    <q-tooltip :offset="[0,0]" v-if="!$q.screen.lt.sm">
                                         Views
                                     </q-tooltip>
                                     <q-icon class="text-body" name="visibility"/>
                                 </q-btn>
                             </div>
                             <transition name="fade" mode="out-in">
-                                <span class="text-heading" v-if="total_views % 2 == 0">{{ abbreviateViews }}</span>
-                                <span class="text-heading" v-else>{{ abbreviateViews }}</span>
+                                <span class="text-heading weight-900" v-if="total_views % 2 == 0">{{ abbreviateViews }}</span>
+                                <span class="text-heading weight-900" v-else>{{ abbreviateViews }}</span>
                             </transition>
                         </div>
                     </div>
 
                     <q-btn round flat>
-                        <q-tooltip :delay="500" :offset="[0,0]">
+                        <q-tooltip v-if="!$q.screen.lt.sm" :delay="500" :offset="[0,0]">
                             Copy Link
                         </q-tooltip>
                         <i-share fill="var(--color-text)" />
                     </q-btn>
-                <!-- </div> -->
             </template>
         </SpillCard>
     </div>
