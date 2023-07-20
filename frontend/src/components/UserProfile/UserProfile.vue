@@ -60,6 +60,9 @@ export default defineComponent({
 
             loading_follow: false,
             loading_follow_request: false,
+
+            zoomAvatar: false,
+            zoomBanner: false,
         };
     },
     methods: {
@@ -294,14 +297,18 @@ export default defineComponent({
     <div class="user">
         <div class="user__container col-12 col-md-auto">
             <div class=' grid cols-auto-fr rows-4 relative overflow-hidden'>
-                <div id="banner" class='p-0 col-start-1 col-span-full z-2 bg-theme-soft h-full pointer'>
-                    <img v-if="banner" :src="banner" alt="banner"/>
-                    <img v-else class="" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
+                <div id="banner" class='p-0 col-start-1 col-span-full z-2 bg-theme-soft h-full pointer' @click="zoomBanner = true">
+                    <img v-if="banner" class="hover-darker" :src="banner" alt="banner"/>
+                    <img v-else class="hover-darker" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
                 </div>
-                <div class="profile-img profile-pic z-2 pointer overflow-hidden">
-                    <img v-if="avatar" class="profile-pic__image" :src="avatar" alt="Profibild" />
-                    <img v-else class="profile-picture" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
+                <div class="profile-img profile-pic z-2 pointer overflow-hidden" @click="zoomAvatar = true">
+                    <img v-if="avatar" class="profile-pic__image hover-darker" :src="avatar" alt="Profibild" />
+                    <img v-else class="profile-picture hover-darker" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
                 </div>
+                
+                <zoomImg v-if="zoomAvatar" :img="avatar" :open="zoomAvatar" @update:open="zoomAvatar = $event"/>
+                <zoomImg v-if="zoomBanner" :img="banner" :open="zoomBanner" @update:open="zoomBanner = $event"/>
+
                 <div class="edit-profile text-base w-full h-fit flex justify-end p-2">
                     <button class="border pointer bg-hover rounded-lg text-heading bg-theme weight-900" v-if="followed && !loading">
                         <q-icon size="1.5rem" name="more_horiz" />
@@ -578,13 +585,8 @@ h6 {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: all .3s ease-in-out;
 }
 
-
-.profile-pic:hover img {
-    transform: scale(1.2);
-}
 
 
 

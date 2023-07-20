@@ -63,8 +63,13 @@ export default defineComponent({
         <!-- <TransitionGroup name="slide" mode="out-in" tag="div">
                 
         </TransitionGroup> -->
-        <div class="grid gap-1 cols-3">
+        <!-- <div class="grid gap-1 cols-3">
             <UserPostedMap class="post"  v-if="user_liked" v-for="(user, index) in user_liked" :key="user.id" :post="user" @disliked="dislikeSpill(index)"/>
+        </div> -->
+        <div class="grid">
+            <div class="post_map border-b" v-if="user_liked.length > 0" v-for="(post, index) in user_liked" :id="post.id" :key="post.id">
+                <PostsMap :post="post" />
+            </div>
         </div>
         <div class="w-full flex flex-center flex-col" v-if="user_liked.length == 0 && !loading">
             <div>

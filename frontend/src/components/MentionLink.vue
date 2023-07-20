@@ -12,7 +12,11 @@ export default{
         }
     },
    render () {
-         return h(compile(this.mention))
+        // return h(compile(this.mention))
+        return h(compile(this.mention, {
+            whitespace: 'preserve'
+        }));
+        
    }
 }
 </script>

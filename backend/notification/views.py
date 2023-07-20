@@ -7,6 +7,8 @@ from .serializer import NotificationSerializer
 from .models import Notification
 from backend.authenticate import *
 
+
+
 class NotificationView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = (CustomAuthentication,)

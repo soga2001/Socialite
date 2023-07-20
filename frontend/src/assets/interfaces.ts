@@ -65,4 +65,5 @@ export interface Notifications {
     actor_content_type: number;
     target_content_type: string;
     action_object_content_type: string;
-}
+    created: string
+;}

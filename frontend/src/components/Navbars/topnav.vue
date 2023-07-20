@@ -133,13 +133,13 @@ export default defineComponent({
             </Item>
           </div>
           <q-tabs
-              class=" w-full text-lg text-capitalize"
+              class=" w-full"
               ref="tabs"
           >
-              <q-route-tab class="text-capitalize" active-class="active" :to="{name: 'all-notif'}" exact replace>
+              <q-route-tab class="text-capitalize text-xl" active-class="active" :to="{name: 'all-notif'}" exact replace>
                   <span>All</span>
               </q-route-tab>
-              <q-route-tab class="text-capitalize" active-class="active"  :to="{name: 'mentions'}" exact replace>
+              <q-route-tab class="text-capitalize text-xl" active-class="active"  :to="{name: 'mentions'}" exact replace>
                   <span>Mentions</span>
               </q-route-tab>
           </q-tabs>

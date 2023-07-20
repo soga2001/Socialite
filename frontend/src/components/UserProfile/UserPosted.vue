@@ -81,8 +81,8 @@ export default defineComponent({
         <!-- <div class="grid gap-1 cols-3">
             <UserPostedMap class="post" :post="user" v-if="user_posted" v-for="(user, index) in user_posted" :key="user.id" @deleted="deleteSpill(index)"/>
         </div> -->
-        <div class="grid gap-3">
-            <div class="post_map" v-if="user_posted.length > 0" v-for="(post, index) in user_posted" :id="post.id" :key="post.id">
+        <div class="grid">
+            <div class="post_map border-b" v-if="user_posted.length > 0" v-for="(post, index) in user_posted" :id="post.id" :key="post.id">
                 <PostsMap :post="post" />
             </div>
         </div>
@@ -113,14 +113,5 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.post_map {
-  border-bottom: 1px solid var(--color-border);
-}
-
-.post_map:not(:first-child) {
-  border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
 }
 </style>

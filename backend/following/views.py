@@ -20,6 +20,7 @@ custom = CustomAuthentication()
 
 
 class Follow_User(APIView):
+    authentication_classes = (CustomAuthentication,)
     permission_classes = [IsAuthenticated]
 
     def post(self, request, user_id):
@@ -30,27 +31,27 @@ class Follow_User(APIView):
             return JsonResponse({"error": True, "message": 'Invalid User Id'}, safe=False)
 
         followed_user = User.objects.get(pk=user_id)
-        following_user, token = custom.authenticate(request)
-        # following_user = User.objects.get(pk=request.user.id)
 
         try:
-            # user = User.objects.get(pk=request.user.id)
-            # user.following.add(user_id)
-            # user.save()
             
             follow = UserFollowing(
                 followed_user=followed_user, 
-                following_user=following_user
+                following_user=request.user
             )
             follow.save()
+
+            link=f'{request.user.username}'
+
+
             notif = Notification(
-                actor=following_user,
+                actor=request.user,
                 recipient=followed_user,
                 verb='follow',
                 description='Followed you.',
-                link=f'{following_user.username}'
+                link=link
             )
             notif.save()
+            
             return JsonResponse({"success": True, "message": "User followed"}, safe=False)
         except IntegrityError as e:
             unfollow = UserFollowing.objects.filter(followed_user=user_id, following_user=request.user.id).delete()

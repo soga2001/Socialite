@@ -5,3 +5,4 @@ urlpatterns = [
     path('all/', views.NotificationView.as_view(), name='post_content'),
     path('mentions/', views.Mentions.as_view(), name='mentions'),
 ]
+

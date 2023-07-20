@@ -26,11 +26,11 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="grid main gap-1 p-2 w-full relative">
+    <div class="grid main gap-1 pr-2 pt-2 w-full relative">
         <div class="avatar col-1" :style="avatarStyle" v-if="$slots.avatar">
             <slot name="avatar" />
         </div>
-        <div class="col-2 flex gap-1 flex-cols">
+        <div class="col-2 grid gap-2">
             <div class="w-full">
                 <slot name="title"/>
             </div>
@@ -51,20 +51,24 @@ export default defineComponent({
 
 .main {
     display: grid;
-    grid-template-columns: 70px 1fr;
+    grid-template-columns: 65px 1fr;
 }
 
 .avatar {
     display: flex;
     place-items: center;
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
 }
 
 .avatar :slotted(*) {
     border-radius: 50%;
     width: 60px;
     height: 60px;
+}
+
+.sub, .body :slotted(*) {
+    white-space: pre;
 }
 
 .body :slotted(img) {

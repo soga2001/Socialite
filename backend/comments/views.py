@@ -2,6 +2,7 @@
 import re
 import json
 from backend.authenticate import IsAuthenticated, CustomAuthentication
+from notification.models import Notification
 from .models import Comment
 from .serializer import CommentSerializer
 from posts.models import Post
@@ -17,6 +18,8 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 channel_layer = get_channel_layer()
+
+from replace import *
 
 # Create your views here.
 
@@ -48,18 +51,35 @@ class Comments(APIView):
             comment = escape(comment)
             regex = r'@(\w+)'
             # caption = re.sub(r'@(\w+)', r'<a href="/users/\1/">@\1</a>', caption)
-            comment = re.sub(regex, replace, comment)
+            userlist = []
+            comment = re.sub(regex, lambda val: replaceMention(val, userlist), comment)
+            comment = replaceLink(comment)
+
             comment = Comment(
                 user = user,
                 post = Post.objects.get(pk=id),
                 comment = comment
             )
             comment.save()
+            
             group_name = f'spill_{id}'
             async_to_sync(channel_layer.group_send)(group_name, {
                 "type": "comment.send",
                 "message": json.dumps(CommentSerializer(comment).data)
                 })
+            
+            link = "{}/spill/{}".format(user.username, id)
+            
+            for u in userlist:
+                if(u.username != user.username):
+                    notif = Notification(
+                        actor=user,
+                        recipient=u,
+                        verb='mention',
+                        description='mentioned you.',
+                        link=link
+                    )
+                    notif.save()
             return JsonResponse({'status': True, 'message': 'Comment added successfully'})
         except Exception as e:
             return JsonResponse({'status': False, 'message': 'Error adding comment'})

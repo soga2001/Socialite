@@ -113,7 +113,7 @@ export default defineComponent({
                             <q-btn @click.stop="dropdown = !dropdown" size="13px" class="more__vert" flat round>
                                 <q-icon name="more_horiz" class="btn-hover-theme" />
                             </q-btn>
-                            <q-menu class="dropdown" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
+                            <q-menu class="dropdown bg-theme" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
                                 <q-list class="more__option">
                                     <q-item clickable v-close-popup @click="report = true" v-if="commentData.username !== $store.state.user.username">
                                         <q-item-section avatar>
@@ -125,10 +125,10 @@ export default defineComponent({
                                     </q-item>
                                     <q-item clickable v-close-popup @click="deleteModal = true" tabindex="0" v-if="commentData.username === $store.state.user.username">
                                         <q-item-section avatar>
-                                            <q-icon class="danger__icon" name="delete_forever"/>
+                                            <q-icon color="red" name="delete_forever"/>
                                         </q-item-section>
                                         <q-item-section>
-                                            <q-item-label>Delete</q-item-label>
+                                            <q-item-label class="text-red weight-700">Delete</q-item-label>
                                         </q-item-section>
                                     </q-item>
                                     <q-item clickable v-close-popup v-if="commentData.username === $store.state.user.username">
@@ -143,24 +143,30 @@ export default defineComponent({
                             </q-menu>
                             <!-- Confirm Delete Model -->
                             <q-dialog v-model="deleteModal" persistent transition-show="scale" transition-hide="scale">
-                                <q-card class="card">
-                                    <q-card-section class="row">
+                                <q-card class="bg-red-1">
+                                    <q-card-section>
                                         <q-item>
-                                            <q-item-section class="title">Are you sure you want to delete this comment?</q-item-section>
+                                            <q-item-section class="text-xl weight-900">Are you sure you want to delete this comment?</q-item-section>
                                         </q-item>
                                     </q-card-section>
                                     <q-card-section>
                                         <q-item>
                                             <q-item-section avatar>
-                                            <q-avatar class="red" icon="warning"/>
+                                                <q-avatar>
+                                                    <q-icon color="red" name="warning"/>
+                                                </q-avatar>
                                             </q-item-section>
-                                            <q-item-section class="red alert">This action is permanent and irreversible.</q-item-section>
+                                            <q-item-section class="text-red alert">This action is permanent and irreversible.</q-item-section>
                                         </q-item>
                                     </q-card-section>
 
-                                    <q-card-actions align="right" class="buttons">
+                                    <q-card-actions align="right">
                                         <q-btn flat label="Cancel"  v-close-popup />
-                                        <q-btn flat label="Confirm" @click="deleteComment" v-close-popup />
+                                        <q-btn flat  @click="deleteComment" v-close-popup>
+                                            <div class="text-red">
+                                                Confirm
+                                            </div>
+                                        </q-btn>
                                     </q-card-actions>
                                 </q-card>
                             </q-dialog>

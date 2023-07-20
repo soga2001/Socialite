@@ -25,7 +25,6 @@ class SpillConsumer(AsyncWebsocketConsumer):
         pass
 
     async def post_update(self, event):
-        # Handle the "Comment added" message
         message = event['message']
         updateType = event['updateType']
         await self.send(text_data=json.dumps({
@@ -34,7 +33,6 @@ class SpillConsumer(AsyncWebsocketConsumer):
         }))
 
     async def comment_send(self, event):
-        # Handle the "Comment added" message
         message = event['message']
         await self.send(text_data=json.dumps({
             'type': 'comment',

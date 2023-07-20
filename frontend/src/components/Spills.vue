@@ -55,7 +55,7 @@ export default defineComponent({
                   reset: () => void;
             };
             if (this.image) {
-              formData.append("caption", this.caption);
+              formData.append("caption", this.caption.trim());
               formData.append("image", this.image);
               http.post("posts/post_content/", formData, {
                   headers: {
@@ -74,7 +74,7 @@ export default defineComponent({
                 this.submitting = false;
                 return
               }
-              formData.append("comment", this.caption);
+              formData.append("comment", this.caption.trim());
               http.post(`comments/comment/${this.spillId}/`, formData, {
                   headers: {
                       "Content-Type": "multipart/form-data",

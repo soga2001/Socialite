@@ -25,6 +25,10 @@ export default defineComponent({
             date: new Date(),
             page: 0,
             websocket: new WebSocket(`wss://localhost:8000/ws/spill/${this.$route.params.post_id}/`),
+            dropdown: false,
+            persistent: false,
+            report: false,
+            reason: '',
         };
     },
     created() {
@@ -129,7 +133,13 @@ export default defineComponent({
         },
         deleteComment(index: number) {
             this.comments.splice(index, 1)
-        }
+        },
+        reportPost() {
+
+        },
+        deletePost() {
+
+        },
     },
     mounted() {
         this.websocketOpen()
@@ -186,12 +196,12 @@ export default defineComponent({
                         <template #caption>
                             <Timeago size="12px" :date="spill.date_posted"/>
                         </template>
-                        <!-- <template #icon>
+                        <template #icon>
                             <div>
                                 <q-btn @click.stop="dropdown = !dropdown" size="13px" class="more__vert" flat round icon="more_horiz" />
                                 <q-menu class="dropdown" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
                                     <q-list class="more__option">
-                                        <q-item clickable v-close-popup @click="report = true" v-if="username !== $store.state.user.username">
+                                        <q-item clickable v-close-popup @click="report = true" v-if="spill.username !== $store.state.user.username">
                                             <q-item-section avatar>
                                                 <q-icon class="danger__icon" name="flag"/>
                                             </q-item-section>
@@ -199,7 +209,7 @@ export default defineComponent({
                                                 <q-item-label>Report Post</q-item-label>
                                             </q-item-section>
                                         </q-item>
-                                        <q-item clickable v-close-popup @click="persistent = true" tabindex="0" v-if="username === $store.state.user.username">
+                                        <q-item clickable v-close-popup @click="persistent = true" tabindex="0" v-if="spill.username === $store.state.user.username">
                                             <q-item-section avatar>
                                                 <q-icon class="danger__icon" name="delete_forever"/>
                                             </q-item-section>
@@ -207,7 +217,7 @@ export default defineComponent({
                                                 <q-item-label>Delete</q-item-label>
                                             </q-item-section>
                                         </q-item>
-                                        <q-item clickable v-close-popup v-if="username === $store.state.user.username">
+                                        <q-item clickable v-close-popup v-if="spill.username === $store.state.user.username">
                                             <q-item-section avatar>
                                                 <q-icon class="" name="edit_note"/>
                                             </q-item-section>
@@ -272,14 +282,11 @@ export default defineComponent({
                                 </q-dialog>
                             </div>
                             
-                        </template> -->
+                        </template>
                     </Item>
                 </div>
-                <div class="w-full">
-                    <img class="w-full" :src="spill.img_url" alt="Spill Picture"/>
-                </div>
-                <div class="text-base no-decor w-fit">
-                    <Item>
+                <div class="text-base no-decor w-fit px-2">
+                    <Item dense>
                         <template #caption>
                             <span class="text-base">
                                 <MentionLink  :mention="spill.caption"/>
@@ -287,7 +294,10 @@ export default defineComponent({
                         </template>
                     </Item>
                 </div>
-                <hr/>
+                <div class="w-full p-1">
+                    <q-img class="w-full rounded border" :src="spill.img_url" />
+                </div>
+                <hr class="m-2"/>
                 <div class="flex flex-row p-3 gap-5 text-base">
                     <div>
                         <span >
@@ -306,7 +316,7 @@ export default defineComponent({
                         <span><span class="text-heading weight-900">{{ total_comments }}</span> Comments</span>
                     </div>
                 </div>
-                <hr/>
+                <hr class="m-2"/>
                 <div class="flex flex-row gap-10 py-2 px-5">
                     <div>
                         <q-btn flat round :class="(liked ? 'liked' : '')"  @click.stop="like">
@@ -333,8 +343,8 @@ export default defineComponent({
                         </q-btn>
                     </div>
                 </div>
-                <hr/>
-                <div class="border-b" v-if="$store.state.authenticated">
+                <hr class="m-2"/>
+                <div class="px-2 border-b" v-if="$store.state.authenticated">
                     <Spills placeholder="Reply to the spill" btnString="Reply" isComment :spillId="spill.id"/>
                 </div>
                 <div class="grid overflow-hidden w-100">

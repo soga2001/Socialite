@@ -17,6 +17,7 @@ from django.urls import re_path
 django.setup()
 from comments.consumers import SpillConsumer, CommentConsumer
 from users.consumers import UserConsumer
+from notification.consumers import NotificationConsumer
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
 
@@ -31,6 +32,7 @@ application = ProtocolTypeRouter({
             re_path(r'^ws/spill/(?P<post_id>[0-9a-f-]+)/$', SpillConsumer.as_asgi()),
             re_path(r'^ws/comment/(?P<comment_id>\d+)/$', CommentConsumer.as_asgi()),
             re_path(r'^ws/user_consumer/(?P<username>\w+)/$', UserConsumer.as_asgi()),
+            re_path(r'^ws/user_notif/(?P<user_id>\d+)/$', NotificationConsumer.as_asgi()),
         ])
         # Just HTTP for now. (We can add other protocols later.)
 

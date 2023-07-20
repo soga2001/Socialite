@@ -104,11 +104,11 @@ export default defineComponent({
           <div class="post_map" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
             <PostsMap :post="post" />
           </div>
-          <template v-slot:loading>
+          <!-- <template v-slot:loading>
             <div class="row justify-center q-my-md">
               <q-spinner-oval class="loading" size="40px" />
             </div>
-          </template>
+          </template> -->
         </q-infinite-scroll>
         <div class="w-full flex flex-center flex-col" v-if="posts.length == 0 && !loading">
             <div>

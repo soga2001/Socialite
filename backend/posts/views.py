@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 # From Django
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Count
+from notification.serializer import NotificationSerializer
 from notification.models import Notification
 
 from notifications.signals import notify
@@ -26,6 +27,8 @@ from rest_framework import status
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 import json
+
+from replace import *
 
 channel_layer = get_channel_layer()
 custom = CustomAuthentication()
@@ -59,7 +62,7 @@ class Post_Content(APIView):
             regex = r'@(\w+)'
             # caption = re.sub(r'@(\w+)', r'<a href="/users/\1/">@\1</a>', caption)
             user_list = []
-            caption = re.sub(regex, lambda val: replace(val, user_list), caption)
+            caption = re.sub(regex, lambda val: replaceMention(val, user_list), caption)
             user = User.objects.get(pk=request.user.id)
             post = Post(
                 user = user,
@@ -73,16 +76,16 @@ class Post_Content(APIView):
                 if(u.username != user.username):
                     notif = Notification(
                         actor=user,
-                        recipient=user_list,
-                        verb='follow',
-                        description='Followed you.',
+                        recipient=u,
+                        verb='mention',
+                        description='mentioned you on a spill',
                         link=link
                     )
                     notif.save()
-                # notifications = notify.send(user, recipient=user_list, verb='mention', description='{} {} mentioned you on their post.'.format(user.first_name, user.last_name), link=link, save_fields=['link'])
-                # for notification in notifications[0][1]:
-                #     notification.link = link
-                #     notification.save()
+            # notifications = notify.send(user, recipient=user_list, verb='mention', description='{} {} mentioned you on their post.'.format(user.first_name, user.last_name), link=link, save_fields=['link'])
+            # for notification in notifications[0][1]:
+            #     notification.link = link
+            #     notification.save()
 
             group_name = f'user_{post.user.username}'
             async_to_sync(channel_layer.group_send)(group_name, {

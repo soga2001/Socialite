@@ -6,6 +6,9 @@ import TopNav from '@/components/Navbars/topnav.vue';
 import BottomNav from '@/components/Navbars/bottomnav.vue';
 import Unauthenticated from '@/components/unauthenticated.vue';
 import { useRoute, useRouter } from 'vue-router';
+import convertTime from '@/assets/convertTime'
+
+import type { Notifications } from '@/assets/interfaces';
 
 export default defineComponent({
   title: 'Main',
@@ -13,8 +16,8 @@ export default defineComponent({
       return {
         $q: useQuasar(),
         scrollY: 0,
-        topNavHeight: (document.getElementById("top-nav") as HTMLDivElement)?.offsetHeight,
-        bottomNavHeight: (document.getElementById("bottom-nav") as HTMLDivElement)?.offsetHeight,
+        topNavHeight: (this.$refs.topNav as HTMLDivElement)?.offsetHeight,
+        bottomNavHeight: (this.$refs.bottomBar as HTMLDivElement)?.offsetHeight,
         scrollPos: new Map(),
         scrollHeight: new Map(),
         scrollPosition: 0,
@@ -26,6 +29,11 @@ export default defineComponent({
         lastScrollPos: 0,
         hideTopNav: false,
 
+        websocket: null as WebSocket | null,
+        // websocket: new WebSocket(`wss://localhost:8000/ws/user_notif/${this.$store.state.user.id}/`),
+
+
+
       };
   },
   name: 'Main',
@@ -36,6 +44,11 @@ export default defineComponent({
   mounted() {
     const element = (document.getElementById("main-div") as HTMLDivElement)
     element.addEventListener("scroll", this.scroll)
+    if(this.$refs.bottomBar) {
+      this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 10
+
+    }
+    this.websocketOpen()
   },
   activated() {
   },
@@ -63,7 +76,6 @@ export default defineComponent({
         }
       }
       
-      
     },
     scroll() {
       const element = (document.getElementById("main-div") as HTMLDivElement);
@@ -85,9 +97,75 @@ export default defineComponent({
       this.mobile = this.$q.screen.lt.sm
       return this.$q.screen.lt.sm
     },
-    hideTop() {
+    async websocketOpen() {
+      console.log(this.$store.state.user.id)
+      this.websocket = new WebSocket(`wss://localhost:8000/ws/user_notif/${this.$store.state.user.id}/`)
+      this.websocketMessage()
 
+      this.websocket.onopen = (e) => {
+      }
     },
+    async websocketClose() {
+      if(!this.websocket) {
+        return
+      }
+      this.websocket.close()
+
+      this.websocket.onclose = (e) => {
+        console.log('Websocket closed')
+      }
+    },
+    async websocketMessage() {
+      if(!this.websocket) {
+        return
+      }
+      this.websocket.onmessage = (e) => {
+        console.log(e)
+        const data = JSON.parse(e.data)
+        // console.log(data)
+        if(data.type === 'posted') {
+          const message = JSON.parse(data.message) as Notifications
+          console.log(message)
+          // this.$store.commit('setNotification', data.notification)
+          this.$q.notify({
+            progress: true,
+            html: true,
+            classes: 'bg-theme border',
+            group: message.verb,
+            message: `
+              <div class="flex flex-cols items-center gap-2">
+                <div>
+                  <img class="rounded-full" src="${message.actor_avatar}" alt="avatar" width="50px" height="50px"/>
+                </div>
+                  <div class="flex flex-rows min-w-52">
+                    <div class="w-full text-xl weight-900 text-heading"> 
+                      @${message.actor}
+                    <div>
+                    <div class="w-full text-base text-body weight-600">
+                      ${message.description}
+                    </div>
+                    <div>
+                      <div class="w-full text-sm text-lighter text-normal">
+                        ${convertTime(message.timestamp)}
+                      </div>
+                    </div>
+                  </div>
+              <div/>
+            `,
+            actions: [
+              { label: 'View', class: 'bg-heading weight-900', handler: () => { this.$router.push('/notifications') } },
+              { label: 'Dismiss', color: 'white' }
+            ],
+          })
+        }
+        else if(data.type === 'message') {
+          this.$store.commit('setMessages', data.message)
+        }
+      }
+    },
+    alert() {
+      console.log('here')
+    }
   },
   components: { Sidebar, TopNav, BottomNav, Unauthenticated },
   watch: {

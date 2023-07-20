@@ -2536,6 +2536,10 @@
     cursor: pointer !important;
 }
 
+.cursor-zoom {
+    cursor:zoom-in !important;
+}
+
 .btn-transition {
     transition: all 0.2s ease-in-out !important;
 }

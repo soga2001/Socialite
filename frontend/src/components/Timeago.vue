@@ -53,9 +53,6 @@ export default defineComponent({
                 const date = format(posted_date, 'MMM dd, yyyy');
                 return date;
             }
-            
-
-            
         }
     },
     created() {

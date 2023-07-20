@@ -6,6 +6,7 @@ import { get_user_from_cookie } from './assets/userFromCookie';
 import Loading from './components/Loading.vue';
 import { http } from './assets/http';
 import { store } from './store/store';
+import { da } from 'date-fns/locale';
 
 
 export default defineComponent({
@@ -50,7 +51,8 @@ export default defineComponent({
         this.$store.commit('setLoading', false)
       }, 3000)
       // this.loading = false
-    }
+    },
+   
   },
   created() {
     this.checkOS()
@@ -63,6 +65,8 @@ export default defineComponent({
     window.onresize = this.checkOS
   },
   components: { Main, Loading },
+  watch: {
+  }
 })
 
 </script>

@@ -16,6 +16,7 @@ import createIntersectObserver from '@/assets/intersectionObserver'
 import SpillCard from './Cards/SpillCard.vue';
 import Favorite from './Buttons/Favorite.vue';
 
+import convertTime from '@/assets/convertTime';
 
 
 export default defineComponent({
@@ -33,7 +34,7 @@ export default defineComponent({
             user_id: this.post.user,
             img_url: this.post.img_url,
             caption: this.post.caption,
-            date_posted: this.post.date_posted,
+            date_posted: convertTime(this.post.date_posted),
             date_updated: this.post.date_posted,
             avatar: this.post.user_avatar,
             dropdown: false,
@@ -54,6 +55,8 @@ export default defineComponent({
             abbreviateLikes: AbbreviateNumber(this.post.total_likes) as Number,
             abbreviateComments: AbbreviateNumber(this.post.total_comments) as Number,
             abbreviateViews: AbbreviateNumber(0) as Number,
+
+            imgZoom: false,
 
         };
     },
@@ -144,6 +147,9 @@ export default defineComponent({
                 // })
                 this.total_views += 1;
             }, 1000);
+        },
+        focused() {
+            this.date_posted = convertTime(this.post.date_posted)
         }
         
     },
@@ -177,7 +183,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="grid rounded-none bg-theme bg-hover-mute pointer" @click="$router.push({name: 'view-spill', params: { user: username, post_id: id}})" v-if="!deleted">
+    <div @mousedown="focused" class="grid p-2 rounded-none bg-theme bg-hover-mute pointer" @click="$router.push({name: 'view-spill', params: { user: username, post_id: id}})" v-if="!deleted">
         <SpillCard class="w-full h-full relative">
             <template #avatar>
                 <q-avatar class="hover-darker relative pointer" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">
@@ -187,9 +193,9 @@ export default defineComponent({
             </template>
             <template #title>
                 <Item dense align-items="start">
-                    <template #title><span class="text-lg pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">@{{ username }}</span></template>
+                    <template #title><span class="text-xl pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">@{{ username }}</span></template>
                     <template #caption>
-                        <span><Timeago size="12px" :date="date_posted"/></span>
+                        <span>{{ date_posted }}</span>
                     </template>
                     <template #icon>
                         <div>
@@ -281,13 +287,15 @@ export default defineComponent({
 
             </template>
             <template #subtitle>
-                <div class="text-base w-fit" >
+                <div class="text-base w-fit " >
                     <MentionLink @click.stop="" :mention="caption"/>
                 </div>
             </template>
             <template #body>
                 <div class="w-full relative h-full">
-                    <img class="w-full relative" :src="img_url" alt="Spill image" loading="lazy"/>
+                    <!-- <img width="100%" height="300" class="w-full relative" :src="img_url" alt="Spill image" loading="lazy"/> -->
+                    <q-img @click.stop="imgZoom = true" class="rounded-sm cursor-zoom" :src="img_url"/>
+                    <zoomImg v-if="imgZoom" :img="img_url" :open="imgZoom" @update:open="imgZoom = $event" />
                 </div>
             </template>
             <template #actions>
@@ -373,6 +381,14 @@ export default defineComponent({
         </SpillCard>
     </div>
 </template>
+
+<style scoped lang="scss">
+
+.sub * {
+    white-space: pre;
+}
+
+</style>
 
 <!-- <template>
     <q-card ref="spill" id="spill"  class="grid rounded-none bg-theme bg-hover-mute pointer" @click="$router.push({name: 'view-spill', params: { user: username, post_id: id}})" v-if="!deleted">
