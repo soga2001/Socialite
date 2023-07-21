@@ -151,26 +151,50 @@ export default defineComponent({
             this.date_posted = convertTime(this.post.date_posted, 'short')
         },
 
-        divEnter() {
-            if(this.delayExit) {
-                clearTimeout(this.delayExit as number)
-            }
-            this.delayEnter = setTimeout(() => {
-                this.hovering = true;
-                this.delayEnter = null
-            }, 1000);
+        // divEnter() {
+        //     if(this.delayExit) {
+        //         clearTimeout(this.delayExit as number)
+        //     }
+        //     this.delayEnter = setTimeout(() => {
+        //         this.hovering = true;
+        //         this.delayEnter = null
+        //     }, 1000);
 
+        // },
+
+        // divExit() {
+        //     if(this.delayEnter ) {
+        //         clearTimeout(this.delayEnter as number)
+        //     }
+        //     this.delayExit = setTimeout(() => {
+        //         this.hovering = false;
+        //         this.delayExit = null
+        //     }, 500);
+
+        // },
+
+        divEnter() {
+            if (this.delayExit) {
+                clearTimeout(this.delayExit);
+            }
+            if (!this.hovering) { // Check if the menu is not already open
+                this.delayEnter = window.setTimeout(() => {
+                    this.hovering = true;
+                    this.delayEnter = null;
+                }, 700); // Add a delay before opening the menu (adjust this value as needed)
+            }
         },
 
         divExit() {
-            if(this.delayEnter) {
-                clearTimeout(this.delayEnter as number)
+            if (this.delayEnter) {
+                clearTimeout(this.delayEnter);
             }
-            this.delayExit = setTimeout(() => {
-                this.hovering = false;
-                this.delayExit = null
-            }, 500);
-
+            if (this.hovering) { // Check if the menu is currently open
+                this.delayExit = window.setTimeout(() => {
+                    this.hovering = false;
+                    this.delayExit = null;
+                }, 500); // Add a delay before closing the menu (adjust this value as needed)
+            }
         },
 
         closeMenu() {
@@ -220,10 +244,12 @@ export default defineComponent({
                 <Item dense align-items="start">
                     <template #title>
                         <div class="h-full min-w-full flex gap-1 items-center title">
-                            <div class="ellipsis" @mouseover="divEnter"  @mouseleave="divExit">
-                                <span  class="text-lg pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">{{post.user.first_name}} 
+                            <div class="ellipsis" >
+                                <span @mouseover="divEnter"  @mouseleave="divExit"  class="text-lg pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">{{post.user.first_name}} 
                                     {{ post.user.last_name }}
-                                    <q-menu
+                                </span>
+
+                                <q-menu
                                         v-model="hovering"
                                         class="bg-theme box-shadow-inset rounded-sm p-2"
                                         @mouseover="divEnter"
@@ -290,7 +316,6 @@ export default defineComponent({
                                             </div>
                                         </div>
                                     </q-menu>
-                                </span>
                             </div>
 
                             <span class="text-lighter weight-900">&#183;</span>
