@@ -74,7 +74,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="user__posted__main" id="main">
+    <div class="user__posted__main pb-2" id="main">
         <!-- <TransitionGroup name="slide" mode="out-in" tag="div">
                 
         </TransitionGroup> -->

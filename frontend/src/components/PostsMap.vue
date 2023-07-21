@@ -34,7 +34,8 @@ export default defineComponent({
             user_id: this.post.user,
             img_url: this.post.img_url,
             caption: this.post.caption,
-            date_posted: convertTime(this.post.date_posted),
+            date_posted: convertTime(this.post.date_posted, 'short'),
+            toolTip_date: convertTime(this.post.date_posted, 'absolute'),
             date_updated: this.post.date_posted,
             avatar: this.post.user_avatar,
             dropdown: false,
@@ -57,6 +58,12 @@ export default defineComponent({
             abbreviateViews: AbbreviateNumber(0) as Number,
 
             imgZoom: false,
+
+            hovering: false,
+
+            delayEnter: ref<number | null>(),
+            delayExit: ref<number | null>(),
+
 
         };
     },
@@ -137,19 +144,37 @@ export default defineComponent({
         viewed() {
             console.log(this.id)
             setTimeout(() => {
-                // http.post('posts/viewed/', {
-                //     post_id: this.id
-                // }, {
-                // }).then((res) => {
-                //     this.abbreviateViews = AbbreviateNumber(res.data.views);
-                // }).catch((err) => {
-                //     console.log(err)
-                // })
                 this.total_views += 1;
             }, 1000);
         },
         focused() {
-            this.date_posted = convertTime(this.post.date_posted)
+            this.date_posted = convertTime(this.post.date_posted, 'short')
+        },
+
+        divEnter() {
+            if(this.delayExit) {
+                clearTimeout(this.delayExit as number)
+            }
+            this.delayEnter = setTimeout(() => {
+                this.hovering = true;
+                this.delayEnter = null
+            }, 1000);
+
+        },
+
+        divExit() {
+            if(this.delayEnter) {
+                clearTimeout(this.delayEnter as number)
+            }
+            this.delayExit = setTimeout(() => {
+                this.hovering = false;
+                this.delayExit = null
+            }, 500);
+
+        },
+
+        closeMenu() {
+            // clearTimeout(this.delayTimeoutId as number)
         }
         
     },
@@ -193,13 +218,104 @@ export default defineComponent({
             </template>
             <template #title>
                 <Item dense align-items="start">
-                    <template #title><span class="text-xl pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">@{{ username }}</span></template>
-                    <template #caption>
-                        <span>{{ date_posted }}</span>
+                    <template #title>
+                        <div class="h-full min-w-full flex gap-1 items-center title">
+                            <div class="ellipsis" @mouseover="divEnter"  @mouseleave="divExit">
+                                <span  class="text-lg pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">{{post.user.first_name}} 
+                                    {{ post.user.last_name }}
+                                    <q-menu
+                                        v-model="hovering"
+                                        class="bg-theme box-shadow-inset rounded-sm p-2"
+                                        @mouseover="divEnter"
+                                        @mouseleave="divExit"
+                                        >
+                                        <div class="flex flex-col gap-1 min-w-68 p-2">
+                                            <Item dense class="p-0 m-0" avatar-size="5rem" align-items="start">
+                                                <template #avatar >
+                                                    <q-avatar size="5rem">
+                                                        <img :src="avatar" alt="User Avatar" />   
+                                                    </q-avatar>
+                                                </template>
+
+
+                                                <template #icon>
+                                                    <button class="border bg-transparent text-lg p-2">
+                                                        Placeholder
+                                                    </button>
+                                                </template>
+                                            </Item>
+                                            <div>
+                                                <Item dense>
+                                                    <template #title>
+                                                        <div class="text-2xl weight-900 hover-underline pointer" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">{{ post.user.first_name }} {{ post.user.last_name }}</div>
+                                                    </template>
+                                                    <template #caption>
+                                                        <div class="text-base weight-700 w-fit text-lighter" >
+                                                            @{{username}}
+                                                        </div>
+                                                    </template>
+                                                </Item>
+                                            </div>
+                                            <div>
+                                                <Item dense>
+                                                    <template #title>
+                                                        <div class="text-base weight-900">{{ post.user.bio }}</div>
+                                                    </template>
+                                                </Item>
+                                            </div>
+                                            <div>
+                                                <Item dense>
+                                                    <template #title>
+                                                        <div class="text-base weight-900 flex gap-2 w-full">
+                                                            <div>
+                                                                <span class="text-base weight-900">
+                                                                    {{ post.user.total_followers  }}
+                                                                </span>
+                                                                <span class="text-lighter">
+                                                                    Followers
+                                                                </span>
+                                                            </div>
+
+                                                            <div>
+                                                                <span class="text-base weight-900">
+                                                                    {{ post.user.total_following  }}
+                                                                </span>
+                                                                <span class="text-lighter">
+                                                                    Following
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </Item>
+                                            </div>
+                                        </div>
+                                    </q-menu>
+                                </span>
+                            </div>
+
+                            <span class="text-lighter weight-900">&#183;</span>
+
+                            <div>
+                                <div class="ellipsis">
+                                    <span class="text-lg pointer hover-underline text-lighter weight-500" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">@{{ username }} </span>
+                                </div>
+                            </div>
+
+                            <span class="text-lighter weight-900">&#183;</span>
+
+                            <div class="ellipsis">
+                                <span class="text-lg text-lighter weight-500 hover-underline">{{ date_posted }}</span>
+                                <q-tooltip>
+                                    <span class="text-base " v-html="toolTip_date"></span>
+                                </q-tooltip>
+                            </div>
+                            
+                        </div>
+
                     </template>
                     <template #icon>
                         <div>
-                            <q-btn @click.stop="dropdown = !dropdown" size="13px" class="more__vert" flat round icon="more_horiz" />
+                            <q-btn @click.stop="dropdown = !dropdown" size="10px" class="more__vert" flat round icon="more_horiz" />
                             <q-menu class="dropdown bg-theme-soft" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
                                 <q-list class="more__option box-shadow" >
                                     <q-item clickable v-close-popup @click="report = true" v-if="username !== $store.state.user.username">
@@ -285,6 +401,15 @@ export default defineComponent({
                     </template>
                 </Item>
 
+                <!-- <div class="grid">
+                    <div class="h-full flex gap-1 items-center">
+                        <span class="text-xl pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">Suyogya Poudel</span>
+                        <span class="text-lighter weight-900">&#183</span>
+                        <span class="text-base pointer hover-underline text-lighter weight-500" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">@{{ username }}</span>
+                        <span class="text-lighter weight-500">&#183</span>
+                        <span class="text-base text-lighter weight-500">{{ date_posted }}</span>
+                    </div>
+                </div> -->
             </template>
             <template #subtitle>
                 <div class="text-base w-fit " >
@@ -293,8 +418,7 @@ export default defineComponent({
             </template>
             <template #body>
                 <div class="w-full relative h-full">
-                    <!-- <img width="100%" height="300" class="w-full relative" :src="img_url" alt="Spill image" loading="lazy"/> -->
-                    <q-img @click.stop="imgZoom = true" class="rounded-sm cursor-zoom" :src="img_url"/>
+                    <q-img @click.stop="imgZoom = true" class="rounded-sm cursor-zoom img" :src="img_url"/>
                     <zoomImg v-if="imgZoom" :img="img_url" :open="imgZoom" @update:open="imgZoom = $event" />
                 </div>
             </template>
@@ -384,9 +508,34 @@ export default defineComponent({
 
 <style scoped lang="scss">
 
-.sub * {
-    white-space: pre;
+
+
+.title  {
+
+    min-width: 100%;
+
+    > :first-child {
+        max-width: 40%;
+    }
+
+
+    :nth-child(3) {
+        max-width: 30%;
+    }
+
+    > :last-child {
+        max-width: 20%;
+    }
 }
+
+
+.symbol {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--color-text);
+}
+
+
 
 </style>
 

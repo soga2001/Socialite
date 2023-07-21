@@ -25,13 +25,14 @@ export interface Post{
     id: string,
     username: string,
     user_avatar: string,
-    user: number,
+    // user: number,
     img_url: string,
     caption: string,
     date_posted: string,
     date_updated: string,
     total_likes: number,
     total_comments: number,
+    user: User,
 }
 
 export interface Comment{

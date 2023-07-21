@@ -59,7 +59,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="user__liked__main">
+    <div class="user__liked__main pb-2">
         <!-- <TransitionGroup name="slide" mode="out-in" tag="div">
                 
         </TransitionGroup> -->

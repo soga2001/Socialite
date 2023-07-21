@@ -45,7 +45,7 @@ export default defineComponent({
     const element = (document.getElementById("main-div") as HTMLDivElement)
     element.addEventListener("scroll", this.scroll)
     if(this.$refs.bottomBar) {
-      this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 10
+      this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 0
 
     }
     this.websocketOpen()

@@ -29,6 +29,8 @@ export default defineComponent({
             persistent: false,
             report: false,
             reason: '',
+
+            imgZoom: false,
         };
     },
     created() {
@@ -294,8 +296,9 @@ export default defineComponent({
                         </template>
                     </Item>
                 </div>
-                <div class="w-full p-1">
-                    <q-img class="w-full rounded border" :src="spill.img_url" />
+                <div class="w-full p-2">
+                    <q-img @click="imgZoom = true" class="w-full rounded border" :src="spill.img_url" />
+                    <zoomImg v-if="imgZoom" :img="spill.img_url" :open="imgZoom" @update:open="imgZoom = $event"/>
                 </div>
                 <hr class="m-2"/>
                 <div class="flex flex-row p-3 gap-5 text-base">

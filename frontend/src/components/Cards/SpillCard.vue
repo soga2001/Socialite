@@ -30,14 +30,14 @@ export default defineComponent({
         <div class="avatar col-1" :style="avatarStyle" v-if="$slots.avatar">
             <slot name="avatar" />
         </div>
-        <div class="col-2 grid gap-2">
+        <div class="col-2 grid">
             <div class="w-full">
                 <slot name="title"/>
             </div>
             <div class="w-full sub">
                 <slot name="subtitle"/>
             </div>
-            <div class="w-full body ">
+            <div class="w-full body py-2">
                 <slot name="body"/>
             </div>
             <div class="w-full action">
