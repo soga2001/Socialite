@@ -7,6 +7,7 @@ export interface User{
     is_active: boolean,
     is_staff: boolean,
     is_superuser: boolean,
+    is_following: boolean,
     last_login: string,
     groups: string[],
     user_permissions: string[],
@@ -33,6 +34,7 @@ export interface Post{
     total_likes: number,
     total_comments: number,
     user: User,
+    user_has_liked: boolean,
 }
 
 export interface Comment{

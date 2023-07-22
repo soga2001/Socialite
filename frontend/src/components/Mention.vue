@@ -4,6 +4,7 @@ import { http } from '@/assets/http';
 import type { User } from '@/assets/interfaces';
 import Item from './Item.vue';
 import getCaretCoordinates from '@/assets/caretCoord'
+import createIntersectionObserver from '@/assets/intersectionObserver';
 
 
 export default defineComponent({
@@ -18,6 +19,11 @@ export default defineComponent({
             savedUsers: new Map<string, Array<User>>(),
 
             caretPosition: {top: 0, height: 0},
+            hasResults: false,
+
+            isResultsCloseToBottom: false,
+            top: '0px',
+            bottom: '0px',
         }
     },
     props: {
@@ -190,6 +196,10 @@ export default defineComponent({
               console.log(err);
         });
         return tempUsers
+      },
+      divPosition(e: any) {
+        console.log(e.isIntersecting)
+
       }
       
     },
@@ -204,6 +214,31 @@ export default defineComponent({
         this.charsLeft = (val.trimStart(" ")).length
         this.emitData()
       },
+      users(users) {
+        if(users.length > 0) {
+          this.hasResults = true
+        }
+        else {
+          this.hasResults = false
+        }
+      },
+      async caretPosition(caretPosition) {
+        await this.$nextTick()
+        if(caretPosition.top){
+          const resultsPosition = (this.$refs.results as HTMLElement).getBoundingClientRect();
+
+          this.isResultsCloseToBottom = resultsPosition.top + resultsPosition.height <= document.body.clientHeight;
+
+          if (this.isResultsCloseToBottom) {
+            this.top = `${caretPosition.top + caretPosition.height}px`;
+            this.bottom = 'auto';
+          } else {
+            this.top = 'auto';
+            this.bottom = `${document.body.clientHeight - caretPosition.top}px`;
+          }
+
+        }
+      }
     }
 })
 
@@ -213,11 +248,10 @@ export default defineComponent({
   <div class="main">
     <div class="wave-group">
         <textarea ref="textarea" :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars"  @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input"/>
-        <div :style="{ top: (caretPosition.top + caretPosition.height <= ($refs.textarea as HTMLInputElement).offsetHeight) ? `${caretPosition.top + caretPosition.height}px` : (($refs.textarea as HTMLInputElement).offsetHeight) + 'px' }" class="results box-shadow-soft flex flex-col shrink rounded-sm" v-if="users.length">
-          <div @click="replaceMention(user.username)" class="result__map pointer" v-for="user in users" :key="user.id">
+        <div v-if="caretPosition.top" ref="results" :style="{ top: (caretPosition.top + caretPosition.height <= ($refs.textarea as HTMLInputElement).offsetHeight) ? `${caretPosition.top + caretPosition.height}px` : (($refs.textarea as HTMLInputElement).offsetHeight) + 'px' }" class="results box-shadow-soft flex flex-col shrink rounded-sm">
+          <div v-if="users.length > 0"  @click="replaceMention(user.username)" class="result__map pointer" v-for="user in users" :key="user.id">
             <Item class="bg-hover-mute" avatarSize="3.5rem">
                 <template #avatar>
-                    <!-- <img src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" /> -->
                     <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
                     <q-icon size="50px" v-else name="account_circle" class="rounded-full" />
                 </template>
@@ -227,7 +261,14 @@ export default defineComponent({
                 <template #caption>@{{ user.username }}</template>
             </Item>
           </div>
-      </div>
+        </div>  
+        <!-- <div class="relative">
+          <q-menu :autoClose="false" no-focus v-model="hasResults">
+            <div>
+              Hello
+            </div>
+          </q-menu>
+        </div> -->
     </div>
   </div>
 </template>

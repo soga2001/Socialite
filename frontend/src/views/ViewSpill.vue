@@ -2,16 +2,12 @@
 import { http } from '@/assets/http';
 import type { Post, Comment } from '@/assets/interfaces';
 import PostsMap from '@/components/PostsMap.vue';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { AbbreviateNumber } from '@/assets/abbreviate';
+import convertTime from '@/assets/convertTime';
 
 export default defineComponent({
     name: "view-spill",
-    props: {
-        propSpill: {
-            type: Object as () => Post,
-        },
-    },
     data() {
         return {
             spill: {} as Post,
@@ -23,6 +19,7 @@ export default defineComponent({
 
             loading_comments: true,
             date: new Date(),
+            date_posted: '',
             page: 0,
             websocket: new WebSocket(`wss://localhost:8000/ws/spill/${this.$route.params.post_id}/`),
             dropdown: false,
@@ -31,6 +28,12 @@ export default defineComponent({
             reason: '',
 
             imgZoom: false,
+
+            hovering: false,
+
+            delayEnter: ref<number | null>(),
+            delayExit: ref<number | null>(),
+            toolTip_date: '',
         };
     },
     created() {
@@ -41,9 +44,13 @@ export default defineComponent({
         async getSpill() {
             this.loading_post = true;
             await http.get(`posts/post_by_id/${this.$route.params.post_id}/`).then((res) => {
+                console.log(res.data.spill)
                 this.spill = res.data.spill;
+                this.date_posted = convertTime(this.spill.date_posted, 'short')
+                this.toolTip_date = convertTime(this.spill.date_posted, 'absolute')
                 this.total_likes = this.spill.total_likes;
-                this.checkLiked();
+                this.liked = this.spill.user_has_liked
+                // this.checkLiked();
             }).catch((err) => {
             });
             this.loading_post = false;
@@ -142,6 +149,29 @@ export default defineComponent({
         deletePost() {
 
         },
+        divEnter() {
+            if (this.delayExit) {
+                clearTimeout(this.delayExit);
+            }
+            if (!this.hovering) { // Check if the menu is not already open
+                this.delayEnter = window.setTimeout(() => {
+                    this.hovering = true;
+                    this.delayEnter = null;
+                }, 700); // Add a delay before opening the menu (adjust this value as needed)
+            }
+        },
+
+        divExit() {
+            if (this.delayEnter) {
+                clearTimeout(this.delayEnter);
+            }
+            if (this.hovering) { // Check if the menu is currently open
+                this.delayExit = window.setTimeout(() => {
+                    this.hovering = false;
+                    this.delayExit = null;
+                }, 500); // Add a delay before closing the menu (adjust this value as needed)
+            }
+        },
     },
     mounted() {
         this.websocketOpen()
@@ -187,23 +217,109 @@ export default defineComponent({
             </header>
             <div v-if="!loading_post" class="">
                 <div>
-                    <Item>
+                    <Item align-items="start" avatar-size="3.5rem">
                         <template #avatar>
-                            <div class="hover-darker pointer" @click.stop="$router.push({name: 'user-profile', params: { username: spill.username }})">
-                                <img v-if="spill.user_avatar" :src="spill.user_avatar" alt="John Doe" class="rounded-full" />
+                            <div class="hover-darker pointer" @click.stop="$router.push({name: 'user-profile', params: { username: spill.user.username }})">
+                                <img v-if="spill.user.avatar" :src="spill.user.avatar" alt="User Avatar" class="rounded-full" />
                                 <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                             </div>
                         </template>
-                        <template #title><span class="text-xl pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: spill.username }})">@{{ spill.username }}</span></template>
+                        <template #title>
+                        <div class="h-full min-w-full flex gap-1 items-center title">
+                            <div class="ellipsis" >
+                                <span @mouseover="divEnter"  @mouseleave="divExit"  class="text-lg pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: spill.user.username }})">{{spill.user.first_name}} 
+                                    {{ spill.user.last_name }}
+                                </span>
+
+                                <q-menu
+                                    v-model="hovering"
+                                    class="bg-theme border rounded-sm px-2 pt-1 pb-3 max-w-68"
+                                    @mouseover="divEnter"
+                                    @mouseleave="divExit"
+                                    >
+                                    <div class="flex flex-col gap-3 p-2">
+                                        <Item dense class="p-0 m-0" avatar-size="5rem" align-items="start">
+                                            <template #avatar >
+                                                <q-avatar class="hover-darker pointer" size="5rem">
+                                                    <img @click.stop="$router.push({name: 'user-profile', params: { username: spill.user.username }})" class="dark-hover" :src="spill.user.avatar" alt="User Avatar" />   
+                                                </q-avatar>
+                                            </template>
+
+
+                                            <template #icon>
+                                                <button v-if="$store.state.user.id != spill.user.id" :class="{'followed': spill.user.is_following}" class="border w-8 pointer bg-hover-mute rounded-lg px-4 py-2 text-heading text-lg bg-theme weight-900" @click="" :disabled="!$store.state.authenticated">
+                                                    <span v-if="spill.user.is_following" class=" weight-900">Following</span>
+                                                    <span v-else class=" weight-900">Follow</span>
+                                                </button>
+                                            </template>
+                                        </Item>
+                                        <div>
+                                            <Item dense>
+                                                <template #title>
+                                                    <div class="text-2xl weight-900 hover-underline pointer" @click.stop="$router.push({name: 'user-profile', params: { username: spill.user.username }})">{{ spill.user.first_name }} {{ spill.user.last_name }}</div>
+                                                </template>
+                                                <template #caption>
+                                                    <div class="text-base weight-700 w-fit text-lighter wrap" >
+                                                        @{{spill.user.username}}
+                                                    </div>
+                                                </template>
+                                            </Item>
+                                        </div>
+                                        <div>
+                                            <div :style="{wordWrap: 'break-word'}" class="text-base weight-900 no-wrap">{{ spill.user.bio }}</div>
+                                        </div>
+                                        <div>
+                                            <Item dense>
+                                                <template #title>
+                                                    <div class="text-base weight-900 flex gap-2 w-full">
+                                                        <div>
+                                                            <span class="text-base weight-900">
+                                                                {{ spill.user.total_followers  }}
+                                                            </span>
+                                                            <span class="text-lighter">
+                                                                Followers
+                                                            </span>
+                                                        </div>
+
+                                                        <div>
+                                                            <span class="text-base weight-900">
+                                                                {{ spill.user.total_following  }}
+                                                            </span>
+                                                            <span class="text-lighter">
+                                                                Following
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </Item>
+                                        </div>
+                                    </div>
+                                </q-menu>
+                            </div>
+                        </div>
+
+                        </template>
+
                         <template #caption>
-                            <Timeago size="12px" :date="spill.date_posted"/>
+                            <!-- <div class="ellipsis">
+                                <span class="text-lg text-lighter weight-500 hover-underline">{{ date_posted }}</span>
+                                <q-tooltip class="bg-theme box-shadow">
+                                    <span class="text-sm " v-html="toolTip_date"></span>
+                                </q-tooltip>
+                            </div> -->
+
+                            <div>
+                                <div class="ellipsis">
+                                    <span class="text-lg pointer hover-underline text-lighter weight-500" @click.stop="$router.push({name: 'user-profile', params: { username: spill.user.username }})">@{{ spill.user.username }} </span>
+                                </div>
+                            </div>
                         </template>
                         <template #icon>
                             <div>
                                 <q-btn @click.stop="dropdown = !dropdown" size="13px" class="more__vert" flat round icon="more_horiz" />
-                                <q-menu class="dropdown" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
+                                <q-menu class="dropdown bg-theme border" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
                                     <q-list class="more__option">
-                                        <q-item clickable v-close-popup @click="report = true" v-if="spill.username !== $store.state.user.username">
+                                        <q-item clickable v-close-popup @click="report = true" v-if="spill.user.username !== $store.state.user.username">
                                             <q-item-section avatar>
                                                 <q-icon class="danger__icon" name="flag"/>
                                             </q-item-section>

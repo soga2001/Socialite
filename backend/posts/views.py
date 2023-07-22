@@ -91,7 +91,7 @@ class Post_Content(APIView):
             async_to_sync(channel_layer.group_send)(group_name, {
                 "type": "user_update",
                 "updateType": 'posted',
-                "message": json.dumps(PostSerializer(post).data)
+                "message": json.dumps(PostSerializer(post, context={'request': request}).data)
             })
             # return JsonResponse({"success": True, "post": PostSerializer(post).data}, safe=False)
             return JsonResponse({"error": False}, safe=False)
@@ -116,8 +116,14 @@ class Post_Content(APIView):
 @api_view(["GET"])
 def view_posts(request, timestamp, page):
     offset = int(page) * 5
-    posts = PostSerializer(Post.objects.filter(date_posted__lt=timestamp)[offset:offset+5], many=True)
-    return JsonResponse({"posts": posts.data}, safe=False)
+    try:
+        post = Post.objects.filter(date_posted__lt=timestamp)[offset:offset+5]
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+    print(request.user)
+    serializer = PostSerializer(post, context={'request': request}, many=True)
+    return JsonResponse({"posts": serializer.data}, status=200)
 
 
 @api_view(["GET"])
@@ -127,8 +133,9 @@ def post_by_followed_users(request, timestamp, page):
     try:
         followed_list = request.user.following.values_list('followed_user_id', flat=True)
         offset = int(page) * 10
-        posts = PostSerializer(Post.objects.filter(user__in=followed_list).filter(date_posted__lt=timestamp)[offset:offset+10], many=True)
+        posts = Post.objects.filter(user__in=followed_list).filter(date_posted__lt=timestamp)[offset:offset+10]
         if posts:
+            posts = PostSerializer(posts, context={'request': request}, many=True)
             return JsonResponse({"posts": posts.data}, safe=False)
         else:
             if offset == 0:
@@ -139,26 +146,36 @@ def post_by_followed_users(request, timestamp, page):
 
 @api_view(["GET"])
 def explore(request, offset):
+    # offset = int(offset) * 5
+    # posts = PostSerializer(Post.objects.all()[offset:offset+10], many=True)
+    # if(posts.is_valid()):
+    #     return JsonResponse({"posts": posts.data}, safe=False)
+    # return JsonResponse({'error': True}, stats=500)
+
     offset = int(offset) * 5
-    posts = PostSerializer(Post.objects.all()[offset:offset+10], many=True)
-    return JsonResponse({"posts": posts.data}, safe=False)
-    # offset = int(offset)
-    # posts = Post.objects.annotate(total_likes=Count('post_likes'), total_comments=Count('post_comments')).order_by('-total_likes', '-total_comments')[offset*10:10]
-    # posts = PostSerializer(posts, many=True)
-    # return JsonResponse({"success": True, "posts": posts.data})
+    try:
+        # post = Post.objects.filter(date_posted__lt=timestamp)[offset:offset+5]
+        post = Post.objects.all()[offset:offset+10]
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+
+    serializer = PostSerializer(post, context={'request': request}, many=True)
+    return JsonResponse({"posts": serializer.data}, status=200)
 
 
 
 @api_view(["GET"])
 def user_posted(request, timestamp, page, username):
-    posts = PostSerializer(Post.objects.filter(user__username=username).filter(date_posted__lt=timestamp)[:10], many=True)
+    print('here')
+    posts = PostSerializer(Post.objects.filter(user__username=username).filter(date_posted__lt=timestamp)[:10], context={'request': request}, many=True)
     return JsonResponse({"posts": list(posts.data)}, safe=False)
 
 
 @api_view(["GET"])
 def view_post_by_id(request, post_id):
     try:
-        post = PostSerializer(Post.objects.get(pk=post_id))
+        post = PostSerializer(Post.objects.get(pk=post_id), context={'request': request})
         return JsonResponse({"post": post.data})
     except:
         return JsonResponse({"error": True, "message": "Post not found."})
@@ -180,7 +197,7 @@ def total_user_posted(request, user_id):
 def get_post_by_id(request, post_id):
     try:
         spill = Post.objects.get(pk=post_id)
-        return JsonResponse({"spill": PostSerializer(spill).data}, status=200)
+        return JsonResponse({"spill": PostSerializer(spill, context={'request': request}).data}, status=200)
     except DatabaseError as e:
         return JsonResponse({"error": True}, status=status.HTTP_404_NOT_FOUND)
     except:

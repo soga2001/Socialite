@@ -1,6 +1,7 @@
 type IntersectionCallback = (entry: IntersectionObserverEntry) => void;
 type NotIntersectingCallback = (entry: IntersectionObserverEntry) => void;
 
+
 // Create a reusable Intersection Observer function
 function createIntersectionObserver(
   target: Element,

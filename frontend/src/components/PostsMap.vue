@@ -31,7 +31,8 @@ export default defineComponent({
         return {
             id: this.post.id,
             username: this.post.username,
-            user_id: this.post.user,
+            user: this.post.user,
+            // user_id: this.post.user,
             img_url: this.post.img_url,
             caption: this.post.caption,
             date_posted: convertTime(this.post.date_posted, 'short'),
@@ -52,6 +53,8 @@ export default defineComponent({
             reason: ref(""),
             moment: moment,
             showComments: false,
+
+            is_following: this.post.user.is_following,
 
             abbreviateLikes: AbbreviateNumber(this.post.total_likes) as Number,
             abbreviateComments: AbbreviateNumber(this.post.total_comments) as Number,
@@ -203,6 +206,7 @@ export default defineComponent({
         
     },
     created() {
+        console.log(this.is_following)
     },
     async mounted() {
         await this.$nextTick()
@@ -250,88 +254,85 @@ export default defineComponent({
                                 </span>
 
                                 <q-menu
-                                        v-model="hovering"
-                                        class="bg-theme box-shadow-inset rounded-sm p-2"
-                                        @mouseover="divEnter"
-                                        @mouseleave="divExit"
-                                        >
-                                        <div class="flex flex-col gap-1 min-w-68 p-2">
-                                            <Item dense class="p-0 m-0" avatar-size="5rem" align-items="start">
-                                                <template #avatar >
-                                                    <q-avatar size="5rem">
-                                                        <img :src="avatar" alt="User Avatar" />   
-                                                    </q-avatar>
+                                    v-model="hovering"
+                                    class="bg-theme border rounded-sm px-2 pt-1 pb-3 max-w-68"
+                                    @mouseover="divEnter"
+                                    @mouseleave="divExit"
+                                    >
+                                    <div class="flex flex-col gap-3 p-2">
+                                        <Item dense class="p-0 m-0" avatar-size="5rem" align-items="start">
+                                            <template #avatar >
+                                                <q-avatar size="5rem">
+                                                    <img :src="avatar" alt="User Avatar" />   
+                                                </q-avatar>
+                                            </template>
+
+
+                                            <template #icon>
+                                                <button v-if="$store.state.user.id != user.id" :class="{'followed': is_following}" class="border w-8 pointer bg-hover-mute rounded-lg px-4 py-2 text-heading text-lg bg-theme weight-900" @click="" :disabled="!$store.state.authenticated">
+                                                    <span v-if="is_following" class=" weight-900">Following</span>
+                                                    <span v-else class=" weight-900">Follow</span>
+                                                </button>
+                                            </template>
+                                        </Item>
+                                        <div>
+                                            <Item dense>
+                                                <template #title>
+                                                    <div class="text-2xl weight-900 hover-underline pointer" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">{{ user.first_name }} {{ user.last_name }}</div>
                                                 </template>
-
-
-                                                <template #icon>
-                                                    <button class="border bg-transparent text-lg p-2">
-                                                        Placeholder
-                                                    </button>
+                                                <template #caption>
+                                                    <div class="text-base weight-700 w-fit text-lighter wrap" >
+                                                        @{{user.username}}
+                                                    </div>
                                                 </template>
                                             </Item>
-                                            <div>
-                                                <Item dense>
-                                                    <template #title>
-                                                        <div class="text-2xl weight-900 hover-underline pointer" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">{{ post.user.first_name }} {{ post.user.last_name }}</div>
-                                                    </template>
-                                                    <template #caption>
-                                                        <div class="text-base weight-700 w-fit text-lighter" >
-                                                            @{{username}}
-                                                        </div>
-                                                    </template>
-                                                </Item>
-                                            </div>
-                                            <div>
-                                                <Item dense>
-                                                    <template #title>
-                                                        <div class="text-base weight-900">{{ post.user.bio }}</div>
-                                                    </template>
-                                                </Item>
-                                            </div>
-                                            <div>
-                                                <Item dense>
-                                                    <template #title>
-                                                        <div class="text-base weight-900 flex gap-2 w-full">
-                                                            <div>
-                                                                <span class="text-base weight-900">
-                                                                    {{ post.user.total_followers  }}
-                                                                </span>
-                                                                <span class="text-lighter">
-                                                                    Followers
-                                                                </span>
-                                                            </div>
-
-                                                            <div>
-                                                                <span class="text-base weight-900">
-                                                                    {{ post.user.total_following  }}
-                                                                </span>
-                                                                <span class="text-lighter">
-                                                                    Following
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </template>
-                                                </Item>
-                                            </div>
                                         </div>
-                                    </q-menu>
+                                        <div>
+                                            <div :style="{wordWrap: 'break-word'}" class="text-base weight-900 no-wrap">{{ post.user.bio }}</div>
+                                        </div>
+                                        <div>
+                                            <Item dense>
+                                                <template #title>
+                                                    <div class="text-base weight-900 flex gap-2 w-full">
+                                                        <div>
+                                                            <span class="text-base weight-900">
+                                                                {{ user.total_followers  }}
+                                                            </span>
+                                                            <span class="text-lighter">
+                                                                Followers
+                                                            </span>
+                                                        </div>
+
+                                                        <div>
+                                                            <span class="text-base weight-900">
+                                                                {{ user.total_following  }}
+                                                            </span>
+                                                            <span class="text-lighter">
+                                                                Following
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </Item>
+                                        </div>
+                                    </div>
+                                </q-menu>
                             </div>
 
                             <span class="text-lighter weight-900">&#183;</span>
 
                             <div>
                                 <div class="ellipsis">
-                                    <span class="text-lg pointer hover-underline text-lighter weight-500" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">@{{ username }} </span>
+                                    <span class="text-lg pointer hover-underline text-lighter weight-500" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">@{{ user.username }} </span>
                                 </div>
                             </div>
 
                             <span class="text-lighter weight-900">&#183;</span>
 
-                            <div class="ellipsis">
+                            <div class="ellipsis ">
                                 <span class="text-lg text-lighter weight-500 hover-underline">{{ date_posted }}</span>
-                                <q-tooltip>
-                                    <span class="text-base " v-html="toolTip_date"></span>
+                                <q-tooltip class="bg-theme box-shadow">
+                                    <span class="text-sm " v-html="toolTip_date"></span>
                                 </q-tooltip>
                             </div>
                             
@@ -560,6 +561,43 @@ export default defineComponent({
     color: var(--color-text);
 }
 
+
+// .followed {
+//     transition: .1s ease-in;
+
+//     :hover {
+//         border: 1px solid red !important;
+//         background-color: rgba(255, 0, 0, .1) !important;
+
+//         span {
+//             display: none;
+//         }
+
+//         ::before {
+//             content: 'Unfollow';
+//             color: red;
+//             font-weight: 900;
+//             transition: opacity 0.3s ease-in-out;
+//         }
+//     }
+// }
+
+.followed:hover span {
+    display: none;
+}
+
+.followed:hover {
+    border: 1px solid red !important;
+    background-color: rgba(255, 0, 0, .1) !important;
+}
+
+.followed:hover::before {
+    content: 'Unfollow';
+    // font-size: 20px;
+    color: red;
+    font-weight: 900;
+    transition: opacity 0.3s ease-in-out;
+}
 
 
 </style>

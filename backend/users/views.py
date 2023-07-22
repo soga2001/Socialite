@@ -1,4 +1,5 @@
 from django.forms import ImageField
+from django.shortcuts import get_object_or_404
 from backend.authenticate import *
 # From Django
 from django.conf import settings
@@ -12,7 +13,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.db.models import F
 
-from django.contrib.postgres.search import TrigramSimilarity, TrigramDistance
+from django.contrib.postgres.search import TrigramSimilarity, TrigramDistance, TrigramWordSimilarity
 from django.db.models import Q
 
 
@@ -76,23 +77,19 @@ def user_by_id(request, user_id):
 @api_view(["GET"])
 def user_by_username(request, username, multiple = True):
     try:
-        if multiple == True:
-            users_data = UserSerializer(User.objects.filter(username__icontains=username), many=True).data
-            # print(users_data)
-            # users = User.objects.annotate(similarity=TrigramSimilarity('username', username)).filter(similarity__gte=0.2).order_by('-similarity')
-            # print(users)
-            # users = User.objects.filter(username__icontains=username)
-            # search_indexes = TrigramSimilarity('username', username) + TrigramSimilarity('bio', username) + TrigramSimilarity('first_name', username) + TrigramSimilarity('last_name', username)
-            # users = User.objects.annotate(similarity=TrigramSimilarity('username', username)).filter(similary_gt=0).order_by('-similarity')
-            # users_data = UserSerializer(users).data
-            # print(users_data)
+        if(multiple == True):
+            users_data = User.objects.filter(username__icontains=username)
+            users_data = UserSerializer(users_data, many=True).data
         else:
-            user = User.objects.get(username=username)
-            users_data = UserSerializer(user).data
+            users_data = User.objects.get(username=username)
+            users_data = UserSerializer(users_data).data
+        if(len(users_data) == 0):
+            return JsonResponse({"error": "User does not exist"}, status=404)
         return JsonResponse({"success": True, "users": users_data})
     except User.DoesNotExist:
         return JsonResponse({"error": "User does not exist"}, status=404)
-    except:
+    except Exception as e:
+        print(e)
         return JsonResponse({"error": "An error occurred"}, status=500)
 
 

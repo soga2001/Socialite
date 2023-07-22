@@ -1,8 +1,11 @@
 from rest_framework import serializers
 # from django.contrib.auth.models import User
 from users.models import User
+from following.models import UserFollowing
 
 class UserSerializer(serializers.ModelSerializer):
+
+
     class Meta:
         model = User
         fields = '__all__'
@@ -14,6 +17,8 @@ class UserSerializer(serializers.ModelSerializer):
     total_followers = serializers.SerializerMethodField()
     total_following = serializers.SerializerMethodField()
 
+    is_following = serializers.SerializerMethodField()
+
 
     def get_total_posted(self, obj):
         return obj.user_posted.count()
@@ -23,4 +28,18 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_total_following(self, obj):
         return obj.following.count()
-        # return obj.following.filter(following_user=self).count()
+
+    def get_is_following(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            user = request.user
+            print(user, obj)
+            return UserFollowing.objects.filter(following_user=user, followed_user=obj).exists()
+        return False
+
+    # def to_representation(self, instance):
+    #     data = super(UserSerializer, self).to_representation(instance)
+    #     request = self.context.get('request')
+    #     if not request or not request.user.is_authenticated:
+    #         data['is_following'] = False
+    #     return data
