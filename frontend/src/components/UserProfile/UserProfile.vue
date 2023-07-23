@@ -30,9 +30,9 @@ export default defineComponent({
             posts: this.user.total_posted,
             followers: this.user.total_followers,
             following: this.user.total_following,
-            followed: false,
+            followed: this.user.is_following,
             date_joined: this.user.date_joined,
-            loading: true,
+            is_current_user: this.user.is_current_user,
 
             showAvatar: false,
             showBanner: false,
@@ -92,7 +92,7 @@ export default defineComponent({
         },
         async if_followed() {
             if (!this.$store.state.authenticated) {
-                this.loading = false
+                // this.loading = false
                 return;
             }
             await http.get(`follow/get_if_followed/${this.id}/`, {
@@ -102,7 +102,7 @@ export default defineComponent({
             }).catch((err) => {
                 this.followed = false;
             });
-            this.loading = false
+            // this.loading = false
         },
 
         getFollowers() {
@@ -264,7 +264,7 @@ export default defineComponent({
         }
     },
     created() {
-        this.if_followed();
+        // this.if_followed();
         
     },
     async mounted() {
@@ -310,14 +310,14 @@ export default defineComponent({
                 <zoomImg v-if="zoomBanner" :img="banner" :open="zoomBanner" @update:open="zoomBanner = $event"/>
 
                 <div class="edit-profile text-base w-full h-fit flex justify-end p-2">
-                    <button class="border pointer bg-hover rounded-lg text-heading bg-theme weight-900" v-if="followed && !loading">
+                    <button class="border pointer bg-hover rounded-lg text-heading bg-theme weight-900" v-if="followed">
                         <q-icon size="1.5rem" name="more_horiz" />
                     </button>
-                    <button class="border pointer bg-hover rounded-lg text-heading bg-theme weight-900" v-if="followed && !loading">
+                    <button class="border pointer bg-hover rounded-lg text-heading bg-theme weight-900" v-if="followed">
                         <q-icon size="1.5rem" name="notifications" />
                     </button>
-                    <button v-if="$store.state.authenticated && $store.state.user.id == id" class="border pointer bg-hover rounded-lg px-6 text-heading bg-theme weight-900" @click="editProfile = true">Edit Profile</button>
-                    <button v-if="$store.state.user.id != id && !loading" :class="{'followed': followed}" class="border w-8 pointer bg-hover rounded-lg px-6 text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated || loading_follow_request">
+                    <button v-if="is_current_user" class="border pointer bg-hover rounded-lg px-6 text-heading bg-theme weight-900" @click="editProfile = true">Edit Profile</button>
+                    <button v-if="!is_current_user" :class="{'followed': followed}" class="border w-8 pointer bg-hover rounded-lg px-6 text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated || loading_follow_request">
                         <span class="weight-900"  v-if="!loading_follow_request">{{ followed ? 'Following' : 'Follow' }}</span>
                         <span class="p-0" v-if="loading_follow_request">
                             <Loading size="1.3rem" />

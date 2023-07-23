@@ -18,6 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
     total_following = serializers.SerializerMethodField()
 
     is_following = serializers.SerializerMethodField()
+    is_current_user = serializers.SerializerMethodField()
 
 
     def get_total_posted(self, obj):
@@ -33,9 +34,17 @@ class UserSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
             user = request.user
-            print(user, obj)
             return UserFollowing.objects.filter(following_user=user, followed_user=obj).exists()
         return False
+    
+    def get_is_current_user(self, instance):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            user = request.user
+            return user == instance
+        return False
+    
+
 
     # def to_representation(self, instance):
     #     data = super(UserSerializer, self).to_representation(instance)

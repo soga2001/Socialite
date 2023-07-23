@@ -15,7 +15,17 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+
     # total_likes = serializers.SerializerMethodField()
+    is_owner = serializers.SerializerMethodField()
     
     # def get_total_likes(self, obj):
     #     return obj.comment_likes.count()
+
+    def get_is_owner(self, instance):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            user = request.user
+            return user == instance.user
+        return False
+

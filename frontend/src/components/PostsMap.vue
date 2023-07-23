@@ -30,7 +30,6 @@ export default defineComponent({
     data() {
         return {
             id: this.post.id,
-            username: this.post.username,
             user: this.post.user,
             // user_id: this.post.user,
             img_url: this.post.img_url,
@@ -38,9 +37,8 @@ export default defineComponent({
             date_posted: convertTime(this.post.date_posted, 'short'),
             toolTip_date: convertTime(this.post.date_posted, 'absolute'),
             date_updated: this.post.date_posted,
-            avatar: this.post.user_avatar,
             dropdown: false,
-            liked: this.checkLiked(),
+            liked: this.post.user_has_liked,
             total_comments: this.post.total_comments,
             total_likes: this.post.total_likes,
             total_views: 0,
@@ -236,11 +234,11 @@ export default defineComponent({
 </script>
 
 <template>
-    <div @mousedown="focused" class="grid p-2 rounded-none bg-theme bg-hover-mute pointer" @click="$router.push({name: 'view-spill', params: { user: username, post_id: id}})" v-if="!deleted">
+    <div @mousedown="focused" class="grid p-2 rounded-none bg-theme bg-hover-mute pointer" @click="$router.push({name: 'view-spill', params: { user: user.username, post_id: id}})" v-if="!deleted">
         <SpillCard class="w-full h-full relative">
             <template #avatar>
-                <q-avatar class="hover-darker relative pointer" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">
-                    <img v-if="avatar" :src="avatar" alt="John Doe" class="rounded-full" />
+                <q-avatar class="hover-darker relative pointer" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">
+                    <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
                     <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                 </q-avatar>
             </template>
@@ -249,7 +247,7 @@ export default defineComponent({
                     <template #title>
                         <div class="h-full min-w-full flex gap-1 items-center title">
                             <div class="ellipsis" >
-                                <span @mouseover="divEnter"  @mouseleave="divExit"  class="text-lg pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">{{post.user.first_name}} 
+                                <span @mouseover="divEnter"  @mouseleave="divExit"  class="text-lg pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">{{post.user.first_name}} 
                                     {{ post.user.last_name }}
                                 </span>
 
@@ -262,8 +260,8 @@ export default defineComponent({
                                     <div class="flex flex-col gap-3 p-2">
                                         <Item dense class="p-0 m-0" avatar-size="5rem" align-items="start">
                                             <template #avatar >
-                                                <q-avatar size="5rem">
-                                                    <img :src="avatar" alt="User Avatar" />   
+                                                <q-avatar size="5rem" class="hover-darker pointer" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">
+                                                    <img :src="user.avatar" alt="User Avatar" />   
                                                 </q-avatar>
                                             </template>
 
@@ -278,7 +276,7 @@ export default defineComponent({
                                         <div>
                                             <Item dense>
                                                 <template #title>
-                                                    <div class="text-2xl weight-900 hover-underline pointer" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">{{ user.first_name }} {{ user.last_name }}</div>
+                                                    <div class="text-2xl weight-900 hover-underline pointer" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">{{ user.first_name }} {{ user.last_name }}</div>
                                                 </template>
                                                 <template #caption>
                                                     <div class="text-base weight-700 w-fit text-lighter wrap" >
@@ -344,7 +342,7 @@ export default defineComponent({
                             <q-btn @click.stop="dropdown = !dropdown" size="10px" class="more__vert" flat round icon="more_horiz" />
                             <q-menu class="dropdown bg-theme-soft" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
                                 <q-list class="more__option box-shadow" >
-                                    <q-item clickable v-close-popup @click="report = true" v-if="username !== $store.state.user.username">
+                                    <q-item clickable v-close-popup @click="report = true" v-if="!post.is_owner">
                                         <q-item-section avatar>
                                             <q-icon class="danger__icon" name="flag"/>
                                         </q-item-section>
@@ -352,7 +350,7 @@ export default defineComponent({
                                             <q-item-label>Report Post</q-item-label>
                                         </q-item-section>
                                     </q-item>
-                                    <q-item clickable v-close-popup @click="persistent = true" tabindex="0" v-if="username === $store.state.user.username">
+                                    <q-item clickable v-close-popup @click="persistent = true" tabindex="0" v-if="post.is_owner">
                                         <q-item-section avatar>
                                             <q-icon class="danger__icon" name="delete_forever"/>
                                         </q-item-section>
@@ -360,7 +358,7 @@ export default defineComponent({
                                             <q-item-label>Delete</q-item-label>
                                         </q-item-section>
                                     </q-item>
-                                    <q-item clickable v-close-popup v-if="username === $store.state.user.username">
+                                    <q-item clickable v-close-popup v-if="post.is_owner">
                                         <q-item-section avatar>
                                             <q-icon class="" name="edit_note"/>
                                         </q-item-section>

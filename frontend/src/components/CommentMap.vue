@@ -115,7 +115,7 @@ export default defineComponent({
                             </q-btn>
                             <q-menu class="dropdown bg-theme" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
                                 <q-list class="more__option">
-                                    <q-item clickable v-close-popup @click="report = true" v-if="commentData.username !== $store.state.user.username">
+                                    <q-item clickable v-close-popup @click="report = true" v-if="!comment.is_owner">
                                         <q-item-section avatar>
                                             <q-icon class="danger__icon" name="flag"/>
                                         </q-item-section>
@@ -123,7 +123,7 @@ export default defineComponent({
                                             <q-item-label>Report Post</q-item-label>
                                         </q-item-section>
                                     </q-item>
-                                    <q-item clickable v-close-popup @click="deleteModal = true" tabindex="0" v-if="commentData.username === $store.state.user.username">
+                                    <q-item clickable v-close-popup @click="deleteModal = true" tabindex="0" v-if="comment.is_owner">
                                         <q-item-section avatar>
                                             <q-icon color="red" name="delete_forever"/>
                                         </q-item-section>
@@ -131,7 +131,7 @@ export default defineComponent({
                                             <q-item-label class="text-red weight-700">Delete</q-item-label>
                                         </q-item-section>
                                     </q-item>
-                                    <q-item clickable v-close-popup v-if="commentData.username === $store.state.user.username">
+                                    <q-item clickable v-close-popup v-if="comment.is_owner">
                                         <q-item-section avatar>
                                             <q-icon class="" name="edit_note"/>
                                         </q-item-section>

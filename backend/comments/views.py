@@ -65,7 +65,7 @@ class Comments(APIView):
             group_name = f'spill_{id}'
             async_to_sync(channel_layer.group_send)(group_name, {
                 "type": "comment.send",
-                "message": json.dumps(CommentSerializer(comment).data)
+                "message": json.dumps(CommentSerializer(comment, context={'request': request}).data)
                 })
             
             link = "{}/spill/{}".format(user.username, id)
@@ -88,7 +88,7 @@ class Comments(APIView):
     def get(self, request):
         try:
             comments = Comment.objects.filter(user__id=request.user)
-            serializer = CommentSerializer(comments, many=True)
+            serializer = CommentSerializer(comments, context={'request', request}, many=True)
             return JsonResponse({'status': True, 'message': 'Comments fetched successfully', 'comments': serializer.data})
         except Exception as e:
             return JsonResponse({'status': False, 'message': 'Error fetching comments'})
@@ -121,7 +121,7 @@ class Comments(APIView):
                 group_name = f'comment_{id}'
                 async_to_sync(channel_layer.group_send)(group_name, {
                     "type": "comment.update",
-                    "message": json.dumps(CommentSerializer(comment).data)
+                    "message": json.dumps(CommentSerializer(comment, context={'request', request}).data)
                 })
                 return JsonResponse({'status': True, 'message': 'Comment updated successfully'})
             return JsonResponse({'status': False, 'message': 'Comment not found'})
@@ -134,7 +134,7 @@ def comments_by_post(request, timestamp, page, post_id):
     try:
         comments = Comment.objects.filter(post__id=post_id)
         if(comments):
-            serializer = CommentSerializer(comments, many=True)
+            serializer = CommentSerializer(comments, context={'request', request}, many=True)
             return JsonResponse({'status': True, 'message': 'Comments fetched successfully', 'comments': serializer.data})
         return JsonResponse({"status": True, "message": 'Post has no comments.'})
     except Exception as e:

@@ -62,7 +62,7 @@ def flush_session(request):
 
 @api_view(["GET"])
 def users(request):
-    users = UserSerializer(User.objects.all(), many=True)
+    users = UserSerializer(User.objects.all(), context={'request', request}, many=True)
     return JsonResponse({'users': list(users.data)}, safe=False)
 
 @api_view(["GET"])
@@ -79,10 +79,12 @@ def user_by_username(request, username, multiple = True):
     try:
         if(multiple == True):
             users_data = User.objects.filter(username__icontains=username)
-            users_data = UserSerializer(users_data, many=True).data
+            users_data = UserSerializer(users_data,context={'request': request}, many=True).data
         else:
+            # users_data = User.objects.get(username=username)
+            # users_data = UserSerializer(users_data, context={'request', request}).data
             users_data = User.objects.get(username=username)
-            users_data = UserSerializer(users_data).data
+            users_data = UserSerializer(users_data, context={'request': request}).data
         if(len(users_data) == 0):
             return JsonResponse({"error": "User does not exist"}, status=404)
         return JsonResponse({"success": True, "users": users_data})

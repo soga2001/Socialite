@@ -319,7 +319,7 @@ export default defineComponent({
                                 <q-btn @click.stop="dropdown = !dropdown" size="13px" class="more__vert" flat round icon="more_horiz" />
                                 <q-menu class="dropdown bg-theme border" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
                                     <q-list class="more__option">
-                                        <q-item clickable v-close-popup @click="report = true" v-if="spill.user.username !== $store.state.user.username">
+                                        <q-item clickable v-close-popup @click="report = true" v-if="!spill.is_owner">
                                             <q-item-section avatar>
                                                 <q-icon class="danger__icon" name="flag"/>
                                             </q-item-section>
@@ -327,7 +327,7 @@ export default defineComponent({
                                                 <q-item-label>Report Post</q-item-label>
                                             </q-item-section>
                                         </q-item>
-                                        <q-item clickable v-close-popup @click="persistent = true" tabindex="0" v-if="spill.username === $store.state.user.username">
+                                        <q-item clickable v-close-popup @click="persistent = true" tabindex="0" v-if="spill.is_owner">
                                             <q-item-section avatar>
                                                 <q-icon class="danger__icon" name="delete_forever"/>
                                             </q-item-section>
@@ -335,7 +335,7 @@ export default defineComponent({
                                                 <q-item-label>Delete</q-item-label>
                                             </q-item-section>
                                         </q-item>
-                                        <q-item clickable v-close-popup v-if="spill.username === $store.state.user.username">
+                                        <q-item clickable v-close-popup v-if="spill.is_owner">
                                             <q-item-section avatar>
                                                 <q-icon class="" name="edit_note"/>
                                             </q-item-section>
@@ -482,6 +482,10 @@ export default defineComponent({
 </template>
 
 <style scoped>
+
+* {
+    transition: all .3s;
+}
 
 /* #app {
   width: 100vw;

@@ -18,15 +18,13 @@ export interface User{
     total_followers: number,
     total_following: number,
     date_joined: string,
+
+    is_current_user: boolean,
 }
 
 
 export interface Post{
-    user_id: any
     id: string,
-    username: string,
-    user_avatar: string,
-    // user: number,
     img_url: string,
     caption: string,
     date_posted: string,
@@ -35,6 +33,7 @@ export interface Post{
     total_comments: number,
     user: User,
     user_has_liked: boolean,
+    is_owner: boolean,
 }
 
 export interface Comment{
@@ -45,6 +44,7 @@ export interface Comment{
     comment: string,
     date_posted: string,
     date_updated: string,
+    is_owner: boolean,
 }
 
 export interface Notifications {

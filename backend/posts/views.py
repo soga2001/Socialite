@@ -121,7 +121,6 @@ def view_posts(request, timestamp, page):
     except Post.DoesNotExist:
         return JsonResponse({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
     
-    print(request.user)
     serializer = PostSerializer(post, context={'request': request}, many=True)
     return JsonResponse({"posts": serializer.data}, status=200)
 
@@ -167,7 +166,6 @@ def explore(request, offset):
 
 @api_view(["GET"])
 def user_posted(request, timestamp, page, username):
-    print('here')
     posts = PostSerializer(Post.objects.filter(user__username=username).filter(date_posted__lt=timestamp)[:10], context={'request': request}, many=True)
     return JsonResponse({"posts": list(posts.data)}, safe=False)
 
