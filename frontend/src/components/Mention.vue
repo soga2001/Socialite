@@ -21,11 +21,6 @@ export default defineComponent({
             caretPosition: {top: 0, height: 0},
             hasResults: false,
             resultsBelow: true,
-
-            // isResultsCloseToBottom: false,
-            // showResultsAbove: false,
-            // top: '0px',
-            // bottom: '0px',
         }
     },
     props: {
@@ -214,17 +209,6 @@ export default defineComponent({
         });
         return tempUsers
       },
-      divPosition(e: Event) {
-        const results = this.$refs.results
-        if(results) {
-          // console.log(results)
-          // @ts-ignore
-          console.log(results)
-        }
-      },
-      onPositionUpdate() {
-        console.log('here')
-      },
       isElementAtTopOrBottom() {
         console.log(this.caretPosition.top, this.caretPosition.height)
         const mentionDiv = this.$refs.mentionDiv as HTMLDivElement;
@@ -241,13 +225,13 @@ export default defineComponent({
           }
           if(isAtBottom && this.resultsBelow) {
             this.resultsBelow = false
-            results.style.removeProperty('top')
-            results.style.bottom = `${this.caretPosition.height + 25}px`
+            // results.style.removeProperty('top')
+            // results.style.bottom = `${this.caretPosition.height + 25}px`
           }
           else if(isAtTop && !this.resultsBelow) {
             this.resultsBelow = true
-            results.style.top = (this.caretPosition.top + this.caretPosition.height <= (area as HTMLInputElement).offsetHeight) ? `${this.caretPosition.top + this.caretPosition.height}px` : ((area as HTMLInputElement).offsetHeight) + 'px'
-            results.style.removeProperty('bottom')
+            // results.style.top = (this.caretPosition.top + this.caretPosition.height <= (area as HTMLInputElement).offsetHeight) ? `${this.caretPosition.top + this.caretPosition.height}px` : ((area as HTMLInputElement).offsetHeight) + 'px'
+            // results.style.removeProperty('bottom')
           }
         }
       }
@@ -279,7 +263,7 @@ export default defineComponent({
   <div class="main " ref="mentionDiv">
     <div class="relative w-full" ref="div">
         <textarea ref="textarea" :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars"  @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input textl-xl"/>
-        <div v-if="caretPosition.top" ref="results"  class="results absolute left-0 bg-theme box-shadow-soft flex flex-col shrink rounded-sm" :style="{overflowY: 'auto'}">
+        <div v-if="caretPosition.top" :style="{bottom: !resultsBelow ? `${caretPosition.height + 25}px` : 'auto', top: resultsBelow ? ((caretPosition.top + caretPosition.height <= ($refs.textarea as HTMLInputElement).offsetHeight) ? `${caretPosition.top + caretPosition.height + 20}px` : (($refs.textarea as HTMLInputElement).offsetHeight) + 'px') : 'auto'}" ref="results"  class="results absolute left-0 bg-theme box-shadow-soft flex flex-col shrink rounded-sm" >
           <div >
             <div v-if="users.length >0"  @click="replaceMention(user.username)" class=" pointer w-full" v-for="user in users" :key="user.id">
               <Item class="bg-hover-mute" avatarSize="3.5rem">

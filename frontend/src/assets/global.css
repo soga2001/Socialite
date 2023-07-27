@@ -1717,6 +1717,20 @@
     border: 1px solid var(--color-border) !important;
 }
 
+.border-theme-xs {
+    border: 1px solid var(--color-theme) !important;
+}
+
+
+.border-theme-sm {
+    border: 2px solid var(--color-theme) !important;
+}
+
+.border-theme {
+    border: 3px solid var(--color-theme) !important;
+}
+
+
 .border-brighter {
     border: .5px solid var(--color-heading) !important;
 }
