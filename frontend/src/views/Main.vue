@@ -32,6 +32,9 @@ export default defineComponent({
         websocket: null as WebSocket | null,
         // websocket: new WebSocket(`wss://localhost:8000/ws/user_notif/${this.$store.state.user.id}/`),
 
+        newNotification: false,
+        notification: {} as Notifications,
+
 
 
       };
@@ -48,7 +51,7 @@ export default defineComponent({
       this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 0
 
     }
-    this.websocketOpen()
+    if(this.$store.state.authenticated) this.websocketOpen()
   },
   activated() {
   },
@@ -98,12 +101,11 @@ export default defineComponent({
       return this.$q.screen.lt.sm
     },
     async websocketOpen() {
-      console.log(this.$store.state.user.id)
       this.websocket = new WebSocket(`wss://localhost:8000/ws/user_notif/${this.$store.state.user.id}/`)
       this.websocketMessage()
 
-      this.websocket.onopen = (e) => {
-      }
+      // this.websocket.onopen = (e) => {
+      // }
     },
     async websocketClose() {
       if(!this.websocket) {
@@ -111,52 +113,53 @@ export default defineComponent({
       }
       this.websocket.close()
 
-      this.websocket.onclose = (e) => {
-        console.log('Websocket closed')
-      }
+      // this.websocket.onclose = (e) => {
+      //   console.log('Websocket closed')
+      // }
     },
     async websocketMessage() {
       if(!this.websocket) {
         return
       }
       this.websocket.onmessage = (e) => {
-        console.log(e)
         const data = JSON.parse(e.data)
-        // console.log(data)
         if(data.type === 'posted') {
           const message = JSON.parse(data.message) as Notifications
-          console.log(message)
-          // this.$store.commit('setNotification', data.notification)
-          this.$q.notify({
-            progress: true,
-            html: true,
-            classes: 'bg-theme border',
-            group: message.verb,
-            message: `
-              <div class="flex flex-cols items-center gap-2">
-                <div>
-                  <img class="rounded-full" src="${message.actor_avatar}" alt="avatar" width="50px" height="50px"/>
-                </div>
-                  <div class="flex flex-rows min-w-52">
-                    <div class="w-full text-xl weight-900 text-heading"> 
-                      @${message.actor}
-                    <div>
-                    <div class="w-full text-base text-body weight-600">
-                      ${message.description}
-                    </div>
-                    <div>
-                      <div class="w-full text-sm text-lighter text-normal">
-                        ${convertTime(message.timestamp)}
-                      </div>
-                    </div>
-                  </div>
-              <div/>
-            `,
-            actions: [
-              { label: 'View', class: 'bg-heading weight-900', handler: () => { this.$router.push('/notifications') } },
-              { label: 'Dismiss', color: 'white' }
-            ],
-          })
+          this.notification = message
+          setTimeout(() => {
+            this.newNotification = false
+            this.notification = {} as Notifications
+          }, 10000)
+          // this.$q.notify({
+          //   progress: true,
+          //   html: true,
+          //   classes: 'bg-theme border',
+          //   group: message.verb,
+          //   message: `
+          //     <div class="flex flex-cols items-center gap-2">
+          //       <div>
+          //         <img class="rounded-full" src="${message.actor_avatar}" alt="avatar" width="50px" height="50px"/>
+          //       </div>
+          //         <div class="flex flex-rows min-w-52">
+          //           <div class="w-full text-xl weight-900 text-heading"> 
+          //             @${message.actor}
+          //           <div>
+          //           <div class="w-full text-base text-body weight-600">
+          //             ${message.description}
+          //           </div>
+          //           <div>
+          //             <div class="w-full text-sm text-lighter weight-100">
+          //               ${convertTime(message.timestamp)}
+          //             </div>
+          //           </div>
+          //         </div>
+          //     <div/>
+          //   `,
+          //   actions: [
+          //     { label: 'View', class: 'bg-heading weight-900', handler: () => { this.$router.push('/notifications') } },
+          //     { label: 'Dismiss', color: 'white' }
+          //   ],
+          // })
         }
         else if(data.type === 'message') {
           this.$store.commit('setMessages', data.message)
@@ -171,6 +174,7 @@ export default defineComponent({
   watch: {
     '$store.state.authenticated': function () {
       if(this.$store.state.authenticated) {
+        this.websocketOpen()
         this.$q.notify({
           progress: true,
           type: 'positive',
@@ -185,19 +189,20 @@ export default defineComponent({
           ]
         })
       } else {
-          this.$q.notify({
-            progress: true,
-            type: 'positive',
-            message: 'Logout successful!',
-            timeout: 2000,
-            position: 'top-right',
-            actions: [
-              {
-                icon: 'close',
-                color: 'white',
-              }
-            ]
-          })
+        this.websocketClose();
+        this.$q.notify({
+          progress: true,
+          type: 'positive',
+          message: 'Logout successful!',
+          timeout: 2000,
+          position: 'top-right',
+          actions: [
+            {
+              icon: 'close',
+              color: 'white',
+            }
+          ]
+        })
         }
     },
     '$route': function() {
@@ -244,6 +249,11 @@ export default defineComponent({
         }
       }
     },
+    notification(notification) {
+      if(notification.actor) {
+        this.newNotification = true
+      }
+    }
   },
 })
 </script>
@@ -261,10 +271,11 @@ export default defineComponent({
         </div>
         <div :style="{paddingBottom: `${bottomNavHeight - 10}px`}"  class="w-full min-h-viewport border-l border-r">
           <RouterView v-slot="{Component}" >
-            <KeepAlive :max="6" :include="['home', 'search', 'explore', 'user-profile', 'view-spill', 'notifications']" >
+            <KeepAlive :max="2" :include="['home', 'search', 'explore', 'user-profile', 'view-spill', 'notifications']" >
               <component :is="Component" :key="!['user-profile', 'notifications'].includes(($route.matched[0].name) as string) ? $route.fullPath : null"  :height="height" :scrollPosition="scrollPosition" />
             </KeepAlive>
           </RouterView>
+          <!-- <component :is="Component" :key="$route.fullPath"  :height="height" :scrollPosition="scrollPosition" /> -->
         </div>
       </div>
       
@@ -277,8 +288,27 @@ export default defineComponent({
       <q-btn size="16px" class="show btn-themed text-heading" round flat icon="add" @click="spill = true"/>
     </div>
 
-    <q-dialog class="min-h-sm" v-model="spill" persistent :maximized="$q.screen.lt.sm ? true : false">
-        <div class="bg-theme w-full h-fit overflow-visible" >
+    <!-- <q-dialog class="min-h-sm " v-model="spill" persistent :maximized="$q.screen.lt.sm ? true : false">
+        <div class="bg-theme box-shadow w-full h-fit overflow-visible" >
+          <div class="p-2">
+            <Item dense :vert-icon-center="true">
+              <template #title>
+                <div class="text-2xl weight-900">Spill</div>
+              </template>
+              <template #icon>
+                <i-close size="2rem" class="pointer" @click="spill = false"/>
+              </template>
+            </Item>
+          </div>
+          <hr class="border"/>
+          <div class="">
+            <Spills :rows="4"/>
+          </div>
+        </div>
+      </q-dialog> -->
+
+      <q-dialog class="min-h-sm w-full h-full" v-model="spill" position="top" persistent :maximized="true">
+        <div class="mt-12 bg-theme box-shadow w-full h-full min-h-fit max-w-sm overflow-visible rounded-sm" >
           <div class="p-2">
             <Item dense :vert-icon-center="true">
               <template #title>
@@ -295,6 +325,34 @@ export default defineComponent({
           </div>
         </div>
       </q-dialog>
+
+      <q-dialog no-backdrop-dismiss seamless no-focus class="bg-transparent" v-model="newNotification" position="bottom">
+        <Item class="max-w-60 w-full bg-theme box-shadow mb-2" clickable :to="`/${notification.link}`">
+          <template #avatar>
+            <q-avatar>
+                <img height="3rem" width="3rem" v-if="notification.actor_avatar" :src="notification.actor_avatar" alt="user's avatar"/>
+                <i-profile v-else size="3rem" />
+                <q-badge class="absolute bottom-0 right-0 bg-theme" style="border-radius: 50%; width: 25px; height: 25px">
+                <q-badge class="absolute-center bg-web-theme" style="border-radius: 50%; width: 20px; height: 20px">
+                    <i-mention fill="white" :style="{transform: 'scale(1.7)'}" v-if="notification.verb == 'mention'"/>
+                    <i-profile stroke="none" fill="white" :style="{transform: 'scale(1.7)'}" v-if="notification.verb == 'follow'" />
+                </q-badge>
+                </q-badge>
+            </q-avatar>
+          </template>
+          <template #title>
+            <div class="text-xl weight-900">@{{ notification.actor }}</div>
+          </template>
+          <template #caption>
+            <div class="text-base weight-500 text-body">{{ notification.description }}</div>
+          </template>
+          <template #icon>
+            <i-close fill="var(--color-heading)" stroke="none" size="2rem" class="pointer" @click.stop="newNotification = false"/>
+          </template>
+        </Item>
+      </q-dialog>
+
+      
       
   </div>
 
@@ -316,10 +374,6 @@ export default defineComponent({
   grid-template-columns: auto 600px auto;
 }
 
-
-/* #top-nav {
-  transition: .5s;
-} */
 
 .mobile-main {
   overflow: hidden;

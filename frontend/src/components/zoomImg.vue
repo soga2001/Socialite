@@ -20,6 +20,7 @@ export default defineComponent({
             imgHeight: 0,
             imgWidth: 0,
             aspectRatio: 1,
+            newImgwidth: 0,
 
         }
     },
@@ -43,7 +44,8 @@ export default defineComponent({
         },
         imgWidth(imgWidth) {
             this.aspectRatio = imgWidth / this.imgHeight
-            console.log('width',this.aspectRatio)
+            this.newImgwidth = window.innerHeight * this.aspectRatio
+
         }
     },
 
@@ -51,13 +53,14 @@ export default defineComponent({
 </script>
 
 <template>
-   <q-dialog v-model="open" :maximized="true">
+   <q-dialog @click="close" v-model="open" :maximized="true" >
       <q-card :style="{backgroundColor: 'rgba(0,0,0,.9)'}" class="w-full h-full p-0 m-0" @click="close">
         <q-card-section class="h-full flex justify-center items-center relative">
-          <q-btn class="absolute top-0 right-0 m-2 z-3 p-1"  flat round dense>
-            <q-icon name="close" color="white" size="2.5rem" />
-          </q-btn>
-          <q-img :class="{'aspectRatio-sub-1': aspectRatio < 1, 'aspectRatio-1': aspectRatio == 1, 'aspectRatio-sub-2': aspectRatio > 1 && aspectRatio < 2, 'aspectRatio-2': aspectRatio == 2}" sizes="500px" class="img z-2" :src="img" @click.stop=""/>
+            <q-btn class="absolute top-0 right-0 m-2 z-3 p-1"  flat round dense>
+                <!-- <q-icon name="close" color="white" size="2.5rem" /> -->
+                <i-close size="2.5rem"/>
+            </q-btn>
+            <q-img :style="{aspectRatio: aspectRatio / 1, maxWidth: (aspectRatio < 1) && `${newImgwidth}px`}" :class="{'aspectRatio-sub-1': aspectRatio < 1, 'aspectRatio-1': aspectRatio == 1, 'aspectRatio-2': aspectRatio > 1 && aspectRatio <= 2}" sizes="500px" class="img z-2" :src="img" @click.stop=""/>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -70,26 +73,26 @@ export default defineComponent({
 }
 
 .aspectRatio-sub-1 {
-    max-width: 500px;
-    aspect-ratio: 2 / 3 ;
-    object-fit: cover;
+    max-height: 100dvh;
+    // max-width: 450px;
+    object-fit:contain;
 }
 
 .aspectRatio-1 {
     max-width: 500px;
-    aspect-ratio: 1 /1 ;
+    // aspect-ratio: 1 /1 ;
     object-fit: cover;
 }
 
 .aspectRatio-sub-2 {
-    max-width: 700px;
-    aspect-ratio: 3 / 2;
+    max-width: 900px;
+    // aspect-ratio: 3 / 2;
     object-fit: cover;
 }
 
 .aspectRatio-2 {
-    max-width: 700px;
-    aspect-ratio: 2 / 1;
+    max-width: 900px;
+    // aspect-ratio: 2 / 1;
     object-fit: cover;
 }
 </style>

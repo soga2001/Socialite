@@ -20,10 +20,12 @@ export default defineComponent({
 
             caretPosition: {top: 0, height: 0},
             hasResults: false,
+            resultsBelow: true,
 
-            isResultsCloseToBottom: false,
-            top: '0px',
-            bottom: '0px',
+            // isResultsCloseToBottom: false,
+            // showResultsAbove: false,
+            // top: '0px',
+            // bottom: '0px',
         }
     },
     props: {
@@ -31,10 +33,6 @@ export default defineComponent({
             type: String,
             default: 'text'
         },
-        // input_label: {
-        //     type: String,
-        //     required: true
-        // },
         required: {
             type: Boolean,
             default: false,
@@ -74,6 +72,8 @@ export default defineComponent({
           height: caret.height,
         };
       },
+      resetData() {
+      },
       reset() {
         this.val = ""
         this.charsLeft = 0
@@ -82,7 +82,7 @@ export default defineComponent({
         this.users = new Array<User>();
       },
       emitData() {
-        this.$emit('update:val', this.val)
+        this.$emit('update:val', this.val.trim())
         this.$emit('update:charsLeft', this.charsLeft)
       },
       async replaceMention(username: string) {
@@ -114,11 +114,11 @@ export default defineComponent({
           this.users = new Array<User>();
         }
         else {
-          // const promise = await this.updateRows()
           const sub = this.val.substring(0, e.target.selectionStart)
           const at = sub.lastIndexOf('@')
           const space = sub.lastIndexOf(" ")
           const enter = sub.lastIndexOf("\n")
+
           if(at > space) {
             this.index = at
           }
@@ -134,6 +134,8 @@ export default defineComponent({
             this.users = new Array<User>();
           }
 
+          // console.log((space < this.index && (sub.charAt(this.index-1) == '' || sub.charAt(this.index-1) == ' ' || sub.charAt(this.index-1) == '\n')))
+
           if(this.index != -1 && (space < this.index && (sub.charAt(this.index-1) == '' || sub.charAt(this.index-1) == ' ' || sub.charAt(this.index-1) == '\n'))) {
             const user = this.val.substring(this.index, space < this.index ? this.val.length : space).match(/@\w+/g);
             if(user) {
@@ -145,16 +147,30 @@ export default defineComponent({
                   
                 } else {
                   const tempUsers = await this.getUsers(username)
-                  if( tempUsers)
+                  if( tempUsers) {
                     this.users = tempUsers
-                  // this.getUsers(username)
+                    this.hasResults = true
+                  }
+                  else {
+                    this.users = new Array<User>()
+                    this.hasResults = false
+                  }
                 }
               });
             }
           } 
+          else {
+            this.users = new Array<User>()
+          }
         }
       },
       async checkSavedUsers(e: any) {
+        if(e.code === 'Space') {
+          this.savedUsers.set(this.val.substring(this.index + 1, this.val.length), this.users)
+          this.index = -1
+          this.users = new Array<User>();
+          return;
+        }
         if(this.val.length == 0) {
           this.emitData()
         }
@@ -168,6 +184,7 @@ export default defineComponent({
         const start = sub.lastIndexOf('@')
         this.index = start
         let end = this.val.indexOf(" ", start)
+        // console.log(end)
         if(end < e.target.selectionStart && start < end) {
           this.users = new Array<User>();
           return
@@ -189,86 +206,96 @@ export default defineComponent({
       async getUsers(username: String) {
         let tempUsers = new Array<User>()
         await http.get(`users/username/${username}/`).then((res) => {
-            if (res.data.success) {
+            if (res.data.users) {
                 tempUsers = res.data.users
             }
           }).catch((err) => {
-              console.log(err);
+            this.hasResults = false
         });
         return tempUsers
       },
-      divPosition(e: any) {
-        console.log(e.isIntersecting)
-
+      divPosition(e: Event) {
+        const results = this.$refs.results
+        if(results) {
+          // console.log(results)
+          // @ts-ignore
+          console.log(results)
+        }
+      },
+      onPositionUpdate() {
+        console.log('here')
+      },
+      isElementAtTopOrBottom() {
+        console.log(this.caretPosition.top, this.caretPosition.height)
+        const mentionDiv = this.$refs.mentionDiv as HTMLDivElement;
+        const results = this.$refs.results as HTMLDivElement;
+        const div = this.$refs.div as HTMLElement;
+        const area = this.$refs.textarea as HTMLElement
+        if(results) {
+          const height = results?.offsetHeight || 400
+          const rect = mentionDiv.getBoundingClientRect();
+          const isAtTop = rect.top >= 0 && rect.top <= height;
+          const isAtBottom = rect.bottom >= 0 && rect.bottom >= (window.innerHeight - height);
+          if(isAtTop && isAtBottom) {
+            return;
+          }
+          if(isAtBottom && this.resultsBelow) {
+            this.resultsBelow = false
+            results.style.removeProperty('top')
+            results.style.bottom = `${this.caretPosition.height + 25}px`
+          }
+          else if(isAtTop && !this.resultsBelow) {
+            this.resultsBelow = true
+            results.style.top = (this.caretPosition.top + this.caretPosition.height <= (area as HTMLInputElement).offsetHeight) ? `${this.caretPosition.top + this.caretPosition.height}px` : ((area as HTMLInputElement).offsetHeight) + 'px'
+            results.style.removeProperty('bottom')
+          }
+        }
       }
       
     },
     watch: {
       val(val) { 
         this.autogrow()
+    
         if(val.length == 0) {
+          this.hasResults = false
           this.savedUsers.clear()
           this.index = -1
           this.users = new Array<User>();
         }
-        this.charsLeft = (val.trimStart(" ")).length
+        this.charsLeft = val.trim().length
         this.emitData()
+
       },
-      users(users) {
-        if(users.length > 0) {
-          this.hasResults = true
-        }
-        else {
-          this.hasResults = false
-        }
+      caretPosition () {
+        this.isElementAtTopOrBottom()
       },
-      async caretPosition(caretPosition) {
-        await this.$nextTick()
-        if(caretPosition.top){
-          const resultsPosition = (this.$refs.results as HTMLElement).getBoundingClientRect();
-
-          this.isResultsCloseToBottom = resultsPosition.top + resultsPosition.height <= document.body.clientHeight;
-
-          if (this.isResultsCloseToBottom) {
-            this.top = `${caretPosition.top + caretPosition.height}px`;
-            this.bottom = 'auto';
-          } else {
-            this.top = 'auto';
-            this.bottom = `${document.body.clientHeight - caretPosition.top}px`;
-          }
-
-        }
-      }
     }
 })
 
 </script>
 
 <template>
-  <div class="main">
-    <div class="wave-group">
-        <textarea ref="textarea" :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars"  @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input"/>
-        <div v-if="caretPosition.top" ref="results" :style="{ top: (caretPosition.top + caretPosition.height <= ($refs.textarea as HTMLInputElement).offsetHeight) ? `${caretPosition.top + caretPosition.height}px` : (($refs.textarea as HTMLInputElement).offsetHeight) + 'px' }" class="results box-shadow-soft flex flex-col shrink rounded-sm">
-          <div v-if="users.length > 0"  @click="replaceMention(user.username)" class="result__map pointer" v-for="user in users" :key="user.id">
-            <Item class="bg-hover-mute" avatarSize="3.5rem">
-                <template #avatar>
-                    <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
-                    <q-icon size="50px" v-else name="account_circle" class="rounded-full" />
-                </template>
-                <template #title>
-                  <span class="text-xl text-heading weight-900">{{user.first_name + ' ' + user.last_name}}</span> 
-                </template>
-                <template #caption>@{{ user.username }}</template>
-            </Item>
-          </div>
-        </div>  
-        <!-- <div class="relative">
-          <q-menu :autoClose="false" no-focus v-model="hasResults">
-            <div>
-              Hello
+  <div class="main " ref="mentionDiv">
+    <div class="relative w-full" ref="div">
+        <textarea ref="textarea" :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars"  @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input textl-xl"/>
+        <div v-if="caretPosition.top" ref="results"  class="results absolute left-0 bg-theme box-shadow-soft flex flex-col shrink rounded-sm" :style="{overflowY: 'auto'}">
+          <div >
+            <div v-if="users.length >0"  @click="replaceMention(user.username)" class=" pointer w-full" v-for="user in users" :key="user.id">
+              <Item class="bg-hover-mute" avatarSize="3.5rem">
+                  <template #avatar>
+                      <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
+                      <q-icon size="50px" v-else name="account_circle" class="rounded-full" />
+                  </template>
+                  <template #title>
+                    <span class="text-xl text-heading weight-900">{{user.first_name + ' ' + user.last_name}}</span> 
+                  </template>
+                  <template #caption>@{{ user.username }}</template>
+              </Item>
             </div>
-          </q-menu>
-        </div> -->
+          </div>  
+        </div>
+        
     </div>
   </div>
 </template>
@@ -277,14 +304,14 @@ export default defineComponent({
 
 
 textarea {
-  font-size: 20px;
-  padding: 10px 10px 10px 5px;
-  display: block;
+  padding: 10px 10px 0px 10px;
+  height: fit-content;
   width: 100%;
   border: none;
   background: transparent;
 
   color: var(--color-heading);
+  font-size: 25px;
   position: relative;
   resize: none;
   border: 0;
@@ -312,22 +339,13 @@ span {
 }
 
 .results {
-  /* border: 2px solid black; */
-  background-color: var(--color-background);
   z-index: 999;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 999;
-  max-height: 300px;
-  overflow-y: auto;
+  /* : 400px; */
+  max-height: 216px;
+  overflow-y: scroll;
   width: 90%;
   max-width: 500px;
 }
-
-/* .result__map:nth-child(odd) {
-  background-color: var(--color-background-mute);
-} */
 
 ::placeholder {
   color: var(--color-heading);

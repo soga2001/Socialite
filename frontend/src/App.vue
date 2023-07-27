@@ -19,6 +19,20 @@ export default defineComponent({
       loading: true,
     }
   },
+  async beforeCreate() {
+    try {
+      const response = await http.get("users/user_from_cookie/")
+
+      if(response.data.success) {
+        await store.commit("setUser", response.data.user);
+        await store.commit("authenticate", true);
+      }
+    } catch (error) {
+
+    } finally {
+      store.commit('setLoading', false)
+    }
+  },
   setup() {
   },
   methods: {
@@ -55,7 +69,8 @@ export default defineComponent({
    
   },
   created() {
-    this.checkOS()
+    console.log(this.$q.platform.is.mobile)
+    // this.checkOS()
     this.theme = Cookies.get('theme') === 'dark'
     this.$store.commit('setTheme', this.theme)
     document.documentElement.setAttribute('data-theme', this.theme ? 'dark': 'light')

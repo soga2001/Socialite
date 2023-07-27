@@ -11,7 +11,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs = {'password': {'write_only': True}}
 
-    # user_posted = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     total_posted = serializers.SerializerMethodField()
     total_followers = serializers.SerializerMethodField()
@@ -43,6 +42,7 @@ class UserSerializer(serializers.ModelSerializer):
             user = request.user
             return user == instance
         return False
+
     
 
 

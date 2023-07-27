@@ -56,7 +56,7 @@ export default defineComponent({
             this.navSlideIn = false
             this.$store.commit("authenticate", false);
             this.$store.commit("setDefaultUser");
-            router.push("/login");
+            // router.push("/login");
           }).catch((err) => {
               console.log(err);
           });

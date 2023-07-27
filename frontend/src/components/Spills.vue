@@ -138,10 +138,14 @@ export default defineComponent({
         <form class="relative cols-5 grid gap-2 px-2" autocorrect="on" autocomplete="off" @submit.prevent="submit">
           <Mention ref="input" @update:charsLeft="chars = $event" :rows="rows" @update:val="caption = $event" :value="caption" input_type="text" id="caption" :placeholder="placeholder" class="post__caption h-full" />
           <div class="flex w-full gap-2 col-span-2">
-            <label :hidden="isComment" class="pointer btn-transition btn-hover-ligher pt-2 px-2 rounded">
+            <!-- <label :hidden="isComment" class="pointer btn-transition border hover-darker pt-2 px-2 rounded">
               <i-upload-img  size="1.5rem" fill="rgb(253, 137, 137)" stroke="rbg(253,137,137)"/>
               <input @change="getImage" type="file" id="file" style="display: none" name="image" accept="image/*" data-original-title="upload photos"/>
-            </label>
+            </label> -->
+            <q-btn v-if="!isComment" rounded dense flat class="px-2" @click="($refs.file as HTMLInputElement).click()">
+              <i-upload-img  size="1.5rem" fill="rgb(253, 137, 137)" stroke="rbg(253,137,137)"/>
+              <input ref="file" @change="getImage" type="file" id="file" style="display: none" name="image" accept="image/*" data-original-title="upload photos"/>
+            </q-btn>
             <label :hidden="isComment" class="pointer btn-transition btn-hover-ligher pt-2 px-2 rounded">
               <i-upload-vid size="1.5rem" fill="rgb(253, 137, 137)" stroke="rgb(253, 137, 137)" />
               <input @change="getImage" type="file" id="file" style="display: none" name="image" accept="image/*" data-original-title="upload photos"/>

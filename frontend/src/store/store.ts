@@ -8,7 +8,6 @@ import type { Post, User } from '@/assets/interfaces'
 export interface State {
   authenticated: boolean,
   user: User,
-  defaultUser: User,
   dark: boolean,
   posts_main: Array<Post>,
   desktop: boolean,
@@ -24,7 +23,6 @@ export const store = createStore<State>({
     authenticated: false,
     dark: false,
     posts_main: Array<Post>(),
-    defaultUser: {} as User,
     user: {} as User,
     desktop: true,
     csrf: "",
@@ -33,13 +31,14 @@ export const store = createStore<State>({
   },
   mutations: {
     authenticate(state, payload) {
-        state.authenticated = payload
+      console.log(payload)
+      state.authenticated = payload
     },
     setUser(state, payload) {
       state.user = payload
     },
     setDefaultUser(state) {
-      state.user = state.defaultUser
+      state.user = {} as User
     },
     setTheme(state, payload) {
       state.dark = payload

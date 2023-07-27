@@ -295,8 +295,8 @@ export default defineComponent({
 
 <template>
     <div class="user">
-        <div class="user__container col-12 col-md-auto">
-            <div class=' grid cols-auto-fr rows-4 relative overflow-hidden'>
+        <div class="user__container  relative">
+            <!-- <div class=' grid cols-auto-fr rows-4 relative overflow-hidden'>
                 <div id="banner" class='p-0 col-start-1 col-span-full z-2 bg-theme-soft h-full pointer' @click="zoomBanner = true">
                     <img v-if="banner" class="hover-darker" :src="banner" alt="banner"/>
                     <img v-else class="hover-darker" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
@@ -316,8 +316,10 @@ export default defineComponent({
                     <button class="border pointer bg-hover rounded-lg text-heading bg-theme weight-900" v-if="followed">
                         <q-icon size="1.5rem" name="notifications" />
                     </button>
-                    <button v-if="is_current_user" class="border pointer bg-hover rounded-lg px-6 text-heading bg-theme weight-900" @click="editProfile = true">Edit Profile</button>
-                    <button v-if="!is_current_user" :class="{'followed': followed}" class="border w-8 pointer bg-hover rounded-lg px-6 text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated || loading_follow_request">
+                    <button flat v-if="is_current_user" class="border pointer bg-hover-mute rounded-lg px-6 text-heading bg-theme weight-900" @click="editProfile = true">
+                        Edit Profile
+                    </button>
+                    <button v-if="!is_current_user" :class="{'followed': followed}" class="border w-8 pointer bg-hover-soft rounded-lg px-6 text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated || loading_follow_request">
                         <span class="weight-900"  v-if="!loading_follow_request">{{ followed ? 'Following' : 'Follow' }}</span>
                         <span class="p-0" v-if="loading_follow_request">
                             <Loading size="1.3rem" />
@@ -325,8 +327,41 @@ export default defineComponent({
                     </button>
                     
                     
+                    
+                </div>
+            </div> -->
+
+            <div class=" w-full m-0 p-0 h-fit bg-green relative">
+                <div class='banner p-0 w-full relative bg-theme-soft h-full pointer' @click="zoomBanner = true">
+                    <img v-if="banner" class="hover-darker w-full" :src="banner" alt="banner"/>
+                    <img v-else class="hover-darker w-full" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
+                </div>
+                <div class="avatar z-2 pointer overflow-hidden" @click="zoomAvatar = true">
+                    <img v-if="avatar" class="profile-pic__image hover-darker w-full " :src="avatar" alt="Profibild" />
+                    <img v-else class="profile-picture hover-darker w-full" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
+                </div>
+                <zoomImg v-if="zoomAvatar" :img="avatar" :open="zoomAvatar" @update:open="zoomAvatar = $event"/>
+                <zoomImg v-if="zoomBanner" :img="banner" :open="zoomBanner" @update:open="zoomBanner = $event"/>
+
+                <div class="edit-profile absolute right-0 text-base h-fit p-2">
+                    <button class="border pointer bg-hover rounded-lg text-heading bg-theme weight-900" v-if="followed">
+                        <q-icon size="1.5rem" name="more_horiz" />
+                    </button>
+                    <button class="border pointer bg-hover rounded-lg text-heading bg-theme weight-900" v-if="followed">
+                        <q-icon size="1.5rem" name="notifications" />
+                    </button>
+                    <button flat v-if="is_current_user" class="border pointer bg-hover-mute rounded-lg px-6 text-heading bg-theme weight-900" @click="editProfile = true">
+                        Edit Profile
+                    </button>
+                    <button v-if="!is_current_user" :class="{'followed': followed}" class="border w-8 pointer bg-hover-soft rounded-lg px-6 text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated || loading_follow_request">
+                        <span class="weight-900"  v-if="!loading_follow_request">{{ followed ? 'Following' : 'Follow' }}</span>
+                        <span class="p-0" v-if="loading_follow_request">
+                            <Loading size="1.3rem" />
+                        </span>
+                    </button>
                 </div>
             </div>
+
             <div class="h-full">
                 <q-dialog class="h-full w-full" v-model="editProfile" persistent :maximized="$q.screen.lt.sm ? true : false">
                     <q-card class="h-fit bg-theme border">
@@ -336,7 +371,7 @@ export default defineComponent({
                                     <div class="text-h6">Edit Profile</div>
                                 </template>
                                 <template #icon>
-                                    <div class="btn" @click="editProfile = !editProfile">
+                                    <div class="pointer" @click="editProfile = !editProfile">
                                         <i-close :vert-icon-center="true" fill="var(--color-heading)" stroke="none"  size="2rem"/>
                                     </div>
                                     
@@ -351,8 +386,8 @@ export default defineComponent({
                                     <img v-else-if="newBanner" :src="newBanner" alt="banner"/>
                                     <img v-else class="" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
                                     <div class="centered-on-image">
-                                        <button class="border-none btn btn-themed-low-op rounded-lg p-3" @click="toggleBanner">
-                                            <q-icon name="edit" size="2rem"/>
+                                        <button class="border-none btn-themed-low-op pointer rounded-lg p-3" @click="toggleBanner">
+                                            <q-icon color="white" name="edit" size="2rem"/>
                                         </button>
                                         <input ref="bannerUpload" type="file" id="file" @change="launchCropper" hidden/>
                                     </div>
@@ -367,8 +402,8 @@ export default defineComponent({
                                     <img v-else-if="newAvatar" class="profile-pic__image" :src="newAvatar" alt="Profile img" />
                                     <img v-else class="profile-picture__image" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
                                     <div class="centered-on-image">
-                                        <button class="border-none btn btn-themed-low-op rounded-lg p-3 bg-gray-op" @click="toggleAvatar">
-                                            <q-icon name="edit" size="2rem"/>
+                                        <button class="border-none pointer btn-themed-low-op rounded-lg p-3 bg-gray-op" @click="toggleAvatar">
+                                            <q-icon color="white" name="edit" size="2rem"/>
                                         </button>
                                         <input ref="avatarUpload" type="file" id="file" @change="launchCropper" hidden/>
                                     </div>
@@ -380,9 +415,10 @@ export default defineComponent({
                                 </div>
                             </div>
                             <div>
-                                <q-input :dark="theme" v-model="new_FN" label="First Name" />
-                                <q-input :dark="theme" v-model="new_LN" label="Last Name" />
-                                <q-input :dark="theme" v-model="newBio" type="textarea" label="Bio" />
+                                <q-input class="text-lg" :dark="theme" v-model="new_FN" label="Last Name"> 
+                                </q-input>
+                                <q-input class="text-lg" :dark="theme" v-model="new_LN" label="Last Name" />
+                                <q-input class="text-lg" :dark="theme" v-model="newBio" type="textarea" label="Bio" />
                             </div>
                         </q-card-section>
 
@@ -510,7 +546,7 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 
 .user__container {
     max-width: 600px;
@@ -531,10 +567,6 @@ export default defineComponent({
     bottom: 0;
 }
 
-.user-profile__info {
-    margin-left: 2vw;
-    
-}
 .user__social {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -683,51 +715,66 @@ h6 {
     
 }
 
+.user-profile__info {
+    margin-top: 70px; 
+    padding: max(10px, 1vw);
+}
+
+
 .followed {
-    transition: .1s ease-in;
+    transition: 0.1s ease-in;
+
+    &:hover span {
+        display: none;
+    }
+
+    &:hover {
+        border: 1px solid red !important;
+        background-color: rgba(255, 0, 0, 0.1) !important;
+
+        &::before {
+            content: 'Unfollow';
+            color: red;
+            font-weight: 900;
+            transition: opacity 0.3s ease-in-out;
+        }
+    }
 }
-
-.followed:hover span {
-    display: none;
-}
-
-.followed:hover {
-    border: 1px solid red !important;
-    background-color: rgba(255, 0, 0, .1) !important;
-}
-
-.followed:hover::before {
-    content: 'Unfollow';
-    color: red;
-    font-weight: 900;
-    transition: opacity 0.3s ease-in-out;
-}
-
-
 
 .edit-profile {
-    /* padding-top: 30px !important; */
-    grid-column: 2;
-    grid-row: row 4 / span 1;
-    gap: 5px;
-    /* padding: 10px; */
-}
 
-.edit-profile button {
-    padding: 10px;
-    /* background-color: var(--color-background-mute); */
-    border: 1px solid var(--color-heading);
-    color: var(--color-text);
-    border:none;
-}
+    button {
+        padding: 10px;
+        border: 1px solid var(--color-heading);
+        color: var(--color-text);
+        border: none;
 
-.edit-profile button:hover {
-    background-color: var(--color-background-soft);
-    color: var(--color-text);
+        &:hover {
+            background-color: var(--color-background-soft);
+            color: var(--color-heading);
+        }
+    }
 }
 
 
+.banner {
+    background: var(--color-background-mute);
+    border: none;
+    border-radius: 0;
+    width: 100%;
+    aspect-ratio: 3/1;
+}
 
+.avatar {
+    background: var(--color-background-soft);
+    width: 150px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    margin-left: max(10px, 0.8vw);
+    position: absolute;
+    bottom: -70px;
+    border: 4px solid var(--color-background);
+}
 
     
 </style>

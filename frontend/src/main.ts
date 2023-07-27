@@ -51,6 +51,7 @@ import PostsMap from '@/components/PostsMap.vue'
 import Mention from './components/Mention.vue'
 import SearchBar from '@/components/SearchBar.vue';
 import zoomImg from '@/components/zoomImg.vue';
+import hoverUserData from '@/components/Cards/hoverUserData.vue';
 
 
 // my icons
@@ -122,6 +123,7 @@ app.component('Mention', Mention)
 app.component('PostsMap', PostsMap)
 app.component('SearchBar', SearchBar)
 app.component('zoomImg', zoomImg)
+app.component('user-card', hoverUserData)
 // app.component('adv-cropper', newCropper);
 
 

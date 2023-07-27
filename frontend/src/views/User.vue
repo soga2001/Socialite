@@ -28,7 +28,6 @@ export default defineComponent({
     methods: {
         async userInfo() {
             this.loading = true
-            console.log('here')
             await http.get(`users/username/${this.$route.params.username}/${false}/`).then(async (res) => {
                 if (res.data.success) {
                     this.user = res.data.users;
@@ -38,7 +37,6 @@ export default defineComponent({
                 // console.log(err);
             });
             await this.getHeightOfHeader()
-            console.log(this.headerHeight)
             this.loading = false
         },
         async websocketOpen() {
@@ -58,60 +56,38 @@ export default defineComponent({
                 this.headerHeight = headerHeight
             }
         },
+        reloadData() {
+            this.username = this.$route.params.username
+            this.user = {} as User;
+            this.userInfo();
+        }
     },
     created() {
         this.userInfo();
     },
     computed: {
+        usernameChanged() {
+            return this.$route.matched[0].name === 'user-profile' && this.$route.params.username != this.username
+        }
     },
     activated() {
-        if(this.$route.params.username != this.username) {
-            this.username = this.$route.params.username
-            this.user = {} as User;
-            this.websocketClose()
-            this.userInfo();
-            this.websocketOpen()
-        }
-        console.log(this.$route.name)
+        // if(this.$route.params.username != this.username) {
+        //     this.username = this.$route.params.username
+        //     this.user = {} as User;
+        //     // this.websocketClose()
+        //     this.userInfo();
+        //     // this.websocketOpen()
+        // }
         this.tab = this.$route.name as string
     },
     components: { UserProfile, Search, UserPosted, UserLiked, Item },
     watch: {
-        '$route'(to, from) {
-            if(to.matched[0].name === "user-profile") {
-                if(to.params.username != this.username) {
-                    this.username = to.params.username
-                    this.user = {} as User;
-                    this.websocketClose()
-                    this.userInfo();
-                    this.websocketOpen()
-                }
-            }
-        },
-        '$route.params.username':function() {
-            console.log('here')
-            // this.username = this.$route.params.username
-            // this.user = {} as User;
-            // this.websocketClose()
-            // this.userInfo();
-            // this.websocketOpen()
-        },
         bannerIntersecting(bannerIntersecting) {
-            console.log('here')
+        },
+        usernameChanged(usernameChanged) {
+            this.reloadData()
         }
     },
-    // beforeRouteUpdate(to, from, next) {
-    //     if(to.matched[0].name === "user-profile") {
-    //         if(to.params.username != this.username) {
-    //             this.username = to.params.username
-    //             this.user = {} as User;
-    //             this.websocketClose()
-    //             this.userInfo();
-    //             this.websocketOpen()
-    //         }
-    //     }
-    //     next()
-    // },
 })
 </script>
 

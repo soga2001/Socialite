@@ -129,7 +129,7 @@ export default defineComponent({
         </form>
         <div v-if="hasResults">
             <q-menu :autoClose="false" :no-focus="true" v-if="(!searchPage || !(['search', 'explore'].includes($route.name?.toString() ||  '')))" id="results" v-model="hasResults"
-            class="bg-theme rounded-sm p-2"
+            class="bg-theme rounded-sm p-2 border-brighter"
             fit
             >
                 <div class="results" v-if="results.length > 0" v-for="u in results">

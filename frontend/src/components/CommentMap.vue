@@ -2,6 +2,7 @@
 import { defineComponent, ref, getCurrentInstance } from 'vue';
 import type { Comment } from '@/assets/interfaces'
 import { http } from '@/assets/http';
+import convertTime from '@/assets/convertTime';
 
 
 export default defineComponent({
@@ -14,6 +15,7 @@ export default defineComponent({
     },
     data() {
         return {
+            user: this.comment.user,
             edit: false,
             websocket: new WebSocket(`wss://localhost:8000/ws/comment/${this.comment.id}/`),
             dropdown: false,
@@ -22,13 +24,16 @@ export default defineComponent({
             deleteModal: false,
             deleted: false,
             deletedMsg: '',
-            commentData: this.comment
+            commentData: this.comment,
+
+            date_posted: convertTime(this.comment.date_posted, 'short'),
+            toolTipDate: convertTime(this.comment.date_posted, 'absolute'),
         }
     },
     methods: {
         deleteComment() {
             http.delete(`comments/comment/${this.commentData.id}/`).then((res) => {
-                console.log(res.data)
+                // console.log(res.data)
             }).catch((err) => {
                 console.log(err);
             });
@@ -38,12 +43,12 @@ export default defineComponent({
         },
         async websocketOpen() {
             this.websocket.onopen = (e) => {
-                console.log('Websocket opened')
+                // console.log('Websocket opened')
             }
         },
         async websocketMessage() {
             this.websocket.onmessage = (e) => {
-                console.log(e.data)
+                // console.log(e.data)
                 const data = JSON.parse(e.data)
                 if(data.type == "delete") {
                     this.$emit("deleted")
@@ -61,7 +66,8 @@ export default defineComponent({
     created() {
         this.websocketOpen()
         this.websocketMessage()
-        console.log(getCurrentInstance())
+        console.log(this.comment)
+        // console.log(getCurrentInstance())
     },
     // mounted() {
     //     this.websocketOpen()
@@ -86,26 +92,75 @@ export default defineComponent({
         <div class="border">
             <Item class="bg-theme h-full w-full" alignItems="start" :captionLineClamp="4">
                 <template #avatar>
-                    <img class="pointer hover-darker" @click="$router.push({name: 'user-profile', params: {username: commentData.username}})"  v-if="commentData.user_avatar" :src="commentData.user_avatar"/>
-                    <!-- <ProfileIcon v-else/> -->
+                    <user-card :user-prop="user">
+                        <template #text>
+                            <q-avatar size="3rem" class="hover-darker relative pointer" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">
+                                <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
+                                <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
+                            </q-avatar>
+                        </template>
+                    </user-card>
                 </template>
                 <template #title>
                     <div class="w-full flex flex-cols gap-1 items-center">
-                        <div>
-                            <span class="text-xl pointer hover-underline text-heading weight-900"  @click="$router.push({name: 'user-profile', params: {username: commentData.username}})">@{{ commentData.username }}</span>
-                        </div>
+
+                        <!-- <user-card :user-prop="user">
+                            <template #text>
+                                <span class="ellipsis text-lg pointer hover-underline text-heading weight-900" > 
+                                    {{user.first_name}}
+                                    {{ user.last_name }}
+                                </span>
+                            </template>
+                        </user-card>
+
+
+                        
                         <span>&#183;</span>
                         <div>
                             <Timeago class="text-xs text-ligher weight-ligher" :date="commentData.date_posted"/>
                         </div>
                         <div v-if="commentData.date_updated" class="text-xs text-ligher weight-ligher">
                             (edited)
+                        </div> -->
+                        <div class="h-full min-w-full flex gap-1 items-center title">
+                            <div class="ellipsis" >
+                                <user-card :user-prop="user">
+                                    <template #text>
+                                        <span class="ellipsis text-lg pointer hover-underline text-heading weight-900" > 
+                                            {{user.first_name}}
+                                            {{ user.last_name }}
+                                        </span>
+                                    </template>
+                                </user-card>
+                            </div>
+
+                            <span class="text-lighter weight-900">&#183;</span>
+
+                            <div>
+                                <div class="ellipsis">
+                                    <user-card :user-prop="user">
+                                        <template #text>
+                                            <span class="text-lg pointer hover-underline text-lighter weight-500">@{{ user.username }}</span>
+                                        </template>
+                                    </user-card>
+                                </div>
+                            </div>
+
+                            <span class="text-lighter weight-900">&#183;</span>
+
+                            <div class="ellipsis ">
+                                <span class="text-lg pointer text-lighter weight-500 hover-dotted" v-html="date_posted"></span>
+                                <q-tooltip class="bg-theme box-shadow">
+                                    <span class="text-sm " v-html="toolTipDate"></span>
+                                </q-tooltip>
+                            </div>
+                            
                         </div>
                     </div>
                 </template>
                 <template #caption>
-                    <div class="text-base w-fit" @click.stop="" >
-                        <MentionLink :mention="commentData.comment"/>
+                    <div class="text-base w-fit"  >
+                        <MentionLink @click.stop="" :mention="commentData.comment"/>
                     </div>
                 </template>
                 <template #icon>
@@ -113,7 +168,7 @@ export default defineComponent({
                             <q-btn @click.stop="dropdown = !dropdown" size="13px" class="more__vert" flat round>
                                 <q-icon name="more_horiz" class="btn-hover-theme" />
                             </q-btn>
-                            <q-menu class="dropdown bg-theme" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
+                            <q-menu class="dropdown bg-theme" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" cover anchor="top right">
                                 <q-list class="more__option">
                                     <q-item clickable v-close-popup @click="report = true" v-if="!comment.is_owner">
                                         <q-item-section avatar>
@@ -146,7 +201,7 @@ export default defineComponent({
                                 <q-card class="bg-red-1">
                                     <q-card-section>
                                         <q-item>
-                                            <q-item-section class="text-xl weight-900">Are you sure you want to delete this comment?</q-item-section>
+                                            <q-item-section class="text-xl text-black weight-900">Are you sure you want to delete this comment?</q-item-section>
                                         </q-item>
                                     </q-card-section>
                                     <q-card-section>

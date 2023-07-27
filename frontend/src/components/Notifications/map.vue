@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import type { Notifications } from '@/assets/interfaces';
+import convertTime from '@/assets/convertTime';
 
 export default defineComponent({
     props: {
@@ -11,13 +12,15 @@ export default defineComponent({
     },
     data() {
         return {
+            date_posted: convertTime(this.notification.timestamp, 'short'),
+            toolTipDate: convertTime(this.notification.timestamp, 'absolute'),
+
         };
     },
     computed: {
     },
     methods: {
         alert() {
-            console.log(this.notification)
         }
     },
     created() {
@@ -31,40 +34,10 @@ export default defineComponent({
 </script>
 
 <template>
-    <!-- <q-item class="max-w-viewport w-full" :to="notification.link">
-        <q-item-section avatar top >
-        <q-avatar size="3.5rem">
-            <img :style="{width: '3rem', height: '3rem'}" v-if="notification.actor_avatar" :src="notification.actor_avatar" alt="user's avatar"/>
-            <i-profile v-else size="3rem" />
-            <q-badge class="absolute bottom-0 right-0 bg-theme" style="border-radius: 50%; width: 25px; height: 25px">
-            <q-badge class="absolute-center bg-web-theme" style="border-radius: 50%; width: 20px; height: 20px">
-                <i-mention fill="white" :style="{transform: 'scale(1.7)'}" v-if="notification.verb == 'mention'"/>
-                <i-profile stroke="none" fill="white" :style="{transform: 'scale(1.7)'}" v-if="notification.verb == 'follow'" />
-            </q-badge>
-            </q-badge>
-        </q-avatar>
-        </q-item-section>
 
-        <q-item-section top class="flex gap-1">
-        <q-item-label lines="1" class="inline-flex gap-1">
-            <span @click.stop="$router.push({name: 'user-profile', params: {username: notification.actor}})"  class="text-base pointer hover-underline text-heading weight-900">@{{notification.actor}}</span>
-            <span class="text-body"> - </span>
-            <span class="text-lighter"><Timeago :date="notification.timestamp"/></span>
-        </q-item-label>
-        <q-item-label caption lines="1" >
-            <span class="text-body">{{ notification.description }}</span>
-        </q-item-label>
-        <q-item-label lines="1" class="q-mt-xs text-body2 text-weight-bold text-primary text-uppercase">
-            <span class="cursor-pointer">Open in GitHub</span>
-        </q-item-label>
-        </q-item-section>
-
-        <q-item-section top side >
-            <q-btn @click.stop="alert" size="12px" flat dense round icon="more_horiz" />
-        </q-item-section>
-    </q-item> -->
     <Item class="max-w-viewport w-full pointer" clickable align-items="start" :to="notification.link" avatarSize="3.5rem">
         <template #avatar>
+            
             <q-avatar>
                 <img :style="{width: '3rem', height: '3rem'}" v-if="notification.actor_avatar" :src="notification.actor_avatar" alt="user's avatar"/>
                 <i-profile v-else size="3rem" />
@@ -83,7 +56,12 @@ export default defineComponent({
                 </div>
                 <span>&#183;</span>
                 <div>
-                    <Timeago class="text-xs text-ligher weight-ligher" :date="notification.timestamp"/>
+                    <span class="text-body text-base">
+                        {{ date_posted }}
+                        <q-tooltip class="bg-theme box-shadow">
+                            <div class="text-body text-sm" v-html="toolTipDate"></div>
+                        </q-tooltip>
+                    </span>
                 </div>
             </span>
         </template>

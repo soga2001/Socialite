@@ -34,10 +34,17 @@ export interface Post{
     user: User,
     user_has_liked: boolean,
     is_owner: boolean,
+    all_liked_users: User[],
+}
+
+export interface LikesDetail {
+    id: number,
+    user: User,
 }
 
 export interface Comment{
     id: number,
+    user: User,
     username: string,
     user_avatar: string,
     post: string,

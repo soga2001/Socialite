@@ -19,6 +19,7 @@ import Favorite from './Buttons/Favorite.vue';
 import convertTime from '@/assets/convertTime';
 
 
+
 export default defineComponent({
     props: {
         post: { type: Object as () => Post, required: true }
@@ -175,6 +176,9 @@ export default defineComponent({
         // },
 
         divEnter() {
+            if(this.$q.screen.lt.sm) {
+                return;
+            }
             if (this.delayExit) {
                 clearTimeout(this.delayExit);
             }
@@ -187,6 +191,9 @@ export default defineComponent({
         },
 
         divExit() {
+            if(this.$q.screen.lt.sm) {
+                return;
+            }
             if (this.delayEnter) {
                 clearTimeout(this.delayEnter);
             }
@@ -227,7 +234,10 @@ export default defineComponent({
         },
         total_views(total_views) {
             this.abbreviateViews = AbbreviateNumber(total_views) as Number;
-        }
+        },
+        '$route'() {
+            this.divExit()
+        },
     },
     components: { Timeago, Heart, Item, MentionLink, ToolTips, HeartIcon, SpillCard, Favorite }
 })
@@ -237,98 +247,50 @@ export default defineComponent({
     <div @mousedown="focused" class="grid p-2 rounded-none bg-theme bg-hover-mute pointer" @click="$router.push({name: 'view-spill', params: { user: user.username, post_id: id}})" v-if="!deleted">
         <SpillCard class="w-full h-full relative">
             <template #avatar>
-                <q-avatar class="hover-darker relative pointer" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">
+                <user-card :user-prop="user">
+                    <template #text>
+                        <q-avatar size="3.5rem" class="hover-darker relative pointer" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">
+                            <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
+                            <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
+                        </q-avatar>
+                    </template>
+                </user-card>
+                <!-- <q-avatar class="hover-darker relative pointer" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">
                     <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
                     <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
-                </q-avatar>
+                </q-avatar> -->
             </template>
             <template #title>
                 <Item dense align-items="start">
                     <template #title>
                         <div class="h-full min-w-full flex gap-1 items-center title">
                             <div class="ellipsis" >
-                                <span @mouseover="divEnter"  @mouseleave="divExit"  class="text-lg pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">{{post.user.first_name}} 
-                                    {{ post.user.last_name }}
-                                </span>
-
-                                <q-menu
-                                    v-model="hovering"
-                                    class="bg-theme border rounded-sm px-2 pt-1 pb-3 max-w-68"
-                                    @mouseover="divEnter"
-                                    @mouseleave="divExit"
-                                    >
-                                    <div class="flex flex-col gap-3 p-2">
-                                        <Item dense class="p-0 m-0" avatar-size="5rem" align-items="start">
-                                            <template #avatar >
-                                                <q-avatar size="5rem" class="hover-darker pointer" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">
-                                                    <img :src="user.avatar" alt="User Avatar" />   
-                                                </q-avatar>
-                                            </template>
-
-
-                                            <template #icon>
-                                                <button v-if="$store.state.user.id != user.id" :class="{'followed': is_following}" class="border w-8 pointer bg-hover-mute rounded-lg px-4 py-2 text-heading text-lg bg-theme weight-900" @click="" :disabled="!$store.state.authenticated">
-                                                    <span v-if="is_following" class=" weight-900">Following</span>
-                                                    <span v-else class=" weight-900">Follow</span>
-                                                </button>
-                                            </template>
-                                        </Item>
-                                        <div>
-                                            <Item dense>
-                                                <template #title>
-                                                    <div class="text-2xl weight-900 hover-underline pointer" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">{{ user.first_name }} {{ user.last_name }}</div>
-                                                </template>
-                                                <template #caption>
-                                                    <div class="text-base weight-700 w-fit text-lighter wrap" >
-                                                        @{{user.username}}
-                                                    </div>
-                                                </template>
-                                            </Item>
-                                        </div>
-                                        <div>
-                                            <div :style="{wordWrap: 'break-word'}" class="text-base weight-900 no-wrap">{{ post.user.bio }}</div>
-                                        </div>
-                                        <div>
-                                            <Item dense>
-                                                <template #title>
-                                                    <div class="text-base weight-900 flex gap-2 w-full">
-                                                        <div>
-                                                            <span class="text-base weight-900">
-                                                                {{ user.total_followers  }}
-                                                            </span>
-                                                            <span class="text-lighter">
-                                                                Followers
-                                                            </span>
-                                                        </div>
-
-                                                        <div>
-                                                            <span class="text-base weight-900">
-                                                                {{ user.total_following  }}
-                                                            </span>
-                                                            <span class="text-lighter">
-                                                                Following
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </template>
-                                            </Item>
-                                        </div>
-                                    </div>
-                                </q-menu>
+                                <user-card :user-prop="user">
+                                    <template #text>
+                                        <span class="ellipsis text-lg pointer hover-underline text-heading weight-900" > 
+                                            {{user.first_name}}
+                                            {{ post.user.last_name }}
+                                        </span>
+                                    </template>
+                                </user-card>
                             </div>
 
                             <span class="text-lighter weight-900">&#183;</span>
 
                             <div>
                                 <div class="ellipsis">
-                                    <span class="text-lg pointer hover-underline text-lighter weight-500" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">@{{ user.username }} </span>
+                                    <user-card :user-prop="user">
+                                        <template #text>
+                                            <span class="text-lg pointer hover-underline text-lighter weight-500">@{{ user.username }}</span>
+                                        </template>
+                                    </user-card>
                                 </div>
                             </div>
 
                             <span class="text-lighter weight-900">&#183;</span>
 
                             <div class="ellipsis ">
-                                <span class="text-lg text-lighter weight-500 hover-underline">{{ date_posted }}</span>
+                                <span class="text-lg text-lighter weight-500 hover-dotted">{{ date_posted }}</span>
                                 <q-tooltip class="bg-theme box-shadow">
                                     <span class="text-sm " v-html="toolTip_date"></span>
                                 </q-tooltip>
@@ -340,7 +302,7 @@ export default defineComponent({
                     <template #icon>
                         <div>
                             <q-btn @click.stop="dropdown = !dropdown" size="10px" class="more__vert" flat round icon="more_horiz" />
-                            <q-menu class="dropdown bg-theme-soft" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" self="top middle">
+                            <q-menu class=" bg-theme rounded-xs border-brighter" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" cover anchor="top right">
                                 <q-list class="more__option box-shadow" >
                                     <q-item clickable v-close-popup @click="report = true" v-if="!post.is_owner">
                                         <q-item-section avatar>
@@ -395,12 +357,12 @@ export default defineComponent({
 
 
                             <q-dialog v-model="report" persistent>
-                                <q-card class="card">
+                                <q-card class="bg-theme min-w-68 w-full">
                                     <q-card-section>
                                         <q-item>
-                                            <q-item-section class="title">Report</q-item-section>
-                                            <q-item-section avatar>
-                                            <q-avatar class="red" icon="flag"/>
+                                            <q-item-section class="text-2xl text-heading weight-900">Report</q-item-section>
+                                            <q-item-section avatar class="pointer" @click="report=false">
+                                                <i-close stroke="none" fill="var(--color-heading)" size="2.3rem"/>
                                             </q-item-section>
                                         </q-item>
                                     </q-card-section>
@@ -413,6 +375,15 @@ export default defineComponent({
                                             label="Reason"
                                             :dark="$store.state.dark"                                
                                         />
+                                    </q-card-section>
+
+                                    <q-card-section>
+                                        <q-item>
+                                            <q-item-section avatar>
+                                                <q-icon class="text-red-6" name="warning"/>
+                                            </q-item-section>
+                                            <q-item-section class="text-red-6 alert weight-700">If you submit a false report, you can be subjected to a ban!</q-item-section>
+                                        </q-item>
                                     </q-card-section>
 
                                     <q-card-actions align="right" class="buttons">
@@ -436,52 +407,47 @@ export default defineComponent({
                 </div> -->
             </template>
             <template #subtitle>
-                <div class="text-base w-fit " >
-                    <MentionLink @click.stop="" :mention="caption"/>
+                <div class="text-base w-fit "  >
+                    <MentionLink  :mention="caption"/>
                 </div>
             </template>
             <template #body>
                 <div class="w-full relative h-full">
-                    <q-img @click.stop="imgZoom = true" class="rounded-sm cursor-zoom img" :src="img_url"/>
+                    <q-img @click.stop="imgZoom = true" class="rounded-sm cursor-zoom hover-darker img" :src="img_url"/>
                     <zoomImg v-if="imgZoom" :img="img_url" :open="imgZoom" @update:open="imgZoom = $event" />
                 </div>
             </template>
             <template #actions>
-                    <div>
-                        <div class="flex justify-center items-center gap-3">
-                            <div>
-                                <q-btn flat round :class="'action like__btn ' + (liked ? 'liked' : '')"  @click.stop="like">
-                                    <q-tooltip v-if="!$q.screen.lt.sm" :offset="[0,0]">
-                                        Like
-                                    </q-tooltip>
-                                    <i-heart size="1.4rem" :fill="liked ? 'red' : 'var(--color-text)'"  stroke="red" />
-                                </q-btn>
-                            </div>
-                            <div>
-                                <!-- <span :style="{color: liked ? 'red' : 'inherit'}">{{ abbreviateLikes}}</span> -->
-                                <transition name="fade" mode="out-in">
-                                    <span :style="{color: liked ? 'red' : 'inherit'}" class="weight-900" v-if="total_likes % 2 == 0">{{ abbreviateLikes}}</span>
-                                    <span :style="{color: liked ? 'red' : 'inherit'}" class="weight-900" v-else>{{ abbreviateLikes}}</span>
-                                </transition>
-                            </div>
+                    <div class="flex justify-center items-center gap-3">
+                        <div>
+                            <q-btn flat round :class="'action like__btn ' + (liked ? 'liked' : '')"  @click.stop="like">
+                                <q-tooltip v-if="!$q.screen.lt.sm" :offset="[0,0]">
+                                    Like
+                                </q-tooltip>
+                                <i-heart size="1.4rem" :fill="liked ? 'red' : 'var(--color-text)'"  stroke="red" />
+                            </q-btn>
                         </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-center items-center gap-2">
-                            <div>
-                                <q-btn flat round class="action comment" @click.stop="commentToggle">
-                                    <q-tooltip v-if="!$q.screen.lt.sm" :offset="[0,0]">
-                                        Comment
-                                    </q-tooltip>
-                                    <i-comment fill="var(--color-text)" />
-                                </q-btn>
-                            </div>
+                        <div>
+                            <!-- <span :style="{color: liked ? 'red' : 'inherit'}">{{ abbreviateLikes}}</span> -->
                             <transition name="fade" mode="out-in">
-                                <span class="text-heading weight-900" v-if="total_comments % 2 == 0">{{ abbreviateComments }}</span>
-                                <span class="text-heading weight-900" v-else>{{ abbreviateComments }}</span>
+                                <span :style="{color: liked ? 'red' : 'inherit'}" class="weight-900" v-if="total_likes % 2 == 0">{{ abbreviateLikes}}</span>
+                                <span :style="{color: liked ? 'red' : 'inherit'}" class="weight-900" v-else>{{ abbreviateLikes}}</span>
                             </transition>
                         </div>
-
+                    </div>
+                    <div class="flex justify-center items-center gap-2">
+                        <div>
+                            <q-btn flat round class="action comment" @click.stop="commentToggle">
+                                <q-tooltip v-if="!$q.screen.lt.sm" :offset="[0,0]">
+                                    Comment
+                                </q-tooltip>
+                                <i-comment fill="var(--color-text)" />
+                            </q-btn>
+                        </div>
+                        <transition name="fade" mode="out-in">
+                            <span class="text-heading weight-900" v-if="total_comments % 2 == 0">{{ abbreviateComments }}</span>
+                            <span class="text-heading weight-900" v-else>{{ abbreviateComments }}</span>
+                        </transition>
                         <q-dialog class="min-h-sm" v-model="showComments" persistent>
                             <div class="bg-theme box-shadow box-theme-soft w-full min-h-fit max-w-sm h-fit overflow-visible" >
                                 <div class="p-2">
@@ -501,22 +467,19 @@ export default defineComponent({
                             </div>
                         </q-dialog>
                     </div>
-
-                    <div>
-                        <div class="flex justify-center items-center gap-1">
-                            <div>
-                                <q-btn round flat @click.stop="">
-                                    <q-tooltip :offset="[0,0]" v-if="!$q.screen.lt.sm">
-                                        Views
-                                    </q-tooltip>
-                                    <q-icon class="text-body" name="visibility"/>
-                                </q-btn>
-                            </div>
-                            <transition name="fade" mode="out-in">
-                                <span class="text-heading weight-900" v-if="total_views % 2 == 0">{{ abbreviateViews }}</span>
-                                <span class="text-heading weight-900" v-else>{{ abbreviateViews }}</span>
-                            </transition>
+                    <div class="flex justify-center items-center gap-1">
+                        <div>
+                            <q-btn round flat @click.stop="">
+                                <q-tooltip :offset="[0,0]" v-if="!$q.screen.lt.sm">
+                                    Views
+                                </q-tooltip>
+                                <q-icon class="text-body" name="visibility"/>
+                            </q-btn>
                         </div>
+                        <transition name="fade" mode="out-in">
+                            <span class="text-heading weight-900" v-if="total_views % 2 == 0">{{ abbreviateViews }}</span>
+                            <span class="text-heading weight-900" v-else>{{ abbreviateViews }}</span>
+                        </transition>
                     </div>
 
                     <q-btn round flat>
@@ -552,6 +515,13 @@ export default defineComponent({
     }
 }
 
+.img {
+    max-height: 600px;
+    height: 100%;
+    object-fit:contain;
+
+}
+
 
 .symbol {
     font-size: 1.5rem;
@@ -559,43 +529,6 @@ export default defineComponent({
     color: var(--color-text);
 }
 
-
-// .followed {
-//     transition: .1s ease-in;
-
-//     :hover {
-//         border: 1px solid red !important;
-//         background-color: rgba(255, 0, 0, .1) !important;
-
-//         span {
-//             display: none;
-//         }
-
-//         ::before {
-//             content: 'Unfollow';
-//             color: red;
-//             font-weight: 900;
-//             transition: opacity 0.3s ease-in-out;
-//         }
-//     }
-// }
-
-.followed:hover span {
-    display: none;
-}
-
-.followed:hover {
-    border: 1px solid red !important;
-    background-color: rgba(255, 0, 0, .1) !important;
-}
-
-.followed:hover::before {
-    content: 'Unfollow';
-    // font-size: 20px;
-    color: red;
-    font-weight: 900;
-    transition: opacity 0.3s ease-in-out;
-}
 
 
 </style>

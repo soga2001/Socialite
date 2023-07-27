@@ -53,7 +53,7 @@ export default defineComponent({
                 this.navSlideIn = false;
                 this.$store.commit("authenticate", false);
                 this.$store.commit("setDefaultUser");
-                router.push("/login");
+                // router.push("/login");
             }).catch((err) => {
                 console.log(err);
             });
@@ -183,7 +183,7 @@ export default defineComponent({
                   </div>
 
                   <q-dialog class="min-h-sm" v-model="post" position="top" persistent>
-                    <div class="mt-12 bg-theme box-shadow w-full min-h-fit max-w-sm h-fit overflow-visible" >
+                    <div class="mt-12 bg-theme box-shadow w-full min-h-fit max-w-sm h-fit overflow-visible rounded-sm" >
                       <div class="p-2">
                         <Item dense :vert-icon-center="true">
                           <template #title>

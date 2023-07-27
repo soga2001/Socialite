@@ -7,7 +7,7 @@ def replaceMention(val, user_list: list):
     try:
         user = User.objects.get(username=u)
         if user:
-            result = '<RouterLink :to="{name: `user-profile`, params: {username: \'' + u + '\'}}" :exact="true">@' + u + '</RouterLink>'
+            result = '<RouterLink @click.stop="" :to="{name: `user-profile`, params: {username: \'' + u + '\'}}" :exact="true">@' + u + '</RouterLink>'
             user_list.append(user)
             return result
         else:
@@ -18,4 +18,4 @@ def replaceMention(val, user_list: list):
 def replaceLink(val):
     URL_REGEX = re.compile(r'((http|https)://[^\s]+)')
 
-    return URL_REGEX.sub(r'<a target="_blank" href="\1">\1</a>', val)
+    return URL_REGEX.sub(r'<a @click.stop="" target="_blank" href="\1">\1</a>', val)

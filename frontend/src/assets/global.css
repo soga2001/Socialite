@@ -196,6 +196,32 @@
     visibility: hidden !important;
 }
 
+/* contain */
+
+.contain-none {
+    contain: none !important;
+}
+
+.contain-content {
+    contain: content !important;
+}
+
+.contain-strict {
+    contain: strict !important;
+}
+
+.contain-layout {
+    contain: layout !important;
+}
+
+.contain-paint {
+    contain: paint !important;
+}
+
+.contain-size {
+    contain: size !important;
+}
+
 /* grid */
 .cols-1 {
     grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
@@ -1691,6 +1717,10 @@
     border: 1px solid var(--color-border) !important;
 }
 
+.border-brighter {
+    border: .5px solid var(--color-heading) !important;
+}
+
 .border-none {
     border: 0 !important;
 }
@@ -2659,7 +2689,8 @@
 }
 
 .hover-dotted:hover {
-    text-decoration: dotted !important;
+    text-decoration: underline !important;
+    text-decoration-style: dotted !important;
 }
 
 .hover-dashed:hover {

@@ -63,6 +63,7 @@ class Post_Content(APIView):
             # caption = re.sub(r'@(\w+)', r'<a href="/users/\1/">@\1</a>', caption)
             user_list = []
             caption = re.sub(regex, lambda val: replaceMention(val, user_list), caption)
+            caption = replaceLink(caption)
             user = User.objects.get(pk=request.user.id)
             post = Post(
                 user = user,

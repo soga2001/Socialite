@@ -30,7 +30,7 @@ def replace(val):
         user = User.objects.get(username=u)
         if user:
             # result = r'<RouterLink :to="{name: `user-profile`, params: {username: {0}}}" :exact="true">@{0}</RouterLink>'.format(u)
-            result = '<RouterLink :to="{name: `user-profile`, params: {username: \'' + u + '\'}}" :exact="true">@' + u + '</RouterLink>'
+            result = '<RouterLink @click.stop="" :to="{name: `user-profile`, params: {username: \'' + u + '\'}}" :exact="true">@' + u + '</RouterLink>'
             return result
             # return r'<a href="/{0}/">@{0}</a>'.format(u)
         else:
@@ -134,7 +134,7 @@ def comments_by_post(request, timestamp, page, post_id):
     try:
         comments = Comment.objects.filter(post__id=post_id)
         if(comments):
-            serializer = CommentSerializer(comments, context={'request', request}, many=True)
+            serializer = CommentSerializer(comments, context={'request': request}, many=True)
             return JsonResponse({'status': True, 'message': 'Comments fetched successfully', 'comments': serializer.data})
         return JsonResponse({"status": True, "message": 'Post has no comments.'})
     except Exception as e:

@@ -122,7 +122,6 @@ router.beforeEach((to, from) => {
 })
 
 router.beforeResolve((to, next) => {
-  console.log(to.query)
   if(to.name == 'search' && Object.keys(to.query).length == 0) {
     return {path: '/explore'}
   }

@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from users.serializer import UserSerializer
 from .models import Comment
 
 class UUIDField(serializers.Field):
@@ -6,6 +8,7 @@ class UUIDField(serializers.Field):
         return str(value)
 
 class CommentSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
     username = serializers.CharField(source="user.username")
     user_avatar = serializers.FileField(source="user.avatar")
     post = serializers.UUIDField()

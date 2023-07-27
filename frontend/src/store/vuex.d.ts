@@ -6,7 +6,6 @@ declare module '@vue/runtime-core' {
   interface State {
     authenticated: boolean
     user: User
-    defaultUser: User
     dark: boolean,
     posts_main: Array<Post>,
     desktop: boolean,

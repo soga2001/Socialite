@@ -26,12 +26,11 @@ export default defineComponent({
 
   },
   created() {
-    console.log(this.$parent?.$parent?.$parent?.$route.name)
+    console.log('tomato')
 
   },
   mounted() {
-    console.log((this.$refs.header as HTMLDivElement)?.offsetLeft)
-    console.log((this.$refs.router as HTMLDivElement)?.offsetLeft)
+    console.log('potato')
   },
   watch: {
 
@@ -44,7 +43,7 @@ export default defineComponent({
     <div >
       <div ref="router" class="w-full overflow-hidden min-h-viewport">
         <RouterView v-slot="{ Component }">
-            <KeepAlive :max="2" :include="['all-notif', 'mentions']">
+            <KeepAlive :include="['all-notif', 'mentions']">
                 <component :is="Component"/>
             </KeepAlive>
         </RouterView>
