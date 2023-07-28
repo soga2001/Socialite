@@ -11,6 +11,9 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs = {'password': {'write_only': True}}
 
+    name = serializers.SerializerMethodField()
+    email = serializers.SerializerMethodField()
+    
 
     total_posted = serializers.SerializerMethodField()
     total_followers = serializers.SerializerMethodField()
@@ -19,6 +22,17 @@ class UserSerializer(serializers.ModelSerializer):
     is_following = serializers.SerializerMethodField()
     is_current_user = serializers.SerializerMethodField()
 
+    def get_email(self, obj):
+        val = obj.email
+        name, domain = val.split('@')
+        
+        # val = name[0:1] + ('*' * (len(name) - 1)) + '@' + domain[0:1] + '*****.' + domain.split('.')[1]
+        val = name[0:1] + ('*' * (len(name) - 1)) + '@' + domain
+        return val
+        
+
+    def get_name(self, obj):
+        return obj.get_full_name()
 
     def get_total_posted(self, obj):
         return obj.user_posted.count()

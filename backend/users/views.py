@@ -62,7 +62,7 @@ def flush_session(request):
 
 @api_view(["GET"])
 def users(request):
-    users = UserSerializer(User.objects.all(), context={'request', request}, many=True)
+    users = UserSerializer(User.objects.all(), context={'request': request}, many=True)
     return JsonResponse({'users': list(users.data)}, safe=False)
 
 @api_view(["GET"])

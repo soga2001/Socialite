@@ -21,6 +21,7 @@ export default defineComponent({
             caretPosition: {top: 0, height: 0},
             hasResults: false,
             resultsBelow: true,
+            loading: false,
         }
     },
     props: {
@@ -101,6 +102,7 @@ export default defineComponent({
         this.index = -1
       },
       async mention(e: any) {
+        console.log(e)
         // if input is empty
         if(this.val.length == 0) {
           this.charsLeft = 0
@@ -132,6 +134,7 @@ export default defineComponent({
           // console.log((space < this.index && (sub.charAt(this.index-1) == '' || sub.charAt(this.index-1) == ' ' || sub.charAt(this.index-1) == '\n')))
 
           if(this.index != -1 && (space < this.index && (sub.charAt(this.index-1) == '' || sub.charAt(this.index-1) == ' ' || sub.charAt(this.index-1) == '\n'))) {
+            this.loading = true
             const user = this.val.substring(this.index, space < this.index ? this.val.length : space).match(/@\w+/g);
             if(user) {
               user.forEach(async (match) => {
@@ -160,12 +163,15 @@ export default defineComponent({
         }
       },
       async checkSavedUsers(e: any) {
-        if(e.code === 'Space') {
-          this.savedUsers.set(this.val.substring(this.index + 1, this.val.length), this.users)
-          this.index = -1
-          this.users = new Array<User>();
-          return;
-        }
+          
+          if(e.code === 'Space') {
+            this.savedUsers.set(this.val.substring(this.index + 1, this.val.length), this.users)
+            this.index = -1
+            this.users = new Array<User>();
+            return;
+          }
+
+
         if(this.val.length == 0) {
           this.emitData()
         }
@@ -191,6 +197,13 @@ export default defineComponent({
         const u = this.savedUsers.get(username.trim())
         if(u) {
           this.users = u
+        }
+      },
+      handleKeyUp(e: any) {
+        console.log(e)
+        const arrowKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+        if (arrowKeys.includes(e.key)) {
+          this.checkSavedUsers(e)
         }
       },
       autogrow() {
@@ -262,8 +275,8 @@ export default defineComponent({
 <template>
   <div class="main " ref="mentionDiv">
     <div class="relative w-full" ref="div">
-        <textarea ref="textarea" :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars"  @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input textl-xl"/>
-        <div v-if="caretPosition.top" :style="{bottom: !resultsBelow ? `${caretPosition.height + 25}px` : 'auto', top: resultsBelow ? ((caretPosition.top + caretPosition.height <= ($refs.textarea as HTMLInputElement).offsetHeight) ? `${caretPosition.top + caretPosition.height + 20}px` : (($refs.textarea as HTMLInputElement).offsetHeight) + 'px') : 'auto'}" ref="results"  class="results absolute left-0 bg-theme box-shadow-soft flex flex-col shrink rounded-sm" >
+        <textarea ref="textarea" :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars" @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input textl-xl"/>
+        <div v-if="caretPosition.top" :style="{bottom: !resultsBelow ? `${caretPosition.height + 20}px` : 'auto', top: resultsBelow ? ((caretPosition.top + caretPosition.height <= ($refs.textarea as HTMLInputElement).offsetHeight) ? `${caretPosition.top + caretPosition.height + 20}px` : (($refs.textarea as HTMLInputElement).offsetHeight + 20) + 'px') : 'auto'}"  ref="results"  class="results absolute left-0 bg-theme box-shadow-soft flex flex-col shrink rounded-sm" >
           <div >
             <div v-if="users.length >0"  @click="replaceMention(user.username)" class=" pointer w-full" v-for="user in users" :key="user.id">
               <Item class="bg-hover-mute" avatarSize="3.5rem">
@@ -278,6 +291,9 @@ export default defineComponent({
               </Item>
             </div>
           </div>  
+          <div>
+
+          </div>
         </div>
         
     </div>
