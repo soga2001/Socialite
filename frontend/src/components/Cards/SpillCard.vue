@@ -54,6 +54,25 @@ export default defineComponent({
     grid-template-columns: 65px 1fr;
 }
 
+@media only screen and (max-width: 599px) {
+    .main {
+        grid-template-columns: 3rem 1fr;
+    }
+
+    .avatar {
+        display: flex;
+        place-items: center;
+        width: 2.8rem;
+        height: 2.8rem;
+    }
+
+    .avatar :slotted(*) {
+        border-radius: 50%;
+        width: 2.8rem;
+        height: 2.8rem;
+    }
+}
+
 .avatar {
     display: flex;
     place-items: center;

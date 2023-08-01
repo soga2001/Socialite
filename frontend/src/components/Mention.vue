@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, type CSSProperties } from 'vue';
 import { http } from '@/assets/http';
 import type { User } from '@/assets/interfaces';
 import Item from './Item.vue';
@@ -26,6 +26,7 @@ export default defineComponent({
             resultPositionTop: 0,
             resultPositionBottom: 0,
             divHeight: 0,
+            textareaWidth: 0,
         }
     },
     props: {
@@ -237,24 +238,31 @@ export default defineComponent({
         if(results) {
           const height = results?.offsetHeight || 400
           const rect = mentionDiv.getBoundingClientRect();
+          this.textareaWidth = area.getBoundingClientRect().width;
           this.divHeight = rect.height
           const isAtTop = rect.top >= 0 && rect.top <= height;
           const isAtBottom = rect.bottom >= 0 && rect.bottom >= (window.innerHeight - height);
-          if(isAtTop && isAtBottom) {
-            return;
-          }
-          console.log(rect.bottom)
           this.resultPositionBottom = window.innerHeight - rect.bottom - this.caretPosition.top;
           this.resultPositionTop = rect.top
           if(isAtBottom && this.resultsBelow) {
             this.resultsBelow = false;
           }
-          else if(isAtTop && !this.resultsBelow) {
+          else if(isAtTop && !this.resultsBelow && isAtTop !== isAtBottom) {
             this.resultsBelow = true;
           }
         }
       }
       
+    },
+    computed: {
+      resultStyle(): CSSProperties {
+        return {
+          top: this.resultsBelow ? ((this.caretPosition.top + this.caretPosition.height <= (this.$refs.textarea as HTMLInputElement).offsetHeight) ? `${this.resultPositionTop  + this.caretPosition.top + this.caretPosition.height + 20}px` : ( this.resultPositionTop + ( this.$refs.textarea as HTMLInputElement).offsetHeight + 20) + 'px') : `auto`, 
+          bottom: !this.resultsBelow ? `${ this.resultPositionBottom + this.caretPosition.top + this.caretPosition.height + 20}px` : 'auto', 
+          maxWidth: `${this.textareaWidth}px`,
+          width: `${this.textareaWidth - 30}px`,
+        }
+      }
     },
     watch: {
       val(val) { 
@@ -298,10 +306,10 @@ export default defineComponent({
             </div>
           </div>  
           </div> -->
-          <div v-if="caretPosition.top" :style="{top: resultsBelow ? ((caretPosition.top + caretPosition.height <= ($refs.textarea as HTMLInputElement).offsetHeight) ? `${resultPositionTop  + caretPosition.top + caretPosition.height + 20}px` : ( resultPositionTop + ( $refs.textarea as HTMLInputElement).offsetHeight + 20) + 'px') : `auto`, bottom: !resultsBelow ? `${ resultPositionBottom + caretPosition.top + caretPosition.height + 20}px` : 'auto' }"  ref="results" class="results fixed bg-theme box-shadow-soft flex flex-col shrink rounded-sm">
+          <div v-if="caretPosition.top" :style="resultStyle"  ref="results" class="results fixed bg-theme box-shadow-soft flex flex-col shrink rounded-sm">
             <div >
-              <div v-if="users.length > 0"  @click="replaceMention(user.username)" class=" pointer w-full" v-for="user in users" :key="user.id">
-                <Item class="bg-hover-mute" avatarSize="3.5rem">
+              <div v-if="users.length > 0" @click="replaceMention(user.username)" class=" pointer w-full" v-for="user in users" :key="user.id">
+                <Item de class="bg-hover-mute" avatarSize="3.5rem">
                     <template #avatar>
                         <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
                         <q-icon size="50px" v-else name="account_circle" class="rounded-full" />
@@ -357,9 +365,14 @@ span {
 .results {
   z-index: 999;
   max-height: 216px;
-  overflow-y: scroll;
-  width: 90%;
-  max-width: 400px;
+  overflow-y: auto;
+  /* max-width: 70% !important; */
+}
+
+@media only screen and (max-width: 600px) {
+  .results {
+    width: 70%;
+  }
 }
 
 ::placeholder {

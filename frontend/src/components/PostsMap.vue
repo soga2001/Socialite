@@ -249,16 +249,12 @@ export default defineComponent({
             <template #avatar>
                 <user-card :user-prop="user">
                     <template #text>
-                        <q-avatar size="3.5rem" class="hover-darker relative pointer" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">
+                        <q-avatar :size="$q.screen.lt.sm ? '2.8rem' : '3.5rem'" class="hover-darker relative pointer" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">
                             <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
                             <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                         </q-avatar>
                     </template>
                 </user-card>
-                <!-- <q-avatar class="hover-darker relative pointer" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">
-                    <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
-                    <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
-                </q-avatar> -->
             </template>
             <template #title>
                 <Item dense align-items="start">

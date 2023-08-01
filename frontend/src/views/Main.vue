@@ -307,7 +307,7 @@ export default defineComponent({
         </div>
       </q-dialog> -->
 
-      <q-dialog class="min-h-sm w-full h-full" v-model="spill" position="top" persistent :maximized="true">
+      <q-dialog class="min-h-sm bg-blur-half w-full h-full" v-model="spill" position="top" persistent :maximized="true">
         <div class="mt-12 bg-theme box-shadow w-full h-full min-h-fit max-w-sm overflow-visible rounded-sm" >
           <div class="p-2">
             <Item dense :vert-icon-center="true">

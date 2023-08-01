@@ -177,7 +177,7 @@ export default defineComponent({
                       <!-- <i-settings class="show" size="2rem" :fill="$route.fullPath == '/settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" /> -->
                   </RouterLink>
                   
-                  <div v-if="$store.state.authenticated" class="w-full py-2 px-5" @click="post = !post">
+                  <div v-if="$store.state.authenticated" class="w-full flex justify-center" @click="post = !post">
                    <button class=" hide w-full px-15 py-3 text-xl rounded-lg border-none pointer btn-themed weight-900 ">Spill</button>
                    <q-btn class="show btn-themed text-heading" round flat icon="add"/>
                   </div>
@@ -238,8 +238,8 @@ export default defineComponent({
                   </RouterLink>
                 </div>
 
-                <div class="rest__nav">
-                    <q-item>
+                <div class="rest__nav ">
+                    <!-- <q-item> 
                       <q-item-section avatar top>
                         <theme-toggle/>
                       </q-item-section>
@@ -256,7 +256,7 @@ export default defineComponent({
                           </transition>
                         </q-item-label>
                       </q-item-section>
-                    </q-item>
+                    </q-item> -->
 
                     <div class="dropdown-btn flex w-full justify-center">
                         <q-btn no-caps dense rounded flat class="dropdown" v-if="$store.state.authenticated">

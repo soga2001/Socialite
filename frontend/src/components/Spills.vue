@@ -129,59 +129,45 @@ export default defineComponent({
 
 <template>
   <div class="post bg-transparent">
-    <div class="post__container">
-      <q-avatar class="post__avatar" size="70px" >
+    <div class="post__container ">
+      <q-avatar class="post__avatar " size="70px" >
           <img class="user__avatar" v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
           <profile-icon v-else size="4rem" />
       </q-avatar>
       <div class="grid gap-3">
-        <form class="relative cols-5 grid gap-2 px-2" autocorrect="on" autocomplete="off" @submit.prevent="submit">
-          <Mention ref="input" @update:charsLeft="chars = $event" :rows="rows" @update:val="caption = $event" :value="caption" input_type="text" id="caption" :placeholder="placeholder" class="post__caption h-full" />
-          <div class="flex w-full gap-2 col-span-2">
-            <!-- <label :hidden="isComment" class="pointer btn-transition border hover-darker pt-2 px-2 rounded">
-              <i-upload-img  size="1.5rem" fill="rgb(253, 137, 137)" stroke="rbg(253,137,137)"/>
-              <input @change="getImage" type="file" id="file" style="display: none" name="image" accept="image/*" data-original-title="upload photos"/>
-            </label> -->
-            <q-btn v-if="!isComment" rounded dense flat class="px-2" @click="($refs.file as HTMLInputElement).click()">
-              <i-upload-img  size="1.5rem" fill="rgb(253, 137, 137)" stroke="rbg(253,137,137)"/>
-              <input ref="file" @change="getImage" type="file" id="file" style="display: none" name="image" accept="image/*" data-original-title="upload photos"/>
-            </q-btn>
-            <label :hidden="isComment" class="pointer btn-transition btn-hover-ligher pt-2 px-2 rounded">
-              <i-upload-vid size="1.5rem" fill="rgb(253, 137, 137)" stroke="rgb(253, 137, 137)" />
-              <input @change="getImage" type="file" id="file" style="display: none" name="image" accept="image/*" data-original-title="upload photos"/>
-            </label>
+        <form class="relative w-full cols-5 grid gap-2 px-2" autocorrect="on" autocomplete="off" @submit.prevent="submit">
+          <div class="flex col-span-5 flex-rows caption-div">
+            <Mention ref="input" @update:charsLeft="chars = $event" :rows="rows" @update:val="caption = $event" :value="caption" input_type="text" id="caption" :placeholder="placeholder" class="post__caption w-full" />
+            <div v-if="imgURL" class="mr-3">
+              <uploadedImg :img-url="imgURL" @update:delete="deleteImg()"/>
+            </div>
           </div>
-          <div class="col-5 col-span-3 flex flex-row-reverse items-center gap-2 bottom-0 right-0 mr-2">
-            <q-btn class="right bottom-0 right-0 mr-2 btn btn-themed text-heading rounded px-7 py-2 weight-900" flat dense :loading="submitting" type="submit" push :disable="disabled">
-              <div>
-                <span class="text-white text-base weight-900 text-capitalize">{{ btnString }}</span>
-              </div>
-              <template v-slot:loading>
-                <q-spinner
-                  color="grey-1"
-                />
-              </template>
-            </q-btn> 
-            <circular-progress v-if="chars" :val="chars" size="30px" :showVal="true" />
-            <!-- <q-circular-progress
-              v-if="chars"
-              show-value
-              font-size="12px"
-              :value="chars"
-              size="30px"
-              :thickness="0.22"
-              color="pink"
-              track-color="grey-3"
-              :min="0"
-              :max="255"
-            >
-              <span v-if="lessThan20">{{ 255 - chars }}</span>
-            </q-circular-progress> -->
+          <div class="flex col-span-5 bg-theme sticky bottom-0 ">
+            <div class="flex gap-2 flex-start">
+              <q-btn v-if="!isComment" rounded dense flat class="px-2" @click="($refs.file as HTMLInputElement).click()">
+                <i-upload-img  size="1.5rem" fill="rgb(253, 137, 137)" stroke="rbg(253,137,137)"/>
+                <input ref="file" @change="getImage" type="file" id="file" style="display: none" name="image" accept="image/*" data-original-title="upload photos"/>
+              </q-btn>
+              <label :hidden="isComment" class="pointer btn-transition btn-hover-ligher pt-2 px-2 rounded">
+                <i-upload-vid size="1.5rem" fill="rgb(253, 137, 137)" stroke="rgb(253, 137, 137)" />
+                <input @change="getImage" type="file" id="file" style="display: none" name="image" accept="image/*" data-original-title="upload photos"/>
+              </label>
+            </div>
+            <div class="sticky bottom-0 justify-end flex flex-row-reverse items-center gap-2 mr-2 end">
+              <q-btn class="right bottom-0 right-0 mr-2 btn btn-themed text-heading rounded px-7 py-2 weight-900" flat dense :loading="submitting" type="submit" push :disable="disabled">
+                <div>
+                  <span class="text-white text-base weight-900 text-capitalize">{{ btnString }}</span>
+                </div>
+                <template v-slot:loading>
+                  <q-spinner
+                    color="grey-1"
+                  />
+                </template>
+              </q-btn> 
+              <circular-progress v-if="chars" :val="chars" size="30px" :showVal="true" />
+            </div>
           </div>
         </form>
-        <div v-if="imgURL" class="mr-3">
-          <uploadedImg :img-url="imgURL" @update:delete="deleteImg()"/>
-        </div>
       </div>
     </div> 
   </div>
@@ -190,10 +176,14 @@ export default defineComponent({
 <style scoped>
 .post {
   display: grid;
-  background-color: var(--color-background);
+  background-color: red;
   position: relative;
   width: 100%;
   max-width: 600px;
+  /* max-height: calc(100vh - 110px); */
+  max-height: calc(100vh - 60px);
+  /* max-height: 100vh; */
+  position: relative;
 }
 .post__container {
   padding: 10px 0px;
@@ -240,11 +230,16 @@ export default defineComponent({
   max-width: 100%;
 }
 
+.caption-div {
+  max-height: calc(100vh - 120px);
+  overflow: auto;
+  overflow-y: scroll;
+}
+
 .post__caption {
   font-size: 15px;
   margin-top: 20px;
   grid-column: auto / span 5;
-  position: relative;
 }
 
 .post__caption:active {
@@ -285,5 +280,9 @@ input[type="text"]:focus {
   position: absolute;
   top: 8px;
   right: 16px;
+}
+
+.end {
+  margin-left: auto;
 }
 </style>
