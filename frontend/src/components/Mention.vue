@@ -22,6 +22,10 @@ export default defineComponent({
             hasResults: false,
             resultsBelow: true,
             loading: false,
+
+            resultPositionTop: 0,
+            resultPositionBottom: 0,
+            divHeight: 0,
         }
     },
     props: {
@@ -175,6 +179,7 @@ export default defineComponent({
         if(this.val.length == 0) {
           this.emitData()
         }
+
         this.getCoordinates()
 
         if(this.savedUsers.size == 0) {
@@ -200,9 +205,11 @@ export default defineComponent({
         }
       },
       handleKeyUp(e: any) {
-        console.log(e)
         const arrowKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+        console.log(e.key)
         if (arrowKeys.includes(e.key)) {
+
+          console.log(e)
           this.checkSavedUsers(e)
         }
       },
@@ -223,7 +230,6 @@ export default defineComponent({
         return tempUsers
       },
       isElementAtTopOrBottom() {
-        console.log(this.caretPosition.top, this.caretPosition.height)
         const mentionDiv = this.$refs.mentionDiv as HTMLDivElement;
         const results = this.$refs.results as HTMLDivElement;
         const div = this.$refs.div as HTMLElement;
@@ -231,20 +237,20 @@ export default defineComponent({
         if(results) {
           const height = results?.offsetHeight || 400
           const rect = mentionDiv.getBoundingClientRect();
+          this.divHeight = rect.height
           const isAtTop = rect.top >= 0 && rect.top <= height;
           const isAtBottom = rect.bottom >= 0 && rect.bottom >= (window.innerHeight - height);
           if(isAtTop && isAtBottom) {
             return;
           }
+          console.log(rect.bottom)
+          this.resultPositionBottom = window.innerHeight - rect.bottom - this.caretPosition.top;
+          this.resultPositionTop = rect.top
           if(isAtBottom && this.resultsBelow) {
-            this.resultsBelow = false
-            // results.style.removeProperty('top')
-            // results.style.bottom = `${this.caretPosition.height + 25}px`
+            this.resultsBelow = false;
           }
           else if(isAtTop && !this.resultsBelow) {
-            this.resultsBelow = true
-            // results.style.top = (this.caretPosition.top + this.caretPosition.height <= (area as HTMLInputElement).offsetHeight) ? `${this.caretPosition.top + this.caretPosition.height}px` : ((area as HTMLInputElement).offsetHeight) + 'px'
-            // results.style.removeProperty('bottom')
+            this.resultsBelow = true;
           }
         }
       }
@@ -276,7 +282,7 @@ export default defineComponent({
   <div class="main " ref="mentionDiv">
     <div class="relative w-full" ref="div">
         <textarea ref="textarea" :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars" @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input textl-xl"/>
-        <div v-if="caretPosition.top" :style="{bottom: !resultsBelow ? `${caretPosition.height + 20}px` : 'auto', top: resultsBelow ? ((caretPosition.top + caretPosition.height <= ($refs.textarea as HTMLInputElement).offsetHeight) ? `${caretPosition.top + caretPosition.height + 20}px` : (($refs.textarea as HTMLInputElement).offsetHeight + 20) + 'px') : 'auto'}"  ref="results"  class="results absolute left-0 bg-theme box-shadow-soft flex flex-col shrink rounded-sm" >
+        <!-- <div v-if="caretPosition.top" :style="{bottom: !resultsBelow ? `${300 + caretPosition.height + 20}px` : 'auto', top: resultsBelow ? ((caretPosition.top + caretPosition.height <= ($refs.textarea as HTMLInputElement).offsetHeight) ? `${caretPosition.top + caretPosition.height + 20}px` : (($refs.textarea as HTMLInputElement).offsetHeight + 20) + 'px') : 'auto', backgroundColor: !resultsBelow ? 'red' : 'transparent'}"  ref="results"  class="results absolute left-0 bg-theme box-shadow-soft flex flex-col shrink rounded-sm" >
           <div >
             <div v-if="users.length >0"  @click="replaceMention(user.username)" class=" pointer w-full" v-for="user in users" :key="user.id">
               <Item class="bg-hover-mute" avatarSize="3.5rem">
@@ -291,11 +297,23 @@ export default defineComponent({
               </Item>
             </div>
           </div>  
-          <div>
-
-          </div>
+          </div> -->
+          <div v-if="caretPosition.top" :style="{top: resultsBelow ? ((caretPosition.top + caretPosition.height <= ($refs.textarea as HTMLInputElement).offsetHeight) ? `${resultPositionTop  + caretPosition.top + caretPosition.height + 20}px` : ( resultPositionTop + ( $refs.textarea as HTMLInputElement).offsetHeight + 20) + 'px') : `auto`, bottom: !resultsBelow ? `${ resultPositionBottom + caretPosition.top + caretPosition.height + 20}px` : 'auto' }"  ref="results" class="results fixed bg-theme box-shadow-soft flex flex-col shrink rounded-sm">
+            <div >
+              <div v-if="users.length > 0"  @click="replaceMention(user.username)" class=" pointer w-full" v-for="user in users" :key="user.id">
+                <Item class="bg-hover-mute" avatarSize="3.5rem">
+                    <template #avatar>
+                        <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
+                        <q-icon size="50px" v-else name="account_circle" class="rounded-full" />
+                    </template>
+                    <template #title>
+                      <span class="text-xl text-heading weight-900">{{user.first_name + ' ' + user.last_name}}</span> 
+                    </template>
+                    <template #caption>@{{ user.username }}</template>
+                </Item>
+              </div>
+            </div>
         </div>
-        
     </div>
   </div>
 </template>
@@ -316,9 +334,7 @@ textarea {
   resize: none;
   border: 0;
   outline: none;
-  overflow: scroll;
-  overflow-y: scroll;
-  max-height: 10rem;
+  height: 100%;
 }
 
 
@@ -340,11 +356,10 @@ span {
 
 .results {
   z-index: 999;
-  /* : 400px; */
   max-height: 216px;
   overflow-y: scroll;
   width: 90%;
-  max-width: 500px;
+  max-width: 400px;
 }
 
 ::placeholder {
