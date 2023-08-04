@@ -37,17 +37,17 @@ export default defineComponent({
   methods: {
     async getData() {
       this.loading = true
-     await http.get(`posts/explore/${this.offset}/`).then((res) => {
-        if(res.data.message) {
-            this.message = res.data.message
-            this.hasMore = false
-        }
-        // else {
-        //   this.hasMore = true
-        // }
+      await http.get(`posts/explore/${this.user_timestap}/${this.page}/`).then((res) => {
         if(res.data.posts) {
             this.posts = [...this.posts, ...res.data.posts]
             this.offset = (this.posts).length
+
+            if(res.data.posts.length === 10) {
+              this.hasMore = true
+            }
+            else {
+              this.hasMore = false
+            }
         }
       }).catch((err) => {
           console.log(err);
@@ -62,46 +62,36 @@ export default defineComponent({
             console.log(err);
         });
     },
-    onLoad(index: any, done: any) {
-      if(this.hasMore) {
-        this.page = this.page + 1
-        this.getData()
-      }
-      done()
-    },
   },
   components: { PostsMap, Search, Navbar },
   activated() {
   },
   watch: {
     scrollPosition(scrollPosition) {
-      // console.log(scrollPosition)
-    },
-    height(height) {
-      // console.log(height)
-    },
+      if(scrollPosition >= this.height - 500 && this.hasMore && !this.loading) {
+        this.page += 1
+        this.loading = true
+        this.getData()
+      }
+    }
   }
 })
 </script>
 
 <template>
   <div class="explore" id="explore">
-    <div class="">
-      <q-infinite-scroll class="grid " id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
-        <div class="post_map" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
-          <PostsMap :post="post" />
-        </div>
-        <template v-slot:loading>
-          <div class="row justify-center q-my-md">
-            <q-spinner-oval class="loading" size="40px" />
-          </div>
-        </template>
-      </q-infinite-scroll>
+    <div>
+      <div class="post_map" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
+        <PostsMap :post="post" />
+      </div>
+      <div class="w-full flex justify-center p-5" v-if="loading">
+        <Loading />
+      </div>
     </div>
-    <div v-if="!hasMore" class="text-center message">
+    <!-- <div v-if="!hasMore" class="text-center message">
       <p>{{message}}</p>
       <button class="btn btn-themed border-none text-heading px-3 py-3 rounded weight-900" @click="flushSession">Reset Session Data</button>
-    </div>
+    </div> -->
   </div>
 </template>
 

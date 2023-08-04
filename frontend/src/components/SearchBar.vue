@@ -37,16 +37,12 @@ export default defineComponent({
         };
     },
     name: 'search-bar',
-    setup() {
-        const store = useStore()
-    },
     created() {
-        if(this.$route.name != 'explore') {
+        if(this.$route.name == 'search') {
             this.input = this.$route.query.q as string;
         }
     },
     mounted() {
-        // console.log(this.$refs.input)
     },
     methods: {
       async search() {
@@ -128,7 +124,7 @@ export default defineComponent({
             </q-input>
         </form>
         <div v-if="hasResults">
-            <q-menu :autoClose="false" :no-focus="true" v-if="(!searchPage || !(['search', 'explore'].includes($route.name?.toString() ||  '')))" id="results" v-model="hasResults"
+            <q-menu :autoClose="false" :no-focus="true" v-if="(!searchPage || !(['search', 'explore', 'home'].includes($route.name?.toString() ||  '')))" id="results" v-model="hasResults"
             class="bg-theme rounded-sm p-2 border-brighter"
             fit
             >

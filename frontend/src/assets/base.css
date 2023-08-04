@@ -80,6 +80,8 @@
   --color-switch-slider: var(--vt-c-white);
 
   --color-hover: var(--vt-c-hover-dark);
+
+  color-scheme: dark;
 }
 
 [data-theme="light"] {
@@ -104,6 +106,8 @@
   --color-button-background: var(--vt-c-background-orange);
   --color-button-hover: var(--vt-c-orange-hover);
   --color-button-hover-ligher: var(--vt-c-orange-hover-ligher);
+
+  color-scheme: light;
 
   /* --color-theme: var(--vt-c-green);
   --color-button: var(--vt-c-green);
@@ -146,21 +150,3 @@ body {
 }
 
 
-/* .bold {
-  font-weight: 900;
-} */
-
-
-::-webkit-scrollbar {
-  width: .3em;
-}
-
-/* ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-} */
- 
-::-webkit-scrollbar-thumb {
-  background-color: var(--color-lighter);
-
-  /* outline: 1px solid slategrey; */
-}

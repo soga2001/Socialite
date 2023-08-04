@@ -11,6 +11,16 @@ import type { RouteRecordName } from 'vue-router';
 
 export default defineComponent({
     name: 'user-profile',
+    props: {
+        scrollPosition: {
+            type: Number,
+            default: 0,
+        },
+        height: {
+            type: Number,
+            default: 0,
+        }
+    },
     data() {
         return {
             // user_id: this.$route.params.id,
@@ -134,7 +144,7 @@ export default defineComponent({
                 <div class="w-full overflow-hidden">
                     <RouterView v-slot="{ Component }">
                         <KeepAlive :max="2" :include="['user-posted', 'user-liked']">
-                            <component :is="Component" :websocket="websocket"/>
+                            <component :is="Component" :websocket="websocket" :height="height" :scrollPosition="scrollPosition"/>
                         </KeepAlive>
                     </RouterView>
                 </div>

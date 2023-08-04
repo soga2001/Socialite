@@ -34,7 +34,7 @@ export default{
         }
     },
     mounted() {  
-        console.log(this.cleanText())
+        // console.log(this.cleanText())
     },
    render () {
         // const Timeago = resolveComponent('timeago')

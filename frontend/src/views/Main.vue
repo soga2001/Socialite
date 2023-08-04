@@ -45,7 +45,7 @@ export default defineComponent({
   created() {
   },
   mounted() {
-    const element = (document.getElementById("main-div") as HTMLDivElement)
+    const element = this.$refs.mainDiv as HTMLDivElement
     element.addEventListener("scroll", this.scroll)
     if(this.$refs.bottomBar) {
       this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 0
@@ -66,7 +66,7 @@ export default defineComponent({
   },
   methods: {
     setData() {
-      const element = (document.getElementById("main-div") as HTMLDivElement)
+      const element = this.$refs.mainDiv as HTMLDivElement
       if(element) {
 
         if(!this.scrollPos.get(this.$route.name)) {
@@ -81,8 +81,7 @@ export default defineComponent({
       
     },
     scroll() {
-      const element = (document.getElementById("main-div") as HTMLDivElement);
-      // && element.scrollTop > this.topNavHeight
+      const element = this.$refs.mainDiv as HTMLDivElement;
       if(this.lastScrollPos < element.scrollTop ) {
         this.hideTopNav = true
       } else {
@@ -208,7 +207,7 @@ export default defineComponent({
     '$route': function() {
       this.$nextTick(() => {
         this.hideTopNav = false;
-        const element = document.getElementById("main-div") as HTMLDivElement;
+        const element = this.$refs.mainDiv as HTMLDivElement;
         element.scrollTop = this.scrollPos.get(this.$route.name);
         this.scrollPosition = this.scrollPos.get(this.$route.name);
         this.height = this.scrollHeight.get(this.$route.name)
@@ -259,12 +258,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="!isMobile() ? 'main' : 'fixed w-full h-viewport'">
+  <div ref="mainDiv" :class="!isMobile() ? 'main' : 'fixed w-full h-viewport overflow-y-scroll'">
     <div v-if="!$q.screen.lt.sm" class="min-h-viewport h-full w-full">
       <Sidebar/>
     </div>
 
-    <div  ref="mainDiv"  id="main-div" class="w-full">
+    <div id="main-div" class="w-full">
       <div>
         <div ref="topNav" v-if="!hideNavBar" id="top-nav" :class="{'border-b': $route.matched[0].name != 'notification'}" class="sticky top-0 w-full h-fit bg-transparent bg-blur-1 z-20">
           <TopNav @update:navHeight="topNavHeight = $event"/>
@@ -280,7 +279,7 @@ export default defineComponent({
       </div>
       
     </div>
-    <nav v-if="$q.screen.lt.sm && !hideNavBar" ref="bottomBar" class="sticky bottom-0 w-full z-5">
+    <nav v-if="$q.screen.lt.sm && !hideNavBar" ref="bottomBar" class="fixed bottom-0 w-full z-5">
       <BottomNav/>
     </nav>
 
@@ -359,19 +358,23 @@ export default defineComponent({
   
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 
 * {
   padding: 0;
   margin: 0;
   transition: .1s ease-in-out;
 }
+
+
 .main {
   display: grid;
   width: 100%;
   position: fixed;
   height: 100%;
-  grid-template-columns: auto 600px auto;
+  grid-template-columns: auto 600px minmax(auto, 400px);
+  overflow: scroll;
+  overflow-y: scroll;
 }
 
 
@@ -382,12 +385,8 @@ export default defineComponent({
 }
 
 #main-div {
-  overflow: scroll;
-  overflow-y: scroll;
   height: 100%;
   width: 100%;
-  display: grid;
-  grid-template-columns: auto 1fr;
 }
 
 .transform {
@@ -410,11 +409,7 @@ export default defineComponent({
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
   .main {
-    grid-template-columns: auto 1fr;
-  }
-
-  #main-div {
-    grid-template-columns: 1fr 0px;
+    grid-template-columns: auto 1fr auto;
   }
 
   .right-bar {
@@ -423,44 +418,27 @@ export default defineComponent({
 }
 
 /* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 710px) {
+@media only screen and (min-width: 650px) {
   .main {
-    grid-template-columns: auto 1fr;
+    grid-template-columns: minmax(auto, 400px) 600px minmax(auto, 200px);
   }
 
-  #main-div {
-    grid-template-columns: 600px;
-  }
-
-  .right-bar {
-    display: none;
-  }
 } 
 
-/* Large devices (laptops/desktops, 992px and up) */
-@media only screen and (min-width: 992px) {
-  .main {
-    grid-template-columns: auto 1fr;
-  }
+// /* Large devices (laptops/desktops, 992px and up) */
+// @media only screen and (min-width: 992px) {
+//   .main {
+//     grid-template-columns: auto 600px minmax(auto, 300px);
+//   }
 
-  #main-div {
-    grid-template-columns: 600px 1fr;
-  }
-
-  .right-bar {
-    display: block;
-  }
-} 
+// } 
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
-@media only screen and (min-width: 1200px) {
+@media only screen and (min-width: 800px) {
   .main {
-    grid-template-columns: 350px 1fr;
+    grid-template-columns: minmax(auto, 400px) 600px minmax(auto, 400px);
   }
 
-  #main-div {
-    grid-template-columns: 600px 1fr;
-  }
 
   .right-bar {
     display: block;

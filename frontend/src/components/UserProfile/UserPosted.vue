@@ -15,6 +15,14 @@ export default defineComponent({
         websocket: {
             type: Object as PropType<WebSocket>,
             required: true,
+        },
+        scrollPosition: {
+            type: Number,
+            default: 0,
+        },
+        height: {
+            type: Number,
+            default: 0,
         }
     },
     data() {
@@ -29,6 +37,7 @@ export default defineComponent({
             isLoggedUser: false,
             page: 0,
             loading: true,
+            hasMore: true,
 
             deleted: false,
             deletedMsg: '',
@@ -37,13 +46,23 @@ export default defineComponent({
     setup() {
     },
     methods: {
-        getUserPosted() {
-            http.get(`posts/user_posted/${this.user_timestap}/${this.page}/${(this.username)}/`).then((res) => {
-               this.user_posted = [...this.user_posted, ...res.data.posts]
-               this.loading = false
+        async getUserPosted() {
+            this.loading = true
+            await http.get(`posts/user_posted/${this.user_timestap}/${this.page}/${(this.username)}/`).then((res) => {
+                if(res.data.posts) {
+                    if(res.data.posts.length == 0) {
+                        this.hasMore = false
+                    }
+                    else{
+                        this.hasMore = true
+                    }
+                    this.user_posted = [...this.user_posted, ...res.data.posts];
+                }
             }).catch((err) => {
                 console.log(err);
             });
+
+            this.loading = false
         },
         async websocketMessage() {
             this.websocket.onmessage = (e) => {
@@ -69,7 +88,17 @@ export default defineComponent({
     },
     deactivated() {
     },
-    components: { UserPostedMap, Loading}
+    components: { UserPostedMap, Loading},
+    watch: {
+        scrollPosition(scrollPosition) {
+            console.log(scrollPosition)
+            if(scrollPosition >= this.height - 500 && this.hasMore && !this.loading) {
+                this.page += 1
+                this.loading = true
+                this.getUserPosted()
+            }
+        },
+    }
 })
 </script>
 
@@ -84,6 +113,9 @@ export default defineComponent({
         <div class="grid">
             <div class="post_map border-b" v-if="user_posted.length > 0" v-for="(post, index) in user_posted" :id="post.id" :key="post.id">
                 <PostsMap :post="post" />
+            </div>
+            <div class="w-full flex justify-center p-5" v-if="loading">
+                <Loading />
             </div>
         </div>
         

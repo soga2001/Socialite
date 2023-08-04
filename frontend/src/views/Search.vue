@@ -50,16 +50,18 @@ export default defineComponent({
     },
     created() {
         this.input = this.q;
-        this.search()
+        // this.search()
     },
     mounted() {
         this.instance = getCurrentInstance()
     },
     activated() {
-        this.input = this.q;
-        this.search()
-        this.instance = getCurrentInstance()
-        this.alwaysTrue = true
+        if(this.$q){
+            this.input = this.q;
+            this.search()
+            this.instance = getCurrentInstance()
+            this.alwaysTrue = true
+        }
     },
     methods: {
       async search() {
@@ -107,7 +109,7 @@ export default defineComponent({
     components: { Item, SearchBar },
     watch: {
         input(input) {
-            if(input === "") {
+            if(input === "" || input == undefined) {
                 this.results = new Array<User>()
                 this.noResults = false
                 return

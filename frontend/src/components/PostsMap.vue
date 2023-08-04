@@ -111,7 +111,7 @@ export default defineComponent({
                     this.total_likes -= 1;
                 }
                 else {
-                    console.log(res.data)
+                    // console.log(res.data)
                 }
             }).catch((err) => {
                 console.log(err)
@@ -144,7 +144,7 @@ export default defineComponent({
 
         },
         viewed() {
-            console.log(this.id)
+            // console.log(this.id)
             setTimeout(() => {
                 this.total_views += 1;
             }, 1000);
@@ -211,7 +211,7 @@ export default defineComponent({
         
     },
     created() {
-        console.log(this.is_following)
+        // console.log(this.is_following)
     },
     async mounted() {
         await this.$nextTick()
@@ -392,15 +392,6 @@ export default defineComponent({
                     </template>
                 </Item>
 
-                <!-- <div class="grid">
-                    <div class="h-full flex gap-1 items-center">
-                        <span class="text-xl pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">Suyogya Poudel</span>
-                        <span class="text-lighter weight-900">&#183</span>
-                        <span class="text-base pointer hover-underline text-lighter weight-500" @click.stop="$router.push({name: 'user-profile', params: { username: username }})">@{{ username }}</span>
-                        <span class="text-lighter weight-500">&#183</span>
-                        <span class="text-base text-lighter weight-500">{{ date_posted }}</span>
-                    </div>
-                </div> -->
             </template>
             <template #subtitle>
                 <div class="text-base w-fit "  >
@@ -444,8 +435,8 @@ export default defineComponent({
                             <span class="text-heading weight-900" v-if="total_comments % 2 == 0">{{ abbreviateComments }}</span>
                             <span class="text-heading weight-900" v-else>{{ abbreviateComments }}</span>
                         </transition>
-                        <q-dialog class="min-h-sm" v-model="showComments" persistent>
-                            <div class="bg-theme box-shadow box-theme-soft w-full min-h-fit max-w-sm h-fit overflow-visible" >
+                        <q-dialog class="min-h-sm" v-model="showComments" persistent position="top">
+                            <div class="bg-theme rounded-sm mt-12 box-shadow box-theme-soft w-full min-h-fit max-w-sm h-fit relative" >
                                 <div class="p-2">
                                     <Item dense :vert-icon-center="true">
                                         <template #title>
@@ -495,19 +486,19 @@ export default defineComponent({
 
 .title  {
 
-    min-width: 100%;
+    max-width: 100%;
 
     > :first-child {
         max-width: 40%;
     }
 
 
-    :nth-child(3) {
+    > :nth-child(3) {
         max-width: 30%;
     }
 
     > :last-child {
-        max-width: 20%;
+        max-width: 15%;
     }
 }
 

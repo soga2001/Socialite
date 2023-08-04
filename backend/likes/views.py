@@ -91,8 +91,9 @@ class Check_Liked(APIView):
 
 @api_view(["GET"])
 def get_liked_post(request, timestamp, page, username):
+    offset = int(page) * 10
     try:
-        posts = PostLikes.objects.filter(user__username=username).select_related('post')
+        posts = PostLikes.objects.filter(user__username=username, date_liked__lt=timestamp).select_related('post')[offset:offset+10]
         liked_posts = [PostSerializer(p.post).data for p in posts]
 
 

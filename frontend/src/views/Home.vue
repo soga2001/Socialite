@@ -35,7 +35,6 @@ export default defineComponent({
   },
   created() {
     this.getData();
-    // console.log(this.height)
   },
   mounted() {
     this.update()
@@ -44,7 +43,7 @@ export default defineComponent({
     async getData() {
       this.loading = true
       await http.get(`posts/posts_by_followed_users/${this.user_timestap}/${this.page}/`).then((res) => {
-        if(res.data.posts.length === 5) {
+        if(res.data.posts.length === 10) {
           this.hasMore = true
         }
         else {
@@ -68,13 +67,6 @@ export default defineComponent({
       }
       done()
     },
-    scroll() {
-      const div = (document.getElementById("infinite-scroll") as HTMLDivElement)
-      if(this.scrollPosition >= div.scrollHeight - 1000 && this.hasMore) {
-        this.page += 1
-        this.getData()
-      }
-    },
     update() {
       this.$router.push(this.$router.currentRoute.value)
     }
@@ -87,6 +79,13 @@ export default defineComponent({
         this.update()
       }
       
+    },
+    scrollPosition(scrollPosition) {
+      const div = (document.getElementById("infinite-scroll") as HTMLDivElement)
+      if(this.scrollPosition >= this.height - 1000 && this.hasMore) {
+        this.page += 1
+        this.getData()
+      }
     }
   },
   components: { PostsMap, Spills, Search },
@@ -100,16 +99,19 @@ export default defineComponent({
         <div class="border-b" v-if="$store.state.authenticated && !$q.screen.lt.sm">
           <Spills :rows="1" />
         </div>
-        <q-infinite-scroll class="grid" id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore">
+        <!-- <q-infinite-scroll class="grid" id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore"> -->
+          <!-- <div class="post_map" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
+            <PostsMap :post="post" />
+          </div> -->
+        <!-- </q-infinite-scroll> -->
+        <div>
           <div class="post_map" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
             <PostsMap :post="post" />
           </div>
-          <!-- <template v-slot:loading>
-            <div class="row justify-center q-my-md">
-              <q-spinner-oval class="loading" size="40px" />
-            </div>
-          </template> -->
-        </q-infinite-scroll>
+          <div class="w-full flex justify-center p-5" v-if="loading">
+            <Loading />
+          </div>
+        </div>
         <div class="w-full flex flex-center flex-col" v-if="posts.length == 0 && !loading">
             <div>
                 <i-folder :fill="'black'" stroke="black"/>

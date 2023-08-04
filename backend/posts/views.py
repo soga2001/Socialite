@@ -9,6 +9,7 @@ from django.http import HttpResponse, JsonResponse
 from django.db.models import Count
 from notification.serializer import NotificationSerializer
 from notification.models import Notification
+import time
 
 from notifications.signals import notify
 
@@ -145,17 +146,15 @@ def post_by_followed_users(request, timestamp, page):
         return JsonResponse({"error": True, "message": str(e)})
 
 @api_view(["GET"])
-def explore(request, offset):
-    # offset = int(offset) * 5
-    # posts = PostSerializer(Post.objects.all()[offset:offset+10], many=True)
-    # if(posts.is_valid()):
-    #     return JsonResponse({"posts": posts.data}, safe=False)
-    # return JsonResponse({'error': True}, stats=500)
+def explore(request, timestamp, page):
+    
+    time.sleep(2)
 
-    offset = int(offset) * 5
+    offset = int(page) * 10
     try:
-        # post = Post.objects.filter(date_posted__lt=timestamp)[offset:offset+5]
-        post = Post.objects.all()[offset:offset+10]
+        post = Post.objects.filter(date_posted__lt=timestamp)[offset:offset+10]
+        print(len(post))
+        # post = Post.objects.all()[offset:offset+10]
     except Post.DoesNotExist:
         return JsonResponse({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
     
@@ -167,7 +166,8 @@ def explore(request, offset):
 
 @api_view(["GET"])
 def user_posted(request, timestamp, page, username):
-    posts = PostSerializer(Post.objects.filter(user__username=username).filter(date_posted__lt=timestamp)[:10], context={'request': request}, many=True)
+    offset = int(page) * 10
+    posts = PostSerializer(Post.objects.filter(user__username=username,date_posted__lt=timestamp)[offset:offset+10], context={'request': request}, many=True)
     return JsonResponse({"posts": list(posts.data)}, safe=False)
 
 

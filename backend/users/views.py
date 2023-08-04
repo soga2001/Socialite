@@ -168,11 +168,6 @@ class UserFromCookie(APIView):
             return JsonResponse({"success": True, "user": user})
         except:
             return JsonResponse({"success": False, "message": "User not found."})
-        # if 'user' in request.COOKIES:
-        #     user = json.loads(request.COOKIES.get('user'))
-        #     return JsonResponse({"success": True, "user": user})
-        # else:
-        #     return JsonResponse({"success": False})
 
 
 class UpdateProfile(APIView):

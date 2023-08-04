@@ -86,15 +86,11 @@ export default defineComponent({
     <header>
         <nav class="nav" :style="navStyle">
             <q-list class="list">
-                <div class="">
-                  <!-- <RouterLink to="/home" class="brand">
-                      <q-item class="hide">
-                      <q-item-section avatar>
-                          BB
-                      </q-item-section>
-                      </q-item>
-                      <q-avatar rounded :size="iconSize" icon="BB" class="show"/>
-                  </RouterLink> -->
+                <div class="pt-2">
+                  <RouterLink to="/home" active-class="active" v-if="$store.state.authenticated">
+                      
+                      <q-btn size="1rem" flat round class="ml-2 text-xs" icon="BB"/>
+                  </RouterLink>
                   <RouterLink to="/home" class="nav__link" active-class="active" v-if="$store.state.authenticated">
                       <q-item class="hide">
                         <q-item-section avatar>
@@ -113,7 +109,6 @@ export default defineComponent({
                   <RouterLink to="/explore" class="nav__link" active-class="active">
                       <q-item class="hide">
                       <q-item-section avatar>
-                          <!-- <q-icon class="icon" :name="$route.fullPath == '/explore' ? 'explore' : 'o_explore'" /> -->
                           <i-explore size="2rem" :fill="$route.fullPath == '/explore' ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == '/explore' ? 'none' : 'var(--color-heading)'" />
                       </q-item-section>
 
@@ -124,12 +119,10 @@ export default defineComponent({
                       <div class="show p-2">
                         <i-explore class="show" size="2rem" :fill="$route.fullPath == '/explore' ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == '/explore' ? 'none' : 'var(--color-heading)'" />                      
                       </div>
-                      <!-- <i-explore class="show" size="2rem" :fill="$route.fullPath == '/explore' ? 'var(--color-heading)' : 'none'" :stroke="$route.fullPath == '/explore' ? 'none' : 'var(--color-heading)'" /> -->
                   </RouterLink>
                   <RouterLink v-if="$store.state.authenticated" to="/notifications" class="nav__link relative" active-class="active">
                       <q-item class="hide relative">
                         <q-item-section avatar>
-                            <!-- <q-icon class="icon" :name="$route.fullPath == '/notifications' ? 'notifications' : 'o_notifications'" /> -->
                             <i-notif size="2rem" :fill="$route.matched[0].name == `notifications` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                         </q-item-section>
 
@@ -147,7 +140,6 @@ export default defineComponent({
                   <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
                       <q-item class="hide">
                         <q-item-section avatar>
-                            <!-- <q-icon class="icon" :name="$route.fullPath == `/${$store.state.user.username}/` ? 'account_circle' : 'o_account_circle'" /> -->
                             <i-profile size="2rem" :fill="($route.path.startsWith(`/${$store.state.user.username}`) && $route.matched[0].name === 'user-profile') ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                         </q-item-section>
 
@@ -163,7 +155,6 @@ export default defineComponent({
                   <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
                       <q-item class="hide">
                       <q-item-section avatar>
-                          <!-- <q-icon class="icon" :name="$route.fullPath == '/settings' ? 'settings' : 'o_settings'" /> -->
                           <i-settings size="2rem" :fill="$route.fullPath == '/settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                       </q-item-section>
 
@@ -174,7 +165,6 @@ export default defineComponent({
                       <div class="show p-2">
                         <i-settings size="2rem" :fill="$route.fullPath == '/settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />                        
                       </div>
-                      <!-- <i-settings class="show" size="2rem" :fill="$route.fullPath == '/settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" /> -->
                   </RouterLink>
                   
                   <div v-if="$store.state.authenticated" class="w-full flex justify-center" @click="post = !post">
@@ -204,7 +194,6 @@ export default defineComponent({
                   <RouterLink to="/login" class="nav__link" active-class="active" v-if="!$store.state.authenticated">
                       <q-item class="hide">
                       <q-item-section avatar>
-                          <!-- <q-icon class="icon" name="login" /> -->
                           <i-login size="3rem" :fill="$route.fullPath == `/login` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
                       </q-item-section>
 
@@ -212,11 +201,6 @@ export default defineComponent({
                           Login
                       </q-item-section>
                       </q-item>
-                      <!-- <q-avatar size="iconSize" icon="login" class="show icon">
-                      <q-tooltip anchor="top middle" self="bottom middle">
-                          Login
-                      </q-tooltip>
-                      </q-avatar> -->
                       <i-login class="show" size="3rem" :fill="$route.fullPath == `/login` ? 'var(--color-heading)' : 'none'" stroke="var(--color-heading)" />
                   </RouterLink>
 
@@ -308,18 +292,31 @@ export default defineComponent({
     
 </template>
 
-<style scoped>
-@import '@/assets/base.css';
+<style scoped lang="scss">
 
+/*mixin*/
+@mixin trim{text-overflow:ellipsis; white-space:nowrap; overflow:hidden; display:block;}
+@mixin scroll{overflow-y:auto; scrollbar-width:thin; /*-webkit-overflow-scrolling:touch;*/}
+
+
+@import '@/assets/base.css';
 header {
-  position: -webkit-sticky;
-  position: sticky;
-  max-height: 100vh;
-  max-height: 100dvh;
-  height: 100%;
-  top: 0;
-  z-index: 20;
-  overflow-y: scroll;
+  @include scroll();
+  position:sticky; top:0; max-height:100vh; overflow:auto;
+  @media #{$break1}{
+    display: none;
+  }
+  @media #{$break2} {
+    padding: 0px;
+  }
+  @media #{$break3}, #{$break4}{
+    padding:0 10px; 
+  }
+  @media #{$break5open}{
+    // min-width:88px; 
+    // width:300px; 
+    padding-#{$end-direction}: 10px;  
+  }
 }
 
 .nav {
@@ -327,10 +324,8 @@ header {
   height: 100dvh;
   width: 100%;
   display: flex;
-  justify-content: center;
-  padding: 0 16px;
+  justify-content: right;
   background-color: transparent;
-  position: relative;
   
 }
 
@@ -464,8 +459,11 @@ a {
   display: none;
 }
 
+// @media #{$break2}, #{$break3}, #{$break4}{
+  //     width:68px; padding:0 10px; 
+  // }
 
-@media (max-width: 880px) {
+  @media #{$break2}, #{$break3} {
   .show {
     display:flex;
   }

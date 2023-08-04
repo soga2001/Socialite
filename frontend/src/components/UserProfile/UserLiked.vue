@@ -12,6 +12,14 @@ export default defineComponent({
         websocket: {
             type: Object as PropType<WebSocket>,
             required: true,
+        },
+        scrollPosition: {
+            type: Number,
+            default: 0,
+        },
+        height: {
+            type: Number,
+            default: 0,
         }
     },
     data() {
@@ -22,6 +30,7 @@ export default defineComponent({
             user_timestap: new Date().toISOString(),
             user_liked: new Array<Post>(),
             loading: true,
+            hasMore: true,
             // avatar: this.user_avatar
         };
     },
@@ -29,7 +38,15 @@ export default defineComponent({
         async getUserLiked() {
             this.loading = true
             await http.get(`like/view_liked/${this.user_timestap}/${this.page}/${(this.username)}/`).then((res) => {
-                this.user_liked = [...this.user_liked, ...res.data.posts];
+                if(res.data.posts) {
+                    if(res.data.posts.length == 0) {
+                        this.hasMore = false
+                    }
+                    else{
+                        this.hasMore = true
+                    }
+                    this.user_liked = [...this.user_liked, ...res.data.posts];
+                }
             }).catch((err) => {
                 console.log(err);
             });
@@ -54,7 +71,17 @@ export default defineComponent({
         this.getUserLiked()
         this.websocketMessage()
     },
-    components: { UserPostedMap, Loading }
+    components: { UserPostedMap, Loading },
+    watch: {
+        scrollPosition(scrollPosition) {
+            console.log(scrollPosition)
+            if(scrollPosition >= this.height - 500 && this.hasMore && !this.loading) {
+                this.page += 1
+                this.loading = true
+                this.getUserLiked()
+            }
+        }
+    }
 })
 </script>
 
@@ -69,6 +96,9 @@ export default defineComponent({
         <div class="grid">
             <div class="post_map border-b" v-if="user_liked.length > 0" v-for="(post, index) in user_liked" :id="post.id" :key="post.id">
                 <PostsMap :post="post" />
+            </div>
+            <div class="w-full flex justify-center p-5" v-if="loading">
+                <Loading />
             </div>
         </div>
         <div class="w-full flex flex-center flex-col" v-if="user_liked.length == 0 && !loading">

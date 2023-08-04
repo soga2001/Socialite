@@ -107,7 +107,6 @@ export default defineComponent({
         this.index = -1
       },
       async mention(e: any) {
-        console.log(e)
         // if input is empty
         if(this.val.length == 0) {
           this.charsLeft = 0
@@ -207,10 +206,7 @@ export default defineComponent({
       },
       handleKeyUp(e: any) {
         const arrowKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
-        console.log(e.key)
         if (arrowKeys.includes(e.key)) {
-
-          console.log(e)
           this.checkSavedUsers(e)
         }
       },
@@ -241,10 +237,11 @@ export default defineComponent({
           this.textareaWidth = area.getBoundingClientRect().width;
           this.divHeight = rect.height
           const isAtTop = rect.top >= 0 && rect.top <= height;
-          const isAtBottom = rect.bottom >= 0 && rect.bottom >= (window.innerHeight - height);
-          this.resultPositionBottom = window.innerHeight - rect.bottom - this.caretPosition.top;
-          this.resultPositionTop = rect.top
-          if(isAtBottom && this.resultsBelow) {
+          const isAtBottom = rect.bottom >= 0 && (rect.bottom >= (window.innerHeight - height) || this.caretPosition.top >= (window.innerHeight - height)) ;
+          this.resultPositionBottom = window.innerHeight - rect.bottom;
+          this.resultPositionTop = rect.top 
+          console.log(isAtTop, isAtBottom, this.resultPositionBottom, this.resultPositionTop, rect)
+          if(isAtBottom && this.resultsBelow ) {
             this.resultsBelow = false;
           }
           else if(isAtTop && !this.resultsBelow && isAtTop !== isAtBottom) {
@@ -258,9 +255,9 @@ export default defineComponent({
       resultStyle(): CSSProperties {
         return {
           top: this.resultsBelow ? ((this.caretPosition.top + this.caretPosition.height <= (this.$refs.textarea as HTMLInputElement).offsetHeight) ? `${this.resultPositionTop  + this.caretPosition.top + this.caretPosition.height + 20}px` : ( this.resultPositionTop + ( this.$refs.textarea as HTMLInputElement).offsetHeight + 20) + 'px') : `auto`, 
-          bottom: !this.resultsBelow ? `${ this.resultPositionBottom + this.caretPosition.top + this.caretPosition.height + 20}px` : 'auto', 
+          bottom: !this.resultsBelow ? `${ this.resultPositionBottom  + this.caretPosition.height + 20}px` : 'auto', 
           maxWidth: `${this.textareaWidth}px`,
-          width: `${this.textareaWidth - 30}px`,
+          width: this.$q.screen.lt.sm ? '100%' : `${this.textareaWidth * .8}px`,
         }
       }
     },
@@ -364,7 +361,7 @@ span {
 
 .results {
   z-index: 999;
-  max-height: 216px;
+  max-height: 360px;
   overflow-y: auto;
   /* max-width: 70% !important; */
 }
