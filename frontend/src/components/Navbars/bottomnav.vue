@@ -89,7 +89,6 @@ export default defineComponent({
 .bottomNav {
   width: 100%;
   /* background-color: var(--color-background); */
-  border-top: 1px solid var(--color-text);
   z-index: 0;
   display: inline-flex;
 }

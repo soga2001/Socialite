@@ -85,13 +85,13 @@ export default defineComponent({
 <template>
     <header>
         <nav class="nav" :style="navStyle">
-            <q-list class="list">
+            <q-list class="list text-2xl">
                 <div class="pt-2">
                   <RouterLink to="/home" active-class="active" v-if="$store.state.authenticated">
                       
                       <q-btn size="1rem" flat round class="ml-2 text-xs" icon="BB"/>
                   </RouterLink>
-                  <RouterLink to="/home" class="nav__link" active-class="active" v-if="$store.state.authenticated">
+                  <RouterLink to="/home" class="nav__link" active-class="active text-heading" v-if="$store.state.authenticated">
                       <q-item class="hide">
                         <q-item-section avatar>
                             <i-home size="2rem" :fill="$route.fullPath == '/home' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
@@ -154,18 +154,107 @@ export default defineComponent({
 
                   <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
                       <q-item class="hide">
-                      <q-item-section avatar>
-                          <i-settings size="2rem" :fill="$route.fullPath == '/settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
-                      </q-item-section>
+                        <q-item-section avatar>
+                            <i-settings size="2rem" :fill="$route.fullPath == '/settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                        </q-item-section>
 
-                      <q-item-section class="bold">
-                          Settings
-                      </q-item-section>
+                        <q-item-section class="bold">
+                            Settings
+                        </q-item-section>
                       </q-item>
                       <div class="show p-2">
                         <i-settings size="2rem" :fill="$route.fullPath == '/settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />                        
                       </div>
                   </RouterLink>
+                  <div class="nav__link">
+                      <q-btn no-caps dense rounded flat class=" p-0" v-if="$store.state.authenticated">
+                        <q-item class="hide">
+                          <q-item-section avatar>
+                              <q-icon size="1.5rem" :color="( $store.state.dark ? 'white' : 'black')" class="border-brighter-3 rounded" name="more_horiz" />
+                          </q-item-section>
+
+                          <q-item-section class="text-2xl">
+                              More
+                          </q-item-section>
+                        </q-item>
+                        <div class="show p-2">
+                          <q-icon size="2rem" :color="( $store.state.dark ? 'white' : 'black')" class="border-brighter-3 rounded" name="more_horiz" />                        
+                        </div>
+
+
+                        
+                        <q-menu cover square max-width="300px" class="w-full border rounded-sm" anchor="bottom left">
+                            <q-list class="bg-theme rounded-sm" dense>
+                              <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
+                                  <q-item-section avatar>
+                                    <q-avatar size="3.5rem">
+                                      <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
+                                    </q-avatar>
+                                  </q-item-section>
+                                  <q-item-section>
+                                  <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
+                                  </q-item-section>
+                              </q-item>
+                              <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
+                                  <q-item-section avatar>
+                                    <q-avatar size="3.5rem">
+                                      <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
+                                    </q-avatar>
+                                  </q-item-section>
+                                  <q-item-section>
+                                  <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
+                                  </q-item-section>
+                              </q-item>
+                              <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
+                                  <q-item-section avatar>
+                                    <q-avatar  size="3.5rem">
+                                      <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
+                                    </q-avatar>
+                                  </q-item-section>
+                                  <q-item-section>
+                                  <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
+                                  </q-item-section>
+                              </q-item>
+                              <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
+                                  <q-item-section avatar>
+                                    <q-avatar size="3.5rem">
+                                      <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
+                                    </q-avatar>
+                                  </q-item-section>
+                                  <q-item-section>
+                                  <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
+                                  </q-item-section>
+                              </q-item>
+                              <!-- <q-separator :color="$store.state.dark ? 'white' : 'black'" spaced inset /> -->
+
+                              <q-separator :dark="$store.state.dark" spaced inset />
+
+                              <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
+                                  <q-item-section avatar>
+                                    <q-avatar size="3.5rem">
+                                      <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
+                                    </q-avatar>
+                                  </q-item-section>
+                                  <q-item-section>
+                                  <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
+                                  </q-item-section>
+                              </q-item>
+                              <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
+                                  <q-item-section avatar>
+                                    <q-avatar size="3.5rem">
+                                      <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
+                                    </q-avatar>
+                                  </q-item-section>
+                                  <q-item-section>
+                                  <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
+                                  </q-item-section>
+                              </q-item>
+                            </q-list>
+                        </q-menu>
+                      </q-btn>
+                    </div>
+
+
                   
                   <div v-if="$store.state.authenticated" class="w-full flex justify-center" @click="post = !post">
                    <button class=" hide w-full px-15 py-3 text-xl rounded-lg border-none pointer btn-themed weight-900 ">Spill</button>
@@ -381,8 +470,7 @@ a {
   text-decoration: none;
   transition: 0.2s;
   width: 100%;
-  /* font-size: calc(.8em + 1vw); */
-  font-size: 1.8em;
+  
   font-weight: 700 !important;
 }
 
@@ -393,7 +481,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 10px 0;
+  margin: 15px 0;
 }
 
 
@@ -406,6 +494,7 @@ a {
 
 .nav__link.active .bold {
   font-weight: 900;
+  color: var(--color-heading);
 }
 
 .nav__link.exact-active {
@@ -414,17 +503,8 @@ a {
   border-radius: 30px;
 }
 
-
-.nav__link.active .icon {
-  /* color: var(--color-heading); */
-  -webkit-text-stroke: 1px var(--color-text);
-}
-.nav__link.active .icon.search {
-  -webkit-text-stroke: 2px var(--color-text);
-}
-
 .nav__link:hover {
-  background-color: var(--color-background-mute);
+  background-color: var(--color-background-soft);
   color: var(--color-heading);
   font-weight: 900;
   border-radius: 30px;

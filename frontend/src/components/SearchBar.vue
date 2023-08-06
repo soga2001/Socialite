@@ -110,7 +110,7 @@ export default defineComponent({
 <template>
     <div class="search w-full overflow-visible">
         <form ref="form" class="w-full relative" :class="{searchPage: 'border-b'}" v-on:submit.prevent="submit">
-            <q-input ref="input" :autofocus="autofocus" v-on:focus="onFocus" class="text-lg" :dense="dense" placeholder="Search Socialite" :style="{transform: `scale(${size})`}" v-debounce:1ms="search" :dark="$store.state.dark" rounded outlined v-model="input">
+            <q-input autocompletion="off" ref="input" :autofocus="autofocus" v-on:focus="onFocus" class="text-lg" :dense="dense" placeholder="Search Socialite" :style="{transform: `scale(${size})`}" v-debounce:1ms="search" :dark="$store.state.dark" rounded outlined v-model="input">
                 <!-- <template #label>
                     Search
                 </template> -->
@@ -124,12 +124,12 @@ export default defineComponent({
             </q-input>
         </form>
         <div v-if="hasResults">
-            <q-menu :autoClose="false" :no-focus="true" v-if="(!searchPage || !(['search', 'explore', 'home'].includes($route.name?.toString() ||  '')))" id="results" v-model="hasResults"
-            class="bg-theme rounded-sm p-2 border-brighter"
+            <q-menu :autoClose="false" :no-focus="true" v-if="(!searchPage || !(['search', 'explore'].includes($route.name?.toString() ||  '')))" id="results" v-model="hasResults"
+            class="bg-theme rounded-sm border-brighter"
             fit
             >
                 <div class="results" v-if="results.length > 0" v-for="u in results">
-                    <Item clickable :to="{ name: 'user-profile', params: { username: u.username } }" >
+                    <Item @click="input = ''" clickable :to="{ name: 'user-profile', params: { username: u.username } }" >
                         <template #avatar>
                             <img v-if="u.avatar" :src="u.avatar" alt="profile pic" />
                             <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="profile pic plage holder" class="rounded-full" />

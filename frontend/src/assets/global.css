@@ -1735,6 +1735,18 @@
     border: .5px solid var(--color-heading) !important;
 }
 
+.border-brighter-2 {
+    border: 1px solid var(--color-heading) !important;
+}
+
+.border-brighter-3 {
+    border: 1.5px solid var(--color-heading) !important;
+}
+
+.border-brighter-4 {
+    border: 2px solid var(--color-heading) !important;
+}
+
 .border-none {
     border: 0 !important;
 }

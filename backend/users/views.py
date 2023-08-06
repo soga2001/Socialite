@@ -18,6 +18,7 @@ from django.db.models import Q
 
 
 from django.contrib.sessions.models import Session
+from backend.encryption import *
 
 
 # From rest_framework_simplejwt
@@ -34,6 +35,7 @@ from rest_framework.decorators import authentication_classes
 
 from users.models import User
 from .serializer import UserSerializer
+from backend.decorators import refresh_cookies
 
 
 import datetime
@@ -130,7 +132,7 @@ def user_register(request):
 def user_login(request):
     data = json.loads(request.body)
     user = authenticate(username=data['username'], password=data['password'])
-    if(user):
+    if(user and user.email_verified):
         login(request, user)
         token = RefreshToken.for_user(user)
         request.session.set_test_cookie()
@@ -148,8 +150,27 @@ def user_login(request):
         # response.set_cookie('access_token', str(token.access_token), expires=str(token.access_token.lifetime.days) + "d", secure=True, httponly=True)
         response.set_cookie('refresh_token', str(token), expires=str(token.lifetime.days)+ "d", secure=True, httponly=True)
         return response
-    return JsonResponse({"error": True}, safe=False)
+    elif not user.email_verified:
+        return JsonResponse({"error": True, "message": "Please verify your email."}, safe=False)
+    else:
+        return JsonResponse({"error": True, "message": "Invalid credentials."}, safe=False)
+    # return JsonResponse({"error": True}, safe=False)
 
+@api_view(["POST"])
+def verify_email(request):
+    try:
+        token = json.loads(request.body)['token']
+        # token = AccessToken(token)
+        user, token = custom.authenticate_with_token(request, token)
+        user.email_verified = True
+        user.save()
+        return JsonResponse({"success": True}, safe=False)
+    except TokenError as e:
+        print('here',e)
+        return JsonResponse({"error": True}, safe=False)
+
+    except:
+        return JsonResponse({'"error': True})
 
 @api_view(["GET"])
 def get_session(request):
@@ -162,9 +183,12 @@ class UserFromCookie(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [CustomAuthentication,]
 
+    # @refresh_cookies
     def get(self, request):
+        user, token = custom.authenticate(request)
         try:
             user = UserSerializer(request.user).data
+            # response = HttpResponse({"success": True, "user": user}, content_type="application/json")
             return JsonResponse({"success": True, "user": user})
         except:
             return JsonResponse({"success": False, "message": "User not found."})

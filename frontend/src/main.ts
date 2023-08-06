@@ -10,6 +10,10 @@ import 'cropperjs/dist/cropper.css';
 import { Cropper } from 'vue-advanced-cropper';
 import 'vue-advanced-cropper/dist/style.css';
 
+import Toast from "vue-toastification";
+// Import the CSS or use your own!
+import "vue-toastification/dist/index.css";
+
 
 
 
@@ -83,10 +87,7 @@ const app = createApp(App)
 
 app.use(router);
 app.use(store, key);
-app.component('Item', Item);
-
-
-app.component('cropper', VueCropper);
+app.use(Toast);
 // app.component('adv-cropper', Cropper);
 // icon components
 app.component('i-home', HomeIcon);
@@ -124,7 +125,8 @@ app.component('PostsMap', PostsMap)
 app.component('SearchBar', SearchBar)
 app.component('zoomImg', zoomImg)
 app.component('user-card', hoverUserData)
-// app.component('adv-cropper', newCropper);
+app.component('Item', Item);
+app.component('cropper', VueCropper);
 
 
 

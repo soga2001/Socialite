@@ -276,6 +276,7 @@ export default defineComponent({
 
 .slide-in-nav {
   height: 100%;
+  min-width: 250px;
   width: 60vw;
   z-index: 999;
   background-color: var(--color-background);

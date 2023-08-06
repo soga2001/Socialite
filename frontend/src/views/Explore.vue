@@ -87,6 +87,11 @@ export default defineComponent({
       <div class="w-full flex justify-center p-5" v-if="loading">
         <Loading />
       </div>
+      <div class="w-full flex flex-center flex-col p-2" v-if="!loading && !hasMore">
+          <div class="text-base text-heading text-center weight-900">
+            You have seen all the spills.
+          </div>
+      </div>
     </div>
     <!-- <div v-if="!hasMore" class="text-center message">
       <p>{{message}}</p>

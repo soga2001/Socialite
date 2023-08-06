@@ -31,7 +31,6 @@ export const store = createStore<State>({
   },
   mutations: {
     authenticate(state, payload) {
-      console.log(payload)
       state.authenticated = payload
     },
     setUser(state, payload) {

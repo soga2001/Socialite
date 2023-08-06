@@ -54,7 +54,6 @@ export default defineComponent({
         },
         async websocketMessage() {
             this.websocket.onmessage = (e) => {
-                console.log(e.data)
                 const data = JSON.parse(e.data)
                 if(data.type == "liked") {
                     this.user_liked.unshift(JSON.parse(data.message))
@@ -62,7 +61,6 @@ export default defineComponent({
             }
         },
         dislikeSpill(index: number) {
-            console.log(index)
             this.user_liked.splice(index, 1)
         }
         
@@ -74,7 +72,6 @@ export default defineComponent({
     components: { UserPostedMap, Loading },
     watch: {
         scrollPosition(scrollPosition) {
-            console.log(scrollPosition)
             if(scrollPosition >= this.height - 500 && this.hasMore && !this.loading) {
                 this.page += 1
                 this.loading = true

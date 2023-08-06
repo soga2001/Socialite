@@ -69,18 +69,26 @@ export default defineComponent({
    
   },
   created() {
-    console.log(this.$q.platform.is.mobile)
-    // this.checkOS()
+    this.loadUser()
     this.theme = Cookies.get('theme') === 'dark'
     this.$store.commit('setTheme', this.theme)
     document.documentElement.setAttribute('data-theme', this.theme ? 'dark': 'light')
-    this.loadUser()
   },
   mounted() {
     window.onresize = this.checkOS
   },
   components: { Main, Loading },
   watch: {
+    '$store.state.authenticated': function() {
+      console.log(this.$route.fullPath)
+      if(this.$store.state.authenticated && this.$route.meta.hideForAuth) {
+        console.log('here')
+        this.$router.push('/home')
+      }
+      else{
+        this.$router.push(this.$route.fullPath)
+      }
+    }
   }
 })
 

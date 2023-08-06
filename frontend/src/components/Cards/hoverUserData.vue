@@ -71,7 +71,7 @@ export default defineComponent({
         <q-menu
             v-model="hovering"
             no-focus
-            class="bg-theme border-theme rounded-sm menu"
+            class="bg-transparent border menu"
             @mouseover="divEnter"
             @mouseleave="divExit"
             :offset="[0, 10]"
@@ -140,7 +140,7 @@ export default defineComponent({
 
 
 
-            <div class="card bg-theme">
+            <div class="card bg-theme box-shadow">
                 <div class="cover-photo"  :style="{backgroundImage: `url(${user.banner})`}">
                     <img :src="user.avatar" class="profile">
                     <button v-if="!user.is_current_user" :class="{'followed': user.is_following}" class="border w-8 pointer btn-following bg-hover-mute rounded-lg px-4 py-2 text-heading text-sm bg-theme weight-900" @click="" :disabled="!$store.state.authenticated">

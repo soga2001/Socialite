@@ -8,7 +8,14 @@ import Unauthenticated from '@/components/unauthenticated.vue';
 import { useRoute, useRouter } from 'vue-router';
 import convertTime from '@/assets/convertTime'
 
+
+import { useToast } from "vue-toastification";
+import type { POSITION } from 'vue-toastification/src/ts/constants'
+
 import type { Notifications } from '@/assets/interfaces';
+import notification from '@/components/Cards/notification.vue';
+
+import Search from '@/views/Search.vue';
 
 export default defineComponent({
   title: 'Main',
@@ -41,6 +48,8 @@ export default defineComponent({
   },
   name: 'Main',
   setup() {
+    const toast = useToast()
+    return { toast}
   },
   created() {
   },
@@ -65,21 +74,21 @@ export default defineComponent({
     },
   },
   methods: {
-    setData() {
-      const element = this.$refs.mainDiv as HTMLDivElement
-      if(element) {
+    // setData() {
+    //   const element = this.$refs.mainDiv as HTMLDivElement
+    //   if(element) {
 
-        if(!this.scrollPos.get(this.$route.name)) {
-          this.scrollPos.set(this.$route.name, element.scrollTop);
-          this.scrollPosition = element.scrollTop
-        }
-        if(!this.scrollHeight.get(this.$route.name)) {
-          this.scrollHeight.set(this.$route.name, element.scrollHeight - element.clientHeight)
-          this.height = element.scrollHeight - element.clientHeight
-        }
-      }
+    //     if(!this.scrollPos.get(this.$route.name)) {
+    //       this.scrollPos.set(this.$route.name, element.scrollTop);
+    //       this.scrollPosition = element.scrollTop
+    //     }
+    //     if(!this.scrollHeight.get(this.$route.name)) {
+    //       this.scrollHeight.set(this.$route.name, element.scrollHeight - element.clientHeight)
+    //       this.height = element.scrollHeight - element.clientHeight
+    //     }
+    //   }
       
-    },
+    // },
     scroll() {
       const element = this.$refs.mainDiv as HTMLDivElement;
       if(this.lastScrollPos < element.scrollTop ) {
@@ -124,11 +133,35 @@ export default defineComponent({
         const data = JSON.parse(e.data)
         if(data.type === 'posted') {
           const message = JSON.parse(data.message) as Notifications
-          this.notification = message
-          setTimeout(() => {
-            this.newNotification = false
-            this.notification = {} as Notifications
-          }, 10000)
+
+        const toast = this.toast({
+          component: notification,
+          props:  {
+            notification: message
+          },
+        }, {
+          position: 'top-center' as POSITION,
+          icon: false,
+          timeout: 3000,
+          closeOnClick: false,
+          pauseOnFocusLoss: false,
+          pauseOnHover: false,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: false,
+          hideProgressBar: true,
+          closeButton: false,
+          rtl: false,
+          toastClassName: 'p-0 max-w-54 bg-theme border-brighter rounded-xs'
+        })
+
+        setTimeout(() => {
+            this.toast.dismiss(toast)
+          }, 3000)
+
+          // this.notification = message
+          
+          
           // this.$q.notify({
           //   progress: true,
           //   html: true,
@@ -169,40 +202,40 @@ export default defineComponent({
       console.log('here')
     }
   },
-  components: { Sidebar, TopNav, BottomNav, Unauthenticated },
+  components: { Sidebar, TopNav, BottomNav, Unauthenticated, notification, Search },
   watch: {
     '$store.state.authenticated': function () {
       if(this.$store.state.authenticated) {
         this.websocketOpen()
-        this.$q.notify({
-          progress: true,
-          type: 'positive',
-          message: 'Login successful!',
-          timeout: 2000,
-          position: 'top-right',
-          actions: [
-            {
-              icon: 'close',
-              color: 'red',
-            }
-          ]
-        })
+        // this.$q.notify({
+        //   progress: true,
+        //   type: 'positive',
+        //   message: 'Login successful!',
+        //   timeout: 2000,
+        //   position: 'top-right',
+        //   actions: [
+        //     {
+        //       icon: 'close',
+        //       color: 'red',
+        //     }
+        //   ]
+        // })
       } else {
         this.websocketClose();
-        this.$q.notify({
-          progress: true,
-          type: 'positive',
-          message: 'Logout successful!',
-          timeout: 2000,
-          position: 'top-right',
-          actions: [
-            {
-              icon: 'close',
-              color: 'white',
-            }
-          ]
-        })
-        }
+        // this.$q.notify({
+        //   progress: true,
+        //   type: 'positive',
+        //   message: 'Logout successful!',
+        //   timeout: 2000,
+        //   position: 'top-right',
+        //   actions: [
+        //     {
+        //       icon: 'close',
+        //       color: 'white',
+        //     }
+        //   ]
+        // })
+      }
     },
     '$route': function() {
       this.$nextTick(() => {
@@ -248,27 +281,28 @@ export default defineComponent({
         }
       }
     },
-    notification(notification) {
-      if(notification.actor) {
-        this.newNotification = true
-      }
-    }
+    // notification(notification) {
+    //   if(notification.actor) {
+    //     this.newNotification = true
+    //   }
+    // }
   },
+  component: {Search}
 })
 </script>
 
 <template>
   <div ref="mainDiv" :class="!isMobile() ? 'main' : 'fixed w-full h-viewport overflow-y-scroll'">
-    <div v-if="!$q.screen.lt.sm" class="min-h-viewport h-full w-full">
+    <div v-if="!$q.screen.lt.sm" class="min-h-viewport sticky top-0 h-full w-full">
       <Sidebar/>
     </div>
 
-    <div id="main-div" class="w-full">
+    <div id="main-div" class="w-full min-h-viewport h-full">
       <div>
         <div ref="topNav" v-if="!hideNavBar" id="top-nav" :class="{'border-b': $route.matched[0].name != 'notification'}" class="sticky top-0 w-full h-fit bg-transparent bg-blur-1 z-20">
           <TopNav @update:navHeight="topNavHeight = $event"/>
         </div>
-        <div :style="{paddingBottom: `${bottomNavHeight - 10}px`}"  class="w-full min-h-viewport border-l border-r">
+        <div :style="{paddingBottom: `${bottomNavHeight - 10}px`, minHeight: `calc(100dvh - ${($refs.topNav as HTMLElement)?.offsetHeight}px)`}"  class="w-full h-full border-l border-r">
           <RouterView v-slot="{Component}" >
             <KeepAlive :max="2" :include="['home', 'search', 'explore', 'user-profile', 'view-spill', 'notifications']" >
               <component :is="Component" :key="!['user-profile', 'notifications'].includes(($route.matched[0].name) as string) ? $route.fullPath : null"  :height="height" :scrollPosition="scrollPosition" />
@@ -277,13 +311,20 @@ export default defineComponent({
           <!-- <component :is="Component" :key="$route.fullPath"  :height="height" :scrollPosition="scrollPosition" /> -->
         </div>
       </div>
-      
     </div>
-    <nav v-if="$q.screen.lt.sm && !hideNavBar" ref="bottomBar" class="fixed bottom-0 w-full z-5">
+
+    <aside class="sticky top-0"> 
+      <!-- <Unauthenticated v-if="!$store.state.authenticated"/> -->
+      <div class="mx-5 py-2 sticky top-0">
+          <SearchBar dense />
+      </div>
+    </aside>
+
+    <nav v-if="$q.screen.lt.sm && !hideNavBar" ref="bottomBar" class="fixed bottom-0 w-full border-t z-5">
       <BottomNav/>
     </nav>
 
-    <div ref="spillButton" class="fixed z-15 box-shadow right-1 bg-theme rounded-lg" :style="{bottom: `${bottomNavHeight}px`}" v-if="isMobile() && $route.name !== 'view-spill'">
+    <div ref="spillButton" class="fixed z-20 box-shadow right-1 bg-theme rounded-lg" :style="{bottom: `${bottomNavHeight}px`}" v-if="isMobile() && $route.name !== 'view-spill'">
       <q-btn size="16px" class="show btn-themed text-heading" round flat icon="add" @click="spill = true"/>
     </div>
 
@@ -326,29 +367,7 @@ export default defineComponent({
       </q-dialog>
 
       <q-dialog no-backdrop-dismiss seamless no-focus class="bg-transparent" v-model="newNotification" position="bottom">
-        <Item class="max-w-60 w-full bg-theme box-shadow mb-2" clickable :to="`/${notification.link}`">
-          <template #avatar>
-            <q-avatar>
-                <img height="3rem" width="3rem" v-if="notification.actor_avatar" :src="notification.actor_avatar" alt="user's avatar"/>
-                <i-profile v-else size="3rem" />
-                <q-badge class="absolute bottom-0 right-0 bg-theme" style="border-radius: 50%; width: 25px; height: 25px">
-                <q-badge class="absolute-center bg-web-theme" style="border-radius: 50%; width: 20px; height: 20px">
-                    <i-mention fill="white" :style="{transform: 'scale(1.7)'}" v-if="notification.verb == 'mention'"/>
-                    <i-profile stroke="none" fill="white" :style="{transform: 'scale(1.7)'}" v-if="notification.verb == 'follow'" />
-                </q-badge>
-                </q-badge>
-            </q-avatar>
-          </template>
-          <template #title>
-            <div class="text-xl weight-900">@{{ notification.actor }}</div>
-          </template>
-          <template #caption>
-            <div class="text-base weight-500 text-body">{{ notification.description }}</div>
-          </template>
-          <template #icon>
-            <i-close fill="var(--color-heading)" stroke="none" size="2rem" class="pointer" @click.stop="newNotification = false"/>
-          </template>
-        </Item>
+        
       </q-dialog>
 
       
@@ -397,10 +416,6 @@ export default defineComponent({
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
 
-  #main-div {
-    grid-template-columns: 1fr 0px;
-  }
-
   .right-bar {
     display: none;
   }
@@ -409,7 +424,7 @@ export default defineComponent({
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
   .main {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr 0px;
   }
 
   .right-bar {
@@ -420,25 +435,38 @@ export default defineComponent({
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 650px) {
   .main {
-    grid-template-columns: minmax(auto, 400px) 600px minmax(auto, 200px);
+    grid-template-columns: minmax(auto, 375px) 600px 0px;
   }
 
 } 
 
-// /* Large devices (laptops/desktops, 992px and up) */
-// @media only screen and (min-width: 992px) {
-//   .main {
-//     grid-template-columns: auto 600px minmax(auto, 300px);
-//   }
-
-// } 
-
-/* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 800px) {
   .main {
-    grid-template-columns: minmax(auto, 400px) 600px minmax(auto, 400px);
+    grid-template-columns: auto 600px minmax(auto, 375px);
   }
 
+
+  .right-bar {
+    display: block;
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1000px) {
+  .main {
+    grid-template-columns: auto 600px minmax(auto, 375px);
+  }
+
+  .right-bar {
+    display: block;
+  }
+}
+
+
+@media only screen and (min-width: 1100px) {
+  .main {
+    grid-template-columns: minmax(auto, 375px) 600px minmax(auto, 375px);
+  }
 
   .right-bar {
     display: block;

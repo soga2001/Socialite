@@ -91,7 +91,6 @@ export default defineComponent({
     components: { UserPostedMap, Loading},
     watch: {
         scrollPosition(scrollPosition) {
-            console.log(scrollPosition)
             if(scrollPosition >= this.height - 500 && this.hasMore && !this.loading) {
                 this.page += 1
                 this.loading = true

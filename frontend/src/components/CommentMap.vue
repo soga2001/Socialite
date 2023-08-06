@@ -66,7 +66,7 @@ export default defineComponent({
     created() {
         this.websocketOpen()
         this.websocketMessage()
-        console.log(this.comment)
+        // console.log(this.comment)
         // console.log(getCurrentInstance())
     },
     // mounted() {

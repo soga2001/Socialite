@@ -8,7 +8,9 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
+
 """
+
 
 from pathlib import Path
 from datetime import timedelta
@@ -106,7 +108,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -293,10 +295,11 @@ AWS_QUERYSTRING_AUTH = False
 AWS_S3_FILE_OVERWRITE = True
 
 
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = ''
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = env('EMAIL_USERNAME')
+EMAIL_HOST_PASSWORD = env('EMAIL_PASS')
+EMAIL_VERIFY_URL = env('VERIFY_EMAIL_URL')
+ENCRYPTION_KEY=env('ENCRYPTION_KEY')

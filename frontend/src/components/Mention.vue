@@ -240,7 +240,7 @@ export default defineComponent({
           const isAtBottom = rect.bottom >= 0 && (rect.bottom >= (window.innerHeight - height) || this.caretPosition.top >= (window.innerHeight - height)) ;
           this.resultPositionBottom = window.innerHeight - rect.bottom;
           this.resultPositionTop = rect.top 
-          console.log(isAtTop, isAtBottom, this.resultPositionBottom, this.resultPositionTop, rect)
+          // console.log(isAtTop, isAtBottom, this.resultPositionBottom, this.resultPositionTop, rect)
           if(isAtBottom && this.resultsBelow ) {
             this.resultsBelow = false;
           }

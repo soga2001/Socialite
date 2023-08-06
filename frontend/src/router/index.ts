@@ -111,6 +111,10 @@ const router: Router = createRouter({
     {
       path: '/:pathMatch(.*)*',
       component: () => import('../views/PageNotFound.vue'),
+    },
+    {
+      path: '/verify/email',
+      component: () => import('@/views/VerifyEmail.vue'),
     }
   ]
 })

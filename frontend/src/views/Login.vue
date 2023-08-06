@@ -32,8 +32,9 @@ export default defineComponent({
             }, {
             }).then(async (res) => {
                 if (res.data.error === true) {
+                    console.log(res.data)
                     this.error = true;
-                    this.errMsg = "Username or Password is incorrect.";
+                    this.errMsg = res.data.message;
                 }
                 else {
                     await get_user_from_cookie()
