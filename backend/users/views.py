@@ -36,6 +36,7 @@ from rest_framework.decorators import authentication_classes
 from users.models import User
 from .serializer import UserSerializer
 from backend.decorators import refresh_cookies
+from backend.encryption import AESCipher
 
 
 import datetime
@@ -122,7 +123,7 @@ def user_register(request):
             username=data['username'], 
             password=data['password'], 
             email=data['email'])
-        return JsonResponse({"success": True}, safe=False)
+        return JsonResponse({"success": True, 'message': 'An email has been send to your email. Please click on the link to verify your email.'}, safe=False)
     except ValueError as e:
         return JsonResponse({"error": True, "message": str(e)}, safe=False)
     except DatabaseError:
@@ -160,8 +161,9 @@ def user_login(request):
 def verify_email(request):
     try:
         token = json.loads(request.body)['token']
-        # token = AccessToken(token)
-        user, token = custom.authenticate_with_token(request, token)
+        decrypted_msg = AESCipher().decrypt(token.replace(' ', '+'))
+        print(decrypted_msg)
+        user, token = custom.authenticate_with_token(request, decrypted_msg)
         user.email_verified = True
         user.save()
         return JsonResponse({"success": True}, safe=False)
@@ -169,7 +171,8 @@ def verify_email(request):
         print('here',e)
         return JsonResponse({"error": True}, safe=False)
 
-    except:
+    except Exception as e:
+        print(e)
         return JsonResponse({'"error': True})
 
 @api_view(["GET"])
@@ -187,7 +190,9 @@ class UserFromCookie(APIView):
     def get(self, request):
         user, token = custom.authenticate(request)
         try:
+            # print(AESCipher().decrypt(encrypted))
             user = UserSerializer(request.user).data
+
             # response = HttpResponse({"success": True, "user": user}, content_type="application/json")
             return JsonResponse({"success": True, "user": user})
         except:
@@ -354,5 +359,3 @@ class Delete_User(APIView):
 def delete_all(request):
     User.objects.all().delete()
     return JsonResponse({"success": True}, safe=False)
-
-

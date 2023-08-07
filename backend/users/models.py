@@ -15,6 +15,7 @@ from django.conf import settings
 # import Refreshtoken from simplejwt
 from rest_framework_simplejwt.tokens import RefreshToken
 from backend.encryption import *
+from backend.encryption import AESCipher
 
 
 def rename_avatar(instance, filename):
@@ -91,7 +92,9 @@ def send_user_verification(sender, instance, created, **kwargs):
     if created:
         subject = 'Verify Your Email'
         token = RefreshToken.for_user(instance).access_token
-        html_message = render_to_string('emails/verify_email.html', {'verification_link': settings.EMAIL_VERIFY_URL + str(token)})
+        encrypted_token = AESCipher().encrypt(str(token))
+        print(encrypted_token)
+        html_message = render_to_string('emails/verify_email.html', {'verification_link': settings.EMAIL_VERIFY_URL + encrypted_token})
         plain_message = strip_tags(html_message)
         from_email = settings.EMAIL_HOST_USER  # Change this to your email
         recipient_list = [instance.email]

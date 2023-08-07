@@ -302,7 +302,7 @@ export default defineComponent({
         <div ref="topNav" v-if="!hideNavBar" id="top-nav" :class="{'border-b': $route.matched[0].name != 'notification'}" class="sticky top-0 w-full h-fit bg-transparent bg-blur-1 z-20">
           <TopNav @update:navHeight="topNavHeight = $event"/>
         </div>
-        <div :style="{paddingBottom: `${bottomNavHeight - 10}px`, minHeight: `calc(100dvh - ${($refs.topNav as HTMLElement)?.offsetHeight}px)`}"  class="w-full h-full border-l border-r">
+        <div :style="{paddingBottom: `${bottomNavHeight - 10}px`, minHeight: `calc(100vh - ${(($refs.topNav as HTMLElement)?.offsetHeight) ?? 0}px)`}"  class="w-full h-full border-l border-r">
           <RouterView v-slot="{Component}" >
             <KeepAlive :max="2" :include="['home', 'search', 'explore', 'user-profile', 'view-spill', 'notifications']" >
               <component :is="Component" :key="!['user-profile', 'notifications'].includes(($route.matched[0].name) as string) ? $route.fullPath : null"  :height="height" :scrollPosition="scrollPosition" />

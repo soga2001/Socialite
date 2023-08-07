@@ -10,7 +10,7 @@ import 'cropperjs/dist/cropper.css';
 import { Cropper } from 'vue-advanced-cropper';
 import 'vue-advanced-cropper/dist/style.css';
 
-import Toast from "vue-toastification";
+import Toast, {type ToastInterface, createToastInterface} from "vue-toastification";
 // Import the CSS or use your own!
 import "vue-toastification/dist/index.css";
 
@@ -85,9 +85,15 @@ import MentionIcon from '@/icons/i-mention.vue';
 
 const app = createApp(App)
 
+
+
+
 app.use(router);
 app.use(store, key);
-app.use(Toast);
+app.use(Toast, {
+  maxToasts: 1,
+  newestOnTop: true,
+});
 // app.component('adv-cropper', Cropper);
 // icon components
 app.component('i-home', HomeIcon);
