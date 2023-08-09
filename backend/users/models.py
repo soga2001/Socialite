@@ -17,6 +17,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from backend.encryption import *
 from backend.encryption import AESCipher
 
+from rest_framework.authtoken.models import Token
+
 
 def rename_avatar(instance, filename):
     file, file_extension = os.path.splitext(filename)
@@ -88,13 +90,11 @@ def check_name(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=User)
-def send_user_verification(sender, instance, created, **kwargs):
+def send_user_verification(sender, instance, created=False, **kwargs):
     if created:
         subject = 'Verify Your Email'
-        token = RefreshToken.for_user(instance).access_token
-        encrypted_token = AESCipher().encrypt(str(token))
-        print(encrypted_token)
-        html_message = render_to_string('emails/verify_email.html', {'verification_link': settings.EMAIL_VERIFY_URL + encrypted_token})
+        token = Token.objects.create(user=instance)
+        html_message = render_to_string('emails/verify_email.html', {'verification_link': settings.EMAIL_VERIFY_URL + token.key, 'first_name': instance.first_name})
         plain_message = strip_tags(html_message)
         from_email = settings.EMAIL_HOST_USER  # Change this to your email
         recipient_list = [instance.email]

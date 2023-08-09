@@ -24,12 +24,14 @@ from backend.encryption import *
 # From rest_framework_simplejwt
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 # From rest_framework
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.decorators import authentication_classes
+from rest_framework.authtoken.models import Token
 
 
 
@@ -37,6 +39,10 @@ from users.models import User
 from .serializer import UserSerializer
 from backend.decorators import refresh_cookies
 from backend.encryption import AESCipher
+
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 
 import datetime
@@ -133,6 +139,7 @@ def user_register(request):
 def user_login(request):
     data = json.loads(request.body)
     user = authenticate(username=data['username'], password=data['password'])
+    print(user is not None)
     if(user and user.email_verified):
         login(request, user)
         token = RefreshToken.for_user(user)
@@ -151,7 +158,7 @@ def user_login(request):
         # response.set_cookie('access_token', str(token.access_token), expires=str(token.access_token.lifetime.days) + "d", secure=True, httponly=True)
         response.set_cookie('refresh_token', str(token), expires=str(token.lifetime.days)+ "d", secure=True, httponly=True)
         return response
-    elif not user.email_verified:
+    elif user and not user.email_verified:
         return JsonResponse({"error": True, "message": "Please verify your email."}, safe=False)
     else:
         return JsonResponse({"error": True, "message": "Invalid credentials."}, safe=False)
@@ -161,18 +168,54 @@ def user_login(request):
 def verify_email(request):
     try:
         token = json.loads(request.body)['token']
-        decrypted_msg = AESCipher().decrypt(token.replace(' ', '+'))
-        print(decrypted_msg)
-        user, token = custom.authenticate_with_token(request, decrypted_msg)
+        # decrypted_msg = AESCipher().decrypt(token.replace(' ', '+'))
+        token = Token.objects.get(key=token)
+        user = token.user
+        # user, token = custom.authenticate_with_token(request, decrypted_msg)
         user.email_verified = True
         user.save()
+        token.delete()
         return JsonResponse({"success": True}, safe=False)
-    except TokenError as e:
-        print('here',e)
-        return JsonResponse({"error": True}, safe=False)
-
-    except Exception as e:
+    except Token.DoesNotExist as e:
         print(e)
+        return JsonResponse({"error": True, "message": "Invalid token"}, safe=False)
+    except Exception as e:
+        print('here',e)
+        return JsonResponse({'"error': True, "message": "Invalid token"})
+    
+@api_view(["POST"])
+def email_forgot_password_link(request):
+    try:
+        data = json.loads(request.body)
+        user = User.objects.get(email=data['email'])
+        token = RefreshToken.for_user(user)
+        subject = 'Reset your password'
+        token = Token.objects.create(user=user)
+        html_message = render_to_string('emails/reset_password.html', {'reset_link': settings.RESET_PASSWORD_URL + token.key, 'first_name': user.first_name})
+        plain_message = strip_tags(html_message)
+        from_email = settings.EMAIL_HOST_USER
+        recipient_list = [user.email]
+        send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+        return JsonResponse({"success": True})
+    except User.DoesNotExist:
+        return JsonResponse({"error": True, "message": "User does not exist."})
+    
+@api_view(["PUT"])
+def reset_password(request):
+    try:
+        data = json.loads(request.body)
+        token = Token.objects.get(key=data['token'])
+        user = token.user
+        if(data['password'] == data['confirm_password']):
+            user.set_password(data['password'])
+            user.save()
+            token.delete()
+        else:
+            return JsonResponse({'error': True, 'message': "Password and Confirm Password has to match."})
+        return JsonResponse({"success": True})
+    except Token.DoesNotExist as e:
+        return JsonResponse({"error": True, "message": "Invalid token."}, safe=False)
+    except Exception as e:
         return JsonResponse({'"error': True})
 
 @api_view(["GET"])

@@ -17,6 +17,8 @@ export default defineComponent({
             errMsg: "",
             loading:false,
             disable: true,
+            forgotPass: false,
+            email: '',
         };
     },
     methods: {
@@ -47,6 +49,15 @@ export default defineComponent({
         },
         updateDisableState(username: string, password:string) {
             this.disable = !(username.length >= 1 && password.length >= 1);
+        },
+        async sendEmail() {
+          await http.post('users/send_reset_password_email/', {
+            email: this.email
+          }).then((res) => {
+            console.log(res.data)
+          }).catch((err) => {
+            console.log(err)
+          })
         }
     },
     created() {
@@ -97,10 +108,52 @@ export default defineComponent({
         <Input @update:val="password = $event" input_type="password" input_label="Password*" id="password" class="w-full my-2" />
         <span v-if="error" class="flex justify-center m-3 p-3 text-xl bg-red-2 text-red-13 w-full text-center">{{errMsg}}</span>
         <div class="forgot mb-2">
-            <RouterLink class="hover-text-heading weight-bold" to="">Forgot Password?</RouterLink>
+            <RouterLink class="hover-text-heading weight-bold" to="" @click="forgotPass = true">Forgot Password?</RouterLink>
         </div>
 		<button type="submit" :disabled="disable" class="w-full border-none rounded text-xl py-3 bg-theme-mute pointer">Sign in</button>
 	</form>
+
+  <q-dialog v-model="forgotPass">
+      <q-card class="bg-theme min-w-52 w-full border">
+        <q-card-section>
+          <div class="text-heading weight-900 text-2xl">Forgot Password</div>
+        </q-card-section>
+
+        <q-separator :dark="$store.state.dark" />
+
+        <q-card-section class="flex flex-col gap-2">
+          <p class="text-heading weight-700 text-base">Please Enter Your Email.</p>
+          <p class="caption text-sm">We'll send you an email to reset your password.</p>
+          <Input @update:val="email = $event" input_label="Email*" id="email" class="email" input_type="email" required/>
+          <q-item class="mt-10">
+            <q-item-section avatar>
+              <q-icon name="warning" color="red-5" />
+            </q-item-section>
+            <q-item-section>
+              <div class="text-red-5 weight-900 text-xs">
+                This link will expire in 10 minutes. Even if you are able to open the link, you will not be able to change your password after that until you request a new link.
+              </div>
+            </q-item-section>
+          </q-item>
+        </q-card-section>
+
+        <q-separator :dark="$store.state.dark" />
+
+        <q-card-actions align="right">
+          <q-btn flat v-close-popup>
+            <div class="text-capitalize text-heading">
+              Cancel
+            </div>
+          </q-btn>
+          <q-btn flat @click="sendEmail">
+            <div class="text-capitalize text-heading">
+              Submit
+            </div>
+          </q-btn>
+          
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
 
 	<!-- <div class="social-message">
 		<div class="line"></div>

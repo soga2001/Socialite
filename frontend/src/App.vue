@@ -82,10 +82,12 @@ export default defineComponent({
     '$store.state.authenticated': function() {
       console.log(this.$route.fullPath)
       if(this.$store.state.authenticated && this.$route.meta.hideForAuth) {
-        console.log('here')
         this.$router.push('/home')
       }
-      else{
+      else if(!this.$store.state.authenticated){
+        this.$router.push('/login')
+      }
+      else {
         this.$router.push(this.$route.fullPath)
       }
     }

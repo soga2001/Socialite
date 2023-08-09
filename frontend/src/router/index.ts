@@ -115,6 +115,13 @@ const router: Router = createRouter({
     {
       path: '/verify/email',
       component: () => import('@/views/VerifyEmail.vue'),
+    },
+    {
+      path: '/reset/password',
+      component: () => import('@/views/ForgotPass.vue'),
+      meta: {
+        hideForAuth: true
+      }
     }
   ]
 })

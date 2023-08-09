@@ -171,7 +171,7 @@ export default defineComponent({
         </form>
     </div>
     <div v-if="success"  class="flex  bg-green-2 p-3">
-      <span class="text-base weight-700">{{successMsg.trim()}}</span>
+      <span class="text-base text-black weight-700">{{successMsg.trim()}}</span>
     </div>
 </div>
 </template>
@@ -180,14 +180,13 @@ export default defineComponent({
 .register {
   padding: 20px;
   display: flex;
-  justify-content: center;
+  justify-content: center;  
   align-content: center;
   text-align: center;
   
   &__main {
     min-width: fit-content;
     border-radius: 10px;
-    // background-color: var(--color-background-soft);
   }
   
   &__header {

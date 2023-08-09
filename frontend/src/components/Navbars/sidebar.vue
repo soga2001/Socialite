@@ -122,14 +122,20 @@ export default defineComponent({
                   </RouterLink>
                   <RouterLink v-if="$store.state.authenticated" to="/notifications" class="nav__link relative" active-class="active">
                       <q-item class="hide relative">
-                        <q-item-section avatar>
+                        <q-item-section avatar class="relative">
+                          <!-- <div class="relative">
+                            <q-badge class="bg-web-theme" rounded floating />
+                          </div> -->
+                          <q-avatar class="relative p-0 m-0">
                             <i-notif size="2rem" :fill="$route.matched[0].name == `notifications` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                            <q-badge class="bg-web-theme" rounded floating />
+                          </q-avatar>
                         </q-item-section>
 
                         <q-item-section class="bold relative">
                             Notifications
                         </q-item-section>
-                        <q-badge class="bg-web-theme" rounded floating />
+                        
                       </q-item>
                       <div class="show relative">
                         <i-notif class="show" size="2rem" :fill="$route.matched[0].name == `notifications` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />

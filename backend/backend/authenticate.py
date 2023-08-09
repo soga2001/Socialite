@@ -11,6 +11,7 @@ from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 # import httpresponse
 from django.http import HttpResponse
 from functools import wraps
+from rest_framework.authtoken.models import Token
 
 
 def enforce_csrf(request):
@@ -80,17 +81,21 @@ class CustomAuthentication(JWTAuthentication):
             return None
         
     def authenticate_with_token(self, request, token):
+        # try:
+        #     validated_token = self.get_validated_token(token)
+        #     user = self.get_user(validated_token)
+        #     return user, validated_token
+        # except TokenError as e:
+        #     print('Token error:', e)
+        # except Exception as e:
+        #     print('Exception:', e)
+        # except:
+        #     print('here')
+        # return None
         try:
-            validated_token = self.get_validated_token(token)
-            user = self.get_user(validated_token)
-            return user, validated_token
-        except TokenError as e:
-            print('Token error:', e)
-        except Exception as e:
-            print('Exception:', e)
+            pass
         except:
-            print('here')
-        return None
+            pass
     
 
 

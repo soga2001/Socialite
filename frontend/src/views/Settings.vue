@@ -5,7 +5,7 @@ import { RouterLink, RouterView } from 'vue-router';
 import { http } from '@/assets/http';
 import {useStore} from '../store/store'
 import Mention2 from '@/components/Mention2.vue';
-import Item from '../components/Item.vue'
+import Item from '../components/Item.vue';
 
 // import imageCropper from '@/components/imageCropper.vue';
 
@@ -41,8 +41,7 @@ export default defineComponent({
 <template>
     <div class="w-full">
         <Mention2 />
-
-    </div>
+    </div> 
 </template>
 
 <style scoped lang="scss">
