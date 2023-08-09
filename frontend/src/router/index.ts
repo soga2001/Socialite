@@ -46,13 +46,19 @@ const router: Router = createRouter({
           path: '',
           alias: '*',
           name: 'all-notif',
-          component: () => import('../components/Notifications/All.vue')
+          component: () => import('../components/Notifications/All.vue'),
+          meta: {
+            auth: true
+          },
         },
         {
           path: 'mentions',
           alias: 'mentions/*',
           name: 'mentions',
           component: () => import('../components/Notifications/Mentions.vue'),
+          meta: {
+            auth: true
+          },
         },
       ],
     },

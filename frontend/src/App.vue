@@ -81,14 +81,12 @@ export default defineComponent({
   watch: {
     '$store.state.authenticated': function() {
       console.log(this.$route.fullPath)
-      if(this.$store.state.authenticated && this.$route.meta.hideForAuth) {
+      console.log(this.$route.meta.hideForAuth)
+      if(this.$store.state.authenticated && (this.$route.meta.hideForAuth && this.$route.meta.hideForAuth != undefined) ) {
         this.$router.push('/home')
       }
       else if(!this.$store.state.authenticated){
         this.$router.push('/login')
-      }
-      else {
-        this.$router.push(this.$route.fullPath)
       }
     }
   }

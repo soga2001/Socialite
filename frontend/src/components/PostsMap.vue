@@ -87,7 +87,6 @@ export default defineComponent({
             }).catch((err) => {
                 console.log(err)
             })
-            // this.liked = true
         },
         like() {
             if (!this.$store.state.authenticated) {
@@ -152,28 +151,6 @@ export default defineComponent({
         focused() {
             this.date_posted = convertTime(this.post.date_posted, 'short')
         },
-
-        // divEnter() {
-        //     if(this.delayExit) {
-        //         clearTimeout(this.delayExit as number)
-        //     }
-        //     this.delayEnter = setTimeout(() => {
-        //         this.hovering = true;
-        //         this.delayEnter = null
-        //     }, 1000);
-
-        // },
-
-        // divExit() {
-        //     if(this.delayEnter ) {
-        //         clearTimeout(this.delayEnter as number)
-        //     }
-        //     this.delayExit = setTimeout(() => {
-        //         this.hovering = false;
-        //         this.delayExit = null
-        //     }, 500);
-
-        // },
 
         divEnter() {
             if(this.$q.screen.lt.sm) {
