@@ -6,7 +6,6 @@ import { http } from '@/assets/http';
 import Timeago from '../Timeago.vue';
 import { useCookies } from 'vue3-cookies';
 import Item from '../Item.vue';
-import Notify from '../Notify.vue';
 import createIntersectObserver from '@/assets/intersectionObserver'
 
 export default defineComponent({
@@ -289,7 +288,7 @@ export default defineComponent({
         //     console.log(bannerFile)
         // }
     },
-    components: { Timeago, Notify }
+    components: { Timeago }
 })
 </script>
 
@@ -538,10 +537,10 @@ export default defineComponent({
         </div>
 
         <div v-if="errMsg">
-            <Notify :message="errMsg" type="error" @deleteMsg="errMsg=''" title="Error Message"/>
+            <!-- <Notify :message="errMsg" type="error" @deleteMsg="errMsg=''" title="Error Message"/> -->
         </div>
         <div v-if="successMsg">
-            <Notify :message="successMsg" type="success" @deleteMsg="successMsg=''" title="Success Message"/>
+            <!-- <Notify :message="successMsg" type="success" @deleteMsg="successMsg=''" title="Success Message"/> -->
         </div>
   </div>
 </template>

@@ -13,7 +13,8 @@ import 'vue-advanced-cropper/dist/style.css';
 import Toast, {type ToastInterface, createToastInterface} from "vue-toastification";
 // Import the CSS or use your own!
 import "vue-toastification/dist/index.css";
-
+import Notifications from '@kyvg/vue3-notification'
+ 
 
 
 
@@ -87,7 +88,7 @@ const app = createApp(App)
 
 
 
-
+app.use(Notifications);
 app.use(router);
 app.use(store, key);
 app.use(Toast, {
@@ -133,8 +134,6 @@ app.component('zoomImg', zoomImg)
 app.component('user-card', hoverUserData)
 app.component('Item', Item);
 app.component('cropper', VueCropper);
-
-
 
 
 app.use(Vue3MobileDetection)

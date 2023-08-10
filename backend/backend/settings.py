@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'likes.apps.LikesConfig',
     'postviews.apps.PostviewsConfig',
     'notification.apps.NotificationConfig',
+    'tokens.apps.TokensConfig',
     'django.contrib.postgres',
 ]
 

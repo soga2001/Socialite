@@ -17,7 +17,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from backend.encryption import *
 from backend.encryption import AESCipher
 
-from rest_framework.authtoken.models import Token
+# from rest_framework.authtoken.models import Token
+from tokens.models import Tokens
+import datetime
 
 
 def rename_avatar(instance, filename):
@@ -93,7 +95,9 @@ def check_name(sender, instance, **kwargs):
 def send_user_verification(sender, instance, created=False, **kwargs):
     if created:
         subject = 'Verify Your Email'
-        token = Token.objects.create(user=instance)
+        # generate date of 10 minutes from now
+        expires_at = datetime.datetime.now() + datetime.timedelta(days=1)
+        token = Tokens.objects.create(user=instance, expires_at=expires_at)
         html_message = render_to_string('emails/verify_email.html', {'verification_link': settings.EMAIL_VERIFY_URL + token.key, 'first_name': instance.first_name})
         plain_message = strip_tags(html_message)
         from_email = settings.EMAIL_HOST_USER  # Change this to your email

@@ -24,8 +24,14 @@ export default defineComponent({
     methods: {
         async login() {
             if (this.username.length === 0 || this.password.length === 0) {
-                this.error = true;
-                this.errMsg = "Please don't leave username or password blank!";
+                // this.error = true;
+                // this.errMsg = "Please don't leave username or password blank!";
+                this.$notify({
+                  title: 'Error!',
+                  text: "Please don't leave username or password blank!",
+                  type: 'error',
+                  group: 'error',
+                })
                 return;
             }
             http.post("users/login/", {
@@ -34,9 +40,13 @@ export default defineComponent({
             }, {
             }).then(async (res) => {
                 if (res.data.error === true) {
-                    console.log(res.data)
-                    this.error = true;
-                    this.errMsg = res.data.message;
+                    // this.error = true;
+                    this.$notify({
+                      title: 'Error!',
+                      text: res.data.message,
+                      type: 'error',
+                      group: 'error',
+                    })
                 }
                 else {
                     await get_user_from_cookie()
@@ -54,7 +64,15 @@ export default defineComponent({
           await http.post('users/send_reset_password_email/', {
             email: this.email
           }).then((res) => {
-            console.log(res.data)
+            if(res.data.success) {
+              this.forgotPass = false;
+              this.email = '';
+              this.$notify({
+                text: 'Intruction to reset your password has been sent to your email.',
+                type: 'success',
+                group: 'success',
+              })
+            }
           }).catch((err) => {
             console.log(err)
           })

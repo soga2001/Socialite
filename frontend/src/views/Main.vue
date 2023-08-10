@@ -74,21 +74,6 @@ export default defineComponent({
     },
   },
   methods: {
-    // setData() {
-    //   const element = this.$refs.mainDiv as HTMLDivElement
-    //   if(element) {
-
-    //     if(!this.scrollPos.get(this.$route.name)) {
-    //       this.scrollPos.set(this.$route.name, element.scrollTop);
-    //       this.scrollPosition = element.scrollTop
-    //     }
-    //     if(!this.scrollHeight.get(this.$route.name)) {
-    //       this.scrollHeight.set(this.$route.name, element.scrollHeight - element.clientHeight)
-    //       this.height = element.scrollHeight - element.clientHeight
-    //     }
-    //   }
-      
-    // },
     scroll() {
       const element = this.$refs.mainDiv as HTMLDivElement;
       if(this.lastScrollPos < element.scrollTop ) {
@@ -112,18 +97,12 @@ export default defineComponent({
       this.websocket = new WebSocket(`wss://localhost:8000/ws/user_notif/${this.$store.state.user.id}/`)
       this.websocketMessage()
 
-      // this.websocket.onopen = (e) => {
-      // }
     },
     async websocketClose() {
       if(!this.websocket) {
         return
       }
       this.websocket.close()
-
-      // this.websocket.onclose = (e) => {
-      //   console.log('Websocket closed')
-      // }
     },
     async websocketMessage() {
       if(!this.websocket) {
@@ -133,65 +112,18 @@ export default defineComponent({
         const data = JSON.parse(e.data)
         if(data.type === 'posted') {
           const message = JSON.parse(data.message) as Notifications
+          console.log(message)
 
-        const toast = this.toast({
-          component: notification,
-          props:  {
-            notification: message
-          },
-        }, {
-          position: 'top-center' as POSITION,
-          icon: false,
-          timeout: 3000,
-          closeOnClick: false,
-          pauseOnFocusLoss: false,
-          pauseOnHover: false,
-          draggable: true,
-          draggablePercent: 0.6,
-          showCloseButtonOnHover: false,
-          hideProgressBar: true,
-          closeButton: false,
-          rtl: false,
-          toastClassName: 'p-0 max-w-54 bg-theme border-brighter rounded-xs'
-        })
-
-        setTimeout(() => {
-            this.toast.dismiss(toast)
-          }, 3000)
-
-          // this.notification = message
+          this.$notify({
+            title: "Important message",
+            text: "Hello user!",
+            group: message.verb,
+            type: 'none',
+            data: {
+              notification: message
+            }
+          });
           
-          
-          // this.$q.notify({
-          //   progress: true,
-          //   html: true,
-          //   classes: 'bg-theme border',
-          //   group: message.verb,
-          //   message: `
-          //     <div class="flex flex-cols items-center gap-2">
-          //       <div>
-          //         <img class="rounded-full" src="${message.actor_avatar}" alt="avatar" width="50px" height="50px"/>
-          //       </div>
-          //         <div class="flex flex-rows min-w-52">
-          //           <div class="w-full text-xl weight-900 text-heading"> 
-          //             @${message.actor}
-          //           <div>
-          //           <div class="w-full text-base text-body weight-600">
-          //             ${message.description}
-          //           </div>
-          //           <div>
-          //             <div class="w-full text-sm text-lighter weight-100">
-          //               ${convertTime(message.timestamp)}
-          //             </div>
-          //           </div>
-          //         </div>
-          //     <div/>
-          //   `,
-          //   actions: [
-          //     { label: 'View', class: 'bg-heading weight-900', handler: () => { this.$router.push('/notifications') } },
-          //     { label: 'Dismiss', color: 'white' }
-          //   ],
-          // })
         }
         else if(data.type === 'message') {
           this.$store.commit('setMessages', data.message)
@@ -207,34 +139,8 @@ export default defineComponent({
     '$store.state.authenticated': function () {
       if(this.$store.state.authenticated) {
         this.websocketOpen()
-        // this.$q.notify({
-        //   progress: true,
-        //   type: 'positive',
-        //   message: 'Login successful!',
-        //   timeout: 2000,
-        //   position: 'top-right',
-        //   actions: [
-        //     {
-        //       icon: 'close',
-        //       color: 'red',
-        //     }
-        //   ]
-        // })
       } else {
         this.websocketClose();
-        // this.$q.notify({
-        //   progress: true,
-        //   type: 'positive',
-        //   message: 'Logout successful!',
-        //   timeout: 2000,
-        //   position: 'top-right',
-        //   actions: [
-        //     {
-        //       icon: 'close',
-        //       color: 'white',
-        //     }
-        //   ]
-        // })
       }
     },
     '$route': function() {
@@ -281,11 +187,6 @@ export default defineComponent({
         }
       }
     },
-    // notification(notification) {
-    //   if(notification.actor) {
-    //     this.newNotification = true
-    //   }
-    // }
   },
   component: {Search}
 })
@@ -313,8 +214,7 @@ export default defineComponent({
       </div>
     </div>
 
-    <aside class="sticky top-0"> 
-      <!-- <Unauthenticated v-if="!$store.state.authenticated"/> -->
+    <aside class="sticky top-0" v-if="!$q.screen.lt.sm"> 
       <div class="mx-5 py-2 sticky top-0">
           <SearchBar dense />
       </div>
@@ -369,6 +269,8 @@ export default defineComponent({
       <q-dialog no-backdrop-dismiss seamless no-focus class="bg-transparent" v-model="newNotification" position="bottom">
         
       </q-dialog>
+
+      <!-- <notifications /> -->
 
       
       

@@ -10,6 +10,7 @@ export default defineComponent({
             token: this.$route.query.token,
             loading: true,
             success: false,
+            message: '',
         }
     },
     methods: {
@@ -20,6 +21,9 @@ export default defineComponent({
                 if(res.data.success) {
                     this.success = true
                     this.$router.push({ name: 'Login' })
+                }
+                else {
+                    this.message = res.data.message
                 }
             }).catch((err) => {
                 console.log(err)
@@ -59,7 +63,7 @@ export default defineComponent({
                 <path class="checkmark__check" fill="none" d="M16 16 36 36 M36 16 16 36"/>
             </svg>
             <span class="text-heading weight-700">
-                Your email could not be verified. Please try again later.
+                Your email could not be verified because <span class="text-heading weight-700 text-lowercase">{{ message }}</span>. Please try again later.
             </span>
         </div>
     </div>

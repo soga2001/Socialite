@@ -31,7 +31,8 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.decorators import authentication_classes
-from rest_framework.authtoken.models import Token
+# from rest_framework.authtoken.models import Token
+from tokens.models import Tokens
 
 
 
@@ -46,6 +47,7 @@ from django.utils.html import strip_tags
 
 
 import datetime
+from django.utils import timezone
 
 import json
 from PIL import Image
@@ -129,7 +131,7 @@ def user_register(request):
             username=data['username'], 
             password=data['password'], 
             email=data['email'])
-        return JsonResponse({"success": True, 'message': 'An email has been send to your email. Please click on the link to verify your email.'}, safe=False)
+        return JsonResponse({"success": True, 'message': 'An email has been sent to your email. Please click on the link to verify your email.'}, safe=False)
     except ValueError as e:
         return JsonResponse({"error": True, "message": str(e)}, safe=False)
     except DatabaseError:
@@ -169,42 +171,51 @@ def verify_email(request):
     try:
         token = json.loads(request.body)['token']
         # decrypted_msg = AESCipher().decrypt(token.replace(' ', '+'))
-        token = Token.objects.get(key=token)
+        token = Tokens.objects.get(key=token)
+        if token.expires_at < timezone.now():
+            token.delete()
+            return JsonResponse({"error": True, "message": "the Token has expired"})
         user = token.user
-        # user, token = custom.authenticate_with_token(request, decrypted_msg)
         user.email_verified = True
         user.save()
         token.delete()
-        return JsonResponse({"success": True}, safe=False)
-    except Token.DoesNotExist as e:
-        print(e)
-        return JsonResponse({"error": True, "message": "Invalid token"}, safe=False)
+        return JsonResponse({"success": True, "message": "Email has been verified."})
+    except Tokens.DoesNotExist as e:
+        return JsonResponse({"error": True, "message": "token is invalid"})
     except Exception as e:
         print('here',e)
-        return JsonResponse({'"error': True, "message": "Invalid token"})
+        return JsonResponse({'"error': True, "message": "token is invalid"})
     
 @api_view(["POST"])
 def email_forgot_password_link(request):
+    data = json.loads(request.body)
+    user = User.objects.get(email=data['email'])
     try:
-        data = json.loads(request.body)
-        user = User.objects.get(email=data['email'])
-        token = RefreshToken.for_user(user)
-        subject = 'Reset your password'
-        token = Token.objects.create(user=user)
-        html_message = render_to_string('emails/reset_password.html', {'reset_link': settings.RESET_PASSWORD_URL + token.key, 'first_name': user.first_name})
-        plain_message = strip_tags(html_message)
-        from_email = settings.EMAIL_HOST_USER
-        recipient_list = [user.email]
-        send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
-        return JsonResponse({"success": True})
+        expires_at = datetime.datetime.now() + datetime.timedelta(minutes=10)
+        token = Tokens.objects.create(user=user, expires_at=expires_at)
     except User.DoesNotExist:
         return JsonResponse({"error": True, "message": "User does not exist."})
+    except IntegrityError as e:
+        token = Tokens.objects.get(user=user)
+        token.delete()
+        token = Token.objects.create(user=user)
+    except Exception as e:
+        print('exception',e)
+        return JsonResponse({"error": True, "message": "An error occurred."}, safe=False)
+    subject = 'Reset your password'
+    html_message = render_to_string('emails/reset_password.html', {'reset_link': settings.RESET_PASSWORD_URL + token.key, 'first_name': user.first_name})
+    plain_message = strip_tags(html_message)
+    from_email = settings.EMAIL_HOST_USER
+    recipient_list = [user.email]
+    send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+    return JsonResponse({"success": True})
     
 @api_view(["PUT"])
 def reset_password(request):
     try:
         data = json.loads(request.body)
-        token = Token.objects.get(key=data['token'])
+        token = Tokens.objects.get(key=data['token'])
+        
         user = token.user
         if(data['password'] == data['confirm_password']):
             user.set_password(data['password'])
@@ -213,7 +224,8 @@ def reset_password(request):
         else:
             return JsonResponse({'error': True, 'message': "Password and Confirm Password has to match."})
         return JsonResponse({"success": True})
-    except Token.DoesNotExist as e:
+    except IntegrityError as e:
+
         return JsonResponse({"error": True, "message": "Invalid token."}, safe=False)
     except Exception as e:
         return JsonResponse({'"error': True})

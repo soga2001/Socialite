@@ -106,6 +106,86 @@ export default defineComponent({
       </template>
     </Loading>
   </div>
+  <notifications :max="2" group="auth" classes="bg-theme box-shadow rounded-sm m-2 border p-2"/>
+  <notifications :max="2" group="error" class="w-full max-w-xs">
+    <template #body="props">
+      <div @click="props.close" class="my-notification bg-red-3 text-green box-shadow rounded-sm m-2 mr-2 border text-left">
+        <Item :titleLineClamp="2" :captionLineClamp="10">
+          <template #avatar>
+            <q-icon color="red-9" size="30px" name="error" />
+          </template>
+          <template #title>
+            <span class="text-base text-red-9 weight-900">
+              {{ props.item.title }}
+            </span>
+          </template>
+          <template #caption>
+            <span class="text-sm text-red-8 weight-700">
+              {{ props.item.text }}
+            </span>
+          </template>
+        </Item>
+      </div>
+    </template>
+  </notifications>
+  <notifications :max="2" group="success" class=" w-full max-w-xs"> 
+    <template #body="props">
+      <div @click="props.close" class="my-notification bg-green-3 text-green box-shadow rounded-sm m-2 border text-left w-fit">
+        <Item :captionLineClamp="10">
+          <template #avatar>
+            <q-icon color="green-9" size="30px" name="info" />
+          </template>
+          <template #title>
+            <span class="text-base text-green-9 weight-900">
+              {{ props.item.title }}
+            </span>
+          </template>
+          <template #caption>
+            <span class="text-sm text-green-8 weight-700">
+              {{ props.item.text }}
+            </span>
+          </template>
+        </Item>
+      </div>
+    </template>
+  </notifications>
+  <notifications :max="2" group="mention" class=" w-full max-w-xs" position="bottom center">
+    <template #body="props">
+      <div @click="props.close" class="my-notification bg-theme box-shadow rounded-sm m-2 text-left">
+        <Item clickable :to="`/${props.item.data.notification.link}`" >
+          <template #avatar>
+              <img v-if="props.item.data.notification.actor_avatar" :src="props.item.data.notification.actor_avatar" alt="profile pic" />
+              <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="profile pic plage holder" class="rounded-full" />
+          </template>
+          <template #title>
+              <span class="text-xl text-heading weight-900">
+                  <!-- {{props.u.first_name + ' ' + props.u.last_name}} -->
+                  @{{ props.item.data.notification.actor }}
+              </span>
+          </template>
+          <template #caption>{{ props.item.data.notification.description}}</template>
+        </Item>
+      </div>
+    </template>
+  </notifications>
+  <notifications :max="1" group="follow"  class=" w-full max-w-xs" position="bottom center">
+    <template #body="props">
+      <div @click="props.close" class="my-notification bg-theme box-shadow rounded-sm m-2 text-left">
+        <Item clickable :to="`/${props.item.data.notification.link}`" >
+          <template #avatar>
+              <img v-if="props.item.data.notification.actor_avatar" :src="props.item.data.notification.actor_avatar" alt="profile pic" />
+              <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="profile pic plage holder" class="rounded-full" />
+          </template>
+          <template #title>
+              <span class="text-xl text-heading weight-900">
+                  @{{ props.item.data.notification.actor }}
+              </span>
+          </template>
+          <template #caption>{{ props.item.data.notification.description}}</template>
+        </Item>
+      </div>
+    </template>
+  </notifications>
 </template>
 
 <style>

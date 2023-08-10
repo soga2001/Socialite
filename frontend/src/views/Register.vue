@@ -16,10 +16,6 @@ export default defineComponent({
             username: ref(""),
             password: ref(""),
             cPass: ref(""),
-            errMsg: ref(""),
-            error: ref(false),
-            success: false,
-            successMsg: '',
             registering: false,
             domain: ["com", "net", "org", "int", "edu", "gov", "mil"],
             disable: false,
@@ -42,13 +38,15 @@ export default defineComponent({
         async register() {
           this.updateDisableState
           if (!this.disable) {
-            this.error = true;
-            this.errMsg = "Please don't leave required field empty and make sure the password matches.";
+            this.$notify({
+              title: "Error!",
+              text: "Please don't leave required field empty and make sure the password matches.",
+              type: 'error',
+              group: 'error',
+            })
             return;
           }
           this.registering = true,
-          this.error = false;
-          this.errMsg = "";
           await http.post("users/register/", {
             first_name: this.fname,
             last_name: this.lname,
@@ -58,40 +56,20 @@ export default defineComponent({
             confirm_password: this.cPass
           }).then((res) => {
             if(res.data.success) {
-              this.success = res.data.success
-              this.successMsg = res.data.message
-              this.toast(`Registration Successful!`, {
-                position: "bottom-center" as POSITION,
-                timeout: 2000,
-                closeOnClick: true,
-                pauseOnFocusLoss: true,
-                pauseOnHover: true,
-                draggable: true,
-                draggablePercent: 0.6,
-                showCloseButtonOnHover: false,
-                hideProgressBar: true,
-                closeButton: "button",
-                icon: {
-                  iconClass: 'material-icons text-white text-2xl',  // Optional
-                  iconChildren: 'check_circle', // Optional
-                  iconTag: 'span',
-                  propsData: {
-                    size: '1rem'
-                  }
-                },
-                rtl: false,
-                toastClassName: 'bg-green-5 text-heading',
-                bodyClassName: ["text-white", 'text-2xl'],
-              });
+              this.$notify({
+                title: 'Registration Successful!',
+                text: res.data.message,
+                type: 'success',
+                group: 'success',
+              })
             }
             if (res.data.error) {
-              this.error = true;
-              this.errMsg = res.data.message;
-            }
-            else {
-              this.error = false;
-              this.errMsg = "";
-              // window.location.href = "/login";
+              this.$notify({
+                title: 'Registration Unsuccessfull!',
+                text: res.data.message,
+                type: 'error',
+                group: 'error',
+              })
             }
           }).catch((err) => {
               console.log(err);
@@ -154,7 +132,6 @@ export default defineComponent({
             <Input @update:val="username = $event" input_label="Username*" id="username" class="username" input_type="text" required/>
             <Input @update:val="password = $event" input_label="Password*" id="password" class="password" input_type="password" required/>
             <Input @update:val="cPass = $event" input_label="Confirm Password*" id="c_password" class="c_password" input_type="password" required/>
-            <span v-if="error" class="errMsg">{{errMsg}}</span>
             <q-btn
               :loading="registering"
               dark-percentage
@@ -169,9 +146,6 @@ export default defineComponent({
               </div>
             </q-btn>
         </form>
-    </div>
-    <div v-if="success"  class="flex  bg-green-2 p-3">
-      <span class="text-base text-black weight-700">{{successMsg.trim()}}</span>
     </div>
 </div>
 </template>
