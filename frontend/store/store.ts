@@ -65,6 +65,7 @@ export const store = createStore<State>({
   }
 })
 
-export function useStore() {
-    return baseUseStore(key)
-}
+export default defineNuxtPlugin((nuxtApp) => {
+    nuxtApp.vueApp.use(store);
+    // Install the store instance as a plugin
+  });

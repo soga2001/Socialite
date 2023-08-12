@@ -20,27 +20,22 @@ export default {
     }
   },
 
-  beforeMount() {
-    this.fetchData();
+  async beforeCreate() {
+    const res = await $fetch(`${backend_baseURL}/users/user_from_cookie/`, {credentials: 'include'}).catch((err) => err.data)
+    this.$store.commit('setUser', (res as {success: boolean, user: []}).user)
+    
   },
   methods: {
-    async fetchData() {
-      // const { pending, data: user } = await useFetch(`${backend_baseURL}/users/user_from_cookie/`, {credentials: 'include'
-      // });
-      // if(user.value) {
-      //   this.user = (user.value as {user: User, success: boolean}).user as User;
-      //   console.log(this.user)
-      // } 
-      const {pending, data: user} = await useFetch('/api/user')
-      console.log(user)
-      // await http.get(`${backend_baseURL}/users/user_from_cookie/`).then((res) => {
-      //   this.user = res.data as User;
-      //   console.log(this.user)
-      // }).catch((err) => {
-      //   console.log(err)
-      // })
-    },
+    // async fetchData() {
+    //     const res = await $fetch(`${backend_baseURL}/users/user_from_cookie/`, {credentials: 'include'}).catch((err) => err.data)
+    //     console.log('here',(res as {success: boolean, user: []}).user)
+    // },
   },
+  watch: {
+    '$store.state.user': function() {
+      console.log(this.$store.state.user)
+    }
+  }
 }
 
 </script>

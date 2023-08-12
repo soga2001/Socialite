@@ -1,7 +1,21 @@
 <script lang="ts">
 import sidenav from '../components/navbar/sidenav.vue';
 export default {
-    components: {sidenav}
+    components: {sidenav},
+    data() {
+        return {
+            user: {},
+        }
+    },
+    mounted() {
+        this.fetchData();
+    },
+    methods: {
+        async fetchData() {
+            const res = await $fetch(`${backend_baseURL}/users/user_from_cookie/`, {credentials: 'include'}).catch((err) => err.data)
+            console.log('here',(res as {success: boolean, user: []}).user)
+        },
+    },
 }
 </script>
 

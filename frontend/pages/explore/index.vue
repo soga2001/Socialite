@@ -25,23 +25,10 @@ export default {
         async fetchData() {
             // const { pending, data: posts}  = await useFetch(`${backend_baseURL}/posts/explore/${this.user_timestamp}/${this.page}/`,);
 
-            // const dat = await $fetch(`${backend_baseURL}/posts/explore/${this.user_timestamp}/${this.page}/`).then((res) => {
-            //     console.log(res)
-            // }).catch((error) => error.data)
-            // console.log(dat)
-
-            // if(posts.value) {
-            //     this.posts = [...this.posts, ...(posts.value as { posts: Post[] }).posts]
-            // }
-
-            const { data: posts } = await useFetch(`${backend_baseURL}/posts/explore/${this.user_timestamp}/${this.page}/`)
-
-            if(posts.value) {
-                this.posts = [...this.posts, ...(posts.value as { posts: Post[] }).posts]
-            }
-            // if(posts.value) {
-            //     console.log(posts.value.posts)
-            // }
+            const dat = await $fetch(`${backend_baseURL}/posts/explore/${this.user_timestamp}/${this.page}/`).then((res) => {
+                console.log(res)
+                return res
+            }).catch((error) => error.data)
 
         }
     },

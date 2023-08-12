@@ -1,13 +1,11 @@
 // import http 
 import http from '../../assets/http';
-import { Post } from '../../assets/interfaces';
+import type { Post } from '../../assets/interfaces';
+import { backend_baseURL } from '../../composables/backendURL';
 
-export default defineEventHandler((event) => {
-  console.log(event.node)
-  // const data = await http.get('${backend_baseURL}/posts/explore/${this.user_timestap}/${this.page}/').then((res) => {
-  //     console.log(res.data)
-  //     return res.data
-  // })
+export default defineEventHandler(async (event) => {
+  // const res = await $fetch(`${backend_baseURL}/users/user_from_cookie/`, {credentials: 'include'}).catch((error) => error.data)
+  // console.log(res)
   return {
     hello: 'world'
   }

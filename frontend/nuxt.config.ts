@@ -4,7 +4,6 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
     '@element-plus/nuxt',
-    '@nuxtjs/axios',
   ],
   elementPlus: {
   },
@@ -16,7 +15,7 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     axios: {
-      baseURL: process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8000',
+      baseURL: 'http://localhost:8000',
     },
   }
 
