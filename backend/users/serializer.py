@@ -9,10 +9,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'email': {'write_only': True},
+        }
 
     name = serializers.SerializerMethodField()
-    email = serializers.SerializerMethodField()
     
 
     total_posted = serializers.SerializerMethodField()
@@ -21,14 +23,6 @@ class UserSerializer(serializers.ModelSerializer):
 
     is_following = serializers.SerializerMethodField()
     is_current_user = serializers.SerializerMethodField()
-
-    def get_email(self, obj):
-        val = obj.email
-        name, domain = val.split('@')
-        
-        # val = name[0:1] + ('*' * (len(name) - 1)) + '@' + domain[0:1] + '*****.' + domain.split('.')[1]
-        val = name[0:1] + ('*' * (len(name) - 1)) + '@' + domain
-        return val
         
 
     def get_name(self, obj):
