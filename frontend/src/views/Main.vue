@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent, ref, type CSSProperties} from 'vue';
-import { TouchSwipe, useQuasar } from 'quasar';
+import { useQuasar } from 'quasar';
 import Sidebar from '@/components/Navbars/sidebar.vue';
 import TopNav from '@/components/Navbars/topnav.vue';
 import BottomNav from '@/components/Navbars/bottomnav.vue';

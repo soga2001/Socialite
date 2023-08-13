@@ -2,8 +2,6 @@
 import { http } from '@/assets/http';
 import { defineComponent, ref, toHandlers } from 'vue';
 import type { User } from '@/assets/interfaces';
-import { useStore } from '../store/store';
-import { TouchSwipe } from 'quasar';
 import Item from '../components/Item.vue';
 
 export default defineComponent({

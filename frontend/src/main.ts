@@ -28,7 +28,7 @@ import '@quasar/extras/material-icons-sharp/material-icons-sharp.css'
 import '@quasar/extras/material-symbols-outlined/material-symbols-outlined.css'
 import '@quasar/extras/material-symbols-rounded/material-symbols-rounded.css'
 import '@quasar/extras/material-symbols-sharp/material-symbols-sharp.css'
-import '@quasar/extras/mdi-v6/mdi-v6.css'
+import '@quasar/extras/mdi-v7/mdi-v7.css'
 import '@quasar/extras/fontawesome-v5/fontawesome-v5.css'
 import '@quasar/extras/fontawesome-v6/fontawesome-v6.css'
 import '@quasar/extras/ionicons-v4/ionicons-v4.css'
@@ -136,22 +136,21 @@ app.component('Item', Item);
 app.component('cropper', VueCropper);
 
 
-app.use(Vue3MobileDetection)
 app.use(Quasar, {
-    plugins: {Dialog, Notify }, // import Quasar plugins and add here
+    plugins: {Dialog, Notify },
     config: {
-      extras: [
-        'material-icons',
-        'mdi-v6',
-        'ionicons-v4', // last webfont was available in v4.6.3
-        'eva-icons',
-        'fontawesome-v6',
-        'themify',
-        'line-awesome',
-        'bootstrap-icons'
-      ],
+      // extras: [
+      //   'material-icons',
+      //   'mdi-v6',
+      //   'ionicons-v4',
+      //   'eva-icons',
+      //   'fontawesome-v6',
+      //   'themify',
+      //   'line-awesome',
+      //   'bootstrap-icons'
+      // ],
     }
-  })
+})
 app.directive('debounce', vue3Debounce({ lock: true }))
 
 

@@ -11,8 +11,7 @@ export default defineComponent({
     data() {
         return {
             id: this.post.id,
-            username: this.post.username,
-            user_id: this.post.user,
+            username: this.post.user.username,
             img_url: this.post.img_url,
             caption: this.post.caption,
             date_posted: this.post.date_posted,

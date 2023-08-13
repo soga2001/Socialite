@@ -51,6 +51,12 @@ export default defineComponent({
                 else {
                     await get_user_from_cookie()
                     this.$store.commit("authenticate", true);
+                    this.$notify({
+                      title: "Success!",
+                      text: "Login Successful!",
+                      type: 'success',
+                      group: 'success',
+                    })
                     this.$router.push("/home");
                 }
             }).catch((err) => {

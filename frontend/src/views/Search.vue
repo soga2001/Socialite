@@ -3,7 +3,6 @@ import { http } from '@/assets/http';
 import { defineComponent, ref, toHandlers, type Ref, getCurrentInstance, type ComponentInternalInstance } from 'vue';
 import type { User } from '@/assets/interfaces';
 import { useStore } from '../store/store';
-import { TouchSwipe } from 'quasar';
 import Item from '../components/Item.vue';
 
 import SearchBar from '@/components/SearchBar.vue';
@@ -53,13 +52,11 @@ export default defineComponent({
         // this.search()
     },
     mounted() {
-        this.instance = getCurrentInstance()
     },
     activated() {
         if(this.$q){
             this.input = this.q;
             this.search()
-            this.instance = getCurrentInstance()
             this.alwaysTrue = true
         }
     },
