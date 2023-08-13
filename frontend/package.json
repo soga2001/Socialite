@@ -13,11 +13,17 @@
     "@nuxt/devtools": "latest",
     "@types/node": "^18.17.3",
     "element-plus": "^2.3.9",
-    "nuxt": "^3.6.5"
+    "nuxt": "^3.6.5",
+    "nuxt-quasar-ui": "^2.0.5"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
+    "@pinia/nuxt": "^0.4.11",
+    "@quasar/extras": "^1.16.5",
     "axios": "^1.4.0",
+    "date-fns": "^2.30.0",
+    "pinia": "^2.1.6",
+    "quasar": "^2.12.4",
     "sass": "^1.65.1",
     "sass-loader": "^13.3.2",
     "vuex": "^4.0.2"

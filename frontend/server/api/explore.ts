@@ -1,5 +1,5 @@
 // import http 
-import http from '../../assets/http';
+import http from '../../composables/http';
 import type { Post } from '../../assets/interfaces';
 import { backend_baseURL } from '../../composables/backendURL';
 

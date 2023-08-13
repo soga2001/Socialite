@@ -1,8 +1,6 @@
 <script lang="ts">
 // import usefetch
 // import ref
-import { ref } from 'vue';
-import { useFetch, useAsyncData } from 'nuxt/app';
 import type { Post } from '../../assets/interfaces';
 import {backend_baseURL} from '../../composables/backendURL';
 
@@ -10,10 +8,9 @@ export default {
     data() {
         return {
             posts: Array<Post>(),
-            tempPosts: Array<Post>(),
             input: '',
             user_timestamp: new Date().toISOString(),
-            page: ref(0),
+            page: 0,
             hasMore: false,
             message: '',
             offset: 0,
@@ -23,25 +20,53 @@ export default {
     },
     methods: {
         async fetchData() {
-            // const { pending, data: posts}  = await useFetch(`${backend_baseURL}/posts/explore/${this.user_timestamp}/${this.page}/`,);
-
-            const dat = await $fetch(`${backend_baseURL}/posts/explore/${this.user_timestamp}/${this.page}/`).then((res) => {
-                console.log(res)
-                return res
-            }).catch((error) => error.data)
+            this.loading = true;
+            await http.get(`${backend_baseURL}/posts/explore/${this.user_timestamp}/${this.page}/`).then((res) => {
+                if(res.data.posts) {
+                    this.posts = res.data.posts
+                    if((res.data.posts).length < 10) {
+                        this.hasMore = false
+                    } else {
+                        this.hasMore = true
+                    }
+                } else {
+                    this.message = res.data.message
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
+            this.loading = false
 
         }
     },
-    mounted() {
-        this.fetchData()
+    created() {
+        if(process.client) {
+            this.fetchData()
+        }
     }
 }
 </script>
 
 <template>
-    <!-- <div v-if="">
-        <div v-if="posts.length > 0" v-for="post in posts" :key="post.id">
-            <p>{{ post.id }}</p>
+    <div class="bg-red h-full w-full">
+        <div v-if="posts.length == 0 && !loading">
+            <p class="text-lg text-heading">No posts to show</p>
         </div>
-    </div> -->
+        <div v-else>
+            <div v-for="post in posts" :key="post.id">
+                <!-- <p class="text-lg text-heading">{{ post.id }}</p> -->
+                <spillcard :post="post" />
+            </div>
+        </div>
+        <div>
+            <p v-if="message">{{ message }}</p>
+        </div>
+        <div class="flex justify-center w-full p-2" v-if="loading">
+            <q-spinner size="2rem" />
+        </div>
+        <div v-else>
+            Here
+        </div>
+    </div>
+    
 </template>

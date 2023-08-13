@@ -1,42 +1,33 @@
 <script lang="ts">
-import { useFetch, useAsyncData } from 'nuxt/app';
-// import http
-import http from './assets/http';
+// // import http
+import http from './composables/http';
 
-// import User from interface
-import { User } from 'assets/interfaces';
-import {backend_baseURL} from './composables/backendURL';
+// // import User from interface
+import type { User } from 'assets/interfaces';
 
-// const data = http.get(`${backend_baseURL}/users/user_from_cookie/`).then((res) => {
-//   console.log(res.data)
-// }).catch((err) => {
-//   console.log(err)
-// })
 
-export default {
+
+export default defineComponent({
   data() {
     return {
-      user: {} as User,
+      
     }
   },
+  setup() {
+    const userStore = useUserStore();
+    return {
+      userStore
+    }
 
-  async beforeCreate() {
-    const res = await $fetch(`${backend_baseURL}/users/user_from_cookie/`, {credentials: 'include'}).catch((err) => err.data)
-    this.$store.commit('setUser', (res as {success: boolean, user: []}).user)
-    
+  },
+  beforeCreate() {
+    if(process.server) {
+      this.userStore.initStore();  
+    }
   },
   methods: {
-    // async fetchData() {
-    //     const res = await $fetch(`${backend_baseURL}/users/user_from_cookie/`, {credentials: 'include'}).catch((err) => err.data)
-    //     console.log('here',(res as {success: boolean, user: []}).user)
-    // },
   },
-  watch: {
-    '$store.state.user': function() {
-      console.log(this.$store.state.user)
-    }
-  }
-}
+})
 
 </script>
 
@@ -66,3 +57,4 @@ body {
   width: 100%;
 }
 </style>
+store/userStore./composables/http

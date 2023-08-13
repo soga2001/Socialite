@@ -1,4 +1,4 @@
-import http from "../../assets/http";
+import http from "../../composables/http";
 import { backend_baseURL } from "../../composables/backendURL";
 
 export default defineEventHandler(async (event) => {

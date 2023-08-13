@@ -8,28 +8,28 @@ export default {
         }
     },
     mounted() {
-        this.fetchData();
+        // this.fetchData();
     },
     methods: {
-        async fetchData() {
-            const res = await $fetch(`${backend_baseURL}/users/user_from_cookie/`, {credentials: 'include'}).catch((err) => err.data)
-            console.log('here',(res as {success: boolean, user: []}).user)
-        },
+        // async fetchData() {
+        //     const res = await $fetch(`${backend_baseURL}/users/user_from_cookie/`, {credentials: 'include'}).catch((err) => err.data)
+        //     console.log('here',(res as {success: boolean, user: []}).user)
+        // },
     },
 }
 </script>
 
 <template>
     <div class="main">
-        <div class="leftbar">
+        <aside class="leftbar sticky top-0">
             <sidenav />
-        </div>
+        </aside>
         <div class="pages">
             <slot />
         </div>
-        <div class="rightbar">
+        <aside class="rightbar sticky top-0">
 
-        </div>
+        </aside>
     </div>
 </template>
 
@@ -45,11 +45,19 @@ export default {
 }
 
 .leftbar {
-    background-color: #c22c2c;
+    // background-color: #c22c2c;
     height: 100%;
     width: 100%;
     min-height: 100dvh;
     max-height: 100vh;
+}
+
+.pages {
+    // background-color: #c22c2c;
+    height: 100%;
+    width: 100%;
+    border-left: 2px solid white;
+    border-right: 2px solid white;
 }
 
 .rightbar {
