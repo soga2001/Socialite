@@ -79,14 +79,6 @@ const router: Router = createRouter({
       }
     },
     {
-      path: '/settings',
-      name: 'settings',
-      component: () => import('@/views/Settings.vue'),
-      meta: {
-        auth: true
-      }
-    },
-    {
       path: '/:username?',
       name: 'user-profile',
       component: () => import('../views/User.vue'),
@@ -128,7 +120,49 @@ const router: Router = createRouter({
       meta: {
         hideForAuth: true
       }
-    }
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: () => import('@/views/settings/settings.vue'),
+      redirect: '/settings/account',
+      meta: {
+        auth: true
+      },
+      children: [
+        {
+          path: 'account',
+          name: 'account',
+          component: () => import('@/views/settings/account.vue'),
+        },
+        {
+          path: 'account-information',
+          name: 'account-information',
+          component: () => import('@/views/settings/accounts/accountInfo.vue'),
+        },
+        {
+          path: 'change-password',
+          name: 'change-password',
+          component: () => import('@/views/settings/accounts/passwordChange.vue'),
+        },
+        {
+          path: 'deactive-account',
+          name: 'deactive-account',
+          component: () => import('@/views/settings/accounts/deactiveAccount.vue'),
+        },
+        {
+          path: 'delete-account',
+          name: 'delete-account',
+          component: () => import('@/views/settings/accounts/deleteAccount.vue'),
+        }
+      ]
+    },
+    // {
+    //   path: '/settings/account',
+    //   name: 'account',
+    //   component: () => import('@/views/settings/account.vue'),
+    // },
+    
   ]
 })
 

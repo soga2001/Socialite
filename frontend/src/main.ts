@@ -78,6 +78,8 @@ import CommentIcon from '@/icons/i-comment.vue';
 import EmptyFolder from '@/icons/i-folder.vue';
 import RegisterIcon from '@/icons/i-register.vue';
 import MentionIcon from '@/icons/i-mention.vue';
+import UserCloseIcon from '@/icons/i-user-close.vue';
+import GhostIcon from '@/icons/i-ghost.vue';
 
 
 
@@ -116,6 +118,8 @@ app.component('i-upload-vid', UploadVideo);
 app.component('i-comment', CommentIcon);
 app.component('i-folder', EmptyFolder);
 app.component('i-mention', MentionIcon);
+app.component('i-user-close', UserCloseIcon);
+app.component('i-ghost', GhostIcon);
 
 // components
 app.component('circular-progress', CircularProgress);

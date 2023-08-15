@@ -41,6 +41,8 @@ export default defineComponent({
 
         newNotification: false,
         notification: {} as Notifications,
+        settingsPage: false,
+        arr: ['settings'],
 
 
 
@@ -52,6 +54,12 @@ export default defineComponent({
     return { toast}
   },
   created() {
+    if(this.arr.includes(`${this.$route.name as string ?? ''}`) || this.arr.includes(`${this.$route.matched[0].name as string ?? ''}`)) {
+        this.settingsPage = true
+      }
+      else {
+        this.settingsPage = false
+      }
   },
   mounted() {
     const element = this.$refs.mainDiv as HTMLDivElement
@@ -144,6 +152,13 @@ export default defineComponent({
       }
     },
     '$route': function() {
+
+      if(this.arr.includes(`${this.$route.name as string ?? ''}`) || this.arr.includes(`${this.$route.matched[0].name as string ?? ''}`)) {
+        this.settingsPage = true
+      }
+      else {
+        this.settingsPage = false
+      }
       this.$nextTick(() => {
         this.hideTopNav = false;
         const element = this.$refs.mainDiv as HTMLDivElement;
@@ -151,7 +166,9 @@ export default defineComponent({
         this.scrollPosition = this.scrollPos.get(this.$route.name);
         this.height = this.scrollHeight.get(this.$route.name)
         this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 10
+
       });
+
     },
     '$q.screen.lt.sm'() {
       this.$nextTick(() => {
@@ -193,7 +210,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div ref="mainDiv" :class="!isMobile() ? 'main' : 'fixed w-full h-viewport overflow-y-scroll'">
+  <!-- :class="!isMobile() ? 'main' : 'fixed w-full h-viewport overflow-y-scroll'" -->
+  <div ref="mainDiv" :class="{'main': !isMobile(), 'fixed w-full h-viewport overflow-y-scroll': isMobile(), 'settings_page': settingsPage}">
     <div v-if="!$q.screen.lt.sm" class="min-h-viewport sticky top-0 h-full w-full">
       <Sidebar/>
     </div>
@@ -215,7 +233,7 @@ export default defineComponent({
     </div>
 
     <aside class="sticky top-0" v-if="!$q.screen.lt.sm"> 
-      <div class="mx-5 py-2 sticky top-0">
+      <div class="mx-5 py-2 sticky top-0" v-if="!settingsPage">
           <SearchBar dense />
       </div>
     </aside>
@@ -227,51 +245,24 @@ export default defineComponent({
     <div ref="spillButton" class="fixed z-20 box-shadow right-1 bg-theme rounded-lg" :style="{bottom: `${bottomNavHeight}px`}" v-if="isMobile() && $route.name !== 'view-spill'">
       <q-btn size="16px" class="show btn-themed text-heading" round flat icon="add" @click="spill = true"/>
     </div>
-
-    <!-- <q-dialog class="min-h-sm " v-model="spill" persistent :maximized="$q.screen.lt.sm ? true : false">
-        <div class="bg-theme box-shadow w-full h-fit overflow-visible" >
-          <div class="p-2">
-            <Item dense :vert-icon-center="true">
-              <template #title>
-                <div class="text-2xl weight-900">Spill</div>
-              </template>
-              <template #icon>
-                <i-close size="2rem" class="pointer" @click="spill = false"/>
-              </template>
-            </Item>
-          </div>
-          <hr class="border"/>
-          <div class="">
-            <Spills :rows="4"/>
-          </div>
+    <q-dialog class="min-h-sm bg-blur-half w-full h-full" v-model="spill" position="top" persistent :maximized="true">
+      <div class="mt-12 bg-theme box-shadow w-full h-full min-h-fit max-w-sm overflow-visible rounded-sm" >
+        <div class="p-2">
+          <Item dense :vert-icon-center="true">
+            <template #title>
+              <div class="text-2xl weight-900">Spill</div>
+            </template>
+            <template #icon>
+              <i-close size="2rem" class="pointer" @click="spill = false"/>
+            </template>
+          </Item>
         </div>
-      </q-dialog> -->
-
-      <q-dialog class="min-h-sm bg-blur-half w-full h-full" v-model="spill" position="top" persistent :maximized="true">
-        <div class="mt-12 bg-theme box-shadow w-full h-full min-h-fit max-w-sm overflow-visible rounded-sm" >
-          <div class="p-2">
-            <Item dense :vert-icon-center="true">
-              <template #title>
-                <div class="text-2xl weight-900">Spill</div>
-              </template>
-              <template #icon>
-                <i-close size="2rem" class="pointer" @click="spill = false"/>
-              </template>
-            </Item>
-          </div>
-          <hr class="border"/>
-          <div class="">
-            <Spills :rows="4"/>
-          </div>
+        <hr class="border"/>
+        <div class="">
+          <Spills :rows="4"/>
         </div>
-      </q-dialog>
-
-      <q-dialog no-backdrop-dismiss seamless no-focus class="bg-transparent" v-model="newNotification" position="bottom">
-        
-      </q-dialog>
-
-      <!-- <notifications /> -->
-
+      </div>
+    </q-dialog>
       
       
   </div>
@@ -296,6 +287,10 @@ export default defineComponent({
   grid-template-columns: auto 600px minmax(auto, 400px);
   overflow: scroll;
   overflow-y: scroll;
+
+  &.settings_page {
+    grid-template-columns: minmax(auto, 375px) auto 100px;
+  }
 }
 
 
@@ -327,6 +322,10 @@ export default defineComponent({
 @media only screen and (min-width: 600px) {
   .main {
     grid-template-columns: auto 1fr 0px;
+
+    &.settings_page {
+      grid-template-columns: auto 1fr 0px;
+    }
   }
 
   .right-bar {
@@ -338,6 +337,10 @@ export default defineComponent({
 @media only screen and (min-width: 650px) {
   .main {
     grid-template-columns: minmax(auto, 375px) 600px 0px;
+
+    &.settings_page {
+      grid-template-columns: auto 1fr 0px;
+    }
   }
 
 } 
@@ -345,7 +348,13 @@ export default defineComponent({
 @media only screen and (min-width: 800px) {
   .main {
     grid-template-columns: auto 600px minmax(auto, 375px);
+
+    &.settings_page {
+      grid-template-columns: auto 1fr 50px;
+    }
   }
+
+  
 
 
   .right-bar {
@@ -357,6 +366,10 @@ export default defineComponent({
 @media only screen and (min-width: 1000px) {
   .main {
     grid-template-columns: auto 600px minmax(auto, 375px);
+
+    &.settings_page {
+      grid-template-columns: auto 1fr 50px;
+    }
   }
 
   .right-bar {
@@ -368,6 +381,10 @@ export default defineComponent({
 @media only screen and (min-width: 1100px) {
   .main {
     grid-template-columns: minmax(auto, 375px) 600px minmax(auto, 375px);
+
+    &.settings_page {
+      grid-template-columns: minmax(auto, 375px) 1fr 50px;
+    }
   }
 
   .right-bar {

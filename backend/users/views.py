@@ -37,7 +37,7 @@ from tokens.models import Tokens
 
 
 from users.models import User
-from .serializer import UserSerializer
+from .serializer import *
 from backend.decorators import refresh_cookies
 from backend.encryption import AESCipher
 
@@ -183,7 +183,6 @@ def verify_email(request):
     except Tokens.DoesNotExist as e:
         return JsonResponse({"error": True, "message": "token is invalid"})
     except Exception as e:
-        print('here',e)
         return JsonResponse({'"error': True, "message": "token is invalid"})
     
 @api_view(["POST"])
@@ -313,6 +312,48 @@ class UpdateProfile(APIView):
             return JsonResponse({"error": True}, status=404)
         
 
+class ChangePassword(APIView):
+    permission_classes = [IsAuthenticated,]
+    authentication_classes = [CustomAuthentication,]
+
+    def put(self, request):
+        try:
+            data = json.loads(request.body)
+            user = request.user
+            current_password = data['current_password']
+            new_password = data['new_password']
+            confirm_password = data['confirm_password']
+            if(not user.check_password(current_password)):
+                return JsonResponse({"error": True, "message": "Current password is incorrect."})
+            if(new_password != confirm_password):
+                return JsonResponse({"error": True, "message": "Password and confirm password must match."})
+            
+            user.set_password(new_password)
+            user.save()
+            return JsonResponse({"success": True, "message": "Your password has been changed."})
+        except Exception as e:
+            return JsonResponse({"error": True, "message": "An error occurred."}, status=500)
+        except:
+            return JsonResponse({"error": True}, status=404)
+        
+class UserInfo(APIView):
+    permission_classes = [IsAuthenticated,]
+    authentication_classes = [CustomAuthentication,]
+
+    def get(self, request):
+        try:
+            password = request.query_params['password']
+            user = User.objects.get(id=request.user.id)
+            if(not user.check_password(password)):
+                return JsonResponse({"error": True, "message": "Password is incorrect."})
+            user = UserInfoSerializer(user).data
+            return JsonResponse({"success": True, "user": user})
+        except Exception as e:
+            return JsonResponse({"error": True}, status=500)
+        except:
+            return JsonResponse({"error": True}, status=404)
+        
+
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated,]
     authentication_classes = (CustomAuthentication,)
@@ -329,11 +370,6 @@ class LogoutView(APIView):
             return response
         except:
             return JsonResponse({"error": True}, safe=False)
-
-    # def delete(self, request):
-    #     session_id = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
-    #     session = Session.objects.get(session_key=session_id)
-    #     session.delete()
 
 
 class AllLogins(APIView):

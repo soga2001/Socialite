@@ -20,7 +20,9 @@ urlpatterns = [
     path('delete_all/', views.delete_all, name="delete"),
     path('make_staff/', views.Staff.as_view(), name="make_staff"),
     path('update_profile/', views.UpdateProfile.as_view(), name="make_superuser"),
-    re_path(r'^verify_email/', views.verify_email, name="verify_email"),
-    re_path(r'send_reset_password_email/', views.email_forgot_password_link, name="forgot password link"),
-    re_path(r'reset_password/', views.reset_password, name="reset password"),
+    path('^verify_email/', views.verify_email, name="verify_email"),
+    path('send_reset_password_email/', views.email_forgot_password_link, name="forgot password link"),
+    path('reset_password/', views.reset_password, name="reset password"),
+    path('change_password/', views.ChangePassword.as_view(), name="change password"),
+    path('get_user_info/', views.UserInfo.as_view(), name="get user information")
 ]

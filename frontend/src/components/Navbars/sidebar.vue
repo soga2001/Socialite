@@ -161,7 +161,7 @@ export default defineComponent({
                   <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
                       <q-item class="hide">
                         <q-item-section avatar>
-                            <i-settings size="2rem" :fill="$route.fullPath == '/settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                            <i-settings size="2rem" :fill="$route.matched[0].name == 'settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                         </q-item-section>
 
                         <q-item-section class="bold">
@@ -169,7 +169,7 @@ export default defineComponent({
                         </q-item-section>
                       </q-item>
                       <div class="show p-2">
-                        <i-settings size="2rem" :fill="$route.fullPath == '/settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />                        
+                        <i-settings size="2rem" :fill="$route.matched[0].name == 'settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />                        
                       </div>
                   </RouterLink>
                   <div class="nav__link">
