@@ -21,11 +21,20 @@ export default defineComponent({
     <div class="w-full min-h-viewport">
         <header class="border-r h-full w-full">
             <div>
-                <span class="text-3xl weight-900 text-heading px-2 py-2">
-                    Your Account
-                </span>
+                <Item>
+                    <template #avatar v-if="$q.screen.lt.sm">
+                        <q-avatar>
+                            <q-btn round flat icon="arrow_back" @click="$router.go(-1)"/>
+                        </q-avatar>
+                    </template>
+                    <template #title>
+                        <span class="text-3xl weight-900 text-heading">
+                            Your Account
+                        </span>
+                    </template>
+                </Item>
             </div>
-            <nav class="w-full mt-5">
+            <nav class="w-full">
                 <RouterLink to="account-information" active-class="active">
                     <Item clickable class="child" :captionLineClamp="2">
                         <template #avatar>

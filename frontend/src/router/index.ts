@@ -6,9 +6,9 @@ import type {RouterScrollBehavior, RouteRecordRaw, Router, NavigationGuard} from
 // import Vue from 'vue'
 import { useCookies } from 'vue3-cookies'
 import { store } from '../store/store'
-import { getParentRouterPath } from '@/assets/parentPath';
 
 const { cookies }  = useCookies();
+
 
 const router: Router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -125,7 +125,6 @@ const router: Router = createRouter({
       path: '/settings',
       name: 'settings',
       component: () => import('@/views/settings/settings.vue'),
-      redirect: '/settings/account',
       meta: {
         auth: true
       },
@@ -138,21 +137,25 @@ const router: Router = createRouter({
         {
           path: 'account-information',
           name: 'account-information',
+          // alias: '/settings/account-information',
           component: () => import('@/views/settings/accounts/accountInfo.vue'),
         },
         {
           path: 'change-password',
           name: 'change-password',
+          // alias: '/settings/change-password',
           component: () => import('@/views/settings/accounts/passwordChange.vue'),
         },
         {
           path: 'deactive-account',
           name: 'deactive-account',
+          // alias: '/settings/deactive-account',
           component: () => import('@/views/settings/accounts/deactiveAccount.vue'),
         },
         {
           path: 'delete-account',
           name: 'delete-account',
+          // alias: '/settings/delete-account',
           component: () => import('@/views/settings/accounts/deleteAccount.vue'),
         }
       ]
@@ -166,11 +169,7 @@ const router: Router = createRouter({
   ]
 })
 
-router.beforeEach((to, from) => {
-  
-  // console.log(from)
-  // from.meta?.scrollPos && (from.meta.scrollPos.top = document.documentElement.scrollTop)
-})
+
 
 router.beforeResolve((to, next) => {
   if(to.name == 'search' && Object.keys(to.query).length == 0) {

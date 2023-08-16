@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { routerKey } from 'vue-router'
 export default defineComponent({
     name: 'settings',
     props:{
@@ -18,33 +19,46 @@ export default defineComponent({
         }
     },
     methods: {
-
+    },
+    beforeRouteEnter: (to, from) => {
+        if(window.innerWidth > 768 && to.name === 'settings') {
+            return {name: 'account'}
+        }
+    },
+    beforeMount() {
+        // const route =  this.$route.name ?? ''
+        // console.log(route)
+        // if (route !== 'settings' && this.$q.screen.lt.sm) {
+        //     this.hide = true
+        // }
+        // else if(route === 'settings') {
+        //     this.hide = false
+        // }
     },
     mounted() {
-
+        console.log(this.$route.matched[1] == undefined)
     },
     watch: {
         '$route': function() {
-            // const route =  this.$route.name ?? ''
-            // console.log(this.$q.screen.lt.sm)
-            // if (this.$route.matched[1].name && this.$q.screen.lt.sm) {
-            //     this.hide = true
-            // }
-            // else if(this.$route.matched[1] == undefined) {
-            //     this.hide = false
-            // }
+            const route =  this.$route.name ?? ''
+            if (route !== 'settings') {
+                this.hide = true
+            }
+            else {
+                this.hide = false
+            }
         },
     },
 })
 </script>
 
 <template>
-    <div :class="{'cols-2': !hide}" class="grid w-full min-h-viewport">
-        <header class="border-r h-full w-full" v-if="!hide">
+    <div :class="{'cols-2': !$q.screen.lt.sm}" class="grid w-full min-h-viewport">
+        <header class="border-r h-full w-full" v-if="($route.matched[0].name === 'settings' && ($route.matched[1] === undefined || !$q.screen.lt.sm))">
             <div>
                 <Item>
                     <template #title>
-                        <span class="text-3xl weight-900 text-heading px-2 py-2">
+                        <span class="text-3xl weight-900 text-heading">
                             Settings
                         </span>
                     </template>
@@ -103,7 +117,7 @@ export default defineComponent({
 .active {
     
     .child {
-        background-color: #f5f5f5;
+        background-color: var(--color-background-mute);
     }
 }
 </style>

@@ -80,10 +80,8 @@ export default defineComponent({
   components: { Main, Loading },
   watch: {
     '$store.state.authenticated': function() {
-      console.log(this.$route.fullPath)
-      console.log(this.$route.meta.hideForAuth)
       if(this.$store.state.authenticated && (this.$route.meta.hideForAuth && this.$route.meta.hideForAuth != undefined) ) {
-        this.$router.push('/home')
+        this.$router.push(this.$route.redirectedFrom?.fullPath || '/home')
       }
       else if(!this.$store.state.authenticated){
         this.$router.push('/login')

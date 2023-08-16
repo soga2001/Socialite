@@ -42,7 +42,6 @@ class CustomAuthentication(JWTAuthentication):
             access_token = AccessToken(raw_token)
             pass
         except TokenError as e:
-            print('here')
             refresh_token = request.COOKIES.get('refresh_token')
             if refresh_token is None:
                 return None

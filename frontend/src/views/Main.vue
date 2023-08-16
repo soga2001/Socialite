@@ -43,6 +43,8 @@ export default defineComponent({
         notification: {} as Notifications,
         settingsPage: false,
         arr: ['settings'],
+        settingsNested: ['account']
+        
 
 
 
@@ -60,6 +62,7 @@ export default defineComponent({
       else {
         this.settingsPage = false
       }
+      this.$store.commit('setDesktop', !this.$q.screen.lt.sm)
   },
   mounted() {
     const element = this.$refs.mainDiv as HTMLDivElement
@@ -151,28 +154,66 @@ export default defineComponent({
         this.websocketClose();
       }
     },
-    '$route': function() {
+    // $route: function() {
 
-      if(this.arr.includes(`${this.$route.name as string ?? ''}`) || this.arr.includes(`${this.$route.matched[0].name as string ?? ''}`)) {
-        this.settingsPage = true
+      // if(this.arr.includes(`${this.$route.name as string ?? ''}`) || this.arr.includes(`${this.$route.matched[0].name as string ?? ''}`)) {
+      //   this.settingsPage = true
+      // }
+      // else {
+      //   this.settingsPage = false
+      // }
+      // this.$nextTick(() => {
+      //   this.hideTopNav = false;
+      //   const element = this.$refs.mainDiv as HTMLDivElement;
+      //   element.scrollTop = this.scrollPos.get(this.$route.name);
+      //   this.scrollPosition = this.scrollPos.get(this.$route.name);
+      //   this.height = this.scrollHeight.get(this.$route.name)
+      //   this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 10
+
+      // });
+
+    // },
+    $route: {
+      immediate: true,
+      handler(newRoute) {
+        if(this.arr.includes(`${this.$route.name as string ?? ''}`) || this.arr.includes(`${this.$route.matched[0].name as string ?? ''}`)) {
+          this.settingsPage = true
+        }
+        else {
+          this.settingsPage = false
+        }
+        this.$nextTick(() => {
+          this.hideTopNav = false;
+          if(this.settingsPage) {
+            this.hideTopNav = true;
+          }
+          const element = this.$refs.mainDiv as HTMLDivElement;
+          element.scrollTop = this.scrollPos.get(this.$route.name);
+          this.scrollPosition = this.scrollPos.get(this.$route.name);
+          this.height = this.scrollHeight.get(this.$route.name)
+          this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 10
+
+        });
       }
-      else {
-        this.settingsPage = false
-      }
-      this.$nextTick(() => {
-        this.hideTopNav = false;
-        const element = this.$refs.mainDiv as HTMLDivElement;
-        element.scrollTop = this.scrollPos.get(this.$route.name);
-        this.scrollPosition = this.scrollPos.get(this.$route.name);
-        this.height = this.scrollHeight.get(this.$route.name)
-        this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 10
-
-      });
-
     },
     '$q.screen.lt.sm'() {
+      console.log(this.$route.matched[0].name === 'settings', this.settingsNested.includes(this.$route.name as string ?? ''))
+      if(this.$route.matched[0].name === 'settings' && this.settingsNested.includes(this.$route.name as string ?? '') && this.$q.screen.lt.sm) {
+
+        this.$router.replace({name: this.$route.name as string})
+      }
+      else if(this.$route.matched[0].name === 'settings' && !this.settingsNested.includes(this.$route.name as string ?? '') && !this.$q.screen.lt.sm) {
+        if(this.$route.name !== 'settings' && this.$route.matched[0].name === 'settings') {
+          this.$router.replace({name: this.$route.name as string})
+        }
+        else {
+          this.$router.replace({name: 'account'})
+        }
+      }
       this.$nextTick(() => {
         this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 10
+        this.$store.commit('setDesktop', !this.$q.screen.lt.sm)
+        
       })
     },
     lastScrollPos() {
@@ -185,8 +226,7 @@ export default defineComponent({
 
       if(topNav) {
         if(this.hideTopNav) {
-          topNav.style.transform = `translate3d(0px, 0px, 0px) translateY(${topNavPos}px)`;
-        
+          topNav.style.transform = `translate3d(0px, 0px, 0px) translateY(${topNavPos}px)`; 
         } 
         else {
           topNav.removeAttribute('style')

@@ -89,7 +89,7 @@ def user_by_id(request, user_id):
 def user_by_username(request, username, multiple = True):
     try:
         if(multiple == True):
-            users_data = User.objects.filter(username__icontains=username)
+            users_data = User.objects.filter(username__icontains=username, is_active=True)
             users_data = UserSerializer(users_data,context={'request': request}, many=True).data
         else:
             # users_data = User.objects.get(username=username)
@@ -348,6 +348,31 @@ class UserInfo(APIView):
                 return JsonResponse({"error": True, "message": "Password is incorrect."})
             user = UserInfoSerializer(user).data
             return JsonResponse({"success": True, "user": user})
+        except Exception as e:
+            return JsonResponse({"error": True}, status=500)
+        except:
+            return JsonResponse({"error": True}, status=404)
+        
+class DeleteUser(APIView):
+    permission_classes = [IsAuthenticated,]
+    authentication_classes = [CustomAuthentication,]
+
+    def delete(self, request):
+        try:
+            # password = request.query_params['password']
+            data = json.loads(request.body)
+            password = data['password']
+            user = User.objects.get(pk=request.user.id)
+            if(not user.check_password(password)):
+                return JsonResponse({"error": True, "message": "Password is incorrect."})
+            user.delete()
+            response = HttpResponse({"success": True}, content_type="application/json")
+            logout(request)
+            for cookies in request.COOKIES:
+                if cookies != "theme":
+                    response.delete_cookie(cookies)
+            request.session.flush()
+            return response
         except Exception as e:
             return JsonResponse({"error": True}, status=500)
         except:

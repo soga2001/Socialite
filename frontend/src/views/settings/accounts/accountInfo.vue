@@ -10,6 +10,10 @@ export default defineComponent({
             verified: false,
             password: '',
             user: {} as User,
+            input: '',
+            editName: false,
+            editEmail: false,
+            editUsername: false,
         };
     },
     methods: {
@@ -32,7 +36,6 @@ export default defineComponent({
                     })
                 }
             }).catch((err) => {
-                console.log(err)
             })
         }
     },
@@ -86,7 +89,7 @@ export default defineComponent({
                         </q-avatar>
                     </template>
                     <template #title>
-                        <span class="text-left text-xl text-heading weight-700">{{ user.first_name }} {{ user.last_name }}</span>
+                        <span v-if="editName" class="text-left text-xl text-heading weight-700">{{ user.first_name }} {{ user.last_name }}</span>
                     </template>
                     <template #icon>
                         <q-btn flat round name="edit">

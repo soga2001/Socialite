@@ -95,7 +95,7 @@ export default defineComponent({
         <div class="w-full flex flex-row justify-center">
             <form class="w-full flex flex-col gap-1" @submit.prevent="submit">
                 <div class="border-b p-2 flex flex-col gap-1">
-                    <q-input type="password" outlined v-model="currentPassword" label-slot clearable>
+                    <q-input color="teal" type="password" outlined v-model="currentPassword" label-slot clearable>
                         <template v-slot:label>
                             <div class="text-heading weight-500 text-xl">
                                 Current Password
