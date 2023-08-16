@@ -19,7 +19,7 @@ export default defineComponent({
 
 <template>
     <div class="w-full min-h-viewport">
-        <header class="border-r h-full w-full">
+        <header class="border-r h-full w-full bg-theme">
             <div>
                 <Item>
                     <template #avatar v-if="$q.screen.lt.sm">

@@ -38,7 +38,6 @@ export default defineComponent({
   methods: {
     switchTheme(e: any) {
       if(this.theme) {
-        // this.cookies.set('theme', 'dark')
         Cookies.set('theme', 'dark')
         document.documentElement.setAttribute('data-theme', 'dark')
       }
@@ -59,17 +58,9 @@ export default defineComponent({
         this.$store.commit('setDesktop', true)
       }
     },
-    async loadUser() {
-      await get_user_from_cookie()
-      setTimeout(() => {
-        this.$store.commit('setLoading', false)
-      }, 3000)
-      // this.loading = false
-    },
    
   },
   created() {
-    this.loadUser()
     this.theme = Cookies.get('theme') === 'dark'
     this.$store.commit('setTheme', this.theme)
     document.documentElement.setAttribute('data-theme', this.theme ? 'dark': 'light')

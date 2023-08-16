@@ -5,8 +5,9 @@ import { RouterLink, RouterView } from 'vue-router';
 import { http } from '@/assets/http';
 import {useStore} from '../store/store'
 import Input from '@/components/Input.vue';
+import type { User } from '@/assets/interfaces';
 // import { AES } from 'crypto-ts';
-import { get_user_from_cookie } from '@/assets/userFromCookie';
+// import { get_user_from_cookie } from '@/assets/userFromCookie';
 
 export default defineComponent({
     data() {
@@ -24,8 +25,6 @@ export default defineComponent({
     methods: {
         async login() {
             if (this.username.length === 0 || this.password.length === 0) {
-                // this.error = true;
-                // this.errMsg = "Please don't leave username or password blank!";
                 this.$notify({
                   title: 'Error!',
                   text: "Please don't leave username or password blank!",
@@ -40,7 +39,6 @@ export default defineComponent({
             }, {
             }).then(async (res) => {
                 if (res.data.error === true) {
-                    // this.error = true;
                     this.$notify({
                       title: 'Error!',
                       text: res.data.message,
@@ -49,15 +47,15 @@ export default defineComponent({
                     })
                 }
                 else {
-                    await get_user_from_cookie()
-                    this.$store.commit("authenticate", true);
                     this.$notify({
                       title: "Success!",
                       text: "Login Successful!",
                       type: 'success',
                       group: 'success',
                     })
-                    this.$router.push("/home");
+                    await this.$store.commit("setUser", res.data.user as User);
+                    await this.$router.push("/home");
+                    this.$store.commit("authenticate", true);
                 }
             }).catch((err) => {
                 console.log(err);

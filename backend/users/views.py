@@ -5,7 +5,7 @@ from backend.authenticate import *
 from django.conf import settings
 from django.core import serializers
 from django.db import DatabaseError, IntegrityError
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt, csrf_protect, requires_csrf_token
 # from django.contrib.auth.models import User
@@ -146,8 +146,9 @@ def user_login(request):
         login(request, user)
         token = RefreshToken.for_user(user)
         request.session.set_test_cookie()
-        
-        response = HttpResponse({"success": True}, content_type="application/json")
+
+
+        response = JsonResponse({"success": True, "user": UserSerializer(user).data}, status=200)
         # response.set_cookie("testing", "true", secure=True, httponly=True)
         response.set_cookie(
                     key = settings.SIMPLE_JWT['AUTH_COOKIE'], 
@@ -246,8 +247,6 @@ class UserFromCookie(APIView):
         try:
             # print(AESCipher().decrypt(encrypted))
             user = UserSerializer(request.user).data
-
-            # response = HttpResponse({"success": True, "user": user}, content_type="application/json")
             return JsonResponse({"success": True, "user": user})
         except:
             return JsonResponse({"success": False, "message": "User not found."})
@@ -353,27 +352,27 @@ class UserInfo(APIView):
         except:
             return JsonResponse({"error": True}, status=404)
         
-class DeleteUser(APIView):
+class DeleteAccount(APIView):
     permission_classes = [IsAuthenticated,]
     authentication_classes = [CustomAuthentication,]
 
     def delete(self, request):
         try:
-            # password = request.query_params['password']
-            data = json.loads(request.body)
-            password = data['password']
+            password = request.query_params['password']
             user = User.objects.get(pk=request.user.id)
             if(not user.check_password(password)):
-                return JsonResponse({"error": True, "message": "Password is incorrect."})
+                return JsonResponse({"error": True, "message": "Invalid Password"}, status=401)
             user.delete()
-            response = HttpResponse({"success": True}, content_type="application/json")
             logout(request)
+            response = JsonResponse({"success": True}, status=200)
             for cookies in request.COOKIES:
                 if cookies != "theme":
+                    print(cookies)
                     response.delete_cookie(cookies)
             request.session.flush()
             return response
         except Exception as e:
+            print(e)
             return JsonResponse({"error": True}, status=500)
         except:
             return JsonResponse({"error": True}, status=404)
@@ -386,15 +385,15 @@ class LogoutView(APIView):
     def post(self, request):
         try:
             
-            response = HttpResponse({"success": True}, content_type="application/json")
             logout(request)
+            response = JsonResponse({"success": True}, status=200)
             for cookies in request.COOKIES:
                 if cookies != "theme":
                     response.delete_cookie(cookies)
             request.session.flush()
             return response
         except:
-            return JsonResponse({"error": True}, safe=False)
+            return JsonResponse({"error": True})
 
 
 class AllLogins(APIView):
@@ -457,16 +456,6 @@ class Staff(APIView):
 
 
 
-# Delete Endpoints
-class Delete_User(APIView):
-    permission_classes= [CustomAuthentication,]
-
-    def delete(self, request):
-        try:
-            user = User.objects.get(id=request.user.id).delete()
-            return JsonResponse({"success": True}, safe=False)
-        except:
-            return JsonResponse({"error": True}, safe=False)
 
 
 

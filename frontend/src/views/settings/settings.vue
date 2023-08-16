@@ -54,7 +54,7 @@ export default defineComponent({
 
 <template>
     <div :class="{'cols-2': !$q.screen.lt.sm}" class="grid w-full min-h-viewport">
-        <header class="border-r h-full w-full" v-if="($route.matched[0].name === 'settings' && ($route.matched[1] === undefined || !$q.screen.lt.sm))">
+        <header class="border-r h-full w-full bg-theme" v-if="($route.matched[0].name === 'settings' && ($route.matched[1] === undefined || !$q.screen.lt.sm))">
             <div>
                 <Item>
                     <template #title>

@@ -11,7 +11,7 @@ from django.dispatch import receiver
 
 def rename_file(instance, filename):
     file, file_extension = os.path.splitext(filename)
-    path = 'media/'
+    path = 'media/posts/'
     format = str(instance.user_id) + '-' + str(uuid.uuid4()) + str(file_extension)
     return os.path.join(path, format)
 

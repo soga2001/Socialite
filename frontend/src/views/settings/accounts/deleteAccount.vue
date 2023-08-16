@@ -1,14 +1,55 @@
 <script lang="ts">
 // import Input from '@/components/Input.vue';
-import { defineComponent } from 'vue'
+import { http } from '@/assets/http';
+import { defineComponent, ref } from 'vue'
 export default defineComponent({
     name: 'deactive-account',
     data() {
         return {
             password: '',
-        };
+            toDelete: false,
+        }
     },
-    methods: {},
+    methods: {
+        openModal() {
+            this.toDelete = true
+        },
+        closeModal() {
+            this.toDelete = false
+        },
+        async deleteAccount() {
+            await http.delete('users/delete_account/', {
+                params: {
+                    password: this.password
+                }
+            }).then((res) => {
+                console.log(res)
+                if(res.status === 200) {
+                    this.$router.push({name: 'login'})
+                    this.$store.commit('authenticate', false)
+                    this.$store.commit('setDefaultUser')
+                }
+                else {
+                    this.$notify({
+                        title: 'Error!',
+                        text: res.data.message,
+                        type: 'error',
+                        group: 'error',
+                    })
+                }
+            }).catch((err) => {
+                if(err.response.status === 401) {
+                    this.$notify({
+                        title: 'Error!',
+                        text: err.response.data.message,
+                        type: 'error',
+                        group: 'error',
+                    })
+                }
+                
+            })
+        }
+    },
     mounted() {
     },
     watch: {},
@@ -66,12 +107,41 @@ export default defineComponent({
         </div>
         <hr/>
         <div class="w-full">
-            <q-btn class="w-full p-3" flat label-slot>
+            <q-btn class="w-full p-3" flat label-slot @click="openModal">
                 <span class="text-red text-capitalize weight-900 text-xl">
                     Delete
                 </span>
             </q-btn>
         </div>
+        <q-dialog v-model="toDelete" persistent>
+            <q-card class="min-w-68 w-full max-w-sm">
+            <q-card-section>
+                <Item>
+                    <template #title>
+                        <span class="text-heading weight-900">Confirm Password</span>
+                    </template>
+                    <template #icon>
+                        <q-btn flat round icon="close" v-close-popup />
+                    </template>
+                </Item>
+            </q-card-section>
+
+            <q-separator />
+            <q-card-section class="q-pt-5">
+                <input type="password" v-model="password" placeholder="Password" autofocus  class="p-2 w-full text-xl"/>
+            </q-card-section>
+
+            <q-card-actions align="right" class="text-primary">
+                <q-btn flat label="Cancel" class="bg-transparent" v-close-popup />
+                <!-- <q-btn flat @click="deleteAccount"> 
+                    <span class="text-capitalize text-heading bg-web-theme px-5 py-2 rounded">Delete</span>
+                </q-btn> -->
+                <button @click="deleteAccount" class="pointer text-capitalize text-heading bg-web-theme hover-darker px-5 py-2 rounded border-none"> 
+                    Delete
+                </button>
+            </q-card-actions>
+            </q-card>
+        </q-dialog>
     </div>
 </template>
 

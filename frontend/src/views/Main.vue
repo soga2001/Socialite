@@ -197,10 +197,9 @@ export default defineComponent({
       }
     },
     '$q.screen.lt.sm'() {
-      console.log(this.$route.matched[0].name === 'settings', this.settingsNested.includes(this.$route.name as string ?? ''))
       if(this.$route.matched[0].name === 'settings' && this.settingsNested.includes(this.$route.name as string ?? '') && this.$q.screen.lt.sm) {
-
         this.$router.replace({name: this.$route.name as string})
+        this.hideTopNav = true
       }
       else if(this.$route.matched[0].name === 'settings' && !this.settingsNested.includes(this.$route.name as string ?? '') && !this.$q.screen.lt.sm) {
         if(this.$route.name !== 'settings' && this.$route.matched[0].name === 'settings') {
@@ -209,6 +208,7 @@ export default defineComponent({
         else {
           this.$router.replace({name: 'account'})
         }
+        this.hideTopNav = true
       }
       this.$nextTick(() => {
         this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 10
