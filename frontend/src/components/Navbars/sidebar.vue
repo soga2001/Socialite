@@ -172,93 +172,93 @@ export default defineComponent({
                         <i-settings size="2rem" :fill="$route.matched[0].name == 'settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />                        
                       </div>
                   </RouterLink>
-                  <div class="nav__link">
-                      <q-btn no-caps dense rounded flat class=" p-0" v-if="$store.state.authenticated">
-                        <q-item class="hide">
-                          <q-item-section avatar>
-                              <q-icon size="1.5rem" :color="( $store.state.dark ? 'white' : 'black')" class="border-brighter-3 rounded" name="more_horiz" />
-                          </q-item-section>
+                  <div class="nav__link" v-if="$store.state.authenticated">
+                    <q-btn no-caps dense rounded flat class=" p-0" >
+                      <q-item class="hide">
+                        <q-item-section avatar>
+                            <q-icon size="1.5rem" :color="( $store.state.dark ? 'white' : 'black')" class="border-brighter-3 rounded" name="more_horiz" />
+                        </q-item-section>
 
-                          <q-item-section class="text-2xl">
-                              More
-                          </q-item-section>
-                        </q-item>
-                        <div class="show p-2">
-                          <q-icon size="2rem" :color="( $store.state.dark ? 'white' : 'black')" class="border-brighter-3 rounded" name="more_horiz" />                        
-                        </div>
+                        <q-item-section class="text-2xl">
+                            More
+                        </q-item-section>
+                      </q-item>
+                      <div class="show p-2">
+                        <q-icon size="2rem" :color="( $store.state.dark ? 'white' : 'black')" class="border-brighter-3 rounded" name="more_horiz" />                        
+                      </div>
 
 
-                        
-                        <q-menu cover square max-width="300px" class="w-full border rounded-sm" anchor="bottom left">
-                            <q-list class="bg-theme rounded-sm" dense>
-                              <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
-                                  <q-item-section avatar>
-                                    <q-avatar size="3.5rem">
-                                      <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
-                                    </q-avatar>
-                                  </q-item-section>
-                                  <q-item-section>
-                                  <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
-                                  </q-item-section>
-                              </q-item>
-                              <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
-                                  <q-item-section avatar>
-                                    <q-avatar size="3.5rem">
-                                      <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
-                                    </q-avatar>
-                                  </q-item-section>
-                                  <q-item-section>
-                                  <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
-                                  </q-item-section>
-                              </q-item>
-                              <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
-                                  <q-item-section avatar>
-                                    <q-avatar  size="3.5rem">
-                                      <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
-                                    </q-avatar>
-                                  </q-item-section>
-                                  <q-item-section>
-                                  <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
-                                  </q-item-section>
-                              </q-item>
-                              <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
-                                  <q-item-section avatar>
-                                    <q-avatar size="3.5rem">
-                                      <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
-                                    </q-avatar>
-                                  </q-item-section>
-                                  <q-item-section>
-                                  <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
-                                  </q-item-section>
-                              </q-item>
-                              <!-- <q-separator :color="$store.state.dark ? 'white' : 'black'" spaced inset /> -->
+                      
+                      <q-menu cover square max-width="300px" class="w-full border rounded-sm" anchor="bottom left">
+                          <q-list class="bg-theme rounded-sm" dense>
+                            <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
+                                <q-item-section avatar>
+                                  <q-avatar size="3.5rem">
+                                    <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
+                                  </q-avatar>
+                                </q-item-section>
+                                <q-item-section>
+                                <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
+                                </q-item-section>
+                            </q-item>
+                            <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
+                                <q-item-section avatar>
+                                  <q-avatar size="3.5rem">
+                                    <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
+                                  </q-avatar>
+                                </q-item-section>
+                                <q-item-section>
+                                <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
+                                </q-item-section>
+                            </q-item>
+                            <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
+                                <q-item-section avatar>
+                                  <q-avatar  size="3.5rem">
+                                    <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
+                                  </q-avatar>
+                                </q-item-section>
+                                <q-item-section>
+                                <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
+                                </q-item-section>
+                            </q-item>
+                            <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
+                                <q-item-section avatar>
+                                  <q-avatar size="3.5rem">
+                                    <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
+                                  </q-avatar>
+                                </q-item-section>
+                                <q-item-section>
+                                <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
+                                </q-item-section>
+                            </q-item>
+                            <!-- <q-separator :color="$store.state.dark ? 'white' : 'black'" spaced inset /> -->
 
-                              <q-separator :dark="$store.state.dark" spaced inset />
+                            <q-separator :dark="$store.state.dark" spaced inset />
 
-                              <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
-                                  <q-item-section avatar>
-                                    <q-avatar size="3.5rem">
-                                      <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
-                                    </q-avatar>
-                                  </q-item-section>
-                                  <q-item-section>
-                                  <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
-                                  </q-item-section>
-                              </q-item>
-                              <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
-                                  <q-item-section avatar>
-                                    <q-avatar size="3.5rem">
-                                      <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
-                                    </q-avatar>
-                                  </q-item-section>
-                                  <q-item-section>
-                                  <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
-                                  </q-item-section>
-                              </q-item>
-                            </q-list>
-                        </q-menu>
-                      </q-btn>
-                    </div>
+                            <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
+                                <q-item-section avatar>
+                                  <q-avatar size="3.5rem">
+                                    <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
+                                  </q-avatar>
+                                </q-item-section>
+                                <q-item-section>
+                                <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
+                                </q-item-section>
+                            </q-item>
+                            <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
+                                <q-item-section avatar>
+                                  <q-avatar size="3.5rem">
+                                    <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
+                                  </q-avatar>
+                                </q-item-section>
+                                <q-item-section>
+                                <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
+                                </q-item-section>
+                            </q-item>
+                          </q-list>
+                      </q-menu>
+                    </q-btn>
+                  </div>
 
 
                   

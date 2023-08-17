@@ -64,7 +64,6 @@ INSTALLED_APPS = [
     'comments.apps.CommentsConfig',
     'likes.apps.LikesConfig',
     'postviews.apps.PostviewsConfig',
-    'notification.apps.NotificationConfig',
     'tokens.apps.TokensConfig',
     'django.contrib.postgres',
 ]
@@ -131,22 +130,34 @@ ASGI_APPLICATION = "backend.asgi.application"
 # CHANNELS_WS_HOST = "localhost"  # Proxy server host
 # CHANNELS_WS_PORT = 8000
 
+DATABASE_ROUTERS = ["backend.routers.CustomRouter"]
 
 DATABASES = {
 
-    'default': {
+    # 'default': {
 
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-        'NAME': env('DATABASE_NAME'),
+    #     'NAME': env('DATABASE_NAME'),
 
-        'USER': env('DATABASE_USERNAME'),
+    #     'USER': env('DATABASE_USERNAME'),
 
-        'PASSWORD': env('DATABASE_PASSWORD'),
+    #     'PASSWORD': env('DATABASE_PASSWORD'),
 
-        'HOST': 'localhost',
+    #     'HOST': 'localhost',
 
+    # },
+
+    'default' : {                                   
+        'ENGINE' : 'django.db.backends.postgresql',
+        'NAME' : 'postgres',
+        'HOST' : env('SUPABASE_HOST'),
+        'PASSWORD': env('SUPABASE_PW'),
+        'PORT': 5432,
+        'USER': 'postgres',
+        'CERT' : 'prod-ca-2021.crt',             # download this from database/settings and put in your main app folder
     },
+
     'channels_postgres': {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
 		'NAME': env('DATABASE_NAME'),

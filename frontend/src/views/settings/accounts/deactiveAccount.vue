@@ -34,7 +34,7 @@ export default defineComponent({
                 <template #avatar>
                     <q-avatar>
                         <q-img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
-                        <i-profile v-else />
+                        <i-profile size="3rem" v-else />
                     </q-avatar>
                 </template>
                 <template #title>

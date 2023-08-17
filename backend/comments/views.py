@@ -2,7 +2,6 @@
 import re
 import json
 from backend.authenticate import IsAuthenticated, CustomAuthentication
-from notification.models import Notification
 from .models import Comment
 from .serializer import CommentSerializer
 from posts.models import Post
@@ -70,16 +69,6 @@ class Comments(APIView):
             
             link = "{}/spill/{}".format(user.username, id)
             
-            for u in userlist:
-                if(u.username != user.username):
-                    notif = Notification(
-                        actor=user,
-                        recipient=u,
-                        verb='mention',
-                        description='mentioned you.',
-                        link=link
-                    )
-                    notif.save()
             return JsonResponse({'status': True, 'message': 'Comment added successfully'})
         except Exception as e:
             return JsonResponse({'status': False, 'message': 'Error adding comment'})

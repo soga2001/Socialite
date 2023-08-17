@@ -41,6 +41,8 @@ class User(AbstractUser):
     banner = models.FileField(upload_to=rename_banner, blank=True, null=True, editable=True)
     email_verified = models.BooleanField(blank=False, null=False, default=False, editable=True)
     emailed_user = models.BooleanField(blank=False, null=False, default=False, editable=True)
+    private = models.BooleanField(blank=False, null=False, default=False, editable=True)
+    verified = models.BooleanField(blank=False, null=False, default=False, editable=True)
 
     groups = models.ManyToManyField(
         'auth.Group', 

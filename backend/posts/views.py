@@ -7,8 +7,8 @@ from rest_framework.views import APIView
 # From Django
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Count
-from notification.serializer import NotificationSerializer
-from notification.models import Notification
+from following.models import UserFollowing
+from django.db.models import Q
 import time
 
 from notifications.signals import notify
@@ -74,21 +74,6 @@ class Post_Content(APIView):
             post.save()
             link = "{}/spill/{}".format(user.username, post.id)
 
-            for u in user_list:
-                if(u.username != user.username):
-                    notif = Notification(
-                        actor=user,
-                        recipient=u,
-                        verb='mention',
-                        description='mentioned you on a spill',
-                        link=link
-                    )
-                    notif.save()
-            # notifications = notify.send(user, recipient=user_list, verb='mention', description='{} {} mentioned you on their post.'.format(user.first_name, user.last_name), link=link, save_fields=['link'])
-            # for notification in notifications[0][1]:
-            #     notification.link = link
-            #     notification.save()
-
             group_name = f'user_{post.user.username}'
             async_to_sync(channel_layer.group_send)(group_name, {
                 "type": "user_update",
@@ -119,7 +104,7 @@ class Post_Content(APIView):
 def view_posts(request, timestamp, page):
     offset = int(page) * 5
     try:
-        post = Post.objects.filter(date_posted__lt=timestamp)[offset:offset+5]
+        post = Post.objects.filter(date_posted__lt=timestamp, user__private=False)[offset:offset+5]
     except Post.DoesNotExist:
         return JsonResponse({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
     
@@ -147,16 +132,16 @@ def post_by_followed_users(request, timestamp, page):
 
 @api_view(["GET"])
 def explore(request, timestamp, page):
-    
-    time.sleep(2)
-
     offset = int(page) * 10
     try:
-        post = Post.objects.filter(date_posted__lt=timestamp)[offset:offset+10]
-        print(len(post))
-        # post = Post.objects.all()[offset:offset+10]
+        user = request.user
+        query = Q(date_posted__lt=timestamp) & (Q(user__private=False) | Q(user=user) | Q(user__followers__following_user_id=user.id))
+        post = Post.objects.filter(query)[offset:offset+10]
     except Post.DoesNotExist:
         return JsonResponse({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        print("Error in Explore",str(e))
+        return JsonResponse({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
     
 
     serializer = PostSerializer(post, context={'request': request}, many=True)
@@ -167,17 +152,21 @@ def explore(request, timestamp, page):
 @api_view(["GET"])
 def user_posted(request, timestamp, page, username):
     offset = int(page) * 10
+    try:
+        user = User.objects.get(username=username)
+        if(user.private):
+            try:
+                user.followers.get(following_user_id=request.user.id).exists()
+            except UserFollowing.DoesNotExist as e:
+                return JsonResponse({"error": True, "message": "User is private. Please follow them to see their posts."}, status=status.HTTP_404_NOT_FOUND)
+        pass
+    except User.DoesNotExist:
+        return JsonResponse({"error": True, 'message':"User doesn't exist."})
+    except Post.DoesNotExist:
+        return JsonResponse({"error": True, "message": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
     posts = PostSerializer(Post.objects.filter(user__username=username,date_posted__lt=timestamp)[offset:offset+10], context={'request': request}, many=True)
     return JsonResponse({"posts": list(posts.data)}, safe=False)
 
-
-@api_view(["GET"])
-def view_post_by_id(request, post_id):
-    try:
-        post = PostSerializer(Post.objects.get(pk=post_id), context={'request': request})
-        return JsonResponse({"post": post.data})
-    except:
-        return JsonResponse({"error": True, "message": "Post not found."})
 
 
 @api_view(["DELETE"])
@@ -195,11 +184,21 @@ def total_user_posted(request, user_id):
 @api_view(["GET"])
 def get_post_by_id(request, post_id):
     try:
+        user = request.user
+        query = (Q(user__private=False) | Q(user=user) | Q(user__followers__following_user_id=user.id))
         spill = Post.objects.get(pk=post_id)
+        if(spill.user.private and spill.user != request.user):
+            try:
+                query = (Q(user__private=False) | Q(user=user) | Q(following_user_id=user.id))
+                spill.user.followers.get(following_user_id=request.user.id)
+            except UserFollowing.DoesNotExist as e:
+                return JsonResponse({"error": True, "message": "Post not found."}, status=404)
         return JsonResponse({"spill": PostSerializer(spill, context={'request': request}).data}, status=200)
+    except Post.DoesNotExist:
+        return JsonResponse({"error": True, "message": "Post not found."}, status=404)
     except DatabaseError as e:
         return JsonResponse({"error": True}, status=status.HTTP_404_NOT_FOUND)
-    except:
+    except Exception as e:
         return JsonResponse({"error": True}, safe=False)
 
 

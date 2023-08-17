@@ -364,7 +364,7 @@ class DeleteAccount(APIView):
                 return JsonResponse({"error": True, "message": "Invalid Password"}, status=401)
             user.delete()
             logout(request)
-            response = JsonResponse({"success": True}, status=200)
+            response = JsonResponse({"success": True, "message": "Account deleted."}, status=200)
             for cookies in request.COOKIES:
                 if cookies != "theme":
                     print(cookies)

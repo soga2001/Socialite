@@ -12,7 +12,6 @@ from rest_framework.views import APIView
 from .serializer import UserFollowingSerializer
 from backend.authenticate import *
 from notifications.signals import notify
-from notification.models import Notification
 
 custom = CustomAuthentication()
 
@@ -41,16 +40,6 @@ class Follow_User(APIView):
             follow.save()
 
             link=f'{request.user.username}'
-
-
-            notif = Notification(
-                actor=request.user,
-                recipient=followed_user,
-                verb='follow',
-                description='Followed you.',
-                link=link
-            )
-            notif.save()
             
             return JsonResponse({"success": True, "message": "User followed"}, safe=False)
         except IntegrityError as e:

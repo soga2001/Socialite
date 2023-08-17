@@ -35,11 +35,13 @@ export default defineComponent({
             delayEnter: ref<number | null>(),
             delayExit: ref<number | null>(),
             toolTip_date: '',
+
+            error: false,
+            errMsg: '',
         };
     },
     created() {
         this.getSpill();
-        this.getComments();
     },
     methods: {
         async getSpill() {
@@ -50,9 +52,12 @@ export default defineComponent({
                 this.date_posted = convertTime(this.spill.date_posted, 'short')
                 this.toolTip_date = convertTime(this.spill.date_posted, 'absolute')
                 this.total_likes = this.spill.total_likes;
-                this.liked = this.spill.user_has_liked
-                // this.checkLiked();
+                this.liked = this.spill.user_has_liked;
+                this.getComments();
             }).catch((err) => {
+                console.log(err);
+                this.error = true;
+                this.errMsg = err.response.data.message;
             });
             this.loading_post = false;
         },
@@ -219,7 +224,7 @@ export default defineComponent({
                     </template>
                 </Item>
             </header>
-            <div v-if="!loading_post" class="">
+            <div v-if="!loading_post && Object.keys(spill).length !== 0" class="">
                 <div>
                     <Item align-items="start" avatar-size="3.5rem">
                         <template #avatar>
@@ -434,8 +439,11 @@ export default defineComponent({
                     </TransitionGroup>
                 </div>
             </div>
-            <div v-else="loading_post" class="">
+            <div v-if="loading_post" class="">
                 <Loading/>
+            </div>
+            <div v-if="error" class="text-center h-full w-full flex justify-center items-center">
+                <span class="text-2xl text-heading weight-900">{{ errMsg }}</span>
             </div>
         </div>
     </div>
