@@ -34,18 +34,13 @@ from replace import *
 channel_layer = get_channel_layer()
 custom = CustomAuthentication()
 
-def replace(val, user_list: list):
-    u = re.sub(r'@', '', val.group())
+
+def user_is_following(following_user, followed_user):
     try:
-        user = User.objects.get(username=u)
-        if user:
-            result = '<RouterLink :to="{name: `user-profile`, params: {username: \'' + u + '\'}}" :exact="true">@' + u + '</RouterLink>'
-            user_list.append(user)
-            return result
-        else:
-            return val
-    except User.DoesNotExist:
-        return r'{0}'.format(val.group())
+        UserFollowing.objects.get(following_user=following_user, followed_user=followed_user)
+        return True
+    except UserFollowing.DoesNotExist:
+        return False
 
 
 class Post_Content(APIView):
@@ -73,6 +68,13 @@ class Post_Content(APIView):
             )
             post.save()
             link = "{}/spill/{}".format(user.username, post.id)
+
+            # followers = list(user.followers.all())
+
+            # notify.send(actor=user, recipient=followers, verb='posted a new spill', target=post, description=link)
+
+            if(user_list): 
+                notify.send(actor=user, recipient=user_list, verb='mentioned you', target=post, description=link)
 
             group_name = f'user_{post.user.username}'
             async_to_sync(channel_layer.group_send)(group_name, {
@@ -135,7 +137,7 @@ def explore(request, timestamp, page):
     offset = int(page) * 10
     try:
         user = request.user
-        query = Q(date_posted__lt=timestamp) & (Q(user__private=False) | Q(user=user) | Q(user__followers__following_user_id=user.id))
+        query = (Q(date_posted__lt=timestamp) & (Q(user__private=False)) | Q(user=user) | Q(user__followers__following_user_id=user.id))
         post = Post.objects.filter(query)[offset:offset+10]
     except Post.DoesNotExist:
         return JsonResponse({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)

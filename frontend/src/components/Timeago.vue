@@ -7,6 +7,7 @@ import formatRelative from 'date-fns/formatRelative';
 import addDays from 'date-fns/addDays'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 import { addHours, addMilliseconds, addMinutes, differenceInHours, differenceInMilliseconds, differenceInMinutes } from 'date-fns';
+import convertTime from '@/assets/convertTime';
 // import { format, formatDistance, formatRelative, subDays } from 'date-fns'
 
 
@@ -24,35 +25,21 @@ export default defineComponent({
         class: {
             type: String,
             default: 'text-xs',
+        },
+        html: {
+            type: Boolean,
+            default: false,
         }
     },
     data() {
         return {
             // timeago: '',
-            date_posted: this.timeago(),
+            date_posted: this.timeAgo(),
         };
     },
     methods: {
-        timeago() {
-            var timestamp = new Date();
-            const posted_date = new Date(this.date); 
-            const days = differenceInCalendarDays(posted_date, timestamp);
-            const miliseconds = differenceInMilliseconds(posted_date, timestamp);
-
-            if(this.date_type == 'absolute') {
-                if(Math.abs(days) < 7) {
-                    const date = new Date();
-                    return formatRelative(addMilliseconds(date, miliseconds), date);
-                    // return formatDistance(posted_date, timestamp, { addSuffix: true, locale: navigator.language });
-                }
-                const date = format(posted_date, 'MMM dd, yyyy - hh:mm a');
-                const splt = date.split(' - ');
-                return splt[0] + ' at ' + splt[1];
-            }
-            else {
-                const date = format(posted_date, 'MMM dd, yyyy');
-                return date;
-            }
+        timeAgo() {
+            return convertTime(this.date, this.date_type)
         }
     },
     created() {
@@ -65,7 +52,8 @@ export default defineComponent({
 </script>
 
 <template>
-    <p role="span" :class="class" :style="'font-size: ' + size">{{ date_posted }}</p>
+    <p v-if="!html" role="span" :class="class">{{ date_posted }}</p>
+    <span v-else v-html="date_posted"></span>
 </template>
 
 

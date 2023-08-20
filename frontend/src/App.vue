@@ -7,6 +7,8 @@ import Loading from './components/Loading.vue';
 import { http } from './assets/http';
 import { store } from './store/store';
 import { da } from 'date-fns/locale';
+import TimeagoVue from './components/Timeago.vue';
+import convertTime from './assets/convertTime';
 
 
 export default defineComponent({
@@ -68,7 +70,7 @@ export default defineComponent({
   mounted() {
     window.onresize = this.checkOS
   },
-  components: { Main, Loading },
+  components: { Main, Loading, TimeagoVue },
   watch: {
     '$store.state.authenticated': function() {
       if(this.$store.state.authenticated && (this.$route.meta.hideForAuth && this.$route.meta.hideForAuth != undefined) ) {
@@ -138,41 +140,57 @@ export default defineComponent({
       </div>
     </template>
   </notifications>
-  <notifications :max="2" group="mention" class=" w-full max-w-xs" position="bottom center">
+  <notifications :max="2" group="notify" class=" w-full max-w-xs" position="bottom center">
     <template #body="props">
       <div @click="props.close" class="my-notification bg-theme box-shadow rounded-sm m-2 text-left">
-        <Item clickable :to="`/${props.item.data.notification.link}`" >
+        <Item clickable :to="`/${props.item.data.notification.data.url}`" >
           <template #avatar>
-              <img v-if="props.item.data.notification.actor_avatar" :src="props.item.data.notification.actor_avatar" alt="profile pic" />
+              <img v-if="props.item.data.notification.actor.avatar" :src="props.item.data.notification.actor.avatar" alt="profile pic" />
               <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="profile pic plage holder" class="rounded-full" />
           </template>
           <template #title>
-              <span class="text-xl text-heading weight-900">
-                  <!-- {{props.u.first_name + ' ' + props.u.last_name}} -->
-                  @{{ props.item.data.notification.actor }}
+                <Item dense align-items="start">
+                    <template #title>
+                        <div class="h-full min-w-full flex gap-1 items-center title">
+                            <div class="ellipsis" >
+                                  <span class="ellipsis text-lg text-heading weight-900" > 
+                                      {{ props.item.data.notification.actor.first_name}}
+                                      {{ props.item.data.notification.actor.last_name }}
+                                  </span>
+                            </div>
+
+                            <span class="text-lighter weight-900">&#183;</span>
+
+                            <div>
+                                <div class="ellipsis">
+                                  <span class="text-lg text-lighter weight-500">@{{ props.item.data.notification.actor.username }}</span>
+                                </div>
+                            </div>
+
+                            <span class="text-lighter weight-900">&#183;</span>
+
+                            <div class="ellipsis ">
+                                <TimeagoVue class="text-lg text-lighter weight-500" :date="props.item.data.notification.timestamp" date_type="short" />
+                            </div>
+                            
+                        </div>
+
+                    </template>
+                </Item>
+
+            </template>
+          <template #subtitle>
+              <span class="text-sm text-heading weight-700">
+                  {{ props.item.data.notification.description}}
               </span>
           </template>
-          <template #caption>{{ props.item.data.notification.description}}</template>
+          <template #caption>{{ props.item.data.notification.data.text}}</template>
         </Item>
       </div>
-    </template>
-  </notifications>
-  <notifications :max="1" group="follow"  class=" w-full max-w-xs" position="bottom center">
-    <template #body="props">
-      <div @click="props.close" class="my-notification bg-theme box-shadow rounded-sm m-2 text-left">
-        <Item clickable :to="`/${props.item.data.notification.link}`" >
-          <template #avatar>
-              <img v-if="props.item.data.notification.actor_avatar" :src="props.item.data.notification.actor_avatar" alt="profile pic" />
-              <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="profile pic plage holder" class="rounded-full" />
-          </template>
-          <template #title>
-              <span class="text-xl text-heading weight-900">
-                  @{{ props.item.data.notification.actor }}
-              </span>
-          </template>
-          <template #caption>{{ props.item.data.notification.description}}</template>
-        </Item>
-      </div>
+      <!-- <div class="bg-theme text-heading">
+        {{ props.item.data.notification.actor.first_name }}
+      </div> -->
+    
     </template>
   </notifications>
 </template>

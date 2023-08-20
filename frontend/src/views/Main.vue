@@ -106,6 +106,9 @@ export default defineComponent({
     },
     async websocketOpen() {
       this.websocket = new WebSocket(`wss://localhost:8000/ws/user_notif/${this.$store.state.user.id}/`)
+      this.websocket.onopen = () => {
+        console.log('connected')
+      }
       this.websocketMessage()
 
     },
@@ -121,18 +124,17 @@ export default defineComponent({
       }
       this.websocket.onmessage = (e) => {
         const data = JSON.parse(e.data)
+        console.log(data)
         if(data.type === 'posted') {
           const message = JSON.parse(data.message) as Notifications
-          console.log(message)
 
           this.$notify({
-            title: "Important message",
-            text: "Hello user!",
-            group: message.verb,
-            type: 'none',
+            group: 'notify',
+            duration: 5000,
             data: {
-              notification: message
-            }
+              notification: message,
+            },
+            closeOnClick: true,
           });
           
         }

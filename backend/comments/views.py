@@ -21,7 +21,7 @@ channel_layer = get_channel_layer()
 from replace import *
 
 # Create your views here.
-
+from notifications.signals import notify
 
 def replace(val):
     u = re.sub(r'@', '', val.group())
@@ -54,9 +54,11 @@ class Comments(APIView):
             comment = re.sub(regex, lambda val: replaceMention(val, userlist), comment)
             comment = replaceLink(comment)
 
+            post = Post.objects.get(pk=id)
+
             comment = Comment(
                 user = user,
-                post = Post.objects.get(pk=id),
+                post = post,
                 comment = comment
             )
             comment.save()
@@ -65,9 +67,16 @@ class Comments(APIView):
             async_to_sync(channel_layer.group_send)(group_name, {
                 "type": "comment.send",
                 "message": json.dumps(CommentSerializer(comment, context={'request': request}).data)
-                })
+            })
             
             link = "{}/spill/{}".format(user.username, id)
+            if(user.username in userlist):
+                userlist.remove(user.username)
+            if(userlist):
+                notify.send(user, recipient=userlist, verb='mention', action_object=comment, target=post, description="mentioned you on a post", url=link, text=comment.comment)
+
+            if(post.user != request.user):
+                notify.send(user, recipient=post.user, verb='commented', action_object=comment, target=post, description="commented on your post", url=link, text=comment.comment)
             
             return JsonResponse({'status': True, 'message': 'Comment added successfully'})
         except Exception as e:

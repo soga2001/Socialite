@@ -129,7 +129,7 @@ export default defineComponent({
         <slot name="title" v-if="$slots.title" />
       </div>
       <div class="subTitle">
-        <slot name="subTitle" v-if="$slots.default" />
+        <slot name="subTitle" v-if="$slots.subTitle" />
       </div>
       <div class="caption" :style="captionStyle">
         <slot name="caption" v-if="$slots.caption" />

@@ -11,7 +11,7 @@ from .models import UserFollowing
 from rest_framework.views import APIView
 from .serializer import UserFollowingSerializer
 from backend.authenticate import *
-from notifications.signals import notify
+# from notifications.signals import notify
 
 custom = CustomAuthentication()
 

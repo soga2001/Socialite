@@ -58,14 +58,15 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     "rest_framework_simplejwt.token_blacklist",
     'django_extensions',
+    'django.contrib.postgres',
     'users',
+    'notification.apps.NotificationConfig',
     'posts.apps.PostsConfig',
     'following.apps.FollowingConfig',
     'comments.apps.CommentsConfig',
     'likes.apps.LikesConfig',
     'postviews.apps.PostviewsConfig',
     'tokens.apps.TokensConfig',
-    'django.contrib.postgres',
 ]
 
 MIDDLEWARE = [
@@ -103,6 +104,7 @@ CORS_ALLOW_METHODS = [
 ]
 
 NOTIFICATIONS_NOTIFICATION_MODEL = 'notification.Notification'
+DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
 
 
 ROOT_URLCONF = 'backend.urls'

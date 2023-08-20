@@ -54,11 +54,15 @@ export interface Comment{
     is_owner: boolean,
 }
 
+export interface NotificationDataAsset {
+    url: string,
+    text: string,
+}
+
 export interface Notifications {
     id: number;
     level: string;
-    actor: string,
-    actor_avatar: string,
+    actor: User,
     unread: boolean;
     actor_object_id: string;
     verb: string;
@@ -69,11 +73,11 @@ export interface Notifications {
     public: boolean;
     deleted: boolean;
     emailed: boolean;
-    data: string;
     link: string;
     recipient: number;
     actor_content_type: number;
     target_content_type: string;
     action_object_content_type: string;
-    created: string
-;}
+    created: string;
+    data: NotificationDataAsset;
+}

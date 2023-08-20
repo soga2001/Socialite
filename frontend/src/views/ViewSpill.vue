@@ -22,7 +22,7 @@ export default defineComponent({
             date: new Date(),
             date_posted: '',
             page: 0,
-            // websocket: new WebSocket(`wss://localhost:8000/ws/spill/${this.$route.params.post_id}/`),
+            websocket: new WebSocket(`wss://localhost:8000/ws/spill/${this.$route.params.post_id}/`),
             dropdown: false,
             persistent: false,
             report: false,
@@ -117,35 +117,35 @@ export default defineComponent({
                 console.log(err)
             })
         },
-        // async websocketOpen() {
-        //     this.websocket = new WebSocket(`wss://localhost:8000/ws/spill/${this.$route.params.post_id}/`)
-        //     this.websocket.onopen = (e) => {
-        //         console.log('Websocket opened')
-        //     }
-        // },
-        // async websocketMessage() {
-        //     this.websocket.onmessage = async (e) => {
-        //         const data = JSON.parse(e.data)
-        //         if(data.type == "comment") {
-        //             const newComment = JSON.parse(data.message) as Comment
+        async websocketOpen() {
+            this.websocket = new WebSocket(`wss://localhost:8000/ws/spill/${this.$route.params.post_id}/`)
+            this.websocket.onopen = (e) => {
+                console.log('Websocket opened')
+            }
+        },
+        async websocketMessage() {
+            this.websocket.onmessage = async (e) => {
+                const data = JSON.parse(e.data)
+                if(data.type == "comment") {
+                    const newComment = JSON.parse(data.message) as Comment
 
-        //             if(this.comments.length !== 0) {
-        //                 this.comments = [newComment, ...this.comments];
-        //                 this.total_comments = this.comments.length
-        //             }
-        //             else {
-        //                 this.comments.push(newComment)
-        //             }
-        //         }
-        //     }
-        // },
-        // async websocketClose() {
-        //     this.websocket.close()
+                    if(this.comments.length !== 0) {
+                        this.comments = [newComment, ...this.comments];
+                        this.total_comments = this.comments.length
+                    }
+                    else {
+                        this.comments.push(newComment)
+                    }
+                }
+            }
+        },
+        async websocketClose() {
+            this.websocket.close()
 
-        //     this.websocket.onclose = (e) => {
-        //         console.log('Websocket closed')
-        //     }
-        // },
+            this.websocket.onclose = (e) => {
+                console.log('Websocket closed')
+            }
+        },
         deleteComment(index: number) {
             this.comments.splice(index, 1)
         },
@@ -186,19 +186,19 @@ export default defineComponent({
         },
     },
     mounted() {
-        // this.websocketOpen()
-        // this.websocketMessage()
+        this.websocketOpen()
+        this.websocketMessage()
     },
     unmounted() {
-        // this.websocketClose()
+        this.websocketClose()
     },
-    // activated() {
-    //     this.websocketOpen();
-    //     this.websocketMessage()
-    // },
-    // deactivated() {
-    //     this.websocketClose();
-    // },
+    activated() {
+        this.websocketOpen();
+        this.websocketMessage()
+    },
+    deactivated() {
+        this.websocketClose();
+    },
     components: { },
     watch: {
        '$route'() {

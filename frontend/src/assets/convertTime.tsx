@@ -32,12 +32,12 @@ function convertTime(date: string, date_type: string = 'ago') {
             const minutesDifference = differenceInMinutes(timestamp, posted_date);
 
             // If the difference in hours is greater than 0, return the difference in hours
-            if(hoursDifference > 0) {
+            if(hoursDifference > 0 && hoursDifference !== 0) {
                 return hoursDifference + 'h';
             }
             // Else if the difference in minutes is less or equal to 59 (less then an
             // hour), return the difference in minutes
-            else if(minutesDifference <= 59) {
+            else if(minutesDifference <= 59 && minutesDifference !== 0) {
                 return minutesDifference + 'm';
             }
             // Else if the difference in seconds is less or equal to 59 (less then a

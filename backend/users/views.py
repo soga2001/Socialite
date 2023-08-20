@@ -13,7 +13,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.db.models import F
 
-from django.contrib.postgres.search import TrigramSimilarity, TrigramDistance, TrigramWordSimilarity
+# from django.contrib.postgres.search import TrigramSimilarity, TrigramDistance, TrigramWordSimilarity
 from django.db.models import Q
 
 

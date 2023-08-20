@@ -132,6 +132,9 @@ export default defineComponent({
             <Input @update:val="username = $event" input_label="Username*" id="username" class="username" input_type="text" required/>
             <Input @update:val="password = $event" input_label="Password*" id="password" class="password" input_type="password" required/>
             <Input @update:val="cPass = $event" input_label="Confirm Password*" id="c_password" class="c_password" input_type="password" required/>
+            <div class="col-span-8">
+              <p class="w-full">By Registering to use Socialite, you agree to our Terms and Services and Cookie Policies.</p>
+            </div>
             <q-btn
               :loading="registering"
               dark-percentage
