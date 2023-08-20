@@ -101,7 +101,6 @@ export default defineComponent({
             }).catch((err) => {
                 this.followed = false;
             });
-            // this.loading = false
         },
 
         getFollowers() {
@@ -481,7 +480,10 @@ export default defineComponent({
                                             <img :src="user.avatar" alt="user profile pic"/>
                                         </template>
                                         <template #title>
-                                            <div class="text-heading weight-900">{{ user.first_name }} {{ user.last_name }}</div>
+                                            <div class="text-heading weight-900">
+                                                {{ user.first_name }} {{ user.last_name }}
+                                                <q-icon v-if="user.private" name="lock" />
+                                            </div>
                                         </template>
                                         <template #caption>
                                             <div class="text-body">{{ user.username }}</div>
@@ -760,8 +762,17 @@ h6 {
     background: var(--color-background-mute);
     border: none;
     border-radius: 0;
-    width: 100%;
-    aspect-ratio: 3/1;
+    width: 100% !important;
+    aspect-ratio: 3/1 !important;
+}
+
+.banner {
+    img {
+        width: 100%;
+        background-color: var(--color-background-soft);
+        aspect-ratio: 3/1;
+        object-fit: cover;
+    }
 }
 
 .avatar {

@@ -16,9 +16,11 @@ class NotificationView(APIView):
     def get(self, request):
         try:
             user = User.objects.get(pk=request.user.id)
-            notifications = NotificationSerializer(user.notifications.all(), many=True)
+            print('there')
+            notif = user.notifications.all()[:20]
+            notifications = NotificationSerializer(notif, context={'request': request}, many=True).data
             if(notifications):
-                return JsonResponse({"success": True, "message": "Notifications retrieved", "notifications": notifications.data})
+                return JsonResponse({"success": True, "message": "Notifications retrieved", "notifications": notifications})
             return JsonResponse({"success": True, "message": "You have no notification."})
         except Exception as e:
             return JsonResponse({"error": True, "message": "An error occured while trying to retrieve notifications. Please try again later."}, safe=False)

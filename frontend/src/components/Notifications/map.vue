@@ -3,6 +3,9 @@ import { defineComponent } from 'vue';
 import type { Notifications, NotificationDataAsset } from '@/assets/interfaces';
 import convertTime from '@/assets/convertTime';
 import MentionLinkVue from '../MentionLink.vue';
+// import createIntersectionObserver
+import createIntersectionObserver from '@/assets/intersectionObserver';
+import { http } from '@/assets/http';
 
 export default defineComponent({
     props: {
@@ -15,17 +18,29 @@ export default defineComponent({
         return {
             date_posted: convertTime(this.notification.timestamp, 'short'),
             toolTipDate: convertTime(this.notification.timestamp, 'absolute'),
+            unread: this.notification.unread,
         };
     },
     computed: {
     },
     methods: {
         alert() {
+        },
+        mark_read() {
+            // if(this.unread) {
+            //     http.put('notifications/mark_as_read/', {
+            //         id: this.notification.id
+            //     }).then((res) => {
+                    
+            //     })
+            // }
+            setTimeout(() => {
+                this.unread = false
+            }, 1000)
         }
     },
-    created() {
-    },
-    mounted() {
+    async mounted() {
+        const observer = createIntersectionObserver(this.$el, this.mark_read, {threshold: 1})
     },
     watch: {
     },
@@ -34,8 +49,7 @@ export default defineComponent({
 </script>
 
 <template>
-
-    <Item class="max-w-viewport w-full pointer" clickable :to="notification.data.url"  align-items="start"  avatarSize="3.5rem">
+    <Item class="max-w-viewport w-full pointer item" :class="{'bg-theme-mute': unread}" clickable :to="notification.data.url"  align-items="start"  avatarSize="3.5rem">
         <template #avatar>
             <user-card :user-prop="notification.actor">
                 <template #text>
@@ -53,22 +67,6 @@ export default defineComponent({
                 </template>
             </user-card>
         </template>
-        <!-- <template #title>
-            <span class="w-full flex flex-cols gap-1 items-center">
-                <div>
-                    <span class="text-base pointer hover-underline text-heading weight-900"  @click.stop="$router.push({name: 'user-profile', params: {username: notification.actor.username}})">@{{ notification.actor }}</span>
-                </div>
-                <span>&#183;</span>
-                <div>
-                    <span class="text-body text-base">
-                        {{ date_posted }}
-                        <q-tooltip class="bg-theme box-shadow">
-                            <div class="text-body text-sm" v-html="toolTipDate"></div>
-                        </q-tooltip>
-                    </span>
-                </div>
-            </span>
-        </template> -->
         <template #title>
             <Item dense align-items="start">
                 <template #title>

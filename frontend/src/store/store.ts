@@ -2,7 +2,7 @@
 // Store reference: https://vuex.vuejs.org/
 import type { InjectionKey } from 'vue'
 import { createStore, Store, useStore as baseUseStore } from 'vuex'
-import type { Post, User } from '@/assets/interfaces'
+import type { Post, User, Notifications } from '@/assets/interfaces'
 
 // define your typings for the store state
 export interface State {
@@ -13,6 +13,7 @@ export interface State {
   desktop: boolean,
   csrf: string,
   isLoading: boolean,
+  allNotifications: Array<Notifications>,
 }
 
 // define injection key
@@ -27,6 +28,7 @@ export const store = createStore<State>({
     desktop: true,
     csrf: "",
     isLoading: true,
+    allNotifications: Array<Notifications>(),
 
   },
   mutations: {
@@ -61,6 +63,12 @@ export const store = createStore<State>({
       setTimeout(() => {
         state.isLoading = payload
       }, 100)
+    },
+    setAllNotifications(state, payload) {
+      state.allNotifications = [...state.allNotifications, payload]
+    },
+    resetNotifications(state) {
+      state.allNotifications = new Array<Notifications>()
     }
   }
 })

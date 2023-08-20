@@ -12,6 +12,7 @@ from django.db.models import Q
 import time
 
 from notifications.signals import notify
+import asyncio
 
 
 # From rest_framework
@@ -26,7 +27,7 @@ from backend.authenticate import *
 from rest_framework import status
 
 from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
+from asgiref.sync import async_to_sync, sync_to_async
 import json
 
 from replace import *
@@ -69,12 +70,17 @@ class Post_Content(APIView):
             post.save()
             link = "{}/spill/{}".format(user.username, post.id)
 
-            # followers = list(user.followers.all())
-
-            # notify.send(actor=user, recipient=followers, verb='posted a new spill', target=post, description=link)
+            
+            
+            if(post.user.username in user_list):
+                user_list.remove(post.user.username)
 
             if(user_list): 
-                notify.send(actor=user, recipient=user_list, verb='mentioned you', target=post, description=link)
+                notify.send(user, recipient=user_list, verb='mention', action_object=post, target=post, description="mentioned you on a spill", url=link, text=post.caption)
+
+            
+
+            
 
             group_name = f'user_{post.user.username}'
             async_to_sync(channel_layer.group_send)(group_name, {
@@ -82,7 +88,6 @@ class Post_Content(APIView):
                 "updateType": 'posted',
                 "message": json.dumps(PostSerializer(post, context={'request': request}).data)
             })
-            # return JsonResponse({"success": True, "post": PostSerializer(post).data}, safe=False)
             return JsonResponse({"error": False}, safe=False)
         except Exception as e:
             print(e)

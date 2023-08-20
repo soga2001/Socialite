@@ -128,6 +128,8 @@ export default defineComponent({
         if(data.type === 'posted') {
           const message = JSON.parse(data.message) as Notifications
 
+          this.$store.commit('setNotifications', message)
+
           this.$notify({
             group: 'notify',
             duration: 5000,

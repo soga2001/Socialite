@@ -74,3 +74,37 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
     def get_total_following(self, obj):
         return obj.following.count()
+
+
+class BasicUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = '__all__'
+        extra_kwargs = {'password': {'write_only': True}, 'email': {'write_only':True}}
+
+    name = serializers.SerializerMethodField()
+
+    total_posted = serializers.SerializerMethodField()
+    total_followers = serializers.SerializerMethodField()
+    total_following = serializers.SerializerMethodField()
+    is_current_user = serializers.SerializerMethodField()
+
+    def get_name(self, obj):
+        return obj.get_full_name()
+    
+    def get_is_current_user(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            user = request.user
+            return user == obj
+        return False
+
+    def get_total_posted(self, obj):
+        return obj.user_posted.count()
+
+    def get_total_followers(self, obj):
+        return obj.followers.count()
+
+    def get_total_following(self, obj):
+        return obj.following.count()

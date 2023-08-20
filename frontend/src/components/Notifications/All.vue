@@ -18,19 +18,22 @@ export default defineComponent({
     created() {
         this.getNotification();
     },
+    activated() {
+      if(this.$store.state.allNotifications.length !== 0) {
+        this.notification = [...this.$store.state.allNotifications, ...this.notification]
+        this.$store.commit('resetNotifications')
+
+      }
+    },
     methods: {
         async getNotification() {
             this.loading = true;
-            http.get(`notifications/all/`).then((res) => {
-              console.log(res.data)
+            await http.get(`notifications/all/`).then((res) => {
               this.notification = [...this.notification, ...res.data.notifications];
             }).catch((err) => {
                 console.log(err);
             });
-            setTimeout(() => {
-                this.loading = false;
-            }, 3000);
-            // this.loading = false;
+            this.loading = false;
         }
     },
     components: {Map},

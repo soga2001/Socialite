@@ -7,6 +7,7 @@ class UserFollowing(models.Model):
     followed_user = models.ForeignKey(User, related_name="followers", on_delete=models.CASCADE)
     following_user = models.ForeignKey(User, related_name="following", on_delete=models.CASCADE)
     followed_date = models.DateTimeField(auto_now_add=True, db_index=True)
+    notification = models.BooleanField(blank=False, null=False, default=True)
 
     class Meta:
         constraints = [

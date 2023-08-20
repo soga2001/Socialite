@@ -3,6 +3,7 @@ import { defineComponent, ref } from 'vue';
 import type { User } from '@/assets/interfaces';
 
 import UserProfile from '../UserProfile/UserProfile.vue';
+import { http } from '@/assets/http';
 export default defineComponent({
     props: {
         userProp: {
@@ -15,9 +16,35 @@ export default defineComponent({
             hovering: false,
             timer: ref<number | null>(),
             user: this.userProp,
+            loading_follow_request: false,
+            followed: this.userProp.is_following,
+            followers: this.userProp.total_followers,
+            following: this.userProp.total_following,
         };
     },
     methods: {
+        async follow() {
+            if (!this.$store.state.authenticated) {
+                return;
+            }
+            this.loading_follow_request = true
+
+            await http.post(`follow/follow_user/${this.user.id}/`).then((res) => {
+                if (res.data.error) {
+                    return;
+                }
+                this.followed = !this.followed;
+                this.loading_follow_request = false;
+                if (!this.followed && this.following != 0) {
+                    this.followers -= 1;
+                }
+                else {
+                    this.followers += 1;
+                }
+            }).catch((err) => {
+                console.log(err);
+            });
+        },
         divEnter() {
             if (this.$q.screen.lt.sm) {
                 return;
@@ -141,11 +168,12 @@ export default defineComponent({
 
 
             <div class="card bg-theme box-shadow">
-                <div class="cover-photo"  :style="{backgroundImage: `url(${user.banner})`}">
-                    <img :src="user.avatar" class="profile">
-                    <button v-if="!user.is_current_user" :class="{'followed': user.is_following}" class="border w-8 pointer btn-following bg-hover-mute rounded-lg px-4 py-2 text-heading text-sm bg-theme weight-900" @click="" :disabled="!$store.state.authenticated">
-                        <span v-if="user.is_following" class=" weight-900">Following</span>
-                        <span v-else class=" weight-900">Follow</span>
+                <div class="cover-photo"  :style="{backgroundImage: `url(${user.banner})`, backgroundColor: 'var(--color-background-mute)'}">
+                    <img v-if="user.avatar" :src="user.avatar" class="profile">
+                    <span v-else class="profile"></span>
+                    <button v-if="!user.is_current_user" :class="{'followed': followed}" class="border w-8 pointer btn-following bg-hover-mute rounded-lg px-4 py-2 text-heading text-sm bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated">
+                        <span v-if="followed" class=" weight-900">Following</span>
+                        <span v-else class="weight-900">Follow</span>
                     </button>
 
 
@@ -176,7 +204,7 @@ export default defineComponent({
                                 <div class="text-base weight-500 flex gap-2 w-full">
                                     <div>
                                         <span class="text-base weight-900">
-                                            {{ user.total_followers  }}
+                                            {{ followers  }}
                                         </span>
                                         <span class="text-body">
                                             Followers
@@ -185,7 +213,7 @@ export default defineComponent({
 
                                     <div>
                                         <span class="text-base weight-900">
-                                            {{ user.total_following  }}
+                                            {{ following  }}
                                         </span>
                                         <span class="text-body">
                                             Following
@@ -246,12 +274,14 @@ export default defineComponent({
 
 .profile {
     position: absolute;
-    width: 110px;
+    width: 110px !important;
+    aspect-ratio: 1/1 !important;
+    height: auto;
     bottom: -55px;
     left: 15px;
     border-radius: 50%;
     border: 4px solid var(--color-background);
-    background: #222;
+    background: var(--color-background-mute);
 }
 
 .btn-following {

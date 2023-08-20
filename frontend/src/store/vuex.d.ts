@@ -11,6 +11,7 @@ declare module '@vue/runtime-core' {
     desktop: boolean,
     csrf: string,
     isLoading: boolean,
+    allNotifications: Array<Notifications>,
   }
 
   // provide typings for `this.$store`

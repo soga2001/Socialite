@@ -14,6 +14,13 @@ export default defineComponent({
             iconSize: "5rem",
             navSlideIn: false,
             post: false,
+
+            report_bug: false,
+            theme_toggle: false,
+
+            bug: '',
+            bug_replication: '',
+
         };
     },
     setup() {
@@ -191,27 +198,27 @@ export default defineComponent({
                       
                       <q-menu cover square max-width="300px" class="w-full border rounded-sm" anchor="bottom left">
                           <q-list class="bg-theme rounded-sm" dense>
-                            <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
+                            <q-item clickable v-close-popup tabindex="0" v-on:click="">
                                 <q-item-section avatar>
                                   <q-avatar size="3.5rem">
-                                    <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
+                                    <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="bug_report" />
                                   </q-avatar>
                                 </q-item-section>
                                 <q-item-section>
-                                <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
+                                <q-item-label class="text-2xl text-heading weight-700">Report Bugs</q-item-label>
                                 </q-item-section>
                             </q-item>
-                            <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
+                            <q-item clickable v-close-popup tabindex="0" v-on:click="">
                                 <q-item-section avatar>
                                   <q-avatar size="3.5rem">
-                                    <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
+                                    <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="dark_mode" />
                                   </q-avatar>
                                 </q-item-section>
                                 <q-item-section>
-                                <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
+                                <q-item-label class="text-2xl text-heading weight-700">Theme</q-item-label>
                                 </q-item-section>
                             </q-item>
-                            <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
+                            <!-- <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
                                 <q-item-section avatar>
                                   <q-avatar  size="3.5rem">
                                     <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
@@ -231,7 +238,6 @@ export default defineComponent({
                                 <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
                                 </q-item-section>
                             </q-item>
-                            <!-- <q-separator :color="$store.state.dark ? 'white' : 'black'" spaced inset /> -->
 
                             <q-separator :dark="$store.state.dark" spaced inset />
 
@@ -254,7 +260,7 @@ export default defineComponent({
                                 <q-item-section>
                                 <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
                                 </q-item-section>
-                            </q-item>
+                            </q-item> -->
                           </q-list>
                       </q-menu>
                     </q-btn>

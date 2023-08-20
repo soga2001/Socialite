@@ -3,9 +3,10 @@ from socket import send_fds
 from django.db import models
 # from django.contrib.auth.models import User
 from users.models import User
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, post_save
 import os
 import uuid
+from notifications.signals import notify
 
 from django.dispatch import receiver
 
@@ -30,9 +31,35 @@ class Post(models.Model):
 
 
 # when a post gets deleted
-@receiver(models.signals.post_delete, sender=Post)
+@receiver(post_delete, sender=Post)
 def remove_file_from_s3(sender, instance, using, **kwargs):
     instance.img_url.delete(save=False)
+
+
+@receiver(post_save, sender=Post)
+def update_post(sender, instance, created, **kwargs):
+
+    link = "{}/spill/{}".format(instance.user.username, instance.id)
+
+    followers = instance.user.followers.filter(notification=True)
+    follower_ids = followers.values_list('following_user')
+    
+    batch_size = 100
+    
+    for start in range(0, len(follower_ids), batch_size):
+        batch_ids = follower_ids[start:start+batch_size]
+        batch_recipients = User.objects.filter(id__in=batch_ids)
+        
+        notify.send(
+            instance.user,
+            recipient=batch_recipients,
+            verb='spilled',
+            action_object=instance,
+            target=instance,
+            description="spilled a tea",
+            url=link,
+            text=instance.caption
+        )
 
 
     

@@ -73,10 +73,10 @@ class Comments(APIView):
             if(user.username in userlist):
                 userlist.remove(user.username)
             if(userlist):
-                notify.send(user, recipient=userlist, verb='mention', action_object=comment, target=post, description="mentioned you on a post", url=link, text=comment.comment)
+                notify.send(user, recipient=userlist, verb='mention', action_object=comment, target=post, description="mentioned you in the comment section", url=link, text=comment.comment)
 
             if(post.user != request.user):
-                notify.send(user, recipient=post.user, verb='commented', action_object=comment, target=post, description="commented on your post", url=link, text=comment.comment)
+                notify.send(user, recipient=post.user, verb='commented', action_object=comment, target=post, description="commented on your spill", url=link, text=comment.comment)
             
             return JsonResponse({'status': True, 'message': 'Comment added successfully'})
         except Exception as e:

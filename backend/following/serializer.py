@@ -5,7 +5,6 @@ from following.models import UserFollowing
 from users.serializer import UserSerializer
 
 class UserFollowingSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
 
     class Meta:
         model = UserFollowing
