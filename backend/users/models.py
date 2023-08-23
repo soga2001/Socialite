@@ -36,13 +36,14 @@ def rename_banner(instance, filename):
 
 # Create your models here.
 class User(AbstractUser):
-    bio = models.CharField(max_length=300, null=True, blank=True, editable=True)
+    bio = models.CharField(max_length=160, null=True, blank=True, editable=True)
     avatar = models.FileField(upload_to=rename_avatar, blank=True, null=True, editable=True)
     banner = models.FileField(upload_to=rename_banner, blank=True, null=True, editable=True)
     email_verified = models.BooleanField(blank=False, null=False, default=False, editable=True)
     emailed_user = models.BooleanField(blank=False, null=False, default=False, editable=True)
     private = models.BooleanField(blank=False, null=False, default=False, editable=True)
     verified = models.BooleanField(blank=False, null=False, default=False, editable=True)
+    is_admin = models.BooleanField(blank=False, null=False, default=False, editable=True)
 
     groups = models.ManyToManyField(
         'auth.Group', 
@@ -60,6 +61,14 @@ class User(AbstractUser):
         help_text='Specific permissions for this user.'
     )
 
+
+@receiver(models.signals.pre_delete, sender=User)
+def auto_delete_notification(sender, instance, **kwargs):
+    try:
+        instance.notifications.filter(actactor_object_idor=instance.id).delete()
+    except Exception as e:
+        print(e)
+        pass
 
 # when a post gets deleted
 @receiver(models.signals.post_delete, sender=User)
@@ -97,7 +106,6 @@ def check_name(sender, instance, **kwargs):
 def send_user_verification(sender, instance, created=False, **kwargs):
     if created:
         subject = 'Verify Your Email'
-        # generate date of 10 minutes from now
         expires_at = datetime.datetime.now() + datetime.timedelta(days=1)
         token = Tokens.objects.create(user=instance, expires_at=expires_at)
         html_message = render_to_string('emails/verify_email.html', {'verification_link': settings.EMAIL_VERIFY_URL + token.key, 'first_name': instance.first_name})

@@ -2,6 +2,7 @@
 // import Input from '@/components/Input.vue';
 import { http } from '@/assets/http';
 import type { User } from '@/assets/interfaces';
+import Input from '@/components/Input.vue';
 import { defineComponent } from 'vue'
 export default defineComponent({
     name: 'change-password',
@@ -41,8 +42,15 @@ export default defineComponent({
     },
     mounted() {
     },
-    watch: {},
-    components: {  }
+    watch: {
+        password() {
+            if(this.password.length > 0) {
+                this.verified = false
+            }
+            console.log('here')
+        }
+    },
+    components: { Input }
 })
 </script>
 
@@ -69,7 +77,7 @@ export default defineComponent({
             </header>
             <div class="w-full flex flex-row justify-center px-2 py-2" v-if="!verified">
                 <form class="w-full flex flex-col gap-1" @submit.prevent="submit">
-                    <q-input type="password" outlined v-model="password" label="Password" />
+                    <Input @update:val="password = $event" input_type="password" input_label="Password" id="1" />
                     <RouterLink to="/" class=" w-fit hover-underline no-decor weight-800 text-theme text-base">
                         Forgot Password?
                     </RouterLink>
@@ -89,7 +97,7 @@ export default defineComponent({
                         </q-avatar>
                     </template>
                     <template #title>
-                        <span v-if="editName" class="text-left text-xl text-heading weight-700">{{ user.first_name }} {{ user.last_name }}</span>
+                        <span v-if="!editName" class="text-left text-xl text-heading weight-700">{{ user.first_name }} {{ user.last_name }}</span>
                     </template>
                     <template #icon>
                         <q-btn flat round name="edit">
@@ -127,11 +135,31 @@ export default defineComponent({
                         </q-btn>
                     </template>
                 </Item>
+                <Item>
+                    <template #avatar>
+                        <q-avatar>
+                            <q-icon name="phone" :color="$store.state.dark ? 'white' : 'black'"/>
+                        </q-avatar>
+                    </template>
+                    <template #title>
+                        <span class="text-left text-xl text-heading weight-700">{{  }}</span>
+                    </template>
+                    <template #icon>
+                        <q-btn flat round name="edit">
+                            <q-icon name="edit" :color="$store.state.dark ? 'white' : 'black'"/>
+                        </q-btn>
+                    </template>
+                </Item>
             </div>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
+.input {
 
+    &:focus {
+        outline-color: green !important;
+    }
+}
 </style>

@@ -98,7 +98,7 @@ export default defineComponent({
         <q-menu
             v-model="hovering"
             no-focus
-            class="bg-transparent border menu"
+            class="bg-transparent border-brighter-2 menu"
             @mouseover="divEnter"
             @mouseleave="divExit"
             :offset="[0, 10]"
@@ -167,7 +167,7 @@ export default defineComponent({
 
 
 
-            <div class="card bg-theme box-shadow">
+            <div class="card bg-theme">
                 <div class="cover-photo"  :style="{backgroundImage: `url(${user.banner})`, backgroundColor: 'var(--color-background-mute)'}">
                     <img v-if="user.avatar" :src="user.avatar" class="profile">
                     <span v-else class="profile"></span>
@@ -175,8 +175,6 @@ export default defineComponent({
                         <span v-if="followed" class=" weight-900">Following</span>
                         <span v-else class="weight-900">Follow</span>
                     </button>
-
-
                 </div>
                 <div class="user-info flex flex-col gap-3">
                     <div >

@@ -22,7 +22,6 @@ export default defineComponent({
       if(this.$store.state.allNotifications.length !== 0) {
         this.notification = [...this.$store.state.allNotifications, ...this.notification]
         this.$store.commit('resetNotifications')
-
       }
     },
     methods: {

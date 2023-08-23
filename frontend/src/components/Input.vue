@@ -9,10 +9,10 @@ export default defineComponent({
         return {
             type: this.input_type,
             label: this.input_label,
-            val: ref(''),
+            val: this.defaultVal ?? '',
             users: new Array<User>(),
             index: null,
-            // required: this.required,
+            focused: false,
         }
     },
     props: {
@@ -31,19 +31,45 @@ export default defineComponent({
         id: {
             type: String,
             required: true,
-        }
+        },
+        autofocus: {
+            type: Boolean,
+            default: false,
+        },
+        defaultVal: {
+            type: String,
+            default: '',
+        },
+        showCharCounts: {
+            type: Boolean,
+            default: false,
+        },
+        charLimit: {
+            type: Number,
+            default: 255,
+        },
     },
     created() {
       
     },
     mounted() {
     },
+    computed: {
+      isFocused(): Boolean {
+        return this.focused
+      }
+    },
     methods: {
-      
+      unfocus() {
+        this.focused = false
+      },
+      inputClicked() {
+        (this.$refs.input as HTMLInputElement).focus()
+      }
     },
     watch: {
       val: function(val: string) {
-        this.$emit('update:input', val)
+        this.$emit('update:val', val)
       }
     }
 })
@@ -51,126 +77,96 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="main">
-    <div class="wave-group">
-        <input :required="required" v-model="val" @input="(e: any) => $emit('update:val', e.target.value)" :type="type" :id="id" class="input" />
-        <label class="label">
-            <span class="label-char" v-for="(char, index) in label" :key="index" :style="{'--index': index }">{{ char == ' ' ? '&nbsp' : char }}</span>
-        </label>
-    </div>
+  <div class="input-box" :class="{focused: isFocused}" @click="inputClicked">
+    <input :maxlength="charLimit" ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" :type="type" v-model="val" :class="{hasInput: val.length > 0}"  class="input text-heading">
+    <label :class="{focused: isFocused,  hasInput: val.length > 0}" class="label cursor-text">{{label}}</label>
+    <span v-if="showCharCounts && (isFocused || val.length > 0)" @click="($refs.input as HTMLInputElement).focus()" :class="{focused: isFocused,  hasInput: val.length > 0}" class="char_count">{{ `${val.length} / ${charLimit}` }}</span>
   </div>
 </template>
 
-<style scoped>
-
-.main {
-  overflow: visible;
-  height: 50px;
-  display: grid;
-  grid-template-columns: 1fr;
-}
-.wave-group {
+<style scoped lang="scss">
+.input-box {
   position: relative;
+  height: 60px;
   width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+
+  &.focused {
+    border: 1px solid var(--color-theme);
+  }
+
+  .input {
+    width: 100%;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    margin-top: 25px;
+    padding: 0 10px;
+    font-size: 20px;
+    line-height: 1rem;
+  }
 }
 
-.wave-group .input {
-  font-size: 16px;
-  padding: 10px 10px 10px 5px;
-  display: block;
-  width: 100%;
-  border: none;
-  border-bottom: 1px solid #515151;
-  background: transparent;
+* {
+  transition: .3s all;
 }
 
-.wave-group .input:focus {
-  outline: none;
-}
-
-.wave-group .label {
-  color: var(--color-text);
-  font-size: 18px;
-  font-weight: normal;
+.label {
   position: absolute;
-  pointer-events: none;
-  left: 5px;
-  top: 10px;
-  display: flex;
+  top: 50%;
+  left: 15px;
+  transform: translate(0, -50%);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-body) !important;
+
+  &.focused {
+    color: var(--color-theme) !important;
+    top: 15px;
+    left: 10px;
+    font-size: .875rem;
+    font-weight: 700;
+  }
+
+  &.hasInput {
+    top: 15px;
+    left: 10px;
+    font-size: .875rem;
+    font-weight: 700;
+
+    & ~ .input {
+      padding: 1.5rem 10x .5rem 10px !important;
+    }
+  }
+
 }
 
-
-.wave-group .label-char {
-  transition: 0.2s ease all;
-  transition-delay: calc(var(--index) * .05s);
-}
-
-.wave-group .input:focus ~ label .label-char,
-.wave-group .input:valid ~ label .label-char {
-  transform: translateY(-20px);
-  font-size: 14px;
-  /* color: #5264AE; */
-  color: var(--color-heading);
-}
-
-.wave-group .bar {
-  position: relative;
-  display: block;
-  width: 100%;
-}
-
-.wave-group .bar:before,.wave-group .bar:after {
-  content: '';
-  height: 2px;
-  width: 0;
-  bottom: 1px;
+.char_count {
   position: absolute;
-  background: #5264AE;
-  transition: 0.2s ease all;
-  -moz-transition: 0.2s ease all;
-  -webkit-transition: 0.2s ease all;
-}
+  top: 50%;
+  right: 20px;
+  transform: translate(0, -50%);
+  font-size: 1.5rem;
+  // font-weight: 900;
+  color: var(--color-lighter) !important;
 
-.wave-group .bar:before {
-  left: 50%;
-}
+  &.focused {
+    top: 15px;
+    right: 10px;
+    font-size: .875rem;
+  }
 
-.wave-group .bar:after {
-  right: 50%;
-}
+  &.hasInput {
+    top: 15px;
+    right: 10px;
+    font-size: .875rem;
 
-.wave-group .input:focus ~ .bar:before,
-.wave-group .input:focus ~ .bar:after {
-  width: 50%;
-}
+    & ~ .input {
+      padding: 1.5rem 10x .5rem 10px !important;
+    }
+  }
 
-input {
-  color: var(--color-heading);
-  position: relative;
-}
-
-span {
-  white-space: pre-line;
-}
-
-
-.avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-}
-
-.username {
-  color: var(--color-text);
-}
-
-.results {
-  background-color: var(--color-background-soft);
-  z-index: 999;
-}
-
-.result__map:nth-child(odd) {
-  background-color: var(--color-background-mute);
 }
 
 </style>

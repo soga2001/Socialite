@@ -978,6 +978,20 @@
     line-height: 1 !important;
 }
 
+/* vertical-align */
+
+.vert-align-top {
+    vertical-align: top !important;
+}
+
+.vert-align-middle {
+    vertical-align: middle !important;
+}
+
+.vert-align-bottom {
+    vertical-align: bottom !important;
+}
+
 /* overflow */
 
 .overflow-auto {
@@ -2664,6 +2678,14 @@
     cursor:zoom-in !important;
 }
 
+.cursor-auto {
+    cursor: auto !important;
+}
+
+.cursor-text {
+    cursor: text !important;
+}
+
 .btn-transition {
     transition: all 0.2s ease-in-out !important;
 }
@@ -2922,6 +2944,11 @@
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;  
     overflow: hidden;
+}
+
+
+.resize-none {
+    resize: none !important;
 }
 
 

@@ -89,6 +89,9 @@ export default defineComponent({
         //     // this.websocketOpen()
         // }
         this.tab = this.$route.name as string
+        if(this.user.first_name) {
+            document.title = `${this.user.first_name} ${this.user.last_name}`
+        }
     },
     components: { UserProfile, Search, UserPosted, UserLiked, Item },
     watch: {
@@ -96,6 +99,11 @@ export default defineComponent({
         },
         usernameChanged(usernameChanged) {
             this.reloadData()
+        },
+        user(user) {
+            if(user.first_name) {
+                document.title = `${user.first_name} ${user.last_name}`
+            }
         }
     },
 })
@@ -144,12 +152,15 @@ export default defineComponent({
                 <div class="w-full overflow-hidden">
                     <RouterView v-slot="{ Component }">
                         <KeepAlive :max="2" :include="['user-posted', 'user-liked']">
-                            <component :is="Component" :websocket="websocket" :height="height" :scrollPosition="scrollPosition"/>
+                            <component :is="Component" :height="height" :scrollPosition="scrollPosition" :name="`${user.first_name} ${user.last_name}`"/>
                         </KeepAlive>
                     </RouterView>
                 </div>
             </div>
         </div>
+    </div>
+    <div v-if="loading" class="pt-5">
+        <Loading />
     </div>
 </template>
 

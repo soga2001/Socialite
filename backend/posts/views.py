@@ -96,16 +96,23 @@ class Post_Content(APIView):
     def delete(self, request):
         data = json.loads(request.body)
         try:
-            Post.objects.filter(user_id=request.user.id).filter(id=data["id"]).delete()
-            group_name = f'user_{request.user.username}'
-            async_to_sync(channel_layer.group_send)(group_name, {
-                "type": "user_update",
-                "updateType": 'deleted',
-                "message": "Post deleted"
-            })
-            return JsonResponse({"success": True}, safe=False)
+            post = Post.objects.get(id=data["id"])
+            user = request.user
+            if(post.user == user):
+                print('here')
+                post.delete()
+            elif user.is_staff:
+                print(post.user.is_admin, user.is_admin)
+                if post.user.is_admin and not user.is_admin:
+                    return JsonResponse({'error': True, 'message': 'You are not authorized to delete this post.'})
+                post.delete()
+                notify.send(sender=user, recipient=post.user, verb='deleted', description='Your post has been deleted by staff.')
+                return JsonResponse({'error': False, 'message': 'Post deleted successfully and user notified.'})
+            else:
+                return JsonResponse({'error': True, "message": 'You are not authorized to delete this post.'})
+            return JsonResponse({"success": True})
         except:
-            return JsonResponse({"success": False}, safe=False)
+            return JsonResponse({"error": False, "message": 'Unable to delete Post. Please try again later!'})
 
 @api_view(["GET"])
 def view_posts(request, timestamp, page):

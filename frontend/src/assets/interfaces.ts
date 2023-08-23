@@ -4,23 +4,31 @@ export interface User{
     email?: string,
     first_name: string,
     last_name: string,
+    last_login: string,
+    private: boolean,
+    verified: boolean,
+
+
     is_active: boolean,
     is_staff: boolean,
+    is_admin: boolean,
+    is_current_user: boolean,
     is_superuser: boolean,
     is_following?: boolean,
-    last_login: string,
+
     groups: string[],
     user_permissions: string[],
+
     avatar: '',
     banner: '',
     bio: '',
-    private: boolean,
+
     total_posted: number,
     total_followers: number,
     total_following: number,
     date_joined: string,
+    notification_on: boolean,
 
-    is_current_user: boolean,
 }
 
 
@@ -62,23 +70,22 @@ export interface NotificationDataAsset {
 
 export interface Notifications {
     id: number;
-    level: string;
+    level?: string;
     actor: User,
     unread: boolean;
-    actor_object_id: string;
+    actor_object_id?: string;
     verb: string;
     description: string;
-    target_object_id: string;
-    action_object_object_id: string;
+    target_object_id?: string;
+    action_object_object_id?: string;
     timestamp: string;
     public: boolean;
     deleted: boolean;
     emailed: boolean;
-    link: string;
     recipient: number;
     actor_content_type: number;
-    target_content_type: string;
-    action_object_content_type: string;
+    target_content_type?: string;
+    action_object_content_type?: string;
     created: string;
-    data: NotificationDataAsset;
+    data?: NotificationDataAsset;
 }

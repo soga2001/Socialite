@@ -51,12 +51,16 @@ import Loading from './components/Loading.vue'
 import MentionLink from '@/components/MentionLink.vue';
 import Timeago from './components/Timeago.vue';
 import Spills from './components/Spills.vue';
+import Input from './components/Input.vue'
+import Textarea from './components/Textarea.vue'
 import CommentMap from '@/components/CommentMap.vue';
 import PostsMap from '@/components/PostsMap.vue'
 import Mention from './components/Mention.vue'
 import SearchBar from '@/components/SearchBar.vue';
 import zoomImg from '@/components/zoomImg.vue';
 import hoverUserData from '@/components/Cards/hoverUserData.vue';
+
+
 
 
 // my icons
@@ -80,6 +84,7 @@ import RegisterIcon from '@/icons/i-register.vue';
 import MentionIcon from '@/icons/i-mention.vue';
 import UserCloseIcon from '@/icons/i-user-close.vue';
 import GhostIcon from '@/icons/i-ghost.vue';
+import MoreCircle from '@/icons/i-more-circle.vue';
 
 
 
@@ -120,6 +125,7 @@ app.component('i-folder', EmptyFolder);
 app.component('i-mention', MentionIcon);
 app.component('i-user-close', UserCloseIcon);
 app.component('i-ghost', GhostIcon);
+app.component('i-more-circle', MoreCircle);
 
 // components
 app.component('circular-progress', CircularProgress);
@@ -138,6 +144,8 @@ app.component('zoomImg', zoomImg)
 app.component('user-card', hoverUserData)
 app.component('Item', Item);
 app.component('cropper', VueCropper);
+app.component('Input', Input);
+app.component('Textarea', Textarea);
 
 
 app.use(Quasar, {

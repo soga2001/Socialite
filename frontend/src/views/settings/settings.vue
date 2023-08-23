@@ -16,6 +16,7 @@ export default defineComponent({
     data() {
         return {
             hide: false,
+            val: ''
         }
     },
     methods: {
@@ -36,16 +37,18 @@ export default defineComponent({
         // }
     },
     mounted() {
-        console.log(this.$route.matched[1] == undefined)
     },
     watch: {
-        '$route': function() {
+        '$route': function(to, from) {
             const route =  this.$route.name ?? ''
             if (route !== 'settings') {
                 this.hide = true
             }
             else {
                 this.hide = false
+            }
+            if(window.innerWidth > 768 && route === 'settings') {
+                this.$router.push({name: 'account'})
             }
         },
     },
@@ -83,7 +86,7 @@ export default defineComponent({
                         </template>
                     </Item>
                 </RouterLink>
-                <RouterLink :to="{name: 'notifications'}" active-class="active">
+                <RouterLink :to="{name: 'notification-settings'}" active-class="active">
                     <Item clickable class="child">
                         <template #title>
                             <span class="text-xl text-heading weight-800 text-capitalize">

@@ -29,7 +29,7 @@ def notify_handler_post_save(sender, instance, created, **kwargs):
             "message": json.dumps(NotificationSerializer(instance).data)
         })
     else:
-        print('here')
+        pass
 
 @receiver(post_delete, sender=Notification)
 def notify_handler_post_delete(sender, instance, **kwargs):

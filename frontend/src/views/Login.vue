@@ -126,8 +126,9 @@ export default defineComponent({
 			<label for="username">Username</label>
 			<input type="text" name="username" id="username" placeholder="">
 		</div> -->
-        <Input @update:val="username = $event" input_type="text" input_label="Username*" id="username" class="w-full my-2" />
-        <Input @update:val="password = $event" input_type="password" input_label="Password*" id="password" class="w-full my-2" />
+        <Input @update:val="username = $event" input_type="text" input_label="Username" id="username" class="w-full my-2" />
+        <!-- <Input @update:val="password = $event" input_type="password" input_label="Password" id="password" class="w-full my-2" /> -->
+        <Input @update:val="password = $event" input_type="password" input_label="Password" id="1" />
         <span v-if="error" class="flex justify-center m-3 p-3 text-xl bg-red-2 text-red-13 w-full text-center">{{errMsg}}</span>
         <div class="forgot mb-2">
             <RouterLink class="hover-text-heading weight-bold" to="" @click="forgotPass = true">Forgot Password?</RouterLink>

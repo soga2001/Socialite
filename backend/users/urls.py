@@ -24,4 +24,7 @@ urlpatterns = [
     path('change_password/', views.ChangePassword.as_view(), name="change password"),
     path('get_user_info/', views.UserInfo.as_view(), name="get user information"),
     path('delete_account/', views.DeleteAccount.as_view(), name="delete account"),
+    path('verify_user/', views.VerifyUser.as_view(), name="verify user"),
+    path('make_staff/', views.Staff.as_view() , name="verify user"),
+    # re_path(r'^verify_user/(?P<user_id>\d+)/$', views.VerifyUser.as_view(), name="verify user")
 ]

@@ -12,10 +12,10 @@ export default defineComponent({
     name: 'user-posted',
     props: {
         // user_avatar: {type: String, required: true},
-        websocket: {
-            type: Object as PropType<WebSocket>,
-            required: true,
-        },
+        // websocket: {
+        //     type: Object as PropType<WebSocket>,
+        //     required: true,
+        // },
         scrollPosition: {
             type: Number,
             default: 0,
@@ -23,6 +23,10 @@ export default defineComponent({
         height: {
             type: Number,
             default: 0,
+        },
+        name: {
+            type: String,
+            default: 'User Posted',
         }
     },
     data() {
@@ -64,14 +68,14 @@ export default defineComponent({
 
             this.loading = false
         },
-        async websocketMessage() {
-            this.websocket.onmessage = (e) => {
-                const data = JSON.parse(e.data)
-                if(data.type == "posted") {
-                    this.user_posted.unshift(JSON.parse(data.message))
-                }
-            }
-        },
+        // async websocketMessage() {
+        //     this.websocket.onmessage = (e) => {
+        //         const data = JSON.parse(e.data)
+        //         if(data.type == "posted") {
+        //             this.user_posted.unshift(JSON.parse(data.message))
+        //         }
+        //     }
+        // },
         deleteSpill(index: number) {
             this.user_posted.splice(index, 1)
         }
@@ -79,12 +83,14 @@ export default defineComponent({
 
     created() {
         this.getUserPosted()
-        this.websocketMessage()
+        document.title = this.name
+        // this.websocketMessage()
     },
     mounted() {
     },
     activated() {
-        this.websocketMessage()
+        // this.websocketMessage()
+        document.title = this.name
     },
     deactivated() {
     },
@@ -113,9 +119,9 @@ export default defineComponent({
             <div class="post_map border-b" v-if="user_posted.length > 0" v-for="(post, index) in user_posted" :id="post.id" :key="post.id">
                 <PostsMap :post="post" />
             </div>
-            <div class="w-full flex justify-center p-5" v-if="loading">
+            <!-- <div class="w-full flex justify-center p-5" v-if="loading">
                 <Loading />
-            </div>
+            </div> -->
         </div>
         
         <div class="w-full flex flex-center flex-col" v-if="user_posted.length == 0 && !loading">

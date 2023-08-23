@@ -53,6 +53,7 @@ export default defineComponent({
                 this.cookies.set("theme", "dark");
                 document.documentElement.setAttribute("data-theme", "dark");
             }
+            this.theme = !this.theme;
             this.$store.commit("setTheme", !this.$store.state.dark);
         },
         logout() {
@@ -70,7 +71,20 @@ export default defineComponent({
         },
         closeNav() {
             this.navSlideIn = false;
-        }
+        },
+        async reportBug() {
+          const formData = new FormData()
+          formData.append('bug', this.bug)
+          formData.append('bug_replication', this.bug_replication)
+          await http.post('bugs/submit_bug/', {
+            data: formData
+          }).then((res) => {
+            console.log(res)
+          }).catch((err) => {
+            console.log(err)
+          })
+          this.report_bug = true;
+        },
     },
     created() {
         this.theme = this.cookies.get("theme") === "dark";
@@ -94,9 +108,16 @@ export default defineComponent({
         <nav class="nav" :style="navStyle">
             <q-list class="list text-2xl">
                 <div class="pt-2">
-                  <RouterLink to="/home" active-class="active" v-if="$store.state.authenticated">
+                  <RouterLink to="/" active-class="active" v-if="$store.state.authenticated">
                       
-                      <q-btn size="1rem" flat round class="ml-2 text-xs" icon="BB"/>
+                      <!-- <q-btn size="1rem" flat round class="ml-2 text-xs" icon="icon"/> -->
+                      <q-item :clickable="false" class="hide">
+                        <q-item-section avatar>
+                          <q-btn flat round>
+                            <i-home size="2rem" :fill="$route.fullPath == '/home' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                          </q-btn>
+                        </q-item-section>
+                      </q-item>
                   </RouterLink>
                   <RouterLink to="/home" class="nav__link" active-class="active text-heading" v-if="$store.state.authenticated">
                       <q-item class="hide">
@@ -183,7 +204,8 @@ export default defineComponent({
                     <q-btn no-caps dense rounded flat class=" p-0" >
                       <q-item class="hide">
                         <q-item-section avatar>
-                            <q-icon size="1.5rem" :color="( $store.state.dark ? 'white' : 'black')" class="border-brighter-3 rounded" name="more_horiz" />
+                            <!-- <q-icon size="1.5rem" :color="( $store.state.dark ? 'white' : 'black')" class="border-brighter-3 rounded" name="more_horiz" /> -->
+                            <i-more-circle size="2rem"/>
                         </q-item-section>
 
                         <q-item-section class="text-2xl">
@@ -198,7 +220,7 @@ export default defineComponent({
                       
                       <q-menu cover square max-width="300px" class="w-full border rounded-sm" anchor="bottom left">
                           <q-list class="bg-theme rounded-sm" dense>
-                            <q-item clickable v-close-popup tabindex="0" v-on:click="">
+                            <q-item clickable v-close-popup tabindex="0" v-on:click="report_bug = true">
                                 <q-item-section avatar>
                                   <q-avatar size="3.5rem">
                                     <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="bug_report" />
@@ -208,59 +230,19 @@ export default defineComponent({
                                 <q-item-label class="text-2xl text-heading weight-700">Report Bugs</q-item-label>
                                 </q-item-section>
                             </q-item>
-                            <q-item clickable v-close-popup tabindex="0" v-on:click="">
+                            <q-item clickable v-close-popup tabindex="0" v-on:click="switchTheme">
                                 <q-item-section avatar>
                                   <q-avatar size="3.5rem">
-                                    <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="dark_mode" />
+                                    <Transition>
+                                      <q-icon v-if="$store.state.dark" size="2rem" color="white" name="dark_mode" />
+                                      <q-icon v-else size="2rem" color="black" name="light_mode" />
+                                    </Transition>
                                   </q-avatar>
                                 </q-item-section>
                                 <q-item-section>
                                 <q-item-label class="text-2xl text-heading weight-700">Theme</q-item-label>
                                 </q-item-section>
                             </q-item>
-                            <!-- <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
-                                <q-item-section avatar>
-                                  <q-avatar  size="3.5rem">
-                                    <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
-                                  </q-avatar>
-                                </q-item-section>
-                                <q-item-section>
-                                <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
-                                <q-item-section avatar>
-                                  <q-avatar size="3.5rem">
-                                    <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
-                                  </q-avatar>
-                                </q-item-section>
-                                <q-item-section>
-                                <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
-                                </q-item-section>
-                            </q-item>
-
-                            <q-separator :dark="$store.state.dark" spaced inset />
-
-                            <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
-                                <q-item-section avatar>
-                                  <q-avatar size="3.5rem">
-                                    <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
-                                  </q-avatar>
-                                </q-item-section>
-                                <q-item-section>
-                                <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item clickable v-close-popup tabindex="0" v-on:click="logout">
-                                <q-item-section avatar>
-                                  <q-avatar size="3.5rem">
-                                    <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="logout" />
-                                  </q-avatar>
-                                </q-item-section>
-                                <q-item-section>
-                                <q-item-label class="text-2xl text-heading weight-700">Logout</q-item-label>
-                                </q-item-section>
-                            </q-item> -->
                           </q-list>
                       </q-menu>
                     </q-btn>
@@ -288,6 +270,36 @@ export default defineComponent({
                       <hr class="border"/>
                       <div class="">
                         <Spills :rows="4"/>
+                      </div>
+                    </div>
+                   </q-dialog>
+
+                   <q-dialog class="min-h-sm" v-model="report_bug" position="top" persistent>
+                    <div class="mt-12 bg-theme box-shadow w-full min-h-fit max-w-sm h-fit overflow-visible rounded-sm" >
+                      <div class="p-2">
+                        <Item dense :vert-icon-center="true">
+                          <template #title>
+                            <div class="text-2xl weight-900">Bug Report</div>
+                          </template>
+                          <template #icon>
+                            <i-close size="2rem" class="pointer" @click="report_bug = false"/>
+                          </template>
+                        </Item>
+                      </div>
+                      <hr class="border"/>
+                      <div class="">
+                        <form @submit.prevent="" class="flex flex-col gap-2 p-2">
+                          <!-- <input class="w-full p-2 text-xl text-heading" type="text" placeholder="Bug"/> -->
+                          <Input showCharCounts :charLimit="30" @update:val="bug = $event" input_type="text" input_label="Bug" id="first_name" class="w-full my-2" />
+                          <Textarea showCharCounts :charLimit="255" maxHeight="176" height="200px" @update:val="bug_replication = $event" input_type="text" input_label="How to replicate" id="username" class="w-full my-2" />
+                        </form>
+                      </div>
+                      <hr class="border"/>
+                      <div class="flex flex-rows">
+                        <div class="flex flex-rows gap-2 p-2 ml-auto">
+                          <button class="px-7 py-2 border-none rounded text-base text-heading weight-900" @click="report_bug = false">Cancel</button>
+                          <button class="px-7 py-2 border-none bg-web-theme rounded text-base  text-heading weight-900" @click="report_bug = false">Submit</button>
+                        </div>
                       </div>
                     </div>
                    </q-dialog>
@@ -352,7 +364,30 @@ export default defineComponent({
                                   <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                                 </template>
                                 <template #title>
-                                  <span class="text-xl text-heading weight-900">{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</span>
+                                  <div class="flex gap-1">
+                                    <span class="text-xl text-heading weight-900">{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</span>
+                                    <!-- <span class="h-full" v-if="$store.state.user.verified">
+                                        <q-icon class="vert-align-middle "  color="blue" size="1.5rem" name="verified">
+                                            <q-tooltip :delay="1000" class="bg-theme box-shadow text-sm">
+                                                Verified
+                                            </q-tooltip>
+                                        </q-icon>
+                                    </span>
+                                    <span class="h-full " v-if="$store.state.user.is_admin || $store.state.user.is_staff">
+                                        <q-icon class="vert-align-middle " color="green" size="1.5rem" name="admin_panel_settings">
+                                            <q-tooltip :delay="1000" class="bg-theme box-shadow text-sm">
+                                                Staff
+                                            </q-tooltip>
+                                        </q-icon>
+                                    </span> -->
+                                    <span class="h-full" v-if="$store.state.user.private">
+                                        <q-icon class="vert-align-middle "  color="green" size="1.5rem" name="admin_panel_settings">
+                                            <q-tooltip :delay="1000" class="bg-theme box-shadow text-sm">
+                                                Private
+                                            </q-tooltip>
+                                        </q-icon>
+                                    </span>
+                                  </div>
                                 </template>
                                 <template #caption>
                                   <span class="subtitle">@{{ $store.state.user.username }}</span>

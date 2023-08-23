@@ -124,6 +124,8 @@ def user_register(request):
             raise ValueError('Please enter your confirm password')
         if(data['password'] != data['confirm_password']):
             raise ValueError('Password and confirm password must match')
+        
+        print(data)
 
         user = User.objects.create_user(
             first_name=data['first_name'],
@@ -141,7 +143,6 @@ def user_register(request):
 def user_login(request):
     data = json.loads(request.body)
     user = authenticate(username=data['username'], password=data['password'])
-    print(user is not None)
     if(user and user.email_verified):
         login(request, user)
         token = RefreshToken.for_user(user)
@@ -367,7 +368,6 @@ class DeleteAccount(APIView):
             response = JsonResponse({"success": True, "message": "Account deleted."}, status=200)
             for cookies in request.COOKIES:
                 if cookies != "theme":
-                    print(cookies)
                     response.delete_cookie(cookies)
             request.session.flush()
             return response
@@ -376,6 +376,69 @@ class DeleteAccount(APIView):
             return JsonResponse({"error": True}, status=500)
         except:
             return JsonResponse({"error": True}, status=404)
+        
+class Staff(APIView):
+    permission_classes = [IsAdmin, IsAuthenticated]
+    authentication_classes = [CustomAuthentication,]
+
+    def post(self, request):
+        try:
+            user_id = request.query_params['user_id']
+            user = User.objects.get(pk=user_id)
+            user.is_staff = True
+            user.save()
+            return JsonResponse({"success": True, "message": "User is now a staff."})
+        except Exception as e:
+            return JsonResponse({"error": True}, status=500)
+        except:
+            return JsonResponse({"error": True}, status=404)
+        
+    def delete(self, request):
+        try:
+            user_id = request.query_params['user_id']
+            user = User.objects.get(pk=user_id)
+            user.is_staff = False
+            user.save()
+            return JsonResponse({"success": True, "message": "User is no longer a staff."})
+        except Exception as e:
+            return JsonResponse({"error": True}, status=500)
+        except:
+            return JsonResponse({"error": True}, status=404)
+        
+        
+class VerifyUser(APIView):
+    permission_classes = [IsAdminOrStaff, IsAuthenticated]
+    authentication_classes = [CustomAuthentication,]
+
+    def post(self, request):
+        try:
+            user_id = request.query_params['user_id']
+            user = User.objects.get(pk=user_id)
+            user.verified = True
+            user.save()
+            return JsonResponse({"success": True, "message": "User is now verified."})
+        except Exception as e:
+            return JsonResponse({"error": True}, status=500)
+        except:
+            return JsonResponse({"error": True}, status=404)
+        
+    def delete(self, request):
+        try:
+            user_id = request.query_params['user_id']
+            user = User.objects.get(pk=user_id)
+            user.verified = False
+            user.save()
+            return JsonResponse({"success": True, "message": "User is no longer verified."})
+        except Exception as e:
+            return JsonResponse({"error": True}, status=500)
+        except:
+            return JsonResponse({"error": True}, status=404)
+        
+
+
+
+def send_user_verification(request):
+    pass
         
 
 class LogoutView(APIView):
@@ -413,46 +476,7 @@ class LogoutFromAll(APIView):
     def delete(self, request):
         sessions = Session.objects.filter(expire_date__gte=datetime.timezone.now(), 
                                        session_key__contains=request.user_id)
-
-        # Delete the sessions
         sessions.delete()
-
-
-class SuperUser(APIView):
-    permission_classes = [IsAuthenticated,]
-
-    def get(self, request):
-        user = User.objects.get(id=request.user.id)
-        if user.is_superuser:
-            return JsonResponse({"message": True}, safe=False)
-        return JsonResponse({"message": False}, safe=False)
-
-    def post(self, request):
-        try:
-            user = User.objects.get(id=request.user.id)
-            user.is_superuser = True
-            user.save()
-            return JsonResponse({"success": True}, safe=False)
-        except:
-            return JsonResponse({"error": True}, safe=False)
-
-class Staff(APIView):
-    permission_classes = [IsAuthenticated,]
-
-    def get(self, request):
-        user = User.objects.get(id=request.user.id)
-        if user.is_staff:
-            return JsonResponse({"message": True}, safe=False)
-        return JsonResponse({"message": False}, safe=False)
-
-    def post(self, request):
-        try:
-            user = User.objects.get(id=request.user.id)
-            user.is_staff = True
-            user.save()
-            return JsonResponse({"success": True}, safe=False)
-        except:
-            return JsonResponse({"error": True}, safe=False)
 
 
 

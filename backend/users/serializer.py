@@ -20,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     is_following = serializers.SerializerMethodField()
     is_current_user = serializers.SerializerMethodField()
+    notification_on = serializers.SerializerMethodField()
         
 
     def get_name(self, obj):
@@ -46,6 +47,13 @@ class UserSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             user = request.user
             return user == instance
+        return False
+    
+    def get_notification_on(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            user = request.user
+            return obj.followers.filter(followed_user=obj, notification=True).exists()
         return False
 
 

@@ -22,8 +22,6 @@ def enforce_csrf(request):
         raise exceptions.PermissionDenied('CSRF Failed: %s' % reason)
     
 
-
-
 class CustomAuthentication(JWTAuthentication):
     def authenticate(self, request): 
         header = self.get_header(request)
@@ -78,23 +76,22 @@ class CustomAuthentication(JWTAuthentication):
             return self.get_user(validated_token), validated_token
         except:
             return None
-        
-    def authenticate_with_token(self, request, token):
-        # try:
-        #     validated_token = self.get_validated_token(token)
-        #     user = self.get_user(validated_token)
-        #     return user, validated_token
-        # except TokenError as e:
-        #     print('Token error:', e)
-        # except Exception as e:
-        #     print('Exception:', e)
-        # except:
-        #     print('here')
-        # return None
+
+
+class CustomTokenAuthentication:
+
+    def authenticate(self,request):
+        token = request.COOKIES.get('token')
+        if not token:
+            return None
         try:
-            pass
-        except:
-            pass
+            token = Token.objects.get(key=token)
+        except Token.DoesNotExist:
+            return None
+        if not token.user.is_active:
+            return None
+        return token.user, token
+
     
 
 
@@ -102,14 +99,28 @@ class CustomAuthentication(JWTAuthentication):
     
 
 class IsAuthenticated:
-
     def has_permission(self, request, view):
         # print(view)
         return bool(request.user and request.user.is_authenticated)
     
 
-class IsAdmin:
-
+class IsStaff:
     def has_permission(self, request, view):
-        return bool(request.user and request.user.is_staff)
+        return bool(request.user and (request.user.is_staff or request.user.is_admin))
+    
+
+class IsAdmin:
+    def has_permission(self, request, view):
+        return bool(request.user and request.user.is_admin)
+    
+class IsAdminOrStaff:
+    def has_permission(self, request, view):
+        return bool(request.user and (request.user.is_admin or request.user.is_staff))
+    
+
+class IsSuperuser:
+    def has_permission(self, request, view):
+        return bool(request.user and request.user.is_superuser)
+    
+
     

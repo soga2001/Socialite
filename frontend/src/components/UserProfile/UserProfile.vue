@@ -42,7 +42,7 @@ export default defineComponent({
             newBanner: this.user.banner as string || "",
             new_FN: this.user.first_name,
             new_LN: this.user.last_name,
-            newBio: this.user.bio,
+            newBio: this.user.bio ?? '',
             
             avatarFile: null,
             bannerFile: null,
@@ -62,6 +62,8 @@ export default defineComponent({
 
             zoomAvatar: false,
             zoomBanner: false,
+
+            bioFocuesd: false,
         };
     },
     methods: {
@@ -294,59 +296,23 @@ export default defineComponent({
 <template>
     <div class="user">
         <div class="user__container  relative">
-            <!-- <div class=' grid cols-auto-fr rows-4 relative overflow-hidden'>
-                <div id="banner" class='p-0 col-start-1 col-span-full z-2 bg-theme-soft h-full pointer' @click="zoomBanner = true">
-                    <img v-if="banner" class="hover-darker" :src="banner" alt="banner"/>
-                    <img v-else class="hover-darker" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
-                </div>
-                <div class="profile-img profile-pic z-2 pointer overflow-hidden" @click="zoomAvatar = true">
-                    <img v-if="avatar" class="profile-pic__image hover-darker" :src="avatar" alt="Profibild" />
-                    <img v-else class="profile-picture hover-darker" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
-                </div>
-                
-                <zoomImg v-if="zoomAvatar" :img="avatar" :open="zoomAvatar" @update:open="zoomAvatar = $event"/>
-                <zoomImg v-if="zoomBanner" :img="banner" :open="zoomBanner" @update:open="zoomBanner = $event"/>
-
-                <div class="edit-profile text-base w-full h-fit flex justify-end p-2">
-                    <button class="border pointer bg-hover rounded-lg text-heading bg-theme weight-900" v-if="followed">
-                        <q-icon size="1.5rem" name="more_horiz" />
-                    </button>
-                    <button class="border pointer bg-hover rounded-lg text-heading bg-theme weight-900" v-if="followed">
-                        <q-icon size="1.5rem" name="notifications" />
-                    </button>
-                    <button flat v-if="is_current_user" class="border pointer bg-hover-mute rounded-lg px-6 text-heading bg-theme weight-900" @click="editProfile = true">
-                        Edit Profile
-                    </button>
-                    <button v-if="!is_current_user" :class="{'followed': followed}" class="border w-8 pointer bg-hover-soft rounded-lg px-6 text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated || loading_follow_request">
-                        <span class="weight-900"  v-if="!loading_follow_request">{{ followed ? 'Following' : 'Follow' }}</span>
-                        <span class="p-0" v-if="loading_follow_request">
-                            <Loading size="1.3rem" />
-                        </span>
-                    </button>
-                    
-                    
-                    
-                </div>
-            </div> -->
-
             <div class=" w-full m-0 p-0 h-fit bg-green relative">
                 <div class='banner p-0 w-full relative bg-theme-soft h-full pointer' @click="zoomBanner = true">
                     <img v-if="banner" class="hover-darker w-full" :src="banner" alt="banner"/>
-                    <img v-else class="hover-darker w-full" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
                 </div>
                 <div class="avatar z-2 pointer overflow-hidden" @click="zoomAvatar = true">
                     <img v-if="avatar" class="profile-pic__image hover-darker w-full " :src="avatar" alt="Profibild" />
-                    <img v-else class="profile-picture hover-darker w-full" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
                 </div>
-                <zoomImg v-if="zoomAvatar" :img="avatar" :open="zoomAvatar" @update:open="zoomAvatar = $event"/>
-                <zoomImg v-if="zoomBanner" :img="banner" :open="zoomBanner" @update:open="zoomBanner = $event"/>
+                <zoomImg v-if="zoomAvatar && avatar" :img="avatar" :open="zoomAvatar" @update:open="zoomAvatar = $event"/>
+                <zoomImg v-if="zoomBanner && avatar" :img="banner" :open="zoomBanner" @update:open="zoomBanner = $event"/>
 
-                <div class="edit-profile absolute right-0 text-base h-fit p-2">
+                <div class="edit-profile absolute right-0 text-base h-fit p-2 flex gap-1">
                     <button class="border pointer bg-hover rounded-lg text-heading bg-theme weight-900" v-if="followed">
                         <q-icon size="1.5rem" name="more_horiz" />
                     </button>
                     <button class="border pointer bg-hover rounded-lg text-heading bg-theme weight-900" v-if="followed">
-                        <q-icon size="1.5rem" name="notifications" />
+                        <q-icon v-if="user.notification_on" size="1.5rem" name="notifications" />
+                        <q-icon v-else size="1.5rem" name="notifications_off" />
                     </button>
                     <button flat v-if="is_current_user" class="border pointer bg-hover-mute rounded-lg px-6 text-heading bg-theme weight-900" @click="editProfile = true">
                         Edit Profile
@@ -361,12 +327,12 @@ export default defineComponent({
             </div>
 
             <div class="h-full">
-                <q-dialog class="h-full w-full" v-model="editProfile" persistent :maximized="$q.screen.lt.sm ? true : false">
-                    <q-card class="h-fit bg-theme border">
-                        <q-card-section>
+                <q-dialog class="h-full w-full p-0 m-0" v-model="editProfile" persistent :maximized="$q.screen.lt.sm ? true : false">
+                    <div class="h-fit bg-theme border min-w-72 w-full fixed w-full">
+                        <div class="sticky top-0 z-10 bg-theme border-b">
                             <Item>
                                 <template #title>
-                                    <div class="text-h6">Edit Profile</div>
+                                    <div class="text-2xl weight-900">Edit Profile</div>
                                 </template>
                                 <template #icon>
                                     <div class="pointer" @click="editProfile = !editProfile">
@@ -375,14 +341,13 @@ export default defineComponent({
                                     
                                 </template>
                             </Item>
-                        </q-card-section>
+                        </div>
 
-                        <q-card-section class="q-pt-none">
-                            <div class=' grid cols-auto-fr rows-4 relative'>
-                                <div id="banner" class='col-start-1 col-span-full bg-theme-soft h-fit' >
-                                    <img v-if="!newBanner && banner" :src="banner"/>
-                                    <img v-else-if="newBanner" :src="newBanner" alt="banner"/>
-                                    <img v-else class="" src="https://unsplash.it/1000/1000/?random&pic=1" alt="banner"/>
+                        <div class="q-pt-none">
+                            <div class="w-full m-0 p-0 h-fit bg-green relative">
+                                <div class='banner p-0 w-full relative bg-theme-soft h-full pointer' @click="zoomBanner = true">
+                                    <img v-if="!newBanner && banner" class="w-full" :src="banner" alt="banner"/>
+                                    <img v-else-if="newBanner" :src="newBanner" alt="Profile img" />
                                     <div class="centered-on-image">
                                         <button class="border-none btn-themed-low-op pointer rounded-lg p-3" @click="toggleBanner">
                                             <q-icon color="white" name="edit" size="2rem"/>
@@ -390,15 +355,12 @@ export default defineComponent({
                                         <input ref="bannerUpload" type="file" id="file" @change="launchCropper" hidden/>
                                     </div>
                                     <div class=" hidden">
-                                        <!-- <image-cropper ref="bannerDialog" :aspect-ratio="3/1" :filename="fileName" :chosen-img="newBanner" @close="newBanner = null" @onReset="{$refs.bannerUpload.value = null; showBanner = false}" @file="bannerFile = $event" @onCrop="(croppedImage) => {newBanner = croppedImage}"/> -->
-                                            <image-cropper ref="bannerDialog" :aspect-ratio="3/1" :fileName="fileName" :chosen-img="newBanner" @onReset="{($refs.bannerUpload as HTMLInputElement).value = ''; showBanner = false}" @file="bannerFile = $event" @onCrop="(croppedImage: string) => {newBanner = croppedImage}" />
+                                        <image-cropper ref="bannerDialog" :aspect-ratio="3/1" :fileName="fileName" :chosen-img="newBanner" @onReset="{($refs.bannerUpload as HTMLInputElement).value = ''; showBanner = false}" @file="bannerFile = $event" @onCrop="(croppedImage: string) => {newBanner = croppedImage}" />
                                     </div>
-                                    
                                 </div>
-                                <div class="profile-img profile-pic relative overflow-hidden">
-                                    <img v-if="!newAvatar && avatar" :src="avatar" alt="profile img"/>
+                                <div class="avatar z-2 profile-img profile-pic overflow-hidden" @click="zoomAvatar = true">
+                                    <img v-if="!newAvatar && avatar" class="profile-pic__image hover-darker w-full " :src="avatar" alt="Profibild" />
                                     <img v-else-if="newAvatar" class="profile-pic__image" :src="newAvatar" alt="Profile img" />
-                                    <img v-else class="profile-picture__image" src="https://unsplash.it/300/300/?random&pic=1(14 kB)" alt="profile-picture"/>
                                     <div class="centered-on-image">
                                         <button class="border-none pointer btn-themed-low-op rounded-lg p-3 bg-gray-op" @click="toggleAvatar">
                                             <q-icon color="white" name="edit" size="2rem"/>
@@ -406,35 +368,50 @@ export default defineComponent({
                                         <input ref="avatarUpload" type="file" id="file" @change="launchCropper" hidden/>
                                     </div>
                                     <div class="z-100 hidden">
-                                        <!-- <image-cropper ref="avatarDialog" :fileName="fileName" :chosen-img="newAvatar" @close="newAvatar = null" @onReset="{$refs.avatarUpload.value = null; showAvatar = false}" @file="avatarFile = $event" @onCrop="(croppedImage) => {newAvatar = croppedImage}"/> -->
-                                            <image-cropper circle ref="avatarDialog" :fileName="fileName" :chosen-img="newAvatar" @close="{newAvatar = ''; showAvatar = false}" @onReset="{($refs.avatarUpload as HTMLInputElement).value = ''; showAvatar = false}" @file="avatarFile = $event" @onCrop="(croppedImage: string) => {newAvatar = croppedImage}" />
+                                        <image-cropper circle ref="avatarDialog" :fileName="fileName" :chosen-img="newAvatar" @close="{newAvatar = ''; showAvatar = false}" @onReset="{($refs.avatarUpload as HTMLInputElement).value = ''; showAvatar = false}" @file="avatarFile = $event" @onCrop="(croppedImage: string) => {newAvatar = croppedImage}" />
                                     </div>
-                                    
                                 </div>
+                                <zoomImg v-if="zoomAvatar && avatar" :img="avatar" :open="zoomAvatar" @update:open="zoomAvatar = $event"/>
+                                <zoomImg v-if="zoomBanner && avatar" :img="banner" :open="zoomBanner" @update:open="zoomBanner = $event"/>
                             </div>
-                            <div>
-                                <q-input class="text-lg" :dark="theme" v-model="new_FN" label="Last Name"> 
-                                </q-input>
-                                <q-input class="text-lg" :dark="theme" v-model="new_LN" label="Last Name" />
-                                <q-input class="text-lg" :dark="theme" v-model="newBio" type="textarea" label="Bio" />
+                            <div class="user-profile__info flex flex-col gap-1 w-full">
+                                <Input showCharCounts :charLimit="30" :defaultVal="new_FN" @update:val="new_FN = $event" input_type="text" input_label="First Name" id="first_name" class="w-full my-2" />
+                                <Input showCharCounts :charLimit="30" :defaultVal="new_LN" @update:val="new_LN = $event" input_type="text" input_label="Last Name" id="last_name" class="w-full my-2" />
+                                <Textarea showCharCounts :charLimit="160" maxHeight="176" height="200px" :defaultVal="newBio" @update:val="newBio = $event" input_type="text" input_label="Bio" id="username" class="w-full my-2" />
                             </div>
-                        </q-card-section>
+                        </div>
 
-                        <q-card-actions align="right">
-                            <q-btn flat label="Cancel" color="primary" @click="onCancel" />
-                            <q-btn flat @click="updateProfile">
-                                <div class="capitalize">
-                                    Save
-                                </div>
-                            </q-btn>
-                        </q-card-actions>
-                    </q-card>
+                        <div class="flex flex-rows border-t sticky bottom-0">
+                            <div class="flex flex-rows gap-2 p-2 ml-auto">
+                                <button class="px-7 py-2 border-none rounded text-base text-heading weight-900" @click="onCancel">Cancel</button>
+                                <button class="px-7 py-2 border-none bg-web-theme rounded text-base  text-heading weight-900" @click="updateProfile">Save</button>
+                            </div>
+                        </div>
+                    </div>
                 </q-dialog>
             </div>
         
             <div class="user-profile__info flex py-1 mb-5">
                 <div class="flex flex-col text-left" >
-                    <div class="user-name text-2xl weight-900 text-heading">{{ first_name }} {{ last_name }}</div>
+                    <div class="flex gap-2 items-center">
+                        <span class="user-name text-2xl weight-900 text-heading ">
+                            {{ first_name }} {{ last_name }}
+                        </span>
+                        <span class="h-full ">
+                            <q-icon class="vert-align-middle " v-if="user.verified" color="blue" size="2rem" name="verified">
+                                <q-tooltip :delay="1000" class="bg-theme text-heading box-shadow text-sm">
+                                    Verified
+                                </q-tooltip>
+                            </q-icon>
+                        </span>
+                        <span class="h-full ">
+                            <q-icon class="vert-align-middle " v-if="user.is_admin || user.is_staff" color="green" size="2rem" name="admin_panel_settings">
+                                <q-tooltip :delay="1000" class="bg-theme text-heading box-shadow text-sm">
+                                    Staff
+                                </q-tooltip>
+                            </q-icon>
+                        </span>
+                    </div>
                     <div class="text-body text-base">@{{ username }}</div>
 
                     <div class="user-bio text-xl py-2 text-heading weight-600">{{ bio }}</div>

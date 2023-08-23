@@ -95,16 +95,18 @@ export default defineComponent({
         const endIndex = this.index + u.length
         const ending = this.val.substring(endIndex)
         this.val = beginning + this.val.substring(at, space < at ? length : space).replace(u, '@' + username + ' ') + ending
+        this.users = new Array<User>()
         const input = this.$refs.textarea as HTMLInputElement;
         this.emitData()
-        const data = await this.getUsers(username)
-        await this.savedUsers.set(username, data)
-        this.users = new Array<User>()
         this.$nextTick(() => {
           input.setSelectionRange(at + username.length + 2, at + username.length + 2);
         });
         input.focus();
         this.index = -1
+        this.loading = false
+        
+        const data = await this.getUsers(username)
+        await this.savedUsers.set(username, data)
       },
       async mention(e: any) {
         // if input is empty
@@ -141,6 +143,7 @@ export default defineComponent({
             this.loading = true
             const user = this.val.substring(this.index, space < this.index ? this.val.length : space).match(/@\w+/g);
             if(user) {
+              this.loading = true
               user.forEach(async (match) => {
                 const username = match.replace("@", "");
                 const u = this.savedUsers.get(username)
@@ -157,6 +160,7 @@ export default defineComponent({
                     this.users = new Array<User>()
                     this.hasResults = false
                   }
+                  this.loading = false
                 }
               });
             }
@@ -287,24 +291,8 @@ export default defineComponent({
   <div class="main " ref="mentionDiv">
     <div class="relative w-full" ref="div">
         <textarea ref="textarea" :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars" @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input textl-xl"/>
-        <!-- <div v-if="caretPosition.top" :style="{bottom: !resultsBelow ? `${300 + caretPosition.height + 20}px` : 'auto', top: resultsBelow ? ((caretPosition.top + caretPosition.height <= ($refs.textarea as HTMLInputElement).offsetHeight) ? `${caretPosition.top + caretPosition.height + 20}px` : (($refs.textarea as HTMLInputElement).offsetHeight + 20) + 'px') : 'auto', backgroundColor: !resultsBelow ? 'red' : 'transparent'}"  ref="results"  class="results absolute left-0 bg-theme box-shadow-soft flex flex-col shrink rounded-sm" >
-          <div >
-            <div v-if="users.length >0"  @click="replaceMention(user.username)" class=" pointer w-full" v-for="user in users" :key="user.id">
-              <Item class="bg-hover-mute" avatarSize="3.5rem">
-                  <template #avatar>
-                      <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
-                      <q-icon size="50px" v-else name="account_circle" class="rounded-full" />
-                  </template>
-                  <template #title>
-                    <span class="text-xl text-heading weight-900">{{user.first_name + ' ' + user.last_name}}</span> 
-                  </template>
-                  <template #caption>@{{ user.username }}</template>
-              </Item>
-            </div>
-          </div>  
-          </div> -->
           <div v-if="caretPosition.top" :style="resultStyle"  ref="results" class="results fixed bg-theme box-shadow-soft flex flex-col shrink rounded-sm">
-            <div >
+            <div>
               <div v-if="users.length > 0" @click="replaceMention(user.username)" class=" pointer w-full" v-for="user in users" :key="user.id">
                 <Item de class="bg-hover-mute" avatarSize="3.5rem">
                     <template #avatar>
@@ -316,6 +304,11 @@ export default defineComponent({
                     </template>
                     <template #caption>@{{ user.username }}</template>
                 </Item>
+              </div>
+              <div v-if="loading && users.length == 0">
+                <div class="flex justify-center items-center p-2">
+                  <Loading size="3rem" />
+                </div>
               </div>
             </div>
         </div>

@@ -79,7 +79,14 @@ export default defineComponent({
       else if(!this.$store.state.authenticated){
         this.$router.push('/login')
       }
-    }
+    },
+    '$route': {
+        immediate: true,
+        handler(to, from) {
+          console.log(document.title)
+          document.title = to.meta.title || 'BasedBook';
+        }
+    },
   }
 })
 

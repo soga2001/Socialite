@@ -125,7 +125,18 @@ export default defineComponent({
                     id: this.id
                 },
             }).then((res) => {
-                this.deleted = true
+                // this.deleted = true
+                if(res.data.success) {
+                    this.deleted = true
+                }
+                else {
+                    this.$notify({
+                        title: 'Error!',
+                        text: res.data.message,
+                        type: 'error',
+                        group: 'error',
+                    })
+                }
             }).catch((err) => {
                 console.log(err);
             });
@@ -248,6 +259,28 @@ export default defineComponent({
                                 </user-card>
                             </div>
 
+                            <span class="h-full" v-if="user.verified">
+                                <q-icon class="vert-align-middle "  color="blue" size="1.5rem" name="verified">
+                                    <q-tooltip :delay="1000" class="bg-theme text-heading box-shadow text-sm">
+                                        Verified
+                                    </q-tooltip>
+                                </q-icon>
+                            </span>
+                            <span class="h-full " v-if="user.is_admin || user.is_staff">
+                                <q-icon class="vert-align-middle " color="green" size="1.5rem" name="admin_panel_settings">
+                                    <q-tooltip :delay="1000" class="bg-theme text-heading box-shadow text-sm">
+                                        Staff
+                                    </q-tooltip>
+                                </q-icon>
+                            </span>
+                            <span class="h-full" v-if="user.private">
+                                <q-icon class="vert-align-middle "  color="green" size="1.5rem" name="admin_panel_settings">
+                                    <q-tooltip :delay="1000" class="bg-theme text-heading box-shadow text-sm">
+                                        Private
+                                    </q-tooltip>
+                                </q-icon>
+                            </span>
+
                             <span class="text-lighter weight-900">&#183;</span>
 
                             <div>
@@ -285,7 +318,7 @@ export default defineComponent({
                                             <q-item-label>Report Post</q-item-label>
                                         </q-item-section>
                                     </q-item>
-                                    <q-item clickable v-close-popup @click="persistent = true" tabindex="0" v-if="post.is_owner">
+                                    <q-item clickable v-close-popup @click="persistent = true" tabindex="0" v-if="post.is_owner || post.user.is_admin || post.user.is_staff">
                                         <q-item-section avatar>
                                             <q-icon class="danger__icon" name="delete_forever"/>
                                         </q-item-section>

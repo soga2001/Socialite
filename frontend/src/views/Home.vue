@@ -117,10 +117,10 @@ export default defineComponent({
                 <i-folder :fill="'black'" stroke="black"/>
             </div>
             <div class="text-xl weight-900">
-                Follow more users to see their posts here.
+                Follow users to see their posts here.
             </div>
         </div>
-        <div class="w-full flex flex-center flex-col p-2" v-if="!loading && !hasMore">
+        <div class="w-full flex flex-center flex-col p-2" v-if="!loading && !hasMore && posts.length !== 0">
             <div class="text-base text-heading text-center weight-900">
               Follow more users to view their spills here; you've already seen all updates from those you currently follow.
             </div>

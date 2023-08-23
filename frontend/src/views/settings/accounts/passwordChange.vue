@@ -95,13 +95,15 @@ export default defineComponent({
         <div class="w-full flex flex-row justify-center">
             <form class="w-full flex flex-col gap-1" @submit.prevent="submit">
                 <div class="border-b p-2 flex flex-col gap-1">
-                    <q-input color="teal" type="password" outlined v-model="currentPassword" label-slot clearable>
+                    <!-- <q-input :dark="$store.state.dark" type="password" outlined v-model="currentPassword" label-slot clearable>
                         <template v-slot:label>
                             <div class="text-heading weight-500 text-xl">
                                 Current Password
                             </div>
                         </template>
-                    </q-input>
+                    </q-input> -->
+                    <!-- <Input @update:val="currentPassword = $event" input_type="password" input_label="Current Password" id="1" /> -->
+                    <Input @update:val="currentPassword = $event" input_type="password" input_label="Current Password" id="1" />
                     <span class="px-3">
                         <RouterLink to="/" class=" w-fit hover-underline no-decor weight-800 text-theme text-base">
                             Forgot Password?
@@ -110,20 +112,8 @@ export default defineComponent({
                     
                 </div>
                 <div class="p-2 border-b flex flex-col gap-4">
-                    <q-input type="password" outlined v-model="newPassword" label-slot clearable>
-                        <template v-slot:label>
-                            <div class="text-heading weight-500 text-xl">
-                                New Password
-                            </div>
-                        </template>
-                    </q-input>
-                    <q-input type="password" outlined v-model="confirmPassword" label-slot clearable>
-                        <template v-slot:label>
-                            <div class="text-heading weight-500 text-xl">
-                                Confirm Password
-                            </div>
-                        </template>
-                    </q-input>
+                    <Input @update:val="newPassword = $event" input_type="password" input_label="New Password" id="2" />
+                    <Input @update:val="confirmPassword = $event" input_type="password" input_label="Confirm Password" id="3" />
                 </div>
                 
                 <div class="flex w-full">

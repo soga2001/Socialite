@@ -47,6 +47,17 @@ class Follow_User(APIView):
             return JsonResponse({"success": True, "message": 'User unfollowed.'}, safe=False)
         except Exception as e:
             return JsonResponse({"error": True, "message": 'An error occured while trying to follow this user. Please try again later.'}, safe=False)
+        
+    def put(self, request, user_id):
+        try:
+            follow = UserFollowing.objects.get(followed_user=user_id, following_user=request.user.id)
+            follow.notification = not follow.notification
+            follow.save()
+            return JsonResponse({"success": True, "message": 'Notification status changed.', 'notification_on': follow.notification}, safe=False)
+        except UserFollowing.DoesNotExist as e:
+            return JsonResponse({"error": True, "message": 'You are not following this user.'}, safe=False)
+        except:
+            return JsonResponse({"error": True, "message": 'An error occured while trying to change notification status. Please try again later.'}, safe=False)
 
 
 @api_view(["GET"])
@@ -83,7 +94,7 @@ class GetFollowers(APIView):
         user = User.objects.get(username=username)
         # print(user)
         followers = user.followers.values_list('following_user_id', flat=True)
-        followesSerialized = UserSerializer(User.objects.filter(id__in=followers), many=True).data
+        followesSerialized = UserSerializer(User.objects.filter(id__in=followers), context={"request": request}, many=True).data
         return JsonResponse({"success": True, "users": followesSerialized})
     
 
@@ -94,6 +105,6 @@ class GetFollowing(APIView):
             # print(user)
             following = user.following.values_list('followed_user_id', flat=True)
 
-            followingSerialized = UserSerializer(User.objects.filter(id__in=following), many=True).data
+            followingSerialized = UserSerializer(User.objects.filter(id__in=following), context={"request": request}, many=True).data
             return JsonResponse({"success": True, "users": followingSerialized})
             # return JsonResponse({"success": True})

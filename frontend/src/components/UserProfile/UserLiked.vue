@@ -9,10 +9,10 @@ import type { PropType } from 'vue';
 export default defineComponent({
     name: "user-liked",
     props: {
-        websocket: {
-            type: Object as PropType<WebSocket>,
-            required: true,
-        },
+        // websocket: {
+        //     type: Object as PropType<WebSocket>,
+        //     required: true,
+        // },
         scrollPosition: {
             type: Number,
             default: 0,
@@ -20,12 +20,18 @@ export default defineComponent({
         height: {
             type: Number,
             default: 0,
+        },
+        name: {
+            type: String,
+            required: false,
+            default: 'User Liked',
         }
     },
     data() {
         return {
             // user_id: this.$route.query.id,
             username: this.$route.params.username,
+
             page: 0,
             user_timestap: new Date().toISOString(),
             user_liked: new Array<Post>(),
@@ -52,14 +58,14 @@ export default defineComponent({
             });
             this.loading = false
         },
-        async websocketMessage() {
-            this.websocket.onmessage = (e) => {
-                const data = JSON.parse(e.data)
-                if(data.type == "liked") {
-                    this.user_liked.unshift(JSON.parse(data.message))
-                }
-            }
-        },
+        // async websocketMessage() {
+        //     this.websocket.onmessage = (e) => {
+        //         const data = JSON.parse(e.data)
+        //         if(data.type == "liked") {
+        //             this.user_liked.unshift(JSON.parse(data.message))
+        //         }
+        //     }
+        // },
         dislikeSpill(index: number) {
             this.user_liked.splice(index, 1)
         }
@@ -67,7 +73,10 @@ export default defineComponent({
     },
     created() {
         this.getUserLiked()
-        this.websocketMessage()
+        document.title = this.name
+    },
+    activated() {
+        document.title = this.name
     },
     components: { UserPostedMap, Loading },
     watch: {
@@ -94,9 +103,9 @@ export default defineComponent({
             <div class="post_map border-b" v-if="user_liked.length > 0" v-for="(post, index) in user_liked" :id="post.id" :key="post.id">
                 <PostsMap :post="post" />
             </div>
-            <div class="w-full flex justify-center p-5" v-if="loading">
+            <!-- <div class="w-full flex justify-center p-5" v-if="loading">
                 <Loading />
-            </div>
+            </div> -->
         </div>
         <div class="w-full flex flex-center flex-col" v-if="user_liked.length == 0 && !loading">
             <div>

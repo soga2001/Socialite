@@ -15,31 +15,40 @@ const router: Router = createRouter({
   
   routes: [
     {
+      path: '/',
+      name: 'landing-page',
+      component: () => import('../views/LandingPage.vue'),
+    },
+    {
+      path: '/home',
+      name: 'home',
+      component: () => import('../views/Home.vue'),
+      meta: {
+        auth: true,
+        title: 'Home',
+      },
+    },
+    {
       path: '/search',
       name: 'search',
       component: () => import('../views/Search.vue'),
       props: route => ({ query: route.query.q })
     },
     {
-      path: '/home',
-      name: 'home',
-      alias: '/',
-      component: () => import('../views/Home.vue'),
-      meta: {
-        auth: true
-      },
-    },
-    {
       path: '/explore',
       name: 'explore',
       component: () => import('../views/Explore.vue'),
+      meta: {
+        title: 'Explore'
+      }
     },
     {
       path: '/notifications',
       name: 'notifications',
       component: () => import('../views/NotificationsView.vue'),
       meta: {
-        auth: true
+        auth: true,
+        title: 'Notifications'
       },
       children : [
         {
@@ -75,7 +84,8 @@ const router: Router = createRouter({
       name: 'register',
       component: () => import('../views/Register.vue'),
       meta: {
-        hideForAuth: true
+        hideForAuth: true,
+        title: 'Register',
       }
     },
     {
@@ -85,6 +95,9 @@ const router: Router = createRouter({
       alias: '/:username?/*',
       redirect: {
         name: 'user-posted'
+      },
+      meta: {
+        title: 'Profile'
       },
       children : [
         {
@@ -109,16 +122,23 @@ const router: Router = createRouter({
     {
       path: '/:pathMatch(.*)*',
       component: () => import('../views/PageNotFound.vue'),
+      meta: {
+        title: 'Page not foun'
+      }
     },
     {
       path: '/verify/email',
       component: () => import('@/views/VerifyEmail.vue'),
+      meta: {
+        title: 'Email Verification'
+      }
     },
     {
       path: '/reset/password',
       component: () => import('@/views/ForgotPass.vue'),
       meta: {
-        hideForAuth: true
+        hideForAuth: true,
+        title: 'Reset Password'
       }
     },
     {
@@ -126,7 +146,8 @@ const router: Router = createRouter({
       name: 'settings',
       component: () => import('@/views/settings/settings.vue'),
       meta: {
-        auth: true
+        auth: true,
+        title: 'Settings'
       },
       children: [
         {
@@ -139,24 +160,51 @@ const router: Router = createRouter({
           name: 'account-information',
           // alias: '/settings/account-information',
           component: () => import('@/views/settings/accounts/accountInfo.vue'),
+          meta: {
+            auth: true,
+            title: 'Account Information'
+          }
+
         },
         {
           path: 'change-password',
           name: 'change-password',
           // alias: '/settings/change-password',
           component: () => import('@/views/settings/accounts/passwordChange.vue'),
+          meta: {
+            auth: true,
+            title: 'Change Password'
+          }
         },
         {
           path: 'deactive-account',
           name: 'deactive-account',
           // alias: '/settings/deactive-account',
           component: () => import('@/views/settings/accounts/deactiveAccount.vue'),
+          meta: {
+            auth: true,
+            title: 'Deactive Account'
+          }
         },
         {
           path: 'delete-account',
           name: 'delete-account',
           // alias: '/settings/delete-account',
           component: () => import('@/views/settings/accounts/deleteAccount.vue'),
+          meta: {
+            auth: true,
+            title: 'Delete Account'
+          }
+        },
+        {
+          path: 'notification-settings',
+          name: 'notification-settings',
+          alias: ['/settings/notification-settings', '/notifications-settings'],
+          component: () => import('@/views/settings/notificationSettings.vue'),
+          meta: {
+            auth: true,
+            title: 'Notification Settings'
+          }
         }
       ]
     },

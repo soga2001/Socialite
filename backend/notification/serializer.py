@@ -11,8 +11,3 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = '__all__'
-
-    # def get_actor(self, obj):
-    #     if(self.context):
-    #         return BasicUserSerializer(obj.actor, context=self.context ).data
-    #     return BasicUserSerializer(obj.actor).data

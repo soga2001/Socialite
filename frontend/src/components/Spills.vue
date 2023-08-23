@@ -106,7 +106,24 @@ export default defineComponent({
         deleteImg() {
           this.image = null;
           this.imgURL = '';
-        }
+        },
+        disablePost() {
+          if(this.isComment) {
+            if(this.chars > 255) {
+              this.disabled = true;
+            }
+            else {
+              this.disabled = false;
+            }
+            return
+          }
+          if(this.image === null || this.chars > 255) {
+            this.disabled = true;
+          }
+          else {
+            this.disabled = false;
+          }
+        },
     },
     created() {
     },
@@ -114,12 +131,10 @@ export default defineComponent({
     },
     watch: {
       chars(chars) {
-        if(chars <= 255) {
-          this.disabled = false;
-        }
-        else {
-          this.disabled = true;
-        }
+        this.disablePost()
+      },
+      image(image) {
+        this.disablePost()
       },
 
     },
@@ -148,10 +163,10 @@ export default defineComponent({
                 <i-upload-img  size="1.5rem" fill="rgb(253, 137, 137)" stroke="rbg(253,137,137)"/>
                 <input ref="file" @change="getImage" type="file" id="file" style="display: none" name="image" accept="image/*" data-original-title="upload photos"/>
               </q-btn>
-              <label :hidden="isComment" class="pointer btn-transition btn-hover-ligher pt-2 px-2 rounded">
+              <!-- <label :hidden="isComment" class="pointer btn-transition btn-hover-ligher pt-2 px-2 rounded">
                 <i-upload-vid size="1.5rem" fill="rgb(253, 137, 137)" stroke="rgb(253, 137, 137)" />
                 <input @change="getImage" type="file" id="file" style="display: none" name="image" accept="image/*" data-original-title="upload photos"/>
-              </label>
+              </label> -->
             </div>
             <div class="sticky bottom-0 justify-end flex flex-row-reverse items-center gap-2 mr-2 end">
               <q-btn class="right bottom-0 right-0 mr-2 btn btn-themed text-heading rounded px-7 py-2 weight-900" flat dense :loading="submitting" type="submit" push :disable="disabled">

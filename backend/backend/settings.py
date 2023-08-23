@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'likes.apps.LikesConfig',
     'postviews.apps.PostviewsConfig',
     'tokens.apps.TokensConfig',
+    'bugsreport.apps.BugsConfig'
 ]
 
 MIDDLEWARE = [

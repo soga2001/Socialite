@@ -201,11 +201,16 @@ export default defineComponent({
     },
     components: { },
     watch: {
-       '$route'() {
+        '$route'() {
             this.divExit()
-       },
+        },
         comments(comments) {
             this.total_comments = comments.length;
+        },
+        spill(spill) {
+            if(spill.user.username) {
+                document.title = `Spill by ${spill.user.first_name} ${spill.user.last_name}`
+            }
         }
     }
 })
