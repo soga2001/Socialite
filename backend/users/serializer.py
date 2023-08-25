@@ -4,6 +4,9 @@ from users.models import User
 from following.models import UserFollowing
 
 from user_sessions.models import Session
+from user_agents import parse
+from django.contrib.gis.geoip2 import GeoIP2
+g = GeoIP2()
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -122,6 +125,9 @@ class BasicUserSerializer(serializers.ModelSerializer):
 class UserSessionSerializer(serializers.ModelSerializer):
 
     current_session = serializers.SerializerMethodField()
+    device = serializers.SerializerMethodField()
+    location = serializers.SerializerMethodField()
+    browser = serializers.SerializerMethodField()
 
     class Meta:
         model = Session
@@ -132,6 +138,22 @@ class UserSessionSerializer(serializers.ModelSerializer):
     def get_current_session(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            user = request.user
             return request.session.session_key == obj.session_key
         return False
+    
+    
+    def get_device(self, obj):
+        user_agent = parse(obj.user_agent)
+        return user_agent.device.model
+        
+    def get_browser(self, obj):
+        user_agent = parse(obj.user_agent)
+        return user_agent.browser.family
+        
+    def get_location(self, obj):
+        try:
+            data = g.city('67.165.237.109')
+            return data
+        except Exception as e:
+            return None
+        

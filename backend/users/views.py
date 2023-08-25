@@ -256,8 +256,6 @@ class UpdateProfile(APIView):
 
     def post(self, request):
         try:
-            # if 'avatar' in json.loads(request.body):
-            #     print('lol')
             avatar = None
             banner = None
             bio = None
@@ -313,7 +311,6 @@ class UpdateProfile(APIView):
             updatedUser = UserSerializer(user).data
             return JsonResponse({"success": True, "user": updatedUser,  "message": "Profile Updated."})
         except Exception as e:
-            print(e)
             return JsonResponse({"error": True, "message": str(e)}, status=500)
         except:
             return JsonResponse({"error": True}, status=404)
@@ -486,6 +483,7 @@ class AllSessions(APIView):
             serializedSessions = UserSessionSerializer(sessions,context={"request": request}, many=True).data
             return JsonResponse({"success": True, 'sessions': serializedSessions})
         except Exception as e:
+            print(e)
             return JsonResponse({"error": True})
         
     def delete(self, request):
@@ -497,25 +495,29 @@ class AllSessions(APIView):
         except:
             return JsonResponse({"error": True})
         
-class DeleteSpecificSession(APIView):
+        
+class SpecificSession(APIView):
     permission_classes = [IsAuthenticated,]
     authentication_classes = [CustomAuthentication,]
+
+
+    def get(self, request):
+        try:
+            user = request.user
+            session_key = request.query_params['session_key']
+            session = user.session_set.get(session_key=session_key)
+            serializedSession = UserSessionSerializer(session,context={"request": request}).data
+            return JsonResponse({"success": True, 'session': serializedSession})
+        except Exception as e:
+            print(e)
+            return JsonResponse({"error": True})
 
     def delete(self, request):
         try:
             user = request.user
-            session_id = request.query_params['session_id']
-            sessions = user.session_set.filter(pk=session_id)
-            if(session_id == request.session.session_key):
-                print('here')
-                logout(request)
-                response = JsonResponse({"success": True, 'current_session': True, "message": "Logged out."}, status=200)
-                for cookies in request.COOKIES:
-                    if cookies != "theme":
-                        response.delete_cookie(cookies)
-                request.session.flush()
-                return response
-            sessions.delete()
+            session_key = request.query_params['session_key']
+            session = user.session_set.get(session_key=session_key)
+            session.delete()
             return JsonResponse({'success': True, 'message': 'Logged out of session'}, status=200)
         except:
             return JsonResponse({"error": True})

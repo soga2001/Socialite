@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'user_sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',
@@ -77,11 +78,11 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'x_forwarded_for.middleware.XForwardedForMiddleware',
     'user_sessions.middleware.SessionMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # 'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -112,9 +113,12 @@ CORS_ALLOW_METHODS = [
 NOTIFICATIONS_NOTIFICATION_MODEL = 'notification.Notification'
 DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
 
-GEOIP_PATH = os.path.join(BASE_DIR, 'geoip')
+# GEOIP_PATH = os.path.join(BASE_DIR, 'geoip')
+GEOIP_PATH = '/Users/Suyogya/Projects/BasedBook/backend/geoip'
 GEOIP_COUNTRY = 'GeoLite2-Country.mmdb'
 GEOIP_CITY = 'GeoLite2-City.mmdb'
+# GEOIP_COUNTRY='dbip-country-lite.mmdb'
+# GEOIP_CITY='dbip-city-lite.mmdb'
 
 
 

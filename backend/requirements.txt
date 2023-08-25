@@ -105,8 +105,10 @@ Twisted==22.10.0
 txaio==23.1.1
 typing_extensions==4.7.1
 tzdata==2022.1
+ua-parser==0.18.0
 uritemplate==4.1.1
 urllib3==1.26.12
+user-agents==2.2.0
 watchdog==3.0.0
 wcwidth==0.2.5
 Werkzeug==2.2.3
