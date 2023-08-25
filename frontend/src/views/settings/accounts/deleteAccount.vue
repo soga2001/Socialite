@@ -45,11 +45,14 @@ export default defineComponent({
                 }
             }).catch((err) => {
                 if(err.response.status === 401) {
-                    this.$notify({
-                        title: 'Error!',
-                        text: err.response.data.message,
-                        type: 'error',
-                        group: 'error',
+                    this.$q.notify({
+                        message: `<span class="text-white">${err.response.data.message}</span>`,
+                        color: 'negative',
+                        icon: 'report_problem',
+                        iconColor: 'white',
+                        position: 'top',
+                        timeout: 2500,
+                        html: true,
                     })
                 }
                 
@@ -119,34 +122,36 @@ export default defineComponent({
                 </span>
             </q-btn>
         </div>
-        <q-dialog v-model="toDelete" persistent>
-            <q-card class="min-w-68 w-full max-w-sm">
-            <q-card-section>
-                <Item>
-                    <template #title>
-                        <span class="text-heading weight-900">Confirm Password</span>
-                    </template>
-                    <template #icon>
-                        <q-btn flat round icon="close" v-close-popup />
-                    </template>
-                </Item>
-            </q-card-section>
+        <q-dialog class="box-shadow" v-model="toDelete" persistent>
+            <q-card class="min-w-68 w-full max-w-sm bg-theme border-brighter">
+                <div>
+                    <Item>
+                        <template #title>
+                            <span class="text-heading weight-900">Confirm Password</span>
+                        </template>
+                        <template #icon>
+                            <q-btn flat round icon="close" v-close-popup />
+                        </template>
+                    </Item>
+                </div>
 
-            <q-separator />
-            <q-card-section class="q-pt-5">
-                <!-- <input type="password" v-model="password" placeholder="Password" autofocus  class="p-2 w-full text-xl border"/> -->
-                <Input autofocus @update:val="password = $event" input_type="password" input_label="Password" id="1" />
-            </q-card-section>
+                <q-separator :dark="$store.state.dark" />
+                
+                <q-card-section class="q-pt-5">
+                    <!-- <input type="password" v-model="password" placeholder="Password" autofocus  class="p-2 w-full text-xl border"/> -->
+                    <Input autofocus @update:val="password = $event" input_type="password" input_label="Password" id="1" />
+                </q-card-section>
 
-            <q-card-actions align="right" class="text-primary">
-                <q-btn flat label="Cancel" class="bg-transparent" v-close-popup />
-                <!-- <q-btn flat @click="deleteAccount"> 
-                    <span class="text-capitalize text-heading bg-web-theme px-5 py-2 rounded">Delete</span>
-                </q-btn> -->
-                <button @click="deleteAccount" class="pointer text-capitalize text-heading bg-web-theme hover-darker px-5 py-2 rounded border-none"> 
-                    Delete
-                </button>
-            </q-card-actions>
+                <q-separator :dark="$store.state.dark" />
+
+                <q-card-actions align="right" class="text-primary">
+                    <!-- <q-btn flat @click="deleteAccount"> 
+                        <span class="text-capitalize text-heading bg-web-theme px-5 py-2 rounded">Delete</span>
+                    </q-btn> -->
+                    <button @click="deleteAccount" class="pointer text-capitalize text-heading bg-transparent bg-hover-soft px-10 py-1 text-xl rounded border-brighter-2"> 
+                        Delete
+                    </button>
+                </q-card-actions>
             </q-card>
         </q-dialog>
     </div>

@@ -45,6 +45,8 @@ export default defineComponent({
 
             deleted: false,
             deletedMsg: '',
+
+            errMsg: '',
         };
     },
     setup() {
@@ -61,6 +63,10 @@ export default defineComponent({
                         this.hasMore = true
                     }
                     this.user_posted = [...this.user_posted, ...res.data.posts];
+                }
+                if(res.data.error) {
+                    this.errMsg = res.data.message
+                    this.hasMore = false
                 }
             }).catch((err) => {
                 console.log(err);
@@ -128,8 +134,11 @@ export default defineComponent({
             <div>
                 <i-folder :fill="'black'" stroke="black"/>
             </div>
-            <div class="text-3xl weight-900">
+            <div v-if="!errMsg" class="text-3xl weight-900 text-center">
                 User hasn't spilled any tea.
+            </div>
+            <div v-else class="text-3xl weight-900 text-center">
+                {{errMsg}}
             </div>
         </div>
         <div class="loading" v-if="loading">

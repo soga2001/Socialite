@@ -427,7 +427,7 @@ export default defineComponent({
     grid-template-columns: minmax(auto, 375px) 600px minmax(auto, 375px);
 
     &.settings_page {
-      grid-template-columns: minmax(auto, 375px) 1fr 50px;
+      grid-template-columns: minmax(auto, 375px) minmax(600px, 1000px) minmax(auto, 90px);
     }
   }
 

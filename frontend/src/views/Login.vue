@@ -54,7 +54,7 @@ export default defineComponent({
                       group: 'success',
                     })
                     await this.$store.commit("setUser", res.data.user as User);
-                    await this.$router.push("/home");
+                    await this.$router.go;
                     this.$store.commit("authenticate", true);
                 }
             }).catch((err) => {

@@ -4,6 +4,7 @@ export interface User{
     email?: string,
     first_name: string,
     last_name: string,
+    full_name: string,
     last_login: string,
     private: boolean,
     verified: boolean,
@@ -29,6 +30,10 @@ export interface User{
     date_joined: string,
     notification_on: boolean,
 
+    location: string,
+    link: string,
+    dob: string,
+    phone: string,
 }
 
 
@@ -88,4 +93,30 @@ export interface Notifications {
     action_object_content_type?: string;
     created: string;
     data?: NotificationDataAsset;
+}
+
+export interface Following {
+    followed_date: string,
+    followed_user: User,
+    following_user: string,
+    id: string,
+    notification: boolean,
+}
+
+export interface Follower {
+    followed_date: string,
+    followed_user: string,
+    following_user: User,
+    id: string,
+    notification: boolean,
+}
+
+export interface Sessions {
+    session_key: string,
+    current_session: boolean,
+    expire_date: string,
+    user_agent: string,
+    last_activity: string,
+    ip: string,
+    user: string,
 }

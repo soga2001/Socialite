@@ -52,8 +52,8 @@ export default defineComponent({
 </script>
 
 <template>
-    <p v-if="!html" role="span" :class="class">{{ date_posted }}</p>
-    <span v-else v-html="date_posted"></span>
+    <span v-if="!html" role="span" :class="class">{{ date_posted }}</span>
+    <span :class="class" v-else v-html="date_posted"></span>
 </template>
 
 

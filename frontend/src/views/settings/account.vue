@@ -113,7 +113,7 @@ export default defineComponent({
                             </span>
                         </template>
                         <template #icon>
-                            <q-icon size="3rem" name="navigate_next" class="text-heading"/>
+                            <q-icon size="2rem" name="navigate_next" class="text-heading"/>
                         </template>
                     </Item>
                 </RouterLink>

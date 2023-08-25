@@ -74,8 +74,7 @@ export default defineComponent({
                                 <user-card :user-prop="user">
                                     <template #text>
                                         <span class="ellipsis text-lg pointer hover-underline text-heading weight-900" > 
-                                            {{ user.first_name}}
-                                            {{ user.last_name }}
+                                            {{ user.full_name}}
                                         </span>
                                     </template>
                                 </user-card>
@@ -83,21 +82,21 @@ export default defineComponent({
 
                             <span class="h-full" v-if="user.verified">
                                 <q-icon class="vert-align-middle "  color="blue" size="1.5rem" name="verified">
-                                    <q-tooltip :delay="1000" class="bg-theme box-shadow text-sm">
+                                    <q-tooltip :delay="1000" class="bg-theme text-heading box-shadow text-sm">
                                         Verified
                                     </q-tooltip>
                                 </q-icon>
                             </span>
                             <span class="h-full " v-if="user.is_admin || user.is_staff">
                                 <q-icon class="vert-align-middle " color="green" size="1.5rem" name="admin_panel_settings">
-                                    <q-tooltip :delay="1000" class="bg-theme box-shadow text-sm">
+                                    <q-tooltip :delay="1000" class="bg-theme text-heading box-shadow text-sm">
                                         Staff
                                     </q-tooltip>
                                 </q-icon>
                             </span>
                             <span class="h-full" v-if="user.private">
-                                <q-icon class="vert-align-middle "  color="green" size="1.5rem" name="admin_panel_settings">
-                                    <q-tooltip :delay="1000" class="bg-theme box-shadow text-sm">
+                                <q-icon class="vert-align-middle "  :color="$store.state.dark ? 'white' : 'black'" size="1.5rem" name="lock">
+                                    <q-tooltip :delay="1000" class="bg-theme text-heading box-shadow text-sm">
                                         Private
                                     </q-tooltip>
                                 </q-icon>

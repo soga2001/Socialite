@@ -3,6 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.http import HttpResponse, JsonResponse
 from django.utils.html import escape
+import json
 
 
 # From Rest
@@ -10,6 +11,7 @@ from rest_framework.views import APIView
 from backend.authenticate import *
 from .models import BugsReport
 from .serializer import BugsReportSerializer
+from django.forms import ValidationError
 
 class Bugs(APIView):
     permission_classes = [IsAuthenticated]
@@ -18,25 +20,29 @@ class Bugs(APIView):
     def post(self, request):
         try:
             user = request.user
-            bug = request.POST['bug']
-            replication = request.POST['replication']
+            # print(request.body)
+            data = json.loads(request.body)
+            bug = data['bug']
+            replication = data['bug_replication']
             replication = escape(replication)
             bug = escape(bug)
             report = BugsReport(
                 user = user,
                 bug = bug,
-                replication = replication
+                replication = replication,
             )
             report.save()
-            return JsonResponse({'status': 'success', 'message': 'Reported successfully!'})
+            return JsonResponse({'success': True, 'message': 'Bug has been reported'})
+        except ValidationError as e:
+            return JsonResponse({'error': True, 'message': str(e.message)})
         except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)})
+            return JsonResponse({'error': True, 'message': str(e)})
     
     def get(self, request):
         try:
             user = request.user
             reports = BugsReport.objects.filter(user=user)
-            serializer = BugsReportSerializer(reports, many=True)
+            serializer = BugsReportSerializer(reports, context={'request': request}, many=True)
             return JsonResponse({'status': 'success', 'message': 'Reported successfully!', 'data': serializer.data})
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})

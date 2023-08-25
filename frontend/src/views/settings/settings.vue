@@ -56,7 +56,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <div :class="{'cols-2': !$q.screen.lt.sm}" class="grid w-full min-h-viewport">
+    <div :class="{'cols-2': !$q.screen.lt.sm}" class="grid w-full h-full h-viewport p-0">
         <header class="border-r h-full w-full bg-theme" v-if="($route.matched[0].name === 'settings' && ($route.matched[1] === undefined || !$q.screen.lt.sm))">
             <div>
                 <Item>
@@ -96,6 +96,40 @@ export default defineComponent({
                         <template #caption>
                             <span class="text-sm text-body weight-700 text-nodecor">
                                 Turn off notifications from users you follow
+                            </span>
+                        </template>
+                        <template #icon>
+                            <q-icon size="2rem" name="navigate_next" class="text-heading"/>
+                        </template>
+                    </Item>
+                </RouterLink>
+                <RouterLink :to="{name: 'sessions'}" active-class="active">
+                    <Item clickable class="child">
+                        <template #title>
+                            <span class="text-xl text-heading weight-800 text-capitalize">
+                                User Sessions
+                            </span>
+                        </template>
+                        <template #caption>
+                            <span class="text-sm text-body weight-700 text-nodecor">
+                                Check all the sessions you currently have active
+                            </span>
+                        </template>
+                        <template #icon>
+                            <q-icon size="2rem" name="navigate_next" class="text-heading"/>
+                        </template>
+                    </Item>
+                </RouterLink>
+                <RouterLink :to="{name: 'privacy-settings'}" active-class="active">
+                    <Item clickable class="child">
+                        <template #title>
+                            <span class="text-xl text-heading weight-800 text-capitalize">
+                                Privacy and Safety
+                            </span>
+                        </template>
+                        <template #caption>
+                            <span class="text-sm text-body weight-700 text-nodecor">
+                                Make Account Private
                             </span>
                         </template>
                         <template #icon>

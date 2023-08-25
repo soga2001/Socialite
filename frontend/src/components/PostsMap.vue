@@ -252,8 +252,7 @@ export default defineComponent({
                                 <user-card :user-prop="user">
                                     <template #text>
                                         <span class="ellipsis text-lg pointer hover-underline text-heading weight-900" > 
-                                            {{user.first_name}}
-                                            {{ post.user.last_name }}
+                                            {{ user.full_name }}
                                         </span>
                                     </template>
                                 </user-card>
@@ -266,20 +265,21 @@ export default defineComponent({
                                     </q-tooltip>
                                 </q-icon>
                             </span>
-                            <span class="h-full " v-if="user.is_admin || user.is_staff">
+                            <!-- <span class="h-full " v-if="user.is_admin || user.is_staff">
                                 <q-icon class="vert-align-middle " color="green" size="1.5rem" name="admin_panel_settings">
                                     <q-tooltip :delay="1000" class="bg-theme text-heading box-shadow text-sm">
-                                        Staff
+                                        {{ user.is_admin ? 'Admin' : null}}
+                                        {{ (!user.is_admin && user.is_staff) ? 'Staff' : null}}
                                     </q-tooltip>
                                 </q-icon>
-                            </span>
-                            <span class="h-full" v-if="user.private">
-                                <q-icon class="vert-align-middle "  color="green" size="1.5rem" name="admin_panel_settings">
+                            </span> -->
+                            <!-- <span class="h-full" v-if="user.private">
+                                <q-icon class="vert-align-middle "  :color="$store.state.dark ? 'white' : 'black'" size="1.5rem" name="lock">
                                     <q-tooltip :delay="1000" class="bg-theme text-heading box-shadow text-sm">
                                         Private
                                     </q-tooltip>
                                 </q-icon>
-                            </span>
+                            </span> -->
 
                             <span class="text-lighter weight-900">&#183;</span>
 

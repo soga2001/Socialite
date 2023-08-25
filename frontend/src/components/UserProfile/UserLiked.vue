@@ -38,6 +38,8 @@ export default defineComponent({
             loading: true,
             hasMore: true,
             // avatar: this.user_avatar
+
+            errMsg: '',
         };
     },
     methods: {
@@ -52,6 +54,10 @@ export default defineComponent({
                         this.hasMore = true
                     }
                     this.user_liked = [...this.user_liked, ...res.data.posts];
+                }
+                if(res.data.error) {
+                    this.errMsg = res.data.message
+                    this.hasMore = false
                 }
             }).catch((err) => {
                 console.log(err);
@@ -112,8 +118,11 @@ export default defineComponent({
                 <i-folder :fill="'black'" stroke="black"/>
 
             </div>
-            <div class="text-3xl text-center weight-900">
-                User hasn't liked anything.
+            <div v-if="!errMsg" class="text-3xl weight-900 text-center">
+                User hasn't liked any spills.
+            </div>
+            <div v-else class="text-3xl weight-900 text-center">
+                {{errMsg}}
             </div>
         </div>
         <div class="loading" v-if="loading">

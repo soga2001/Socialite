@@ -73,18 +73,50 @@ export default defineComponent({
             this.navSlideIn = false;
         },
         async reportBug() {
-          const formData = new FormData()
-          formData.append('bug', this.bug)
-          formData.append('bug_replication', this.bug_replication)
-          await http.post('bugs/submit_bug/', {
-            data: formData
+          // if(this.bug.length == 0 || this.bug_replication.length == 0) {
+          //   this.$q.notify({
+          //     type: 'negative',
+          //     message: `<span class="text-white text-xl">Please fill all fields</span>`,
+          //     icon: 'error',
+          //     iconColor: 'white',
+          //     html: true,
+          //   })
+          //   return
+          // }
+          await http.post('bugs/report_bugs/', {
+            bug: this.bug,
+            bug_replication: this.bug_replication
           }).then((res) => {
-            console.log(res)
+            if(res.data.success) {
+              this.bug = ''
+              this.bug_replication = ''
+              this.report_bug = false
+              this.$q.notify({
+                type: 'positive',
+                message: `<span class="text-white text-xl">${res.data.message}</span>`,
+                icon: 'info',
+                iconColor: 'white',
+                html: true,
+              })
+            }
+            else {
+              this.$q.notify({
+                type: 'negative',
+                message: `<span class="text-white text-xl">${res.data.message}</span>`,
+                icon: 'error',
+                iconColor: 'white',
+                html: true,
+              })
+            }
           }).catch((err) => {
             console.log(err)
           })
-          this.report_bug = true;
         },
+        onCancel() {
+          this.report_bug = false;
+          this.bug = '',
+          this.bug_replication = ''
+        }
     },
     created() {
         this.theme = this.cookies.get("theme") === "dark";
@@ -282,7 +314,7 @@ export default defineComponent({
                             <div class="text-2xl weight-900">Bug Report</div>
                           </template>
                           <template #icon>
-                            <i-close size="2rem" class="pointer" @click="report_bug = false"/>
+                            <i-close size="2rem" class="pointer" @click="onCancel"/>
                           </template>
                         </Item>
                       </div>
@@ -297,8 +329,8 @@ export default defineComponent({
                       <hr class="border"/>
                       <div class="flex flex-rows">
                         <div class="flex flex-rows gap-2 p-2 ml-auto">
-                          <button class="px-7 py-2 border-none rounded text-base text-heading weight-900" @click="report_bug = false">Cancel</button>
-                          <button class="px-7 py-2 border-none bg-web-theme rounded text-base  text-heading weight-900" @click="report_bug = false">Submit</button>
+                          <button class="px-7 py-2 border-none rounded text-base text-heading weight-900" @click="onCancel">Cancel</button>
+                          <button class="px-7 py-2 border-none pointer bg-web-theme rounded text-base text-heading weight-900" @click="reportBug">Submit</button>
                         </div>
                       </div>
                     </div>
@@ -364,29 +396,20 @@ export default defineComponent({
                                   <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                                 </template>
                                 <template #title>
-                                  <div class="flex gap-1">
-                                    <span class="text-xl text-heading weight-900">{{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}</span>
+                                  <div class="flex items-center gap-1">
+                                    <span class="text-xl text-heading weight-900">{{ $store.state.user.full_name}}</span>
                                     <!-- <span class="h-full" v-if="$store.state.user.verified">
-                                        <q-icon class="vert-align-middle "  color="blue" size="1.5rem" name="verified">
+                                        <q-icon class="vert-align-middle "  color="blue" size="1.3rem" name="verified">
                                             <q-tooltip :delay="1000" class="bg-theme box-shadow text-sm">
                                                 Verified
                                             </q-tooltip>
                                         </q-icon>
-                                    </span>
-                                    <span class="h-full " v-if="$store.state.user.is_admin || $store.state.user.is_staff">
-                                        <q-icon class="vert-align-middle " color="green" size="1.5rem" name="admin_panel_settings">
-                                            <q-tooltip :delay="1000" class="bg-theme box-shadow text-sm">
-                                                Staff
-                                            </q-tooltip>
-                                        </q-icon>
                                     </span> -->
-                                    <span class="h-full" v-if="$store.state.user.private">
-                                        <q-icon class="vert-align-middle "  color="green" size="1.5rem" name="admin_panel_settings">
-                                            <q-tooltip :delay="1000" class="bg-theme box-shadow text-sm">
-                                                Private
-                                            </q-tooltip>
-                                        </q-icon>
-                                    </span>
+                                    <q-icon v-if="$store.state.user.private" class="vert-align-middle "  :color="$store.state.dark ? 'white' : 'black'" size="1.3rem" name="lock">
+                                        <q-tooltip :delay="1000" class="bg-theme text-heading box-shadow text-sm">
+                                            Private
+                                        </q-tooltip>
+                                    </q-icon>
                                   </div>
                                 </template>
                                 <template #caption>

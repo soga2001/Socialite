@@ -65,6 +65,7 @@
         async resetCropper() {
             this.showCropper = false;
             this.imgFileType = '';
+            
             await new Promise(resolve => setTimeout(resolve, 50));
             if(this.$refs.cropper) {
                 (this.$refs.cropper as any).replace(null)

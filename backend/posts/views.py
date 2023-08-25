@@ -9,6 +9,7 @@ from django.http import HttpResponse, JsonResponse
 from django.db.models import Count
 from following.models import UserFollowing
 from django.db.models import Q
+from django.contrib.auth.models import AnonymousUser
 import time
 
 from notifications.signals import notify
@@ -149,7 +150,11 @@ def explore(request, timestamp, page):
     offset = int(page) * 10
     try:
         user = request.user
-        query = (Q(date_posted__lt=timestamp) & (Q(user__private=False)) | Q(user=user) | Q(user__followers__following_user_id=user.id))
+        query = None
+        if(user.is_anonymous):
+            query = (Q(date_posted__lt=timestamp) & (Q(user__private=False)))
+        else:
+            query = (Q(date_posted__lt=timestamp) & (Q(user__private=False)) | Q(user=user) | Q(user__followers__following_user_id=user.id))
         post = Post.objects.filter(query)[offset:offset+10]
     except Post.DoesNotExist:
         return JsonResponse({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -168,16 +173,14 @@ def user_posted(request, timestamp, page, username):
     offset = int(page) * 10
     try:
         user = User.objects.get(username=username)
-        if(user.private):
+        if(user.private and user != request.user):
             try:
                 user.followers.get(following_user_id=request.user.id).exists()
             except UserFollowing.DoesNotExist as e:
-                return JsonResponse({"error": True, "message": "User is private. Please follow them to see their posts."}, status=status.HTTP_404_NOT_FOUND)
+                return JsonResponse({"error": True, "message": "User is private. Please follow them to see their posts."})
         pass
     except User.DoesNotExist:
         return JsonResponse({"error": True, 'message':"User doesn't exist."})
-    except Post.DoesNotExist:
-        return JsonResponse({"error": True, "message": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
     posts = PostSerializer(Post.objects.filter(user__username=username,date_posted__lt=timestamp)[offset:offset+10], context={'request': request}, many=True)
     return JsonResponse({"posts": list(posts.data)}, safe=False)
 
@@ -199,21 +202,19 @@ def total_user_posted(request, user_id):
 def get_post_by_id(request, post_id):
     try:
         user = request.user
-        query = (Q(user__private=False) | Q(user=user) | Q(user__followers__following_user_id=user.id))
         spill = Post.objects.get(pk=post_id)
-        if(spill.user.private and spill.user != request.user):
+        if(spill.user.private and spill.user != user):
             try:
-                query = (Q(user__private=False) | Q(user=user) | Q(following_user_id=user.id))
-                spill.user.followers.get(following_user_id=request.user.id)
+                spill.user.followers.get(following_user_id=user.id)
             except UserFollowing.DoesNotExist as e:
                 return JsonResponse({"error": True, "message": "Post not found."}, status=404)
-        return JsonResponse({"spill": PostSerializer(spill, context={'request': request}).data}, status=200)
+        return JsonResponse({"success": True,"spill": PostSerializer(spill, context={'request': request}).data}, status=200)
     except Post.DoesNotExist:
-        return JsonResponse({"error": True, "message": "Post not found."}, status=404)
+        return JsonResponse({"error": True, "message": "Post not found."})
     except DatabaseError as e:
         return JsonResponse({"error": True}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
-        return JsonResponse({"error": True}, safe=False)
+        return JsonResponse({"error": True})
 
 
     

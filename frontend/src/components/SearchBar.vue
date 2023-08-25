@@ -26,7 +26,6 @@ export default defineComponent({
     data() {
         return {
             results: new Array<User>(),
-            users: new Array<User>(),
             input: '',
             loading: false,
             noResults: false,
@@ -47,34 +46,31 @@ export default defineComponent({
         if(this.searchPage) {
             return
         }
-        this.loading = true
-        if(this.input === "") {
-            this.results = new Array<User>()
-            this.loading = false
-            this.noResults = false
+        if(this.input.length === 0) {
+            this.resetInput()
             return
         }
-        http.get(`users/username/${this.input}`).then((res) => {
-            console.log(res)
+        console.log('here')
+        this.loading = true
+        await http.get(`users/username/${this.input}`).then((res) => {
             if(res.data.success) {
                 this.noResults = false
                 this.results = res.data.users
                 this.hasResults = true;
             }
-            console.log('here')
-        }).catch((err) => {
-            if(err.response.status === 404) {
+            else {
                 this.noResults = true
                 this.results = new Array<User>()
             }
+        }).catch((err) => {
         })
         this.loading = false
       },
       resetInput() {
         this.input = ""
-        this.results = new Array<User>()
         this.noResults = false
         this.hasResults = false
+        this.results = new Array<User>()
       },
       submit() {
         this.$router.push({ name: 'search', query: { q: this.input } })
@@ -87,7 +83,6 @@ export default defineComponent({
       },
       onFocus() {
         this.$emit('update:focus', true);
-        // (this.$refs.input as HTMLInputElement).focus()
       },
 
 
@@ -95,10 +90,16 @@ export default defineComponent({
     components: {Item},
     watch: {
         input(input) {
+            this.$emit('update:input', this.input)
             if(input.length == 0) {
                 this.resetInput()
             }
-            this.$emit('update:input', this.input)
+            else {
+                this.search()
+            }
+        },
+        results(results) {
+            console.log(results)
         }
     }
 })
@@ -108,10 +109,7 @@ export default defineComponent({
 <template>
     <div class="search w-full overflow-visible">
         <form ref="form" class="w-full relative" :class="{searchPage: 'border-b'}" v-on:submit.prevent="submit">
-            <q-input autocompletion="off" ref="input" :autofocus="autofocus" v-on:focus="onFocus" class="text-lg" :dense="dense" placeholder="Search Socialite" :style="{transform: `scale(${size})`}" v-debounce:1ms="search" :dark="$store.state.dark" rounded outlined v-model="input">
-                <!-- <template #label>
-                    Search
-                </template> -->
+            <q-input autocompletion="off" ref="input" :autofocus="autofocus" v-on:focus="onFocus" class="text-lg" :dense="dense" placeholder="Search Socialite" :style="{transform: `scale(${size})`}" debounce="500" :dark="$store.state.dark" rounded outlined v-model="input">
                 <template #prepend>
                     <q-icon size="30px" name="search" />
                 </template>

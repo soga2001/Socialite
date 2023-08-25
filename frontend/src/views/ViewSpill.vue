@@ -18,7 +18,7 @@ export default defineComponent({
             total_likes: 0,
             total_comments: 0,
 
-            loading_comments: true,
+            loading_comments: false,
             date: new Date(),
             date_posted: '',
             page: 0,
@@ -47,13 +47,19 @@ export default defineComponent({
         async getSpill() {
             this.loading_post = true;
             await http.get(`posts/post_by_id/${this.$route.params.post_id}/`).then((res) => {
-                this.spill = res.data.spill;
-                this.user = this.spill.user;
-                this.date_posted = convertTime(this.spill.date_posted, 'short')
-                this.toolTip_date = convertTime(this.spill.date_posted, 'absolute')
-                this.total_likes = this.spill.total_likes;
-                this.liked = this.spill.user_has_liked;
-                this.getComments();
+                if(res.data.success) {
+                    this.spill = res.data.spill;
+                    this.user = this.spill.user;
+                    this.date_posted = convertTime(this.spill.date_posted, 'short')
+                    this.toolTip_date = convertTime(this.spill.date_posted, 'absolute')
+                    this.total_likes = this.spill.total_likes;
+                    this.liked = this.spill.user_has_liked;
+                    if(this.spill.total_comments > 0) this.getComments();
+                }
+                else {
+                    this.error = true;
+                    this.errMsg = res.data.message;
+                }
             }).catch((err) => {
                 console.log(err);
                 this.error = true;
@@ -209,7 +215,7 @@ export default defineComponent({
         },
         spill(spill) {
             if(spill.user.username) {
-                document.title = `Spill by ${spill.user.first_name} ${spill.user.last_name}`
+                document.title = `Spill by ${spill.user.full_name}`
             }
         }
     }
@@ -233,18 +239,31 @@ export default defineComponent({
                 <div>
                     <Item align-items="start" avatar-size="3.5rem">
                         <template #avatar>
-                            <div class="hover-darker pointer" @click.stop="$router.push({name: 'user-profile', params: { username: spill.user.username }})">
-                                <img v-if="spill.user.avatar" :src="spill.user.avatar" alt="User Avatar" class="rounded-full" />
-                                <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
-                            </div>
+                            <!-- <user-card :user-prop="user">
+                                <template #text>
+                                    <div class="hover-darker pointer" @click.stop="$router.push({name: 'user-profile', params: { username: spill.user.username }})">
+                                        <img v-if="spill.user.avatar" :src="spill.user.avatar" alt="User Avatar" class="rounded-full" />
+                                        <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
+                                    </div>
+                                </template>
+                            </user-card> -->
+                            <user-card :user-prop="user">
+                                <template #text>
+                                    <q-avatar :size="$q.screen.lt.sm ? '2.8rem' : '3.5rem'" class="hover-darker relative pointer" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">
+                                        <img v-if="user.avatar" :src="user.avatar" alt="John Doe" class="rounded-full" />
+                                        <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
+                                    </q-avatar>
+                                </template>
+                            </user-card>
+                            
                         </template>
                         <template #title>
                         <div class="h-full min-w-full flex gap-1 items-center title">
                             <div class="ellipsis" >
                                 <user-card :user-prop="user">
                                     <template #text>
-                                        <span @mouseover="divEnter"  @mouseleave="divExit"  class="text-lg pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: spill.user.username }})">{{spill.user.first_name}} 
-                                            {{ spill.user.last_name }}
+                                        <span @mouseover="divEnter"  @mouseleave="divExit"  class="text-lg pointer hover-underline text-heading weight-900" @click.stop="$router.push({name: 'user-profile', params: { username: spill.user.username }})">
+                                            {{spill.user.full_name}}
                                         </span>
                                     </template>
                                 </user-card>
@@ -254,13 +273,6 @@ export default defineComponent({
                         </template>
 
                         <template #caption>
-                            <!-- <div class="ellipsis">
-                                <span class="text-lg text-lighter weight-500 hover-underline">{{ date_posted }}</span>
-                                <q-tooltip class="bg-theme box-shadow">
-                                    <span class="text-sm " v-html="toolTip_date"></span>
-                                </q-tooltip>
-                            </div> -->
-
                             <div>
                                 <div class="ellipsis">
                                     <span class="text-lg pointer hover-underline text-lighter weight-500" @click.stop="$router.push({name: 'user-profile', params: { username: spill.user.username }})">@{{ spill.user.username }} </span>
@@ -365,9 +377,10 @@ export default defineComponent({
                         </template>
                     </Item>
                 </div>
-                <div class="w-full p-2">
+                <div class="w-full p-2 flex flex-col gap-3">
                     <q-img @click="imgZoom = true" class="w-full rounded border hover-darker  cursor-zoom" :src="spill.img_url" />
                     <zoomImg v-if="imgZoom" :img="spill.img_url" :open="imgZoom" @update:open="imgZoom = $event"/>
+                    <Timeago class="text-base text-lighter" :date="spill.date_posted" date_type="absolute" html/>
                 </div>
                 <!-- <div class="q-pa-md q-gutter-sm relative" style="height: 80px">
                     <q-avatar
@@ -442,6 +455,9 @@ export default defineComponent({
                             <CommentMap :comment="comment" @deleted="deleteComment(index)"/>
                         </div>
                     </TransitionGroup>
+                    <div v-if="loading_comments">
+                        <Loading/>
+                    </div>
                 </div>
             </div>
             <div v-if="loading_post" class="">

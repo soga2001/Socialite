@@ -6,9 +6,9 @@ from django.contrib.postgres.indexes import GinIndex
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.search import SearchVector
 from django.db import models
-from django.dispatch import receiver
 import os, uuid
 from django.core.mail import send_mail
+from django.forms import ValidationError
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
@@ -20,6 +20,7 @@ from backend.encryption import AESCipher
 # from rest_framework.authtoken.models import Token
 from tokens.models import Tokens
 import datetime
+from phone_field import PhoneField
 
 
 def rename_avatar(instance, filename):
@@ -44,6 +45,20 @@ class User(AbstractUser):
     private = models.BooleanField(blank=False, null=False, default=False, editable=True)
     verified = models.BooleanField(blank=False, null=False, default=False, editable=True)
     is_admin = models.BooleanField(blank=False, null=False, default=False, editable=True)
+    link = models.URLField(max_length=100, blank=True, null=True)
+    location = models.CharField(max_length=30, blank=True, null=True)
+    full_name = models.CharField(max_length=30, blank=True, null=True)
+    dob = models.DateField(null=True, blank=True)
+    phone = PhoneField(blank=True, help_text='Contact phone number')
+
+
+    def save(self, *args, **kwargs):
+        if self.dob and self.dob > datetime.date.today():
+            raise ValidationError("The date cannot be in the future!")
+        # date cannot be passed 100 years ago
+        if self.dob and self.dob < datetime.date.today() - datetime.timedelta(days=365*100):
+            raise ValidationError("The date cannot be more than 100 years ago!")
+        super(User, self).save(*args, **kwargs)
 
     groups = models.ManyToManyField(
         'auth.Group', 

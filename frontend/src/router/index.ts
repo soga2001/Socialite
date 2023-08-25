@@ -205,6 +205,24 @@ const router: Router = createRouter({
             auth: true,
             title: 'Notification Settings'
           }
+        },
+        {
+          path: 'privacy-settings',
+          name: 'privacy-settings',
+          component: () => import('@/views/settings/privacySettings.vue'),
+          meta: {
+            auth: true,
+            title: 'Privacy Settings'
+          }
+        }, 
+        {
+          path: 'sessions',
+          name: 'sessions',
+          component: () => import('@/views/settings/sessions.vue'),
+          meta: {
+            auth: true,
+            title: 'Sessions'
+          }
         }
       ]
     },

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import type {PropType } from 'vue';
-import type { User } from '@/assets/interfaces';
+import type { User, Follower, Following } from '@/assets/interfaces';
 import { http } from '@/assets/http';
 import Timeago from '../Timeago.vue';
 import { useCookies } from 'vue3-cookies';
@@ -32,6 +32,13 @@ export default defineComponent({
             followed: this.user.is_following,
             date_joined: this.user.date_joined,
             is_current_user: this.user.is_current_user,
+            private: this.user.private,
+            notification_on: this.user.notification_on,
+            phone: this.user.phone,
+            dob: this.user.dob,
+            link: this.user.link,
+            location: this.user.location,
+
 
             showAvatar: false,
             showBanner: false,
@@ -40,9 +47,14 @@ export default defineComponent({
 
             newAvatar: this.user.avatar as string || "",
             newBanner: this.user.banner as string || "",
-            new_FN: this.user.first_name,
-            new_LN: this.user.last_name,
-            newBio: this.user.bio ?? '',
+            new_FN: '',
+            new_LN: '',
+            newBio: '',
+            newPhone: '',
+            newLink: '',
+            newDob: '',
+            newLocation: '',
+            
             
             avatarFile: null,
             bannerFile: null,
@@ -52,8 +64,8 @@ export default defineComponent({
             errMsg: '',
             successMsg: '',
 
-            user_followers: new Array<User>(),
-            user_following: new Array<User>(),
+            user_followers: new Array<Follower>(),
+            user_following: new Array<Following>(),
             show_followers: false,
             show_following: false,
 
@@ -63,7 +75,7 @@ export default defineComponent({
             zoomAvatar: false,
             zoomBanner: false,
 
-            bioFocuesd: false,
+
         };
     },
     methods: {
@@ -124,23 +136,26 @@ export default defineComponent({
             })
         },
 
-        getFollowing() {
+        async getFollowing() {
             if(this.user_following.length) {
                 return
             }
             this.loading_follow = true;
-            http.get(`follow/get_following_users/${this.username}/`).then((res) => {
+            await http.get(`follow/get_following_users/${this.username}/`).then((res) => {
                 if(res.data.error) {
                     return
                 }
                 // this.loading_follow = false
-                setTimeout(() => {
-                    this.loading_follow = false
-                }, 3000)
+                // setTimeout(() => {
+                //     this.loading_follow = false
+                // }, 3000)
+                console.log(res.data.users)
                 this.user_following = res.data.users
             }).catch((err) => {
                 console.log(err)
             })
+
+            this.loading_follow = false
         },
 
         toggleAvatar() {
@@ -171,9 +186,22 @@ export default defineComponent({
             if (this.new_LN && this.last_name != this.new_LN) {
                 formData.append('last_name', this.new_LN)
             }
-            if (this.newBio && this.bio != this.newBio) {
+            if (this.bio != this.newBio) {
                 formData.append('bio', this.newBio)
             }
+            if (this.phone != this.newPhone) {
+                formData.append('phone', this.newPhone)
+            }
+            if (this.link != this.newLink) {
+                formData.append('link', this.newLink)
+            }
+            if (this.dob != this.newDob) {
+                formData.append('dob', this.newDob)
+            }
+            if (this.location != this.newLocation) {
+                formData.append('location', this.newLocation)
+            }
+            
 
             http.post('users/update_profile/', formData, {
                 headers: {
@@ -328,17 +356,20 @@ export default defineComponent({
 
             <div class="h-full">
                 <q-dialog class="h-full w-full p-0 m-0" v-model="editProfile" persistent :maximized="$q.screen.lt.sm ? true : false">
-                    <div class="h-fit bg-theme border min-w-72 w-full fixed w-full">
-                        <div class="sticky top-0 z-10 bg-theme border-b">
+                    <div :class="{'max-h-md': !$q.screen.lt.sm, 'max-h-viewport': $q.screen.sm}" class="h-full bg-theme border fixed w-full">
+                        <div class="sticky top-0 z-10 bg-theme-opacity bg-blur-half border-b">
                             <Item>
+                                <template #avatar>
+                                    <q-btn flat round v-close-popup >
+                                        <q-icon size="2rem" name="close" :color="$store.state.dark ? 'white' : 'dark'"  />
+                                    </q-btn>
+                                </template>
                                 <template #title>
-                                    <div class="text-2xl weight-900">Edit Profile</div>
+                                    <div class="text-3xl weight-900">Edit Profile</div>
                                 </template>
                                 <template #icon>
-                                    <div class="pointer" @click="editProfile = !editProfile">
-                                        <i-close :vert-icon-center="true" fill="var(--color-heading)" stroke="none"  size="2rem"/>
-                                    </div>
                                     
+                                    <button class="px-7 py-2 pointer bg-hover-mute border-brighter-2 bg-transparent rounded text-heading weight-900 text-xl" @click="updateProfile">Save</button>
                                 </template>
                             </Item>
                         </div>
@@ -374,17 +405,14 @@ export default defineComponent({
                                 <zoomImg v-if="zoomAvatar && avatar" :img="avatar" :open="zoomAvatar" @update:open="zoomAvatar = $event"/>
                                 <zoomImg v-if="zoomBanner && avatar" :img="banner" :open="zoomBanner" @update:open="zoomBanner = $event"/>
                             </div>
-                            <div class="user-profile__info flex flex-col gap-1 w-full">
-                                <Input showCharCounts :charLimit="30" :defaultVal="new_FN" @update:val="new_FN = $event" input_type="text" input_label="First Name" id="first_name" class="w-full my-2" />
-                                <Input showCharCounts :charLimit="30" :defaultVal="new_LN" @update:val="new_LN = $event" input_type="text" input_label="Last Name" id="last_name" class="w-full my-2" />
-                                <Textarea showCharCounts :charLimit="160" maxHeight="176" height="200px" :defaultVal="newBio" @update:val="newBio = $event" input_type="text" input_label="Bio" id="username" class="w-full my-2" />
-                            </div>
-                        </div>
-
-                        <div class="flex flex-rows border-t sticky bottom-0">
-                            <div class="flex flex-rows gap-2 p-2 ml-auto">
-                                <button class="px-7 py-2 border-none rounded text-base text-heading weight-900" @click="onCancel">Cancel</button>
-                                <button class="px-7 py-2 border-none bg-web-theme rounded text-base  text-heading weight-900" @click="updateProfile">Save</button>
+                            <div class="user-profile__info flex flex-col gap-3 w-full">
+                                <Input showCharCounts :charLimit="30" :defaultVal="first_name" @update:val="new_FN = $event" input_type="text" input_label="First Name" id="first_name" class="w-full my-2" />
+                                <Input showCharCounts :charLimit="30" :defaultVal="last_name" @update:val="new_LN = $event" input_type="text" input_label="Last Name" id="last_name" class="w-full my-2" />
+                                <Textarea showCharCounts :charLimit="160" maxHeight="176" height="200px" :defaultVal="bio" @update:val="newBio = $event" input_type="text" input_label="Bio" id="username" class="w-full my-2" />
+                                <!-- <Input showCharCounts :charLimit="10" :defaultVal="phone" @update:val="newPhone = $event" input_type="tel" input_label="Phone (###) ### ####" id="phone" class="w-full my-2" /> -->
+                                <Input showCharCounts :charLimit="30" :defaultVal="location" @update:val="newLocation = $event" input_type="text" input_label="Location" id="location" class="w-full my-2" />
+                                <Input :defaultVal="dob" @update:val="newDob = $event" input_type="date" input_label="Date of Birth" id="dob" class="w-full my-2" />
+                                <Input showCharCounts :charLimit="100" :defaultVal="link" @update:val="newLink = $event" input_type="text" input_label="Website" id="website" class="w-full my-2" />
                             </div>
                         </div>
                     </div>
@@ -395,19 +423,26 @@ export default defineComponent({
                 <div class="flex flex-col text-left" >
                     <div class="flex gap-2 items-center">
                         <span class="user-name text-2xl weight-900 text-heading ">
-                            {{ first_name }} {{ last_name }}
+                            {{ user.full_name }}
                         </span>
-                        <span class="h-full ">
-                            <q-icon class="vert-align-middle " v-if="user.verified" color="blue" size="2rem" name="verified">
+                        <span class="h-full " v-if="user.verified" color="blue">
+                            <q-icon class="vert-align-middle "  size="2rem" name="verified">
                                 <q-tooltip :delay="1000" class="bg-theme text-heading box-shadow text-sm">
                                     Verified
                                 </q-tooltip>
                             </q-icon>
                         </span>
-                        <span class="h-full ">
-                            <q-icon class="vert-align-middle " v-if="user.is_admin || user.is_staff" color="green" size="2rem" name="admin_panel_settings">
+                        <span class="h-full " v-if="user.is_admin || user.is_staff">
+                            <q-icon class="vert-align-middle "  color="green" size="2rem" name="admin_panel_settings">
                                 <q-tooltip :delay="1000" class="bg-theme text-heading box-shadow text-sm">
                                     Staff
+                                </q-tooltip>
+                            </q-icon>
+                        </span>
+                        <span class="h-full " v-if="user.private">
+                            <q-icon class="vert-align-middle "  :color="$store.state.dark ? 'white' : 'black'" size="2rem" name="lock">
+                                <q-tooltip :delay="1000" class="bg-theme text-heading box-shadow text-sm">
+                                    Private
                                 </q-tooltip>
                             </q-icon>
                         </span>
@@ -416,12 +451,66 @@ export default defineComponent({
 
                     <div class="user-bio text-xl py-2 text-heading weight-600">{{ bio }}</div>
 
-                    <div class="user-date_joined mb-2 flex items-center">
-                        <q-icon name="date_range" size="16px" class="mr-1 text-body" />
-                        <div class="flex items-center text-base">
-                            <span class="mr-1 text-body">Joined </span> <Timeago class="text-body" size="1rem" :date="date_joined" date_type="long" />
+                    <div class="flex flex-row gap-3 mb-3">
+                        <div class="user-date_joined flex items-center">
+                            <Item dense  avatarSize="1.5rem">
+                                <template #avatar>
+                                    <q-icon name="date_range" size="1.5rem" class="text-body" />
+                                </template>
+                                <template #title>
+                                    <div class="flex items-center text-lg">
+                                        <span class="text-body mr-1">Joined</span> 
+                                        <Timeago class="text-body" size="1rem" :date="date_joined" date_type="long" />
+                                    </div>
+                                </template>
+                            </Item>
+                        </div>
+                        <div v-if="user.link" class="user-date_joined flex items-center">
+                            <Item dense  avatarSize="1.5rem">
+                                <template #avatar>
+                                    <q-icon name="link" size="1.5rem" class="text-body" />
+                                </template>
+                                <template #title>
+                                    <div class="flex items-center text-lg ellipse">
+                                        <a target="_blank" :href="user.link" class="mr-1 text-body text-theme weight-900 no-decor hover-underline">{{ user.link }}</a>
+                                    </div>
+                                </template>
+                            </Item>
+                        </div>
+                        <div class="flex gap-3">
+                        <div  class="user-date_joined mb-2 flex items-center">
+                            <!-- <q-icon name="cake" size="1.5rem" class="text-body" />
+                            <div class="flex items-center text-base">
+                                {{ user.dob }}
+                            </div> -->
+                            <Item dense avatarSize="1.5rem">
+                                <template #avatar>
+                                    <q-icon name="cake" size="1.5rem" class="text-body" />
+                                </template>
+                                <template #title>
+                                    <div class="flex items-center text-lg text-body">
+                                        <!-- {{ user.dob }} -->
+                                        DOB here
+                                    </div>
+                                </template>
+                            </Item>
+                        </div>
+                        <div v-if="user.location" class="user-date_joined flex items-center">
+                            <Item dense avatarSize="1.5rem">
+                                <template #avatar>
+                                    <q-icon name="place" size="1.5rem" class="text-body" />
+                                </template>
+                                <template #title>
+                                    <div class="flex items-center text-lg text-body">
+                                        {{ user.location }}
+                                    </div>
+                                </template>
+                            </Item>
                         </div>
                     </div>
+                    </div>
+                    
+                    
                     <div class="follows text-lg flex items-center gap-3">
                         <span class="text-body pointer hover-underline" @click="{show_followers = true; getFollowers()}"><span class="text-heading weight-900">{{ followers }} </span> Followers</span> 
                         <span class="text-body pointer hover-underline" @click="{show_following = true; getFollowing()}"><span class="text-heading weight-900">{{ following }} </span> Following</span>
@@ -452,18 +541,18 @@ export default defineComponent({
                                 </div>
 
                                 <div class="results-even" v-else-if="!loading_follow && user_followers" v-for="user in user_followers">
-                                    <Item clickable :to="{ name: 'user-profile', params: { username: user.username } }">
+                                    <Item clickable :to="{ name: 'user-profile', params: { username: user.following_user.username } }">
                                         <template #avatar>
-                                            <img :src="user.avatar" alt="user profile pic"/>
+                                            <img :src="user.following_user.avatar" alt="user profile pic"/>
                                         </template>
                                         <template #title>
                                             <div class="text-heading weight-900">
-                                                {{ user.first_name }} {{ user.last_name }}
-                                                <q-icon v-if="user.private" name="lock" />
+                                                {{ user.following_user.first_name }} {{ user.following_user.last_name }}
+                                                <q-icon v-if="user.following_user.private" name="lock" />
                                             </div>
                                         </template>
                                         <template #caption>
-                                            <div class="text-body">{{ user.username }}</div>
+                                            <div class="text-body">{{ user.following_user.username }}</div>
                                         </template>
                                     </Item>
                                 </div>
@@ -493,15 +582,15 @@ export default defineComponent({
                                     <Loading />
                                 </div>
                                 <div class="results-even" v-else-if="!loading_follow && user_following" v-for="user in user_following">
-                                    <Item clickable :to="{ name: 'user-profile', params: { username: user.username } }">
+                                    <Item clickable :to="{ name: 'user-profile', params: { username: user.followed_user.username } }">
                                         <template #avatar>
-                                            <img :src="user.avatar" alt="user profile pic"/>
+                                            <img :src="user.followed_user.avatar" alt="user profile pic"/>
                                         </template>
                                         <template #title>
-                                            <div class="text-heading weight-900">{{ user.first_name }} {{ user.last_name }}</div>
+                                            <div class="text-heading weight-900">{{ user.followed_user.full_name }}</div>
                                         </template>
                                         <template #caption>
-                                            <div class="text-body">{{ user.username }}</div>
+                                            <div class="text-body">{{ user.followed_user.username }}</div>
                                         </template>
                                     </Item>
                                 </div>
@@ -569,13 +658,6 @@ export default defineComponent({
     border:none;
 }
 
-h6 {
-    font-size: .8rem;
-    font-weight: 900;
-    color: var(--color-text);
-    /* text-align: center; */
-}
-
 .user__bio {
     padding: 20px;
 }
@@ -633,21 +715,9 @@ h6 {
   text-align: center;
 }
 
-.joined {
-    display: inline-flex;
-    line-height: normal;
-    color: var(--color-text);
-    font-size: 15px;
-}
-
-.icon {
-    margin-right: 5px;
-}
-
 .timeago {
     margin-left: 5px;
 }
-
 
 /* Banner and profile picture */
 #banner {
@@ -658,9 +728,6 @@ h6 {
     /* aspect-ratio: 3/1; */
 }
 
-/* #banner:hover {
-    cursor: pointer;
-} */
 
 #banner img {
     object-fit: cover;

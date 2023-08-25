@@ -17,7 +17,7 @@ from django.db.models import F
 from django.db.models import Q
 
 
-from django.contrib.sessions.models import Session
+# from django.contrib.sessions.models import Session
 from backend.encryption import *
 
 
@@ -72,6 +72,7 @@ def flush_session(request):
     return JsonResponse({'success': True})
 
 @api_view(["GET"])
+@permission_classes([IsAdmin,])
 def users(request):
     users = UserSerializer(User.objects.all(), context={'request': request}, many=True)
     return JsonResponse({'users': list(users.data)}, safe=False)
@@ -97,13 +98,12 @@ def user_by_username(request, username, multiple = True):
             users_data = User.objects.get(username=username)
             users_data = UserSerializer(users_data, context={'request': request}).data
         if(len(users_data) == 0):
-            return JsonResponse({"error": "User does not exist"}, status=404)
+            return JsonResponse({"error": "User does not exist"})
         return JsonResponse({"success": True, "users": users_data})
     except User.DoesNotExist:
-        return JsonResponse({"error": "User does not exist"}, status=404)
+        return JsonResponse({"error": True, "message": "User does not exist"})
     except Exception as e:
-        print(e)
-        return JsonResponse({"error": "An error occurred"}, status=500)
+        return JsonResponse({"error": True, "message": "An error occurred"})
 
 
 
@@ -124,8 +124,6 @@ def user_register(request):
             raise ValueError('Please enter your confirm password')
         if(data['password'] != data['confirm_password']):
             raise ValueError('Password and confirm password must match')
-        
-        print(data)
 
         user = User.objects.create_user(
             first_name=data['first_name'],
@@ -239,14 +237,13 @@ def get_session(request):
 
     
 class UserFromCookie(APIView):
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [CustomAuthentication,]
 
-    # @refresh_cookies
     def get(self, request):
-        user, token = custom.authenticate(request)
         try:
-            # print(AESCipher().decrypt(encrypted))
+            user = custom.authenticate(request)
+        except Exception as e:
+            return JsonResponse({"error": True})
+        try:
             user = UserSerializer(request.user).data
             return JsonResponse({"success": True, "user": user})
         except:
@@ -266,6 +263,8 @@ class UpdateProfile(APIView):
             bio = None
             first_name = None
             last_name = None
+            link = None
+            location = None
 
             if 'avatar' in request.FILES:
                 avatar = request.FILES['avatar']
@@ -289,6 +288,10 @@ class UpdateProfile(APIView):
                 first_name = request.POST['first_name']
             if 'last_name' in request.POST:
                 last_name = request.POST['last_name']
+            if 'link' in request.POST:
+                link = request.POST['link']
+            if 'location' in request.POST:
+                location = request.POST['location']
 
             user = request.user
             if(first_name):
@@ -301,6 +304,10 @@ class UpdateProfile(APIView):
                 user.avatar = avatar
             if(banner):
                 user.banner = banner
+            if(link):
+                user.link = link
+            if(location):
+                user.location = location
             user.save()
             
             updatedUser = UserSerializer(user).data
@@ -459,24 +466,69 @@ class LogoutView(APIView):
             return JsonResponse({"error": True})
 
 
-class AllLogins(APIView):
+# class AllLogins(APIView):
+#     permission_classes = [IsAuthenticated,]
+#     authentication_classes = [CustomAuthentication,]
+
+#     def get(self, request):
+#         user = request.user
+#         userSerialized = UserSerializer(user)
+#         return JsonResponse({'success': True, 'user': userSerialized.data, 'sessions': list(Session.objects.all().values())})
+
+class AllSessions(APIView):
     permission_classes = [IsAuthenticated,]
     authentication_classes = [CustomAuthentication,]
 
     def get(self, request):
-        user = request.user
-        userSerialized = UserSerializer(user)
-        return JsonResponse({'success': True, 'user': userSerialized.data, 'sessions': list(Session.objects.all().values())})
+        try:
+            user = request.user
+            sessions = user.session_set.all()
+            serializedSessions = UserSessionSerializer(sessions,context={"request": request}, many=True).data
+            return JsonResponse({"success": True, 'sessions': serializedSessions})
+        except Exception as e:
+            return JsonResponse({"error": True})
         
-
-class LogoutFromAll(APIView):
+    def delete(self, request):
+        try:
+            user = request.user
+            sessions = user.session_set.filter(~Q(session_key=request.session.session_key))
+            sessions.delete()
+            return JsonResponse({'success': True, 'message': 'Logged out of all but current session'})
+        except:
+            return JsonResponse({"error": True})
+        
+class DeleteSpecificSession(APIView):
     permission_classes = [IsAuthenticated,]
     authentication_classes = [CustomAuthentication,]
 
     def delete(self, request):
-        sessions = Session.objects.filter(expire_date__gte=datetime.timezone.now(), 
-                                       session_key__contains=request.user_id)
-        sessions.delete()
+        try:
+            user = request.user
+            session_id = request.query_params['session_id']
+            sessions = user.session_set.filter(pk=session_id)
+            if(session_id == request.session.session_key):
+                print('here')
+                logout(request)
+                response = JsonResponse({"success": True, 'current_session': True, "message": "Logged out."}, status=200)
+                for cookies in request.COOKIES:
+                    if cookies != "theme":
+                        response.delete_cookie(cookies)
+                request.session.flush()
+                return response
+            sessions.delete()
+            return JsonResponse({'success': True, 'message': 'Logged out of session'}, status=200)
+        except:
+            return JsonResponse({"error": True})
+        
+
+# class LogoutFromAll(APIView):
+#     permission_classes = [IsAuthenticated,]
+#     authentication_classes = [CustomAuthentication,]
+
+#     def delete(self, request):
+#         sessions = Session.objects.filter(expire_date__gte=datetime.timezone.now(), 
+#                                        session_key__contains=request.user_id)
+#         sessions.delete()
 
 
 
@@ -484,7 +536,7 @@ class LogoutFromAll(APIView):
 
 
 @api_view(["DELETE"])
-# @permission_classes([IsAdminUser,])
+@permission_classes([IsAdmin,])
 def delete_all(request):
     User.objects.all().delete()
     return JsonResponse({"success": True}, safe=False)

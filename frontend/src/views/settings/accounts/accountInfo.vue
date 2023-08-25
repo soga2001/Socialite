@@ -43,12 +43,6 @@ export default defineComponent({
     mounted() {
     },
     watch: {
-        password() {
-            if(this.password.length > 0) {
-                this.verified = false
-            }
-            console.log('here')
-        }
     },
     components: { Input }
 })
@@ -82,7 +76,7 @@ export default defineComponent({
                         Forgot Password?
                     </RouterLink>
                     <div class="flex w-full">
-                        <input :disable="password.length == 0" type="submit" value="Confirm" class="pointer ml-auto w-fit rounded text-xl text-heading weight-900 px-10 py-2 bg-web-theme border-none" />
+                        <input :disable="password.length == 0" type="submit" value="Confirm" class="pointer ml-auto w-fit rounded text-base text-heading weight-900 px-10 py-2 bg-web-theme border-none" />
                     </div>
                 </form>
             </div>

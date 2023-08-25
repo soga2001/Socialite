@@ -74,11 +74,12 @@ export default defineComponent({
                 this.noResults = false
                 this.results = res.data.users
             }
-        }).catch((err) => {
-            if(err.response.status === 404) {
+            else {
                 this.noResults = true
                 this.results = new Array<User>()
             }
+        }).catch((err) => {
+            
         })
         this.loading = false
       },

@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
+    # 'django.contrib.sessions',
+    'user_sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
@@ -67,11 +68,15 @@ INSTALLED_APPS = [
     'likes.apps.LikesConfig',
     'postviews.apps.PostviewsConfig',
     'tokens.apps.TokensConfig',
-    'bugsreport.apps.BugsConfig'
+    'bugsreport.apps.BugsConfig',
+    'phone_field',
+    'geoip2',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'x_forwarded_for.middleware.XForwardedForMiddleware',
+    'user_sessions.middleware.SessionMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -106,6 +111,11 @@ CORS_ALLOW_METHODS = [
 
 NOTIFICATIONS_NOTIFICATION_MODEL = 'notification.Notification'
 DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
+
+GEOIP_PATH = os.path.join(BASE_DIR, 'geoip')
+GEOIP_COUNTRY = 'GeoLite2-Country.mmdb'
+GEOIP_CITY = 'GeoLite2-City.mmdb'
+
 
 
 ROOT_URLCONF = 'backend.urls'
@@ -189,7 +199,8 @@ CHANNEL_LAYERS = {
 }
 
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+# SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_ENGINE = 'user_sessions.backends.db'
 SESSION_COOKIE_NAME = 'sessionid'
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True

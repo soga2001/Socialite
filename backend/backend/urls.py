@@ -26,4 +26,5 @@ urlpatterns = [
     path('like/', include('likes.urls')),
     # path('notifications/', include(notifications.urls)),
     path('notifications/', include('notification.urls')),
+    path('bugs/', include('bugsreport.urls')),
 ]

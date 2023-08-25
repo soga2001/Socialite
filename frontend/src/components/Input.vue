@@ -13,6 +13,9 @@ export default defineComponent({
             users: new Array<User>(),
             index: null,
             focused: false,
+
+            min: this.minDate,
+            max: this.maxDate,
         }
     },
     props: {
@@ -48,11 +51,20 @@ export default defineComponent({
             type: Number,
             default: 255,
         },
+        minDate: {
+            type: String,
+            default: `${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDay()}`,
+        },
+        maxDate: {
+            type: String,
+            default: `${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDay()}`,
+        },
     },
     created() {
       
     },
     mounted() {
+      console.log(this.maxDate)
     },
     computed: {
       isFocused(): Boolean {
@@ -78,8 +90,10 @@ export default defineComponent({
 
 <template>
   <div class="input-box" :class="{focused: isFocused}" @click="inputClicked">
-    <input :maxlength="charLimit" ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" :type="type" v-model="val" :class="{hasInput: val.length > 0}"  class="input text-heading">
-    <label :class="{focused: isFocused,  hasInput: val.length > 0}" class="label cursor-text">{{label}}</label>
+    <input v-if="type === 'date'" :min="minDate" :max="maxDate" ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" :type="type" v-model="val" :class="{hasInput: val.length > 0}"  class="input text-heading">
+    <input v-else-if="type === 'tel'" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" :type="type" v-model="val" :class="{hasInput: val.length > 0}"  class="input text-heading">
+    <input v-else :maxlength="charLimit" ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" :type="type" v-model="val" :class="{hasInput: val.length > 0}"  class="input text-heading">
+    <label :class="{focused: isFocused,  hasInput: val.length > 0 || type === 'date'}" class="label cursor-text">{{label}}</label>
     <span v-if="showCharCounts && (isFocused || val.length > 0)" @click="($refs.input as HTMLInputElement).focus()" :class="{focused: isFocused,  hasInput: val.length > 0}" class="char_count">{{ `${val.length} / ${charLimit}` }}</span>
   </div>
 </template>
@@ -105,6 +119,10 @@ export default defineComponent({
     padding: 0 10px;
     font-size: 20px;
     line-height: 1rem;
+  }
+
+  .input::-moz-placeholder {
+    opacity: 0;
   }
 }
 

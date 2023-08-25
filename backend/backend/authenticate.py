@@ -12,6 +12,7 @@ from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from django.http import HttpResponse
 from functools import wraps
 from rest_framework.authtoken.models import Token
+from django.contrib.auth import logout
 
 
 def enforce_csrf(request):
@@ -27,53 +28,23 @@ class CustomAuthentication(JWTAuthentication):
         header = self.get_header(request)
         
         if header is None:
-            raw_token = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_COOKIE']) or None
+            try:
+                raw_token = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_COOKIE']) or None
+            except:
+                return None
         else:
             raw_token = self.get_raw_token(header)
         if raw_token is None:
             return None
-        response = HttpResponse()
-        
-
-
-        try:
-            access_token = AccessToken(raw_token)
-            pass
-        except TokenError as e:
-            refresh_token = request.COOKIES.get('refresh_token')
-            if refresh_token is None:
-                return None
-            try:
-                refresh_token = RefreshToken(refresh_token)
-            except:
-                return None
-            
-            refresh_token = RefreshToken.for_user(self.get_user(refresh_token.access_token))
-            
-            raw_token = str(refresh_token.access_token)
-            response.set_cookie(
-                key = settings.SIMPLE_JWT['AUTH_COOKIE'], 
-                value = refresh_token.access_token,
-                expires = settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
-                secure = settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
-                httponly = settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-                samesite = settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
-            )
-            response.set_cookie(
-                key ='refresh_token',
-                value = str(refresh_token),
-                expires = settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
-                secure = settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
-                httponly = settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-                samesite = settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
-            )
-            response.close()
-            pass
-
 
         try:
             validated_token = self.get_validated_token(raw_token)
-            return self.get_user(validated_token), validated_token
+            user, validated_token = self.get_user(validated_token), validated_token
+            try:
+                user.session_set.get(session_key=request.session.session_key)
+            except Exception as e:
+                return None
+            return user, validated_token
         except:
             return None
 

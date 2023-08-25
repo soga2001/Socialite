@@ -77,7 +77,7 @@ export default defineComponent({
         this.$router.push(this.$route.redirectedFrom?.fullPath || '/home')
       }
       else if(!this.$store.state.authenticated){
-        this.$router.push('/login')
+        this.$router.go(0)
       }
     },
     '$route': {
@@ -126,7 +126,7 @@ export default defineComponent({
       </div>
     </template>
   </notifications>
-  <notifications :max="2" group="success" class=" w-full max-w-xs"> 
+  <notifications :max="2" group="success" class=" w-full max-w-xs z-1000"> 
     <template #body="props">
       <div @click="props.close" class="my-notification bg-green-3 text-green box-shadow rounded-sm m-2 border text-left w-fit">
         <Item :captionLineClamp="10">
@@ -147,7 +147,7 @@ export default defineComponent({
       </div>
     </template>
   </notifications>
-  <notifications :max="2" group="notify" class=" w-full max-w-xs" position="bottom center">
+  <notifications :max="2" group="notify" class=" w-full max-w-xs z-100" position="bottom center">
     <template #body="props">
       <div @click="props.close" class="my-notification bg-theme box-shadow rounded-sm m-2 text-left">
         <Item clickable :to="`/${props.item.data.notification.data.url}`" >
