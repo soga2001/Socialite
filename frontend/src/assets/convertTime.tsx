@@ -54,7 +54,10 @@ function convertTime(date: string, date_type: string = 'ago') {
         //     const date = new Date();
         //     return formatRelative(addMilliseconds(date, miliseconds), date);
         // }
-        const date = format(posted_date, 'hh:mm a &#183 MMM dd, yyyy');
+        const date = format(posted_date, 'hh:mm a &#183; MMM dd, yyyy');
+        // const time = format(posted_date, 'hh:mm a')
+        // const date = format(posted_date, 'MMM dd, yyyy')
+        // const data = `${time} <span class='text-heading'>&#183</span> ${date}`
         return date
         // const splt = date.split(' - ');
         // return splt[0] + ' at ' + splt[1];

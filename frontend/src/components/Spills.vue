@@ -169,7 +169,7 @@ export default defineComponent({
               </label> -->
             </div>
             <div class="sticky bottom-0 justify-end flex flex-row-reverse items-center gap-2 mr-2 end">
-              <q-btn class="right bottom-0 right-0 mr-2 btn btn-themed text-heading rounded px-7 py-2 weight-900" flat dense :loading="submitting" type="submit" push :disable="disabled">
+              <q-btn class="right bottom-0 right-0 mr-2 btn btn-themed bg-web-theme-hover text-heading rounded px-7 py-2 weight-900" flat dense :loading="submitting" type="submit" push :disable="disabled">
                 <div>
                   <span class="text-white text-base weight-900 text-capitalize">{{ btnString }}</span>
                 </div>

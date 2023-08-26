@@ -57,7 +57,6 @@ class UserSerializer(serializers.ModelSerializer):
     def get_notification_on(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            user = request.user
             return obj.followers.filter(followed_user=obj, notification=True).exists()
         return False
 
@@ -152,8 +151,9 @@ class UserSessionSerializer(serializers.ModelSerializer):
         
     def get_location(self, obj):
         try:
-            data = g.city('67.165.237.109')
+            data = g.city(obj.ip)
             return data
         except Exception as e:
-            return None
+            data = g.city('67.165.237.109')
+            return data
         

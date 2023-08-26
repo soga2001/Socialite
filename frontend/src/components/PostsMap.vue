@@ -85,10 +85,12 @@ export default defineComponent({
                     this.liked = false;
                 }
             }).catch((err) => {
-                console.log(err)
+                if(err.response.status == 401 && this.$store.state.authenticated ) {
+                    this.$router.go(0)
+                }
             })
         },
-        like() {
+        async like() {
             if (!this.$store.state.authenticated) {
                 this.$q.notify({
                     message: "You must be logged in to like a post!",
@@ -99,7 +101,7 @@ export default defineComponent({
                 return;
             }
             this.liked = !this.liked;
-            http.post('like/like_post/', {
+            await http.post('like/like_post/', {
                 post_id: this.id
             }, {
             }).then((res) => {
@@ -110,10 +112,11 @@ export default defineComponent({
                     this.total_likes -= 1;
                 }
                 else {
-                    // console.log(res.data)
                 }
             }).catch((err) => {
-                console.log(err)
+                if(err.response.status == 401 && this.$store.state.authenticated ) {
+                    this.$router.go(0)
+                }
             })
         },
         setDelete() {

@@ -2731,6 +2731,10 @@
     background-color: var(--color-theme-opacity) !important;
 }
 
+.bg-web-theme-hover:hover {
+    background-color: var(--color-theme-soft) !important;
+}
+
 .bg-hover:hover {
     background-color: var(--color-hover) !important;
 }

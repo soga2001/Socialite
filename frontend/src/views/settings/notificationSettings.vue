@@ -122,7 +122,7 @@ export default defineComponent({
                         </Item>
                     </div>
                     <div class="flex w-full p-2">
-                        <button class="border-brighter-2 ml-auto bg-transparent bg-hover-mute text-heading pointer weight-900 text-lg rounded px-12 py-1">Save</button>
+                        <button class="border-brighter-2 ml-auto bg-transparent bg-hover-mute text-heading pointer weight-900 text-lg rounded px-12 py-1">Coming Soon</button>
                     </div>
                     <q-separator :dark="$store.state.dark"/>
                     <div class="flex flex-col gap-2 w-full p-2">

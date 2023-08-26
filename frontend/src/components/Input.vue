@@ -16,6 +16,8 @@ export default defineComponent({
 
             min: this.minDate,
             max: this.maxDate,
+
+            currentDate: new Date(),
         }
     },
     props: {
@@ -53,11 +55,11 @@ export default defineComponent({
         },
         minDate: {
             type: String,
-            default: `${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDay()}`,
+            default: ``,
         },
         maxDate: {
             type: String,
-            default: `${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDay()}`,
+            default: ``,
         },
     },
     created() {

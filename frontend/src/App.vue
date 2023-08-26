@@ -203,7 +203,8 @@ export default defineComponent({
 </template>
 
 <style>
-@import '@/assets/base.css';
-@import '@/assets/global.css';
+@import '@/assets/css/base.css';
+@import '@/assets/css/global.css';
+@import '@/assets/css/global.scss';
 
 </style>

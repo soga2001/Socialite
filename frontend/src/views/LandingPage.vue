@@ -46,6 +46,7 @@ export default defineComponent({
                 <li>Turn a user to staff or Remove a user from staff (can only be done by Admin)</li>
                 <li>Admin/Staff can delete other users Spill as long as they are the former are higher in hierarchy.</li>
                 <li>Turn on/off notifications from user you follow</li>
+                <li>Allow user to logout of all browsers using Session Management</li>
             </ul>
         </div>
         <div class="flex flex-col gap-2">
@@ -56,11 +57,10 @@ export default defineComponent({
                 <li>Real-time update on <span class="text-heading weight-900">Profile</span> page</li>
                 <li>Move over to Server Side rendering using Nuxtjs or Nextjs</li>
                 <li>(Real-time) Chatting</li>
-                <li>Allow user to logout of all browsers using Session Management</li>
                 <li>Optiming backend calls</li>
                 <li>Caching queries for better optimization</li>
-                <li>Spilling spills with <span class="text-heading weight-900">GIFS</span>, <span class="text-heading weight-900">Videos</span>, and <span class="text-heading weight-900">Polls</span></li>
-                <li>Spilling spills with <span class="text-heading weight-900">Hastags</span> using <i class="text-heading weight-900">#hashtag</i></li>
+                <li>Posting spills with <span class="text-heading weight-900">GIFS</span>, <span class="text-heading weight-900">Videos</span>, and <span class="text-heading weight-900">Polls</span></li>
+                <li>Posting spills with <span class="text-heading weight-900">Hastags</span> using <i class="text-heading weight-900">#hashtag</i></li>
                 <li>Replying to comments</li>
                 <li>Build Machine Learning Algorithm to learn user's surfing habits on Socialite and create a <span class="text-heading weight-900">For you</span> page with spills that will be to a user's liking.</li>
                 <li>Implement fuzzy search for better results when searching Socialite for users or spills. </li>

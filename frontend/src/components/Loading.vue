@@ -10,7 +10,7 @@
       },
       color: {
         type: String,
-        default: '#FF7373',
+        default: '#ff00ff',
         validator: (value: string): boolean => /^#([0-9A-Fa-f]{3}){1,2}$/.test(value),
       },
       alpha: {

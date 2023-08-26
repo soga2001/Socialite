@@ -46,3 +46,49 @@ class Mentions(APIView):
         except Exception as e:
             return JsonResponse({"error": True, "message": "An error occured while trying to retrieve notification types. Please try again later."}, safe=False)
         
+
+
+class DisableNotificationsFromFollowedUser(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = (CustomAuthentication,)
+
+    def post(self, request):
+        try:
+            user = User.objects.get(pk=request.user.id)
+            user.following.filter(followed_user__notification=True).update(notification=False)
+            return JsonResponse({"success": True, "message": "Notifications disabled for this user"})
+        except Exception as e:
+            return JsonResponse({"error": True, "message": "An error occured while trying to disable notifications for this user. Please try again later."}, safe=False)
+        
+    def delete(self, request):
+        try:
+            user = User.objects.get(pk=request.user.id)
+            user.following.filter(followed_user__notification=False).update(notification=True)
+            return JsonResponse({"success": True, "message": "Notifications enabled for this user"})
+        except Exception as e:
+            return JsonResponse({"error": True, "message": "An error occured while trying to enable notifications for this user. Please try again later."}, safe=False)
+        
+    
+class FromUnverifiedUsers(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = (CustomAuthentication,)
+
+
+    def post(self, request):
+        try:
+            # user = User.objects.get(pk=request.user.id)
+            user = request.user
+            user.following.filter(followed_user__verified=False, followed_user__notification=False).update(notification=True)
+            return JsonResponse({"success": True, "message": "Notifications enabled for unverified users"})
+        except Exception as e:
+            return JsonResponse({"error": True, "message": "An error occured while trying to enabling notifications for unverified users. Please try again later."}, safe=False)
+        
+    def delete(self, request):
+        try:
+            # user = User.objects.get(pk=request.user.id)
+            user = request.user
+            user.following.filter(followed_user__verified=False, followed_user__notification=True).update(notification=False)
+            return JsonResponse({"success": True, "message": "Notifications enabled for this user"})
+        except Exception as e:
+            return JsonResponse({"error": True, "message": "An error occured while trying to enable notifications for this user. Please try again later."}, safe=False)
+        

@@ -70,9 +70,6 @@ export default defineComponent({
 </template>
 
 <style scoped>
-@import '@/assets/base.css';
-
-
 
 .nav {
   height: 100%;

@@ -56,7 +56,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <div :class="{'cols-2': !$q.screen.lt.sm}" class="grid w-full h-full h-viewport p-0">
+    <div :class="{'large-screen': !$q.screen.lt.sm}" class="grid w-full h-full h-viewport p-0">
         <header class="border-r h-full w-full bg-theme" v-if="($route.matched[0].name === 'settings' && ($route.matched[1] === undefined || !$q.screen.lt.sm))">
             <div>
                 <Item>
@@ -70,7 +70,7 @@ export default defineComponent({
             
             <nav class="w-full">
                 <RouterLink :to="{name: 'account'}" active-class="active">
-                    <Item clickable class="child">
+                    <Item :captionLineClamp="2" clickable class="child">
                         <template #title>
                             <span class="text-xl text-heading weight-800 text-capitalize">
                                 Account
@@ -87,7 +87,7 @@ export default defineComponent({
                     </Item>
                 </RouterLink>
                 <RouterLink :to="{name: 'notification-settings'}" active-class="active">
-                    <Item clickable class="child">
+                    <Item :captionLineClamp="2" clickable class="child">
                         <template #title>
                             <span class="text-xl text-heading weight-800 text-capitalize">
                                 Notifications
@@ -104,7 +104,7 @@ export default defineComponent({
                     </Item>
                 </RouterLink>
                 <RouterLink :to="{name: 'sessions'}" active-class="active">
-                    <Item clickable class="child">
+                    <Item :captionLineClamp="2" clickable class="child">
                         <template #title>
                             <span class="text-xl text-heading weight-800 text-capitalize">
                                 User Sessions
@@ -121,7 +121,7 @@ export default defineComponent({
                     </Item>
                 </RouterLink>
                 <RouterLink :to="{name: 'privacy-settings'}" active-class="active">
-                    <Item clickable class="child">
+                    <Item :captionLineClamp="2" clickable class="child">
                         <template #title>
                             <span class="text-xl text-heading weight-800 text-capitalize">
                                 Privacy and Safety
@@ -156,5 +156,11 @@ export default defineComponent({
     .child {
         background-color: var(--color-background-mute);
     }
+}
+
+.large-screen {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    grid-template-areas: "header main";
 }
 </style>

@@ -10,6 +10,8 @@ import Item from '../Item.vue';
 import ProfileIcon from '@/icons/i-profile.vue'
 
 import Search from '@/views/Search.vue';
+import { logout } from '@/composables/logout';
+
 export default defineComponent({
   data() {
       return {
@@ -52,14 +54,8 @@ export default defineComponent({
           this.$store.commit("setTheme", !this.$store.state.dark);
       },
       logout() {
-          http.post("users/logout/").then((res) => {
-            this.navSlideIn = false
-            this.$store.commit("authenticate", false);
-            this.$store.commit("setDefaultUser");
-            // router.push("/login");
-          }).catch((err) => {
-              console.log(err);
-          });
+          logout()
+          this.navSlideIn = false
       },
       openNav() {
         this.navSlideIn = true
@@ -94,8 +90,8 @@ export default defineComponent({
         <div ref="topNav" class="topNav bg-transparent p-2" v-if="$q.screen.lt.sm">
           <div class="dropdown-btn w-full">
             <Item align-items="center" dense class="w-full bg-transparent">
-                <template #avatar v-if="$store.state.authenticated">
-                  <div @click="openNav" class="pointer">
+                <template #avatar >
+                  <div v-if="$store.state.authenticated" @click="openNav" class="pointer">
                     <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
                     <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                   </div>
@@ -121,7 +117,7 @@ export default defineComponent({
               </div>
           </div>
         </div>
-        <header v-if="$route.matched[0].name == 'notifications' && $store.state.authenticated" ref="header" class="w-full z-5">
+        <header v-if="$route.matched[0]?.name == 'notifications' && $store.state.authenticated" ref="header" class="w-full z-5">
           <div :style="{height: '66px'}" v-if="!$q.screen.lt.sm" >
             <Item>
               <template #title>
@@ -135,6 +131,7 @@ export default defineComponent({
           <q-tabs
               class=" w-full"
               ref="tabs"
+              indicator-color="purple-13"
           >
               <q-route-tab class="text-capitalize text-xl" active-class="active" :to="{name: 'all-notif'}" exact replace>
                   <span>All</span>
@@ -144,7 +141,7 @@ export default defineComponent({
               </q-route-tab>
           </q-tabs>
         </header>
-        <header v-if="$route.matched[0].name == 'home' && !$q.screen.lt.sm" ref="header" class="text-2xl weight-900">
+        <header v-if="$route.matched[0]?.name == 'home' && !$q.screen.lt.sm" ref="header" class="text-2xl weight-900">
           <Item>
               <template #title>
                 <span class="text-2xl weight-900">Home</span>
@@ -154,7 +151,7 @@ export default defineComponent({
               </template> -->
             </Item>
         </header>
-        <header class="sticky top-0 p-2 m-0 max-h-12 overflow-visible bg-theme-opacity" v-if="!$q.screen.lt.sm && $route.matched[0].name == 'explore'">
+        <header class="sticky top-0 p-2 m-0 max-h-12 overflow-visible bg-theme-opacity" v-if="!$q.screen.lt.sm && $route.matched[0]?.name == 'explore'">
           <Item align-items="center" dense class="w-full overflow-visible bg-transparent">
               <template v-if="$route.name=='explore'" #title>
                 <SearchBar dense />
@@ -253,8 +250,6 @@ export default defineComponent({
 
 
 <style scoped>
-@import '@/assets/base.css';
-
 /* .nav {
   transition-delay: .25s;
   transition: backdrop-filter .25s linear;

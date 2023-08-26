@@ -139,6 +139,7 @@ export default defineComponent({
                         class="bg-theme bg-blur-half w-full text-lg text-capitalize border-b"
                         active-class="text-heading"
                         v-model="tab"
+                        indicator-color="purple-13"
                     
                     >
                         <q-route-tab name="user-posted" class="text-capitalize text-body bg-transparent" active-class="active" :to="{name: 'user-posted', params: {username: username}}" exact replace>

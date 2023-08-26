@@ -119,4 +119,20 @@ export interface Sessions {
     last_activity: string,
     ip: string,
     user: string,
+    device: string,
+    location: Location,
+    browser: string,
+}
+
+export interface Location {
+    city: string,
+    country_code: string,
+    country_name: string,
+    dma_code: number,
+    latitude: number,
+    longitude: number,
+    postal_code: string,
+    region: string,
+    time_zone: string,
+
 }

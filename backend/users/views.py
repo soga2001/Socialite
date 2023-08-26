@@ -12,6 +12,8 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect, requires_csr
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.db.models import F
+# import JWTAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 # from django.contrib.postgres.search import TrigramSimilarity, TrigramDistance, TrigramWordSimilarity
 from django.db.models import Q
@@ -334,11 +336,25 @@ class ChangePassword(APIView):
             
             user.set_password(new_password)
             user.save()
+            user.session_set.filter(~Q(session_key=request.session.session_key)).delete()
             return JsonResponse({"success": True, "message": "Your password has been changed."})
         except Exception as e:
             return JsonResponse({"error": True, "message": "An error occurred."}, status=500)
         except:
             return JsonResponse({"error": True}, status=404)
+        
+
+class DeleteCookies(APIView):
+    def delete(self, request):
+        try:
+            response = JsonResponse({"success": True}, status=200)
+            for cookies in request.COOKIES:
+                if cookies != "theme":
+                    response.delete_cookie(cookies)
+            request.session.flush()
+            return response
+        except:
+            return JsonResponse({"error": True})
         
 class UserInfo(APIView):
     permission_classes = [IsAuthenticated,]
@@ -440,11 +456,6 @@ class VerifyUser(APIView):
         
 
 
-
-def send_user_verification(request):
-    pass
-        
-
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated,]
     authentication_classes = (CustomAuthentication,)
@@ -461,16 +472,8 @@ class LogoutView(APIView):
             return response
         except:
             return JsonResponse({"error": True})
+        
 
-
-# class AllLogins(APIView):
-#     permission_classes = [IsAuthenticated,]
-#     authentication_classes = [CustomAuthentication,]
-
-#     def get(self, request):
-#         user = request.user
-#         userSerialized = UserSerializer(user)
-#         return JsonResponse({'success': True, 'user': userSerialized.data, 'sessions': list(Session.objects.all().values())})
 
 class AllSessions(APIView):
     permission_classes = [IsAuthenticated,]
@@ -522,19 +525,6 @@ class SpecificSession(APIView):
         except:
             return JsonResponse({"error": True})
         
-
-# class LogoutFromAll(APIView):
-#     permission_classes = [IsAuthenticated,]
-#     authentication_classes = [CustomAuthentication,]
-
-#     def delete(self, request):
-#         sessions = Session.objects.filter(expire_date__gte=datetime.timezone.now(), 
-#                                        session_key__contains=request.user_id)
-#         sessions.delete()
-
-
-
-
 
 
 @api_view(["DELETE"])

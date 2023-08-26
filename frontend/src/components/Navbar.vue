@@ -189,8 +189,6 @@ export default defineComponent({
 </template>
 
 <style scoped>
-@import '@/assets/base.css';
-
 header {
   position: -webkit-sticky;
 	position: sticky;

@@ -43,6 +43,7 @@ class CustomAuthentication(JWTAuthentication):
             try:
                 user.session_set.get(session_key=request.session.session_key)
             except Exception as e:
+                logout(request)
                 return None
             return user, validated_token
         except:

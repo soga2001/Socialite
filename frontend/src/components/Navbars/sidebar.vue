@@ -5,6 +5,7 @@ import {http} from '../../assets/http'
 import { RouterLink } from 'vue-router';
 import router from '../../router';
 import Spills from '../Spills.vue';
+import {logout} from '@/composables/logout'
 export default defineComponent({
     data() {
         return {
@@ -57,14 +58,7 @@ export default defineComponent({
             this.$store.commit("setTheme", !this.$store.state.dark);
         },
         logout() {
-            http.post("users/logout/").then((res) => {
-                this.navSlideIn = false;
-                this.$store.commit("authenticate", false);
-                this.$store.commit("setDefaultUser");
-                // router.push("/login");
-            }).catch((err) => {
-                console.log(err);
-            });
+            logout()
         },
         openNav() {
             this.navSlideIn = true;
@@ -73,16 +67,6 @@ export default defineComponent({
             this.navSlideIn = false;
         },
         async reportBug() {
-          // if(this.bug.length == 0 || this.bug_replication.length == 0) {
-          //   this.$q.notify({
-          //     type: 'negative',
-          //     message: `<span class="text-white text-xl">Please fill all fields</span>`,
-          //     icon: 'error',
-          //     iconColor: 'white',
-          //     html: true,
-          //   })
-          //   return
-          // }
           await http.post('bugs/report_bugs/', {
             bug: this.bug,
             bug_replication: this.bug_replication
@@ -140,9 +124,7 @@ export default defineComponent({
         <nav class="nav" :style="navStyle">
             <q-list class="list text-2xl">
                 <div class="pt-2">
-                  <RouterLink to="/" active-class="active" v-if="$store.state.authenticated">
-                      
-                      <!-- <q-btn size="1rem" flat round class="ml-2 text-xs" icon="icon"/> -->
+                  <RouterLink to="/" class="nav__link">
                       <q-item :clickable="false" class="hide">
                         <q-item-section avatar>
                           <q-btn flat round>
@@ -150,6 +132,10 @@ export default defineComponent({
                           </q-btn>
                         </q-item-section>
                       </q-item>
+
+                      <div class="show p-2">
+                        <i-home size="2rem" :fill="$route.fullPath == '/home' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                      </div>
                   </RouterLink>
                   <RouterLink to="/home" class="nav__link" active-class="active text-heading" v-if="$store.state.authenticated">
                       <q-item class="hide">
@@ -398,13 +384,6 @@ export default defineComponent({
                                 <template #title>
                                   <div class="flex items-center gap-1">
                                     <span class="text-xl text-heading weight-900">{{ $store.state.user.full_name}}</span>
-                                    <!-- <span class="h-full" v-if="$store.state.user.verified">
-                                        <q-icon class="vert-align-middle "  color="blue" size="1.3rem" name="verified">
-                                            <q-tooltip :delay="1000" class="bg-theme box-shadow text-sm">
-                                                Verified
-                                            </q-tooltip>
-                                        </q-icon>
-                                    </span> -->
                                     <q-icon v-if="$store.state.user.private" class="vert-align-middle "  :color="$store.state.dark ? 'white' : 'black'" size="1.3rem" name="lock">
                                         <q-tooltip :delay="1000" class="bg-theme text-heading box-shadow text-sm">
                                             Private
@@ -458,7 +437,6 @@ export default defineComponent({
 @mixin scroll{overflow-y:auto; scrollbar-width:thin; /*-webkit-overflow-scrolling:touch;*/}
 
 
-@import '@/assets/base.css';
 header {
   @include scroll();
   position:sticky; top:0; max-height:100vh; overflow:auto;

@@ -29,23 +29,33 @@ export default defineComponent({
         html: {
             type: Boolean,
             default: false,
+        },
+        spanClass: {
+            type: String,
+            default: '',
         }
     },
     data() {
         return {
-            // timeago: '',
             date_posted: this.timeAgo(),
         };
     },
     methods: {
         timeAgo() {
-            return convertTime(this.date, this.date_type)
+            let date = convertTime(this.date, this.date_type)
+            let val = null
+            if(date.includes("&#183;")) {
+                val = date.split('&#183;');
+                console.log(val[0], val[1])
+                console.log(`<span class="flex flex-row gap-1 items-center ${this.class}"> ${val[0]} <span class="${this.spanClass}">&#183;</span> ${val[1]} </span>`)
+
+                return `<span :class="${this.class}" class="flex flex-row gap-1 items-center"> ${val[0]} <span class="${this.spanClass}">&#183;</span> ${val[1]} </span>`
+            }
+            return date
         }
     },
     created() {
-        // this.timeago();
-        // console.log(navigator.language)
-    }
+    },
 
 })
 
@@ -53,7 +63,7 @@ export default defineComponent({
 
 <template>
     <span v-if="!html" role="span" :class="class">{{ date_posted }}</span>
-    <span :class="class" v-else v-html="date_posted"></span>
+    <span ref="val"  v-html="date_posted" v-else></span>
 </template>
 
 

@@ -425,15 +425,15 @@ export default defineComponent({
                         <span class="user-name text-2xl weight-900 text-heading ">
                             {{ user.full_name }}
                         </span>
-                        <span class="h-full " v-if="user.verified" color="blue">
-                            <q-icon class="vert-align-middle "  size="2rem" name="verified">
+                        <span class="h-full " v-if="user.verified" >
+                            <q-icon class="vert-align-middle " color="blue"  size="2rem" name="verified">
                                 <q-tooltip :delay="1000" class="bg-theme text-heading box-shadow text-sm">
                                     Verified
                                 </q-tooltip>
                             </q-icon>
                         </span>
                         <span class="h-full " v-if="user.is_admin || user.is_staff">
-                            <q-icon class="vert-align-middle "  color="green" size="2rem" name="admin_panel_settings">
+                            <q-icon class="vert-align-middle " color="purple-13" size="2rem" name="admin_panel_settings">
                                 <q-tooltip :delay="1000" class="bg-theme text-heading box-shadow text-sm">
                                     Staff
                                 </q-tooltip>

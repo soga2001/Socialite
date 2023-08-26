@@ -116,11 +116,9 @@ export default defineComponent({
         </div>
         <hr/>
         <div class="w-full">
-            <q-btn class="w-full p-3" flat label-slot @click="openModal">
-                <span class="text-red text-capitalize weight-900 text-xl">
-                    Delete
-                </span>
-            </q-btn>
+            <button class="w-full p-3 text-red border-none weight-900 bg-transparent text-xl danger-btn pointer"  @click="openModal">
+                Delete
+            </button>
         </div>
         <q-dialog class="box-shadow" v-model="toDelete" persistent>
             <q-card class="min-w-68 w-full max-w-sm bg-theme border-brighter">
@@ -148,7 +146,7 @@ export default defineComponent({
                     <!-- <q-btn flat @click="deleteAccount"> 
                         <span class="text-capitalize text-heading bg-web-theme px-5 py-2 rounded">Delete</span>
                     </q-btn> -->
-                    <button @click="deleteAccount" class="pointer text-capitalize text-heading bg-transparent bg-hover-soft px-10 py-1 text-xl rounded border-brighter-2"> 
+                    <button @click="deleteAccount" class="pointer bg-transparent px-10 py-1 text-xl weight-900 danger-btn pointer rounded border-brighter-2"> 
                         Delete
                     </button>
                 </q-card-actions>

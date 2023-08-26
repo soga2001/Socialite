@@ -56,13 +56,13 @@ export default defineComponent({
     return { toast}
   },
   created() {
-    if(this.arr.includes(`${this.$route.name as string ?? ''}`) || this.arr.includes(`${this.$route.matched[0].name as string ?? ''}`)) {
-        this.settingsPage = true
-      }
-      else {
-        this.settingsPage = false
-      }
-      this.$store.commit('setDesktop', !this.$q.screen.lt.sm)
+    if(this.arr.includes((this.$route.name ?? '') as string) || this.arr.includes((this.$route.matched[0]?.name ?? '') as string)) {
+      this.settingsPage = true
+    }
+    else {
+      this.settingsPage = false
+    }
+    this.$store.commit('setDesktop', !this.$q.screen.lt.sm)
   },
   mounted() {
     const element = this.$refs.mainDiv as HTMLDivElement
@@ -77,7 +77,7 @@ export default defineComponent({
   },
   computed: {
     hideNavBar() {
-      const component = this.$route.matched[0].name || this.$route.name || ''
+      const component = (this.$route.matched[0]?.name ?? this.$route.name) as string || '';
       if(this.pages.includes(component as string)) {
         return true
       }
@@ -158,29 +158,10 @@ export default defineComponent({
         this.websocketClose();
       }
     },
-    // $route: function() {
-
-      // if(this.arr.includes(`${this.$route.name as string ?? ''}`) || this.arr.includes(`${this.$route.matched[0].name as string ?? ''}`)) {
-      //   this.settingsPage = true
-      // }
-      // else {
-      //   this.settingsPage = false
-      // }
-      // this.$nextTick(() => {
-      //   this.hideTopNav = false;
-      //   const element = this.$refs.mainDiv as HTMLDivElement;
-      //   element.scrollTop = this.scrollPos.get(this.$route.name);
-      //   this.scrollPosition = this.scrollPos.get(this.$route.name);
-      //   this.height = this.scrollHeight.get(this.$route.name)
-      //   this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 10
-
-      // });
-
-    // },
     $route: {
       immediate: true,
       handler(newRoute) {
-        if(this.arr.includes(`${this.$route.name as string ?? ''}`) || this.arr.includes(`${this.$route.matched[0].name as string ?? ''}`)) {
+        if(this.arr.includes((this.$route.name ?? '') as string) || this.arr.includes((this.$route.matched[0]?.name ?? '') as string)) {
           this.settingsPage = true
         }
         else {
@@ -262,16 +243,15 @@ export default defineComponent({
 
     <div id="main-div" class="w-full min-h-viewport h-full">
       <div>
-        <div ref="topNav" v-if="!hideNavBar" id="top-nav" :class="{'border-b': $route.matched[0].name != 'notification'}" class="sticky top-0 w-full h-fit bg-transparent bg-blur-1 z-20">
+        <div ref="topNav" v-if="!hideNavBar" id="top-nav" :class="{'border-b': ($route.matched[0]?.name as string || '') != 'notification'}" class="sticky top-0 w-full h-fit bg-transparent bg-blur-1 z-20">
           <TopNav @update:navHeight="topNavHeight = $event"/>
         </div>
         <div :style="{paddingBottom: `${bottomNavHeight - 10}px`, minHeight: `calc(100vh - ${(($refs.topNav as HTMLElement)?.offsetHeight) ?? 0}px)`}"  class="w-full h-full border-l border-r">
           <RouterView v-slot="{Component}" >
             <KeepAlive :max="2" :include="['home', 'search', 'explore', 'user-profile', 'view-spill', 'notifications']" >
-              <component :is="Component" :key="!['user-profile', 'notifications'].includes(($route.matched[0].name) as string) ? $route.fullPath : null"  :height="height" :scrollPosition="scrollPosition" />
+              <component :is="Component" :key="!['user-profile', 'notifications'].includes(($route.matched[0]?.name) as string) ? $route.fullPath : null"  :height="height" :scrollPosition="scrollPosition" />
             </KeepAlive>
           </RouterView>
-          <!-- <component :is="Component" :key="$route.fullPath"  :height="height" :scrollPosition="scrollPosition" /> -->
         </div>
       </div>
     </div>
@@ -286,7 +266,7 @@ export default defineComponent({
       <BottomNav/>
     </nav>
 
-    <div ref="spillButton" class="fixed z-20 box-shadow right-1 bg-theme rounded-lg" :style="{bottom: `${bottomNavHeight}px`}" v-if="isMobile() && $route.name !== 'view-spill'">
+    <div ref="spillButton" class="fixed z-20 box-shadow right-1 bg-theme rounded-lg" :style="{bottom: `${bottomNavHeight}px`}" v-if="isMobile() && $store.state.authenticated && $route.name !== 'view-spill'">
       <q-btn size="16px" class="show btn-themed text-heading" round flat icon="add" @click="spill = true"/>
     </div>
     <q-dialog class="min-h-sm bg-blur-half w-full h-full" v-model="spill" position="top" persistent :maximized="true">
@@ -380,7 +360,7 @@ export default defineComponent({
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 650px) {
   .main {
-    grid-template-columns: minmax(auto, 375px) 600px 0px;
+    grid-template-columns: auto 600px minmax(auto, 200px);
 
     &.settings_page {
       grid-template-columns: auto 1fr 0px;
@@ -427,7 +407,7 @@ export default defineComponent({
     grid-template-columns: minmax(auto, 375px) 600px minmax(auto, 375px);
 
     &.settings_page {
-      grid-template-columns: minmax(auto, 375px) minmax(600px, 1000px) minmax(auto, 90px);
+      grid-template-columns: minmax(auto, 375px) minmax(600px, 1000px) minmax(auto, 100px);
     }
   }
 

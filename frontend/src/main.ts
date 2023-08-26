@@ -59,6 +59,7 @@ import Mention from './components/Mention.vue'
 import SearchBar from '@/components/SearchBar.vue';
 import zoomImg from '@/components/zoomImg.vue';
 import hoverUserData from '@/components/Cards/hoverUserData.vue';
+import ForgotPassword from '@/components/forgotPassword.vue';
 
 
 
@@ -146,6 +147,7 @@ app.component('Item', Item);
 app.component('cropper', VueCropper);
 app.component('Input', Input);
 app.component('Textarea', Textarea);
+app.component('forgot-password', ForgotPassword)
 
 
 app.use(Quasar, {

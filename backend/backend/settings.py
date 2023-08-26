@@ -71,7 +71,6 @@ INSTALLED_APPS = [
     'tokens.apps.TokensConfig',
     'bugsreport.apps.BugsConfig',
     'phone_field',
-    'geoip2',
 ]
 
 MIDDLEWARE = [

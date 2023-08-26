@@ -15,6 +15,8 @@ export default defineComponent({
             editName: false,
             editEmail: false,
             editUsername: false,
+
+            forgotPass: false,
         };
     },
     methods: {
@@ -72,9 +74,12 @@ export default defineComponent({
             <div class="w-full flex flex-row justify-center px-2 py-2" v-if="!verified">
                 <form class="w-full flex flex-col gap-1" @submit.prevent="submit">
                     <Input @update:val="password = $event" input_type="password" input_label="Password" id="1" />
-                    <RouterLink to="/" class=" w-fit hover-underline no-decor weight-800 text-theme text-base">
+                    <span @click="forgotPass = true" class=" w-fit pointer hover-underline no-decor weight-800 text-theme text-base">
                         Forgot Password?
-                    </RouterLink>
+                    </span>
+                    <q-dialog v-model="forgotPass">
+                        <forgot-password @update:forgotpass="forgotPass = $event" />
+                    </q-dialog>
                     <div class="flex w-full">
                         <input :disable="password.length == 0" type="submit" value="Confirm" class="pointer ml-auto w-fit rounded text-base text-heading weight-900 px-10 py-2 bg-web-theme border-none" />
                     </div>

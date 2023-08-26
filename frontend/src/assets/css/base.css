@@ -12,12 +12,18 @@
 
   --vt-c-black: #000000;
   /* --vt-c-green: #089e6a; */
-  /* --vt-c-orange: #fd8686; */
-  --vt-c-orange: rgb(253, 134, 134);
-  --vt-c-background-orange: rgba(255, 115, 115);
-  --vt-c-orange-hover: rgba(255, 115, 115, .7);
-  --vt-c-orange-hover-lighter: rgba(255, 115, 115, .4);
-  --vt-c-orange-extreme-light: rgba(255,115,115,.1);
+  /* --vt-c-fuchsia: #fd8686; */
+  /* --vt-c-fuchsia: rgb(253, 134, 134); */
+  /* --vt-c-background-fuchsia: rgba(255, 115, 115); */
+  /* --vt-c-fuchsia-hover: rgba(255, 115, 115, .7);
+  --vt-c-fuchsia-hover-lighter: rgba(255, 115, 115, .4);
+  --vt-c-fuchsia-extreme-light: rgba(255,115,115,.1); */
+  /* --vt-c-fuchsia: #ff00ff; */
+  --vt-c-fuchsia: rgb(255, 0, 255);
+  --vt-c-background-fuchsia: rgba(255, 0, 255);
+  --vt-c-fuchsia-hover: rgba(255, 0, 255, .7);
+  --vt-c-fuchsia-hover-lighter: rgba(255, 0, 255, .4);
+  --vt-c-fuchsia-extreme-light: rgba(255, 0, 255,.1);
 
   /* --vt-c-green: rgb(28, 179, 126);
   --vt-c-background-green: rgb(28, 179, 126);
@@ -59,16 +65,16 @@
   --color-text: var(--vt-c-text-dark-2);
   --color-lighter: var(--vt-c-text-dark-3);
 
-  --color-theme: var(--vt-c-orange);
-  --color-theme-soft: var(--vt-c-orange-hover);
-  --color-theme-mute: var(--vt-c-orange-hover-lighter);
-  --color-theme-opacity: var(--vt-c-orange-extreme-light);
+  --color-theme: var(--vt-c-fuchsia);
+  --color-theme-soft: var(--vt-c-fuchsia-hover);
+  --color-theme-mute: var(--vt-c-fuchsia-hover-lighter);
+  --color-theme-opacity: var(--vt-c-fuchsia-extreme-light);
 
 
-  --color-button: var(--vt-c-orange);
-  --color-button-background: var(--vt-c-background-orange);
-  --color-button-hover: var(--vt-c-orange-hover);
-  --color-button-hover-ligher: var(--vt-c-orange-hover-ligher);
+  --color-button: var(--vt-c-fuchsia);
+  --color-button-background: var(--vt-c-background-fuchsia);
+  --color-button-hover: var(--vt-c-fuchsia-hover);
+  --color-button-hover-ligher: var(--vt-c-fuchsia-hover-ligher);
 
   /* --color-theme: var(--vt-c-green);
   --color-button: var(--vt-c-green);
@@ -98,23 +104,17 @@
   --color-text: var(--vt-c-text-light-2);
   --color-lighter: var(--vt-c-text-light-3);
 
-  --color-theme: var(--vt-c-orange);
-  --color-theme-soft: var(--vt-c-orange-hover);
-  --color-theme-mute: var(--vt-c-orange-hover-lighter);
-  --color-theme-opacity: var(--vt-c-orange-hover-lighter);
+  --color-theme: var(--vt-c-fuchsia);
+  --color-theme-soft: var(--vt-c-fuchsia-hover);
+  --color-theme-mute: var(--vt-c-fuchsia-hover-lighter);
+  --color-theme-opacity: var(--vt-c-fuchsia-hover-lighter);
 
-  --color-button: var(--vt-c-orange);
-  --color-button-background: var(--vt-c-background-orange);
-  --color-button-hover: var(--vt-c-orange-hover);
-  --color-button-hover-ligher: var(--vt-c-orange-hover-ligher);
+  --color-button: var(--vt-c-fuchsia);
+  --color-button-background: var(--vt-c-background-fuchsia);
+  --color-button-hover: var(--vt-c-fuchsia-hover);
+  --color-button-hover-ligher: var(--vt-c-fuchsia-hover-ligher);
 
   color-scheme: light;
-
-  /* --color-theme: var(--vt-c-green);
-  --color-button: var(--vt-c-green);
-  --color-button-background: var(--vt-c-background-green);
-  --color-button-hover: var(--vt-c-green-hover);
-  --color-button-hover-ligher: var(--vt-c-green-hover-ligher); */
 
 
   --color-switch: var(--vt-c-white);

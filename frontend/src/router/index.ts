@@ -6,6 +6,7 @@ import type {RouterScrollBehavior, RouteRecordRaw, Router, NavigationGuard} from
 // import Vue from 'vue'
 import { useCookies } from 'vue3-cookies'
 import { store } from '../store/store'
+import type { Sessions } from '@/assets/interfaces';
 
 const { cookies }  = useCookies();
 
@@ -222,6 +223,15 @@ const router: Router = createRouter({
           meta: {
             auth: true,
             title: 'Sessions'
+          }
+        },
+        {
+          path: 'session/:key',
+          name: 'session',
+          component: () => import('@/views/settings/session/session.vue'),
+          meta: {
+            auth: true,
+            title: 'Session Detail'
           }
         }
       ]
