@@ -90,31 +90,40 @@ export default defineComponent({
         <div ref="topNav" class="topNav bg-transparent p-2" v-if="$q.screen.lt.sm">
           <div class="dropdown-btn w-full">
             <Item align-items="center" dense class="w-full bg-transparent">
-                <template #avatar >
-                  <div v-if="$store.state.authenticated" @click="openNav" class="pointer">
-                    <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
-                    <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
-                  </div>
-                </template>
-                <template v-if="['explore', 'search'].includes(($route.name)?.toString() || ' ')" #title>
-                  <Search dense/>
-                </template>
-                <template v-if="['all-notif', 'mentions'].includes(($route.name)?.toString() || ' ')" #title>
-                  <div class="text-2xl weight-900 text-heading">
-                    Notifications
-                  </div>
-                </template>
+              <template #avatar v-if="['settings'].includes(($route.matched[0].name)?.toString() || ' ') && $route.name?.toString() !== 'settings'">
+                <q-btn flat round color="red" icon="arrow_back " @click="$router.back"/>
+              </template>
+              <template #avatar v-else>
+                <div v-if="$store.state.authenticated" @click="openNav" class="pointer">
+                  <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
+                  <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
+                </div>
+              </template>
+              <template v-if="['explore', 'search'].includes(($route.name)?.toString() || ' ')" #title>
+                <Search dense/>
+              </template>
+              <template #title v-if="['settings'].includes(($route.matched[0].name)?.toString() || ' ')">
+                <div class="text-2xl weight-900 text-heading">
+                  {{$route.meta.title}}
+                </div>
+              </template>
+              <template v-if="['all-notif', 'mentions'].includes(($route.name)?.toString() || ' ')" #title>
+                <div class="text-2xl weight-900 text-heading">
+                  Notifications
+                </div>
+              </template>
+              
+              <template #icon v-if="['explore', 'search'].includes(($route.name)?.toString() || ' ')">
+                <q-btn flat round dense icon="settings" size="16px" class="border" @click.stop="" />
+              </template>
+              <template #icon  v-else>
                 
-                <template #icon v-if="['explore', 'search'].includes(($route.name)?.toString() || ' ')">
-                  <q-btn flat round dense icon="settings" size="16px" class="border" @click.stop="" />
-                </template>
-                <template #icon v-else>
+              </template>
 
-                </template>
-              </Item>
-              <div class="brand text-2xl weight-900 text-heading" v-if="!['explore', 'search', 'all-notif', 'mentions'].includes(($route.name)?.toString() || ' ')">
-                Socialite
-              </div>
+            </Item>
+            <div class="brand text-2xl weight-900 text-heading" v-if="!['explore', 'search', 'all-notif', 'mentions'].includes(($route.name)?.toString() || ' ') && !['settings'].includes(($route.matched[0].name)?.toString() || ' ')">
+              Socialite
+            </div>
           </div>
         </div>
         <header v-if="$route.matched[0]?.name == 'notifications' && $store.state.authenticated" ref="header" class="w-full z-5">

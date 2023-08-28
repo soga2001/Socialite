@@ -19,7 +19,7 @@ export default defineComponent({
 
 <template>
     <div>
-        <header class="sticky top-0 pb-2">
+        <header class="sticky top-0 pb-2 " v-if="!$q.screen.lt.sm">
             <Item>
                 <template #avatar>
                     <q-btn flat icon="arrow_back" @click="$router.back"/>
@@ -38,7 +38,7 @@ export default defineComponent({
                     </q-avatar>
                 </template>
                 <template #title>
-                    <span class="text-left text-xl text-heading weight-900">{{ $store.state.user.first_name }} {{ $store.state.user.last_name }}</span>
+                    <span class="text-left text-xl text-heading weight-900">{{ $store.state.user.full_name }}</span>
                 </template>
                 <template #caption>
                     <span class="text-sm text-body weight-700 text-nodecor">
@@ -67,11 +67,9 @@ export default defineComponent({
         </div>
         <hr/>
         <div class="w-full">
-            <q-btn class="w-full p-3" flat label-slot>
-                <span class="text-red text-capitalize weight-900 text-xl">
-                    Deactivate
-                </span>
-            </q-btn>
+            <button class="w-full p-3 text-red border-none weight-900 bg-transparent text-xl danger-btn pointer"  @click="">
+                Deactivate
+            </button>
         </div>
     </div>
 </template>

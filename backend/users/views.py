@@ -1,4 +1,4 @@
-from django.forms import ImageField
+from django.forms import ImageField, ValidationError
 from django.shortcuts import get_object_or_404
 from backend.authenticate import *
 # From Django
@@ -14,9 +14,13 @@ from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.db.models import F
 # import JWTAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.utils.dateparse import parse_date
 
 # from django.contrib.postgres.search import TrigramSimilarity, TrigramDistance, TrigramWordSimilarity
 from django.db.models import Q
+# import escape
+from django.utils.html import escape
+from dateutil.parser import parse
 
 
 # from django.contrib.sessions.models import Session
@@ -73,11 +77,23 @@ def flush_session(request):
     request.session.flush()
     return JsonResponse({'success': True})
 
-@api_view(["GET"])
-@permission_classes([IsAdmin,])
-def users(request):
-    users = UserSerializer(User.objects.all(), context={'request': request}, many=True)
-    return JsonResponse({'users': list(users.data)}, safe=False)
+# @api_view(["GET"])
+# @authentication_classes([CustomAuthentication])
+# @permission_classes([IsAdmin,])
+class AllUsers(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+    authentication_classes = [CustomAuthentication,]
+
+    def get(self, request):
+        try:
+            users = User.objects.all()
+            users = UserSerializer(users, context={'request': request}, many=True).data
+            return JsonResponse({"success": True, "users": users})
+        except Exception as e:
+            return JsonResponse({"error": True, "message": "An error occurred."})
+# def users(request):
+#     users = UserSerializer(User.objects.all(), context={'request': request}, many=True)
+#     return JsonResponse({'users': list(users.data)}, safe=False)
 
 @api_view(["GET"])
 def user_by_id(request, user_id):
@@ -114,22 +130,10 @@ def user_by_username(request, username, multiple = True):
 def user_register(request):
     try:
         data = json.loads(request.body)
-        if(data['first_name'] == '' or data['last_name'] == ''):
-            raise ValueError('Please enter your name')
-        if(data['username'] == ''):
-            raise ValueError('Please enter your username')
-        if(data['email'] == ''):
-            raise ValueError('Please enter your email')
-        if(data['password'] == ''):
-            raise ValueError('Please enter your password')
-        if(data['confirm_password'] == ''):
-            raise ValueError('Please enter your confirm password')
-        if(data['password'] != data['confirm_password']):
-            raise ValueError('Password and confirm password must match')
+        print(data)
 
         user = User.objects.create_user(
-            first_name=data['first_name'],
-            last_name=data['last_name'],
+            full_name=data['full_name'],
             username=data['username'], 
             password=data['password'], 
             email=data['email'])
@@ -244,12 +248,26 @@ class UserFromCookie(APIView):
         try:
             user = custom.authenticate(request)
         except Exception as e:
-            return JsonResponse({"error": True})
+            response = JsonResponse({'error': True})
+            return response
         try:
             user = UserSerializer(request.user).data
             return JsonResponse({"success": True, "user": user})
-        except:
-            return JsonResponse({"success": False, "message": "User not found."})
+        except Exception as e:
+            response = JsonResponse({'error': True})
+            refresh_token = request.COOKIES.get('refresh_token')
+            if(refresh_token):
+                try:
+                    token = RefreshToken(refresh_token)
+                    token.blacklist()
+                except:
+                    pass
+
+                for cookies in request.COOKIES:
+                    if cookies != "theme":
+                        response.delete_cookie(cookies)
+                request.session.flush()
+            return response
 
 
 class UpdateProfile(APIView):
@@ -261,10 +279,12 @@ class UpdateProfile(APIView):
             avatar = None
             banner = None
             bio = None
-            first_name = None
-            last_name = None
+            full_name = None
             link = None
             location = None
+
+            user = request.user
+
 
             if 'avatar' in request.FILES:
                 avatar = request.FILES['avatar']
@@ -279,43 +299,38 @@ class UpdateProfile(APIView):
                 try:
                     check_image = Image.open(banner)
                     check_image.verify()
+
                 except Exception as e:
                     return JsonResponse({"error": True, "message": "Invalid image file."})
                 
+            
             if 'bio' in request.POST:
                 bio = request.POST['bio']
-            if 'first_name' in request.POST:
-                first_name = request.POST['first_name']
-            if 'last_name' in request.POST:
-                last_name = request.POST['last_name']
+                user.bio = escape(bio)
+            if 'full_name' in request.POST:
+                full_name = request.POST['full_name']
+                user.full_name = escape(full_name)
             if 'link' in request.POST:
                 link = request.POST['link']
+                user.link = escape(link)
             if 'location' in request.POST:
                 location = request.POST['location']
-
-            user = request.user
-            if(first_name):
-                user.first_name = first_name
-            if(last_name):
-                user.last_name = last_name
-            if(bio):
-                user.bio = bio
-            if(avatar):
-                user.avatar = avatar
-            if(banner):
-                user.banner = banner
-            if(link):
-                user.link = link
-            if(location):
-                user.location = location
+                user.location = escape(location)
+            if 'dob' in request.POST:
+                dob = request.POST['dob']
+                user.dob = str(dob)
             user.save()
-            
+            print(user.dob)
             updatedUser = UserSerializer(user).data
             return JsonResponse({"success": True, "user": updatedUser,  "message": "Profile Updated."})
+        except ValidationError as e:
+            print(e)
+            return JsonResponse({"error": True, "message": str(e.message)})
         except Exception as e:
-            return JsonResponse({"error": True, "message": str(e)}, status=500)
+            print(e)
+            return JsonResponse({"error": True, "message": str(e)})
         except:
-            return JsonResponse({"error": True}, status=404)
+            return JsonResponse({"error": True})
         
 
 class ChangePassword(APIView):

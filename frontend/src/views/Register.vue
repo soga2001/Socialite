@@ -10,8 +10,7 @@ import type { POSITION } from 'vue-toastification/src/ts/constants'
 export default defineComponent({
     data() {
         return {
-            fname: ref(""),
-            lname: ref(""),
+            full_name: ref(""),
             email: ref(""),
             username: ref(""),
             password: ref(""),
@@ -48,8 +47,7 @@ export default defineComponent({
           }
           this.registering = true,
           await http.post("users/register/", {
-            first_name: this.fname,
-            last_name: this.lname,
+            full_name: this.full_name,
             email: this.email,
             username: this.username,
             password: this.password,
@@ -80,8 +78,7 @@ export default defineComponent({
           let disableBtn = this.username.length >= 1 && this.password.length >= 1;
           disableBtn = disableBtn && this.password == this.cPass;
           disableBtn = disableBtn && await this.checkEmail()
-          disableBtn = disableBtn && this.fname.length > 0 
-          disableBtn = disableBtn && this.lname.length > 0
+          disableBtn = disableBtn && this.full_name.length > 0 
           this.disable = disableBtn;
         },
         toastTesting() {
@@ -92,10 +89,7 @@ export default defineComponent({
     },
     components: { Input },
     watch: {
-      fname: function() {
-        this.updateDisableState()
-      },
-      lname: function() {
+      full_name() {
         this.updateDisableState()
       },
       email: function() {
@@ -120,18 +114,19 @@ export default defineComponent({
         <h1 class="register__header">Register</h1>
         <hr/>
         <form class="register__form" autocomplete="off" v-on:submit.prevent="register">
-            <Input
+            <!-- <Input
               @update:val="fname = $event"
               input_label="First Name*"
               class="fname"
               input_type="text" required
               id="fname"
               />
-            <Input @update:val="lname = $event" input_label="Last Name*" id="lname" class="lname" input_type="text" required/>
-            <Input @update:val="email = $event" input_label="Email*" id="email" class="email" input_type="email" required/>
-            <Input @update:val="username = $event" input_label="Username*" id="username" class="username" input_type="text" required/>
-            <Input @update:val="password = $event" input_label="Password*" id="password" class="password" input_type="password" required/>
-            <Input @update:val="cPass = $event" input_label="Confirm Password*" id="c_password" class="c_password" input_type="password" required/>
+            <Input @update:val="lname = $event" input_label="Last Name*" id="lname" class="lname" input_type="text" required/> -->
+            <Input @update:val="full_name = $event" input_label="Full Name" id="fullname" class="fullname" input_type="text" required/>
+            <Input @update:val="email = $event" input_label="Email" id="email" class="email" input_type="email" required/>
+            <Input @update:val="username = $event" input_label="Username" id="username" class="username" input_type="text" required/>
+            <Input @update:val="password = $event" input_label="Password" id="password" class="password" input_type="password" required/>
+            <Input @update:val="cPass = $event" input_label="Confirm Password" id="c_password" class="c_password" input_type="password" required/>
             <div class="col-span-8">
               <p class="w-full">By Registering to use Socialite, you agree to our Terms and Services and Cookie Policies.</p>
             </div>
@@ -179,9 +174,9 @@ export default defineComponent({
     margin: auto;
     padding: 10px;
     
-    .fname, .lname {
-      grid-column: auto / span 4;
-      color: var(--color-heading) !important;
+    .fullname {
+      grid-column: auto / span 8;
+      // color: var(--color-heading) !important;
     }
   
     .email {

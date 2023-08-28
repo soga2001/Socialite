@@ -30,6 +30,7 @@ export default defineComponent({
                 }
                 if(res.data.session) {
                     this.session = res.data.session;
+                    console.log(this.session)
                     this.hasData = true;
                 }
             }).catch((err) => {
@@ -38,11 +39,28 @@ export default defineComponent({
             this.loading = false
         },
         async deleteSession() {
-            const res = await http.delete(`users/session/${this.session_key}/`);
-            if (res.data.error) {
-                return;
-            }
-            this.$router.back;
+            await http.delete(`users/session/`, {
+                params: {
+                    session_key: this.session_key
+                }
+            }).then((res) => {
+                if (res.data.error) {
+                    this.$q.notify({
+                        message: `<span class="text-heading weight-900">${res.data.message}</span>`,
+                        html: true,
+                    })
+                }
+                if(res.data.success) {
+                    this.$q.notify({
+                        message: `<span class="text-heading weight-900">${res.data.message}</span>`,
+                        classes: 'bg-web-theme text-white',
+                        html: true,
+                    })
+                }
+            }).catch((err) => {
+                console.log(err);
+            });
+            this.$router.back();
         }
     },
     components: { Timeago }
@@ -52,7 +70,7 @@ export default defineComponent({
 <template>
     <div>
         <div v-if="hasData && !loading">
-            <header>
+            <header v-if="!$q.screen.lt.sm">
                 <Item>
                     <template #avatar>
                         <q-btn flat round @click="$router.back">
@@ -115,22 +133,39 @@ export default defineComponent({
                         </span>
                     </template>
                     <template #caption>
-                        <div class="mt-5">
+                        <div class="flex flex-row gap-2 items-center mt-5" v-if="session.location">
                             <span class="text-sm text-heading" v-if="session.location.city">
-                                {{ session.location.city }},
+                                {{ session.location.city }} {{ session.location.region && ',' }}
                             </span>
                             <span v-if="session.location.region">
                                 {{ session.location.region }}
                             </span>
+                            <span v-if="!session.location.region || !session.location.city">
+                                {{ session.location.country_name }}
+                            </span>
+                            <span class="text-base weight-900 text-heading" v-if="session.location.city || session.location.region">
+                                &#183;
+                            </span>
+                        </div>
+                        <div v-else class="mt-5 text-sm text-heading">
+                            Unknown
                         </div>
                     
                     </template>
                 </Item>
             </div>
             <div v-if="!session.current_session" class="border-t border-b">
-                <button class="danger-btn bg-transparent text-xl text-red weight-900 border-none pointer w-full py-5">
+                <button @click="deleteSession" class="danger-btn bg-transparent text-xl text-red weight-900 border-none pointer w-full py-5">
                     Logout of this device
                 </button>
+            </div>
+        </div>
+        <div  v-if="!hasData && !loading">
+            <div class="text-center">
+                <q-icon name="error" size="10rem" color="red" />
+                <div class="text-heading text-2xl weight-900">
+                    Session not found
+                </div>
             </div>
         </div>
         <div v-if="loading">

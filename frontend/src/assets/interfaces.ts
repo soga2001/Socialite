@@ -2,8 +2,8 @@ export interface User{
     id: number,
     username: string,
     email?: string,
-    first_name: string,
-    last_name: string,
+    // first_name: string,
+    // last_name: string,
     full_name: string,
     last_login: string,
     private: boolean,
@@ -99,6 +99,7 @@ export interface Following {
     followed_date: string,
     followed_user: User,
     following_user: string,
+    follows_user: boolean,
     id: string,
     notification: boolean,
 }

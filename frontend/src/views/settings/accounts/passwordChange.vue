@@ -82,7 +82,7 @@ export default defineComponent({
 
 <template>
     <div>
-        <header class="sticky top-0 pb-2">
+        <header class="sticky top-0 pb-2" v-if="!$q.screen.lt.sm">
             <Item>
                 <template #avatar>
                     <q-btn flat icon="arrow_back" @click="$router.back"/>

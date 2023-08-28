@@ -133,7 +133,7 @@ export default defineComponent({
                 </template>
                 <template #title>
                     <span class="text-xl text-heading weight-900">
-                        {{u.first_name + ' ' + u.last_name}}
+                        {{u.full_name}}
                     </span>
                 </template>
                 <template #caption>@{{ u.username }}</template>
@@ -173,7 +173,7 @@ export default defineComponent({
                             </template>
                             <template #title>
                                 <span class="text-xl text-heading weight-900">
-                                    {{u.first_name + ' ' + u.last_name}}
+                                    {{u.full_name}}
                                 </span>
                             </template>
                             <template #caption>@{{ u.username }}</template>
@@ -215,7 +215,7 @@ export default defineComponent({
                             </template>
                             <template #title>
                                 <span class="text-xl text-heading weight-900">
-                                    {{u.first_name + ' ' + u.last_name}}
+                                    {{u.full_name + ' ' + u.full_name}}
                                 </span>
                             </template>
                             <template #caption>@{{ u.username }}</template>

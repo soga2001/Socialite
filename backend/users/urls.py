@@ -3,7 +3,7 @@ from users import views
 from . import consumers
 
 urlpatterns = [
-    path('', views.users, name="users"),
+    path('', views.AllUsers.as_view(), name="users"),
     path('csrf/', views.get_csrf, name="csrf"),
     re_path(r'^user/(?P<user_id>\d+)/$', views.user_by_id, name="user_by_id"),
     re_path(r'^username/(?P<username>[\w\s]+)?/$', views.user_by_username, name="user_by_username"),

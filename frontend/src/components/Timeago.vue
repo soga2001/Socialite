@@ -13,7 +13,10 @@ import convertTime from '@/assets/convertTime';
 
 export default defineComponent({
     props: {
-        date: {type: String, required: true},
+        date: {
+            type: [Date, String], 
+            required: true
+        },
         date_type: {
             type: String,
             default: 'absolute',
@@ -33,6 +36,10 @@ export default defineComponent({
         spanClass: {
             type: String,
             default: '',
+        },
+        locale: {
+            type: String,
+            default: 'en-US',
         }
     },
     data() {
@@ -46,9 +53,6 @@ export default defineComponent({
             let val = null
             if(date.includes("&#183;")) {
                 val = date.split('&#183;');
-                console.log(val[0], val[1])
-                console.log(`<span class="flex flex-row gap-1 items-center ${this.class}"> ${val[0]} <span class="${this.spanClass}">&#183;</span> ${val[1]} </span>`)
-
                 return `<span :class="${this.class}" class="flex flex-row gap-1 items-center"> ${val[0]} <span class="${this.spanClass}">&#183;</span> ${val[1]} </span>`
             }
             return date

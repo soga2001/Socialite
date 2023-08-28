@@ -21,6 +21,9 @@ export default defineComponent({
     },
     methods: {
     },
+    activted() {
+        console.log('activated')
+    },
     beforeRouteEnter: (to, from) => {
         if(window.innerWidth > 768 && to.name === 'settings') {
             return {name: 'account'}
@@ -56,9 +59,9 @@ export default defineComponent({
 </script>
 
 <template>
-    <div :class="{'large-screen': !$q.screen.lt.sm}" class="grid w-full h-full h-viewport p-0">
+    <div :class="{'large-screen': !$q.screen.lt.sm}" class="grid w-full h-full max-h-viewport p-0">
         <header class="border-r h-full w-full bg-theme" v-if="($route.matched[0].name === 'settings' && ($route.matched[1] === undefined || !$q.screen.lt.sm))">
-            <div>
+            <div v-if="!$q.screen.lt.sm">
                 <Item>
                     <template #title>
                         <span class="text-3xl weight-900 text-heading">
@@ -70,7 +73,7 @@ export default defineComponent({
             
             <nav class="w-full">
                 <RouterLink :to="{name: 'account'}" active-class="active">
-                    <Item :captionLineClamp="2" clickable class="child">
+                    <Item :captionLineClamp="3" clickable class="child">
                         <template #title>
                             <span class="text-xl text-heading weight-800 text-capitalize">
                                 Account
@@ -78,7 +81,7 @@ export default defineComponent({
                         </template>
                         <template #caption>
                             <span class="text-sm text-body weight-700 text-nodecor">
-                                Change your password, email, username, or deactive account
+                                Change your password, email, username, and any other editable user data, or delete account
                             </span>
                         </template>
                         <template #icon>
@@ -87,7 +90,7 @@ export default defineComponent({
                     </Item>
                 </RouterLink>
                 <RouterLink :to="{name: 'notification-settings'}" active-class="active">
-                    <Item :captionLineClamp="2" clickable class="child">
+                    <Item :captionLineClamp="3" clickable class="child">
                         <template #title>
                             <span class="text-xl text-heading weight-800 text-capitalize">
                                 Notifications
@@ -104,7 +107,7 @@ export default defineComponent({
                     </Item>
                 </RouterLink>
                 <RouterLink :to="{name: 'sessions'}" active-class="active">
-                    <Item :captionLineClamp="2" clickable class="child">
+                    <Item :captionLineClamp="3" clickable class="child">
                         <template #title>
                             <span class="text-xl text-heading weight-800 text-capitalize">
                                 User Sessions
@@ -120,8 +123,8 @@ export default defineComponent({
                         </template>
                     </Item>
                 </RouterLink>
-                <RouterLink :to="{name: 'privacy-settings'}" active-class="active">
-                    <Item :captionLineClamp="2" clickable class="child">
+                <!-- <RouterLink :to="{name: 'privacy-settings'}" active-class="active">
+                    <Item :captionLineClamp="3" clickable class="child">
                         <template #title>
                             <span class="text-xl text-heading weight-800 text-capitalize">
                                 Privacy and Safety
@@ -136,11 +139,15 @@ export default defineComponent({
                             <q-icon size="2rem" name="navigate_next" class="text-heading"/>
                         </template>
                     </Item>
-                </RouterLink>
+                </RouterLink> -->
             </nav>
         </header>
         <div class="w-full">
-            <RouterView class="w-full" />
+            <RouterView v-slot="{Component}" >
+                <KeepAlive :max="4" :include="['notification-settings', 'individual-notif-settings']" >
+                    <component :is="Component" :key="$route.fullPath"  :height="height" :scrollPosition="scrollPosition" />
+                </KeepAlive>
+            </RouterView>
         </div>
     </div>
 </template>

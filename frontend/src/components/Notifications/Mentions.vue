@@ -51,7 +51,7 @@ export default defineComponent({
       <div class="w-full">
         <div class="w-full flex flex-col gap-1 items-center">
           <i-folder/>
-          <div class="text-3xl text-center text-heading weight-900">When you have notifications, it will appear here.</div>
+          <div class="text-xl weight-900 text-center">When you have notifications, it will appear here.</div>
         </div>
       </div>
     </div>

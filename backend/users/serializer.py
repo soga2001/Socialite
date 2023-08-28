@@ -14,9 +14,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
-        extra_kwargs = {'password': {'write_only': True}, 'email': {'write_only': True}}
-
-    full_name = serializers.SerializerMethodField()
+        extra_kwargs = {
+            'password': {'write_only': True}, 
+            'email': {'write_only': True},
+            'first_name': {'write_only': True},
+            'last_name': {'write_only': True},
+        }
     
 
     total_posted = serializers.SerializerMethodField()
@@ -26,10 +29,6 @@ class UserSerializer(serializers.ModelSerializer):
     is_following = serializers.SerializerMethodField()
     is_current_user = serializers.SerializerMethodField()
     notification_on = serializers.SerializerMethodField()
-        
-
-    def get_full_name(self, obj):
-        return obj.get_full_name()
 
     def get_total_posted(self, obj):
         return obj.user_posted.count()
@@ -67,16 +66,17 @@ class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'first_name': {'write_only': True},
+            'last_name': {'write_only': True},
+        }
 
-    name = serializers.SerializerMethodField()
 
     total_posted = serializers.SerializerMethodField()
     total_followers = serializers.SerializerMethodField()
     total_following = serializers.SerializerMethodField()
 
-    def get_name(self, obj):
-        return obj.get_full_name()
 
     def get_total_posted(self, obj):
         return obj.user_posted.count()
@@ -92,17 +92,19 @@ class BasicUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
-        extra_kwargs = {'password': {'write_only': True}, 'email': {'write_only':True}}
+        extra_kwargs = {
+            'password': {'write_only': True}, 
+            'email': {'write_only':True}, 
+            'first_name': {'write_only': True},
+            'last_name': {'write_only': True},
+        }
 
-    name = serializers.SerializerMethodField()
 
     total_posted = serializers.SerializerMethodField()
     total_followers = serializers.SerializerMethodField()
     total_following = serializers.SerializerMethodField()
     is_current_user = serializers.SerializerMethodField()
 
-    def get_name(self, obj):
-        return obj.get_full_name()
     
     def get_is_current_user(self, obj):
         request = self.context.get('request')
@@ -154,6 +156,5 @@ class UserSessionSerializer(serializers.ModelSerializer):
             data = g.city(obj.ip)
             return data
         except Exception as e:
-            data = g.city('67.165.237.109')
-            return data
+            return None
         

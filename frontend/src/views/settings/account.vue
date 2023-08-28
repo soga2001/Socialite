@@ -18,9 +18,9 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="w-full min-h-viewport">
-        <header class="h-full w-full bg-theme">
-            <div>
+    <div class="w-full" :class="{'min-h-viewport' :!$q.screen.lt.sm}">
+        <header class="w-full bg-theme">
+            <div v-if="!$q.screen.lt.sm"> 
                 <Item>
                     <template #avatar v-if="$q.screen.lt.sm">
                         <q-avatar>
@@ -28,7 +28,7 @@ export default defineComponent({
                         </q-avatar>
                     </template>
                     <template #title>
-                        <span class="text-3xl weight-900 text-heading">
+                        <span class="text-2xl weight-900 text-heading ml-5">
                             Your Account
                         </span>
                     </template>

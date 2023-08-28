@@ -16,6 +16,9 @@ from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 from backend.encryption import *
 from backend.encryption import AESCipher
+from PIL import Image
+from io import BytesIO
+from django.core.files import File
 
 # from rest_framework.authtoken.models import Token
 from tokens.models import Tokens
@@ -35,6 +38,15 @@ def rename_banner(instance, filename):
     format = str(instance.id) + '-' + str(uuid.uuid4()) + str(file_extension)
     return os.path.join(path, format)
 
+def compress(image, height, width):
+    im = Image.open(image)
+    im_io = BytesIO()
+    im.resize((width, height))
+    im.save(im_io, 'JPEG', quality=60) 
+
+    new_image = File(im_io, name=image.name)
+    return new_image
+
 # Create your models here.
 class User(AbstractUser):
     bio = models.CharField(max_length=160, null=True, blank=True, editable=True)
@@ -47,17 +59,23 @@ class User(AbstractUser):
     is_admin = models.BooleanField(blank=False, null=False, default=False, editable=True)
     link = models.URLField(max_length=100, blank=True, null=True)
     location = models.CharField(max_length=30, blank=True, null=True)
-    full_name = models.CharField(max_length=30, blank=True, null=True)
-    dob = models.DateField(null=True, blank=True)
+    full_name = models.CharField(max_length=30, blank=False, null=False, default='Suyogya Poudel')
+    dob = models.DateTimeField(default=None, blank=True, null=True)
     phone = PhoneField(blank=True, help_text='Contact phone number')
 
 
     def save(self, *args, **kwargs):
-        if self.dob and self.dob > datetime.date.today():
-            raise ValidationError("The date cannot be in the future!")
-        # date cannot be passed 100 years ago
-        if self.dob and self.dob < datetime.date.today() - datetime.timedelta(days=365*100):
-            raise ValidationError("The date cannot be more than 100 years ago!")
+        # if self.dob and self.dob > datetime.datetime.now():
+        #     raise ValidationError("The date cannot be in the future!")
+        # # date cannot be passed 100 years ago
+        # if self.dob and self.dob < datetime.datetime.now() - datetime.timedelta(days=365*120):
+        #     raise ValidationError("The date cannot be more than 100 years ago!")
+        # if self.dob and self.dob > datetime.datetime.now() - datetime.timedelta(days=365*13):
+        #     raise ValidationError("The date cannot be less than 13 years ago!")
+        if(len(self.full_name) == 0):
+            raise ValidationError("You cannot leave the name field empty")
+        
+ 
         super(User, self).save(*args, **kwargs)
 
     groups = models.ManyToManyField(
@@ -109,11 +127,11 @@ def auto_delete_files_on_change(sender, instance, **kwargs):
     
 
 
-# make sure first_name and last_name aren't empty 
-@receiver(pre_save, sender=User)
-def check_name(sender, instance, **kwargs):
-    if instance.first_name == '' or instance.last_name == '':
-        raise ValueError('Please enter your name')
+# # make sure first_name and last_name aren't empty 
+# @receiver(pre_save, sender=User)
+# def check_name(sender, instance, **kwargs):
+#     if instance.first_name == '' or instance.last_name == '':
+#         raise ValueError('Please enter your name')
     
 
 
@@ -123,7 +141,7 @@ def send_user_verification(sender, instance, created=False, **kwargs):
         subject = 'Verify Your Email'
         expires_at = datetime.datetime.now() + datetime.timedelta(days=1)
         token = Tokens.objects.create(user=instance, expires_at=expires_at)
-        html_message = render_to_string('emails/verify_email.html', {'verification_link': settings.EMAIL_VERIFY_URL + token.key, 'first_name': instance.first_name})
+        html_message = render_to_string('emails/verify_email.html', {'verification_link': settings.EMAIL_VERIFY_URL + token.key, 'full_name': instance.full_name})
         plain_message = strip_tags(html_message)
         from_email = settings.EMAIL_HOST_USER  # Change this to your email
         recipient_list = [instance.email]

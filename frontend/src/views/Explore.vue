@@ -88,7 +88,10 @@ export default defineComponent({
         <Loading />
       </div>
       <div class="w-full flex flex-center flex-col p-2" v-if="!loading && !hasMore">
-          <div class="text-base text-heading text-center weight-900">
+          <div>
+            <i-folder/>
+          </div>
+          <div class="text-xl weight-900 text-center">
             You have seen all the spills.
           </div>
       </div>

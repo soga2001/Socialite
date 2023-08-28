@@ -181,7 +181,7 @@ export default defineComponent({
                         <Item dense >
                             <template #title>
                                 <div class="text-2xl weight-900 w-fit" >
-                                    <span class="hover-underline pointer" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">{{ user.first_name }} {{ user.last_name }}</span>
+                                    <span class="hover-underline pointer" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">{{ user.full_name }}</span>
                                 </div>
                             </template>
                             <template #caption>

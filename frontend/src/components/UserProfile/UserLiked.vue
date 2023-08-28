@@ -118,10 +118,10 @@ export default defineComponent({
                 <i-folder :fill="'black'" stroke="black"/>
 
             </div>
-            <div v-if="!errMsg" class="text-3xl weight-900 text-center">
+            <div v-if="!errMsg" class="text-xl weight-900 text-center">
                 User hasn't liked any spills.
             </div>
-            <div v-else class="text-3xl weight-900 text-center">
+            <div v-else class="text-xl weight-900 text-center">
                 {{errMsg}}
             </div>
         </div>

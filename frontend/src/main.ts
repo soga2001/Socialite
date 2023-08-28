@@ -86,7 +86,10 @@ import MentionIcon from '@/icons/i-mention.vue';
 import UserCloseIcon from '@/icons/i-user-close.vue';
 import GhostIcon from '@/icons/i-ghost.vue';
 import MoreCircle from '@/icons/i-more-circle.vue';
-
+import StaffIcon from '@/icons/i-staff.vue';
+import BalloonIcon from '@/icons/i-balloon.vue';
+import LinkIcon from '@/icons/i-link.vue';
+import BannerIcon from '@/icons/i-banner.vue';
 
 
 
@@ -127,6 +130,10 @@ app.component('i-mention', MentionIcon);
 app.component('i-user-close', UserCloseIcon);
 app.component('i-ghost', GhostIcon);
 app.component('i-more-circle', MoreCircle);
+app.component('i-staff', StaffIcon);
+app.component('i-balloon', BalloonIcon);
+app.component('i-link', LinkIcon);
+app.component('i-banner', BannerIcon);
 
 // components
 app.component('circular-progress', CircularProgress);

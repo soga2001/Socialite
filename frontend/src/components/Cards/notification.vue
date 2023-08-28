@@ -22,7 +22,7 @@ export default defineComponent({
     methods: {
         clicked() {
             // console.log('here')
-            console.log(this.notification.link)
+            console.log(this.notification?.data?.url)
         },
     },
     mounted() {
@@ -43,10 +43,10 @@ export default defineComponent({
 
 <template>
     <div class="bg-transparent h-full w-full" @click.stop="clicked">
-        <Item class="w-full bg-theme box-shadow mb-2" clickable :to="`/${notification.link}`">
+        <Item class="w-full bg-theme box-shadow mb-2" clickable :to="`/${notification.actor.username}`">
             <template #avatar>
                 <q-avatar>
-                    <img height="3rem" width="3rem" v-if="notification.actor_avatar" :src="notification.actor_avatar" alt="user's avatar"/>
+                    <img height="3rem" width="3rem" v-if="notification.actor.avatar" :src="notification.actor.avatar" alt="user's avatar"/>
                     <iProfileVue v-else size="3rem" />
                     <q-badge class="absolute bottom-0 right-0 bg-theme" style="border-radius: 50%; width: 25px; height: 25px">
                         <q-badge class="absolute-center bg-web-theme" style="border-radius: 50%; width: 20px; height: 20px">
@@ -57,7 +57,7 @@ export default defineComponent({
                 </q-avatar>
             </template>
             <template #title>
-                <div class="text-xl weight-900">@{{ notification.actor }}</div>
+                <div class="text-xl weight-900">@{{ notification.actor.username }}</div>
             </template>
             <template #caption>
                 <div class="text-base weight-500 text-body">{{ notification.description }}</div>

@@ -62,9 +62,29 @@ export default defineComponent({
                       "Content-Type": "multipart/form-data",
                   }
               }).then((res) => {
-                  this.submitting = false;
-                  this.deleteImg()
-                  mention.reset()
+                if(res.data.error) {
+                  this.$q.notify({
+                      message: `<span class="text-white">${res.data.message}</span>`,
+                      color: 'negative',
+                      textColor: 'white',
+                      position: 'bottom',
+                      timeout: 3000,
+                      html: true,
+                  })
+                }
+                this.submitting = false;
+                this.deleteImg()
+                mention.reset()
+                if(res.data.success) {
+                  this.$q.notify({
+                      message: `<span class="text-white">${res.data.message}</span>`,
+                      color: 'positive',
+                      textColor: 'white',
+                      position: 'bottom',
+                      timeout: 3000,
+                      html: true,
+                  })
+                }
               }).catch((err) => {
                   console.log(err);
               });

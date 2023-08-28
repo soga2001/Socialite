@@ -300,7 +300,7 @@ export default defineComponent({
                         <q-icon size="50px" v-else name="account_circle" class="rounded-full" />
                     </template>
                     <template #title>
-                      <span class="text-xl text-heading weight-900">{{user.first_name + ' ' + user.last_name}}</span> 
+                      <span class="text-xl text-heading weight-900">{{user.full_name}}</span> 
                     </template>
                     <template #caption>@{{ user.username }}</template>
                 </Item>

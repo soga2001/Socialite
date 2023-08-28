@@ -132,10 +132,19 @@ export default defineComponent({
                         </template>
                         <template #title>
                             <span class="text-xl text-heading weight-900">
-                                {{u.first_name + ' ' + u.last_name}}
+                                {{u.full_name}}
                             </span>
                         </template>
-                        <template #caption>@{{ u.username }}</template>
+                        <template #subtitle>
+                            <span class="text-base text-heading weight-900">
+                                @{{ u.username }}
+                            </span>
+                        </template>
+                        <template v-if="u.is_following" #caption>
+                            <span class="text-body text-sm">
+                                You are following this user
+                            </span>
+                        </template>
                     </Item>
                 </div>
                 <div v-if="noResults && !searchPage" class="results">

@@ -101,22 +101,32 @@ export default defineComponent({
                 return;
             }
             this.liked = !this.liked;
+            if(this.liked) {
+                this.total_likes += 1;
+            }
+            else {
+                this.total_likes -= 1;
+            }
             await http.post('like/like_post/', {
                 post_id: this.id
             }, {
             }).then((res) => {
-                if(res.data.liked) {
+                // if(res.data.liked) {
+                //     this.total_likes += 1;
+                // }
+                // else if(!res.data.liked) {
+                //     this.total_likes -= 1;
+                // }
+                // else {
+                // }
+            }).catch((err) => {
+                if(!this.liked) {
                     this.total_likes += 1;
                 }
-                else if(!res.data.liked) {
+                else {
                     this.total_likes -= 1;
                 }
-                else {
-                }
-            }).catch((err) => {
-                if(err.response.status == 401 && this.$store.state.authenticated ) {
-                    this.$router.go(0)
-                }
+                this.liked = !this.liked
             })
         },
         setDelete() {
@@ -198,6 +208,28 @@ export default defineComponent({
 
         closeMenu() {
             // clearTimeout(this.delayTimeoutId as number)
+        },
+        async copyLink() {
+            const text = `${window.location.origin}/${this.user.username}/spill/${this.post.id}`
+            try {
+                await navigator.clipboard.writeText(text);
+                this.$q.notify({
+                    message: `<span class="text-white weight-900">Link copied to clipboard!</span>`,
+                    color: "positive",
+                    position: "top-right",
+                    timeout: 1000,
+                    html: true,
+                })
+            } catch($e) {
+                this.$q.notify({
+                    message: `<span class="text-white weight-900">Link couldn't be copied to clipboard!</span>`,
+                    color: "negative",
+                    position: "top-right",
+                    timeout: 1000,
+                    html: true,
+                })
+            }
+            
         }
         
     },
@@ -482,7 +514,7 @@ export default defineComponent({
                         </transition>
                     </div>
 
-                    <q-btn round flat>
+                    <q-btn round flat @click.stop="copyLink">
                         <q-tooltip v-if="!$q.screen.lt.sm" :delay="500" :offset="[0,0]">
                             Copy Link
                         </q-tooltip>

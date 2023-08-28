@@ -79,9 +79,6 @@ class Post_Content(APIView):
             if(user_list): 
                 notify.send(user, recipient=user_list, verb='mention', action_object=post, target=post, description="mentioned you on a spill", url=link, text=post.caption)
 
-            
-
-            
 
             group_name = f'user_{post.user.username}'
             async_to_sync(channel_layer.group_send)(group_name, {
@@ -89,7 +86,7 @@ class Post_Content(APIView):
                 "updateType": 'posted',
                 "message": json.dumps(PostSerializer(post, context={'request': request}).data)
             })
-            return JsonResponse({"error": False}, safe=False)
+            return JsonResponse({"success": True, "message": "Posted Successfully"}, safe=False)
         except Exception as e:
             print(e)
             return JsonResponse({"error": True}, safe=False)
@@ -175,7 +172,7 @@ def user_posted(request, timestamp, page, username):
         user = User.objects.get(username=username)
         if(user.private and user != request.user):
             try:
-                user.followers.get(following_user_id=request.user.id).exists()
+                user.followers.filter(following_user=request.user).exists()
             except UserFollowing.DoesNotExist as e:
                 return JsonResponse({"error": True, "message": "User is private. Please follow them to see their posts."})
         pass
@@ -205,7 +202,7 @@ def get_post_by_id(request, post_id):
         spill = Post.objects.get(pk=post_id)
         if(spill.user.private and spill.user != user):
             try:
-                spill.user.followers.get(following_user_id=user.id)
+                spill.user.followers.get(following_user=user)
             except UserFollowing.DoesNotExist as e:
                 return JsonResponse({"error": True, "message": "Post not found."}, status=404)
         return JsonResponse({"success": True,"spill": PostSerializer(spill, context={'request': request}).data}, status=200)

@@ -40,8 +40,8 @@ export default defineComponent({
 </script>
 
 <template>
-    <div v-if="notification.length > 0 && !loading" class="w-full max-w-viewport overflow-x-hidden min-h-viewport">
-      <div v-for="notif in notification" :key="notif.id" class="w-full max-w-viewport border-b">
+    <div v-if="notification.length > 0 && !loading" class="w-full min-h-viewport">
+      <div v-for="notif in notification" :key="notif.id" class=" w-full border-b">
         <Map :notification="notif" />
       </div>
     </div>
@@ -52,7 +52,7 @@ export default defineComponent({
       <div class="w-full">
         <div class="w-full flex flex-col gap-1 items-center">
           <i-folder/>
-          <div class="text-3xl text-center text-heading weight-900">When you have notifications, it will appear here.</div>
+          <div class="text-xl weight-900 text-center">When you have notifications, it will appear here.</div>
         </div>
       </div>
     </div>

@@ -19,7 +19,6 @@ export default defineComponent({
         async getAllSessions() {
             this.loading = true
             await http.get('users/user_sessions/').then((res) => {
-                console.log(res.data)
                 if(res.data.success) {
                     this.sessions = res.data.sessions
                 }
@@ -28,35 +27,11 @@ export default defineComponent({
             })
             this.loading = false
         },
-        deleteSession(key: String) {
-            http.delete(`users/delete_session/`, {
-                params: {
-                    session_id: key
-                }
-            }).then((res) => {
-                if(res.data.success) {
-                    if(res.data.current_session) {
-                        this.$store.commit("authenticate", false);
-                        this.$store.commit("setDefaultUser");
-                    }
-                    this.$q.notify( {
-                        message: `<span class="text-white">${res.data.message}</span>`,
-                        color: 'positive',
-                        icon: 'check',
-                        iconColor: 'white',
-                        position: 'top',
-                        timeout: 2500,
-                        html: true,
-                    })
-                }
-            })
-        },
         deleteAllSessions() {
             if(this.sessions.length > 1)
             http.delete('users/user_sessions/').then((res) => {
-                console.log(res.data)
                 if(res.data.success) {
-                    this.getAllSessions()
+                    this.sessions = new Array<Sessions>()
                 }
             })
         }
@@ -68,9 +43,9 @@ export default defineComponent({
 <template>
     <div class="relative">
         <div>
-            <header>
-                <Item>
-                    <template #avatar>
+            <header v-if="!$q.screen.lt.sm">
+                <Item >
+                    <template #avatar v-if="$q.screen.lt.sm">
                         <q-btn flat round @click="$router.back">
                             <q-icon name="arrow_back" />
                         </q-btn>
@@ -114,15 +89,20 @@ export default defineComponent({
                                     </template>
                                     <template #caption>
                                         <span class="text-body text-sm weight-700 flex flex-row gap-2 items-center">
-                                            <span class="text-sm text-heading" v-if="session.location.city">
-                                                {{ session.location.city }},
-                                            </span>
-                                            <span v-if="session.location.region">
-                                                {{ session.location.region }}
-                                            </span>
-                                            <span class="text-base weight-900 text-heading" v-if="session.location.city || session.location.region">
-                                                &#183;
-                                            </span>
+                                            <div class="flex flex-row gap-2 items-center" v-if="session.location">
+                                                <span class="text-sm text-heading" v-if="session.location.city">
+                                                    {{ session.location.city }} {{ session.location.region && ',' }}
+                                                </span>
+                                                <span v-if="session.location.region">
+                                                    {{ session.location.region }}
+                                                </span>
+                                                <span v-if="!session.location.region || !session.location.city">
+                                                    {{ session.location.country_name }}
+                                                </span>
+                                                <span class="text-base weight-900 text-heading" v-if="session.location.city || session.location.region">
+                                                    &#183;
+                                                </span>
+                                            </div>
                                             <Timeago spanClass="weight-900 text-heading" class="text-sm text-heading" html :date="session.last_activity" />
                                         </span>
                                     </template>
@@ -171,15 +151,22 @@ export default defineComponent({
                                 </template>
                                 <template #caption>
                                     <span class="text-body text-sm weight-700 flex flex-row gap-2 items-center">
-                                        <span class="text-sm text-heading" v-if="session.location.city">
-                                            {{ session.location.city }},
-                                        </span>
-                                        <span v-if="session.location.region">
-                                            {{ session.location.region }}
-                                        </span>
-                                        <span class="text-base weight-900 text-heading" v-if="session.location.city || session.location.region">
-                                            &#183;
-                                        </span>
+                                        <div class="flex flex-row gap-2 items-center" v-if="session.location">
+                                            <span class="text-sm text-heading" v-if="session.location.city">
+                                                {{ session.location.city }} {{ session.location.region && ',' }}
+                                            </span>
+                                            <span v-if="session.location.region">
+                                                {{ session.location.region }}
+                                            </span>
+                                            <span v-if="!session.location.region || !session.location.city">
+                                                {{ session.location.country_name }}
+                                            </span>
+                                            <span class="text-base weight-900 text-heading" v-if="session.location.city || session.location.region">
+                                                &#183;
+                                            </span>
+                                        </div>
+                                        
+                                       
                                         <Timeago spanClass="weight-900 text-heading" class="text-heading text-sm" html :date="session.last_activity" />
                                     </span>
                                 </template>

@@ -47,15 +47,22 @@ export default defineComponent({
                     })
                 }
                 else {
-                    this.$notify({
-                      title: "Success!",
-                      text: "Login Successful!",
-                      type: 'success',
-                      group: 'success',
-                    })
                     await this.$store.commit("setUser", res.data.user as User);
-                    await this.$router.go;
+                    // await this.$router.go(0);
                     this.$store.commit("authenticate", true);
+                    // this.$notify({
+                    //   title: "Success!",
+                    //   text: "Login Successful!",
+                    //   type: 'success',
+                    //   group: 'success',
+                    // })
+                    this.$q.notify({
+                      message: `<span class="text-white weight-900">Log in successful</span>`,
+                      position: 'top-right',
+                      timeout: 2000,
+                      classes: 'bg-web-theme',
+                      html: true,
+                    })
                 }
             }).catch((err) => {
                 console.log(err);

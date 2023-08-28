@@ -17,6 +17,11 @@ export default defineComponent({
             editUsername: false,
 
             forgotPass: false,
+
+            monthNames: [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ]
         };
     },
     methods: {
@@ -53,8 +58,8 @@ export default defineComponent({
 <template>
     <div>
         <div>
-            <header class="sticky top-0 border-b pb-2">
-                <Item>
+            <header class="pb-2">
+                <Item v-if="!$q.screen.lt.sm">
                     <template #avatar>
                         <q-btn flat icon="arrow_back" @click="$router.back"/>
                     </template>
@@ -96,7 +101,7 @@ export default defineComponent({
                         </q-avatar>
                     </template>
                     <template #title>
-                        <span v-if="!editName" class="text-left text-xl text-heading weight-700">{{ user.first_name }} {{ user.last_name }}</span>
+                        <span v-if="!editName" class="text-left text-xl text-heading weight-700">{{ user.full_name }}</span>
                     </template>
                     <template #icon>
                         <q-btn flat round name="edit">
@@ -141,7 +146,8 @@ export default defineComponent({
                         </q-avatar>
                     </template>
                     <template #title>
-                        <span class="text-left text-xl text-heading weight-700">{{  }}</span>
+                        <span v-if="user.phone" class="text-left text-xl text-heading weight-700">{{ user.phone}}</span>
+                        <span v-else class="text-left text-xl text-heading weight-700">No Phone Number</span>
                     </template>
                     <template #icon>
                         <q-btn flat round name="edit">
@@ -149,6 +155,72 @@ export default defineComponent({
                         </q-btn>
                     </template>
                 </Item>
+                <Item>
+                    <template #avatar>
+                        <q-avatar>
+                            <q-icon name="calendar_today" :color="$store.state.dark ? 'white' : 'black'"/>
+                        </q-avatar>
+                    </template>
+                    <template #title>
+                        <span class="text-left text-xl text-heading weight-700">{{ user.dob ?? 'N/A' }}</span>
+                    </template>
+                    <template #icon>
+                        <q-btn flat round name="edit">
+                            <q-icon name="edit" :color="$store.state.dark ? 'white' : 'black'"/>
+                        </q-btn>
+                    </template>
+                </Item>
+                <Item>
+                    <template #avatar>
+                        <q-avatar>
+                            <q-icon size="2rem" name="person" :color="$store.state.dark ? 'white' : 'black'"/>
+                        </q-avatar>
+                    </template>
+                    <template #title>
+                        <span v-if="user.bio" class="text-left text-xl text-heading weight-700">{{ user.bio}}</span>
+                        <span v-else class="text-left text-xl text-heading weight-700">No Bio</span>
+                    </template>
+                    <template #icon>
+                        <q-btn flat round name="edit">
+                            <q-icon name="edit" :color="$store.state.dark ? 'white' : 'black'"/>
+                        </q-btn>
+                    </template>
+                </Item>
+                <Item :align-items="user.avatar ? 'start' : 'center'">
+                    <template #avatar>
+                        <q-avatar>
+                            <!-- <q-icon name="banner" :color="$store.state.dark ? 'white' : 'black'"/> -->
+                            <i-banner size="2rem" fill="var(--color-heading)"/>
+                        </q-avatar>
+                    </template>
+                    <template #title>
+                        <!-- <span class="text-left text-xl text-heading weight-700">{{ user.bio ?? 'N/A' }}</span> -->
+                        <q-img class="w-full" v-if="user.banner" :src="user.banner" />
+                        <div class="text-left text-xl text-heading weight-700" v-else>No banner</div>
+                    </template>
+                    <template #icon>
+                        <q-btn flat round name="edit">
+                            <q-icon name="edit" :color="$store.state.dark ? 'white' : 'black'"/>
+                        </q-btn>
+                    </template>
+                </Item>
+                <Item :align-items="user.avatar ? 'start' : 'center'">
+                    <template #avatar>
+                        <q-avatar>
+                            <q-icon size="2rem" name="account_circle" :color="$store.state.dark ? 'white' : 'black'"/>
+                        </q-avatar>
+                    </template>
+                    <template #title>
+                        <q-img class="aspect-ratio-1-1" v-if="user.avatar" :src="user.avatar" />
+                        <div class="text-left text-xl text-heading weight-700" v-else>No avatar</div>
+                    </template>
+                    <template #icon>
+                        <q-btn flat round name="edit">
+                            <q-icon name="edit" :color="$store.state.dark ? 'white' : 'black'"/>
+                        </q-btn>
+                    </template>
+                </Item>
+                
             </div>
         </div>
     </div>

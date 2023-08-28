@@ -49,7 +49,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <Item class="max-w-viewport w-full pointer item" :class="{'bg-theme-mute': unread}" clickable :to="notification.data.url"  align-items="start"  avatarSize="3.5rem">
+    <Item class="max-w-viewport w-full pointer item" :class="{'bg-theme-mute': unread}" clickable :to="notification.data?.url"  align-items="start"  avatarSize="3.5rem">
         <template #avatar>
             <user-card :user-prop="notification.actor">
                 <template #text>
@@ -75,8 +75,7 @@ export default defineComponent({
                             <user-card :user-prop="notification.actor">
                                 <template #text>
                                     <span class="ellipsis text-lg pointer hover-underline text-heading weight-900" > 
-                                        {{notification.actor.first_name}}
-                                        {{ notification.actor.last_name }}
+                                        {{notification.actor.full_name}}
                                     </span>
                                 </template>
                             </user-card>
@@ -203,10 +202,10 @@ export default defineComponent({
                 </template> -->
             </Item>
         </template>
-        <template #subTitle>
+        <template #subtitle>
             <span class="text-lighter">{{ notification.description }}</span>
         </template>
-        <template v-if="notification.data.text" #caption>
+        <template v-if="notification.data?.text" #caption>
             <span class="text-heading weight-600" >
                 <MentionLinkVue class="text-sm" :mention="notification.data.text" />
             </span>

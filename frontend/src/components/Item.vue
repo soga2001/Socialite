@@ -128,8 +128,8 @@ export default defineComponent({
       <div class="title" :style="titleStyle">
         <slot name="title" v-if="$slots.title" />
       </div>
-      <div class="subTitle">
-        <slot name="subTitle" v-if="$slots.subTitle" />
+      <div class="subtitle">
+        <slot name="subtitle" v-if="$slots.subtitle" />
       </div>
       <div class="caption" :style="captionStyle">
         <slot name="caption" v-if="$slots.caption" />

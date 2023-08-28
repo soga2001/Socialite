@@ -103,32 +103,12 @@ export default defineComponent({
                 </template>
                 <template #title>
                     <div class="w-full flex flex-cols gap-1 items-center">
-
-                        <!-- <user-card :user-prop="user">
-                            <template #text>
-                                <span class="ellipsis text-lg pointer hover-underline text-heading weight-900" > 
-                                    {{user.first_name}}
-                                    {{ user.last_name }}
-                                </span>
-                            </template>
-                        </user-card>
-
-
-                        
-                        <span>&#183;</span>
-                        <div>
-                            <Timeago class="text-xs text-ligher weight-ligher" :date="commentData.date_posted"/>
-                        </div>
-                        <div v-if="commentData.date_updated" class="text-xs text-ligher weight-ligher">
-                            (edited)
-                        </div> -->
                         <div class="h-full min-w-full flex gap-1 items-center title">
                             <div class="ellipsis" >
                                 <user-card :user-prop="user">
                                     <template #text>
                                         <span class="ellipsis text-lg pointer hover-underline text-heading weight-900" > 
-                                            {{user.first_name}}
-                                            {{ user.last_name }}
+                                            {{user.full_name}}
                                         </span>
                                     </template>
                                 </user-card>

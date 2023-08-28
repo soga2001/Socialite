@@ -94,7 +94,7 @@ class GetFollowers(APIView):
         user = User.objects.get(username=username)
         try:
             followers = UserFollowerSerializer(UserFollowing.objects.filter(followed_user=user), context={"request": request}, many=True).data
-            return JsonResponse({"success": True})
+            return JsonResponse({"success": True, "users": followers})
         except Exception as e:
             print(e)
             return JsonResponse({"error": True})
@@ -108,7 +108,7 @@ class GetFollowing(APIView):
                 user = User.objects.get(username=username)
 
                 following = UserFollowingSerializer(UserFollowing.objects.filter(following_user=user), context={"request": request}, many=True).data
-
+                print(following)
                 return JsonResponse({"success": True, "users": following})
             except Exception as e:
                 print(e)

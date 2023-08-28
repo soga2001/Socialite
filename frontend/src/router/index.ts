@@ -40,6 +40,7 @@ const router: Router = createRouter({
       name: 'explore',
       component: () => import('../views/Explore.vue'),
       meta: {
+        auth: true,
         title: 'Explore'
       }
     },
@@ -58,7 +59,8 @@ const router: Router = createRouter({
           name: 'all-notif',
           component: () => import('../components/Notifications/All.vue'),
           meta: {
-            auth: true
+            auth: true,
+            title: 'All Notifications'
           },
         },
         {
@@ -67,7 +69,8 @@ const router: Router = createRouter({
           name: 'mentions',
           component: () => import('../components/Notifications/Mentions.vue'),
           meta: {
-            auth: true
+            auth: true,
+            title: 'Mentions'
           },
         },
       ],
@@ -77,7 +80,8 @@ const router: Router = createRouter({
       name: 'login',
       component: () => import('../views/Login.vue'),
       meta: {
-        hideForAuth: true
+        hideForAuth: true,
+        title: 'Login',
       }
     },
     {
@@ -98,6 +102,7 @@ const router: Router = createRouter({
         name: 'user-posted'
       },
       meta: {
+        auth: true,
         title: 'Profile'
       },
       children : [
@@ -119,6 +124,9 @@ const router: Router = createRouter({
       path: '/:user/spill/:post_id?/',
       name: 'view-spill',
       component: () => import('../views/ViewSpill.vue'),
+      meta: {
+        auth: true,
+      }
     },
     {
       path: '/:pathMatch(.*)*',
@@ -155,6 +163,10 @@ const router: Router = createRouter({
           path: 'account',
           name: 'account',
           component: () => import('@/views/settings/account.vue'),
+          meta: {
+            auth: true,
+            title: 'Your Account'
+          }
         },
         {
           path: 'account-information',
@@ -208,6 +220,16 @@ const router: Router = createRouter({
           }
         },
         {
+          path: 'notification-settings/followed_users',
+          name: 'individual-notif-settings',
+          alias: ['/settings/notificiation-settings/followed_users', '/notifications-settings/followed_users'],
+          component: () => import('@/views/settings/notificationSetting/individualNotifications.vue'),
+          meta: {
+            auth: true,
+            title: 'Followed User Settings'
+          }
+        },
+        {
           path: 'privacy-settings',
           name: 'privacy-settings',
           component: () => import('@/views/settings/privacySettings.vue'),
@@ -226,14 +248,15 @@ const router: Router = createRouter({
           }
         },
         {
-          path: 'session/:key',
+          path: 'sessions/:key',
           name: 'session',
           component: () => import('@/views/settings/session/session.vue'),
           meta: {
             auth: true,
             title: 'Session Detail'
           }
-        }
+        },
+
       ]
     },
     // {

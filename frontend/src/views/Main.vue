@@ -63,6 +63,7 @@ export default defineComponent({
       this.settingsPage = false
     }
     this.$store.commit('setDesktop', !this.$q.screen.lt.sm)
+
   },
   mounted() {
     const element = this.$refs.mainDiv as HTMLDivElement
@@ -248,7 +249,7 @@ export default defineComponent({
         </div>
         <div :style="{paddingBottom: `${bottomNavHeight - 10}px`, minHeight: `calc(100vh - ${(($refs.topNav as HTMLElement)?.offsetHeight) ?? 0}px)`}"  class="w-full h-full border-l border-r">
           <RouterView v-slot="{Component}" >
-            <KeepAlive :max="2" :include="['home', 'search', 'explore', 'user-profile', 'view-spill', 'notifications']" >
+            <KeepAlive :max="4" :include="['home', 'search', 'explore', 'user-profile', 'view-spill', 'notifications', 'settings', 'account']" >
               <component :is="Component" :key="!['user-profile', 'notifications'].includes(($route.matched[0]?.name) as string) ? $route.fullPath : null"  :height="height" :scrollPosition="scrollPosition" />
             </KeepAlive>
           </RouterView>
@@ -257,7 +258,7 @@ export default defineComponent({
     </div>
 
     <aside class="sticky top-0" v-if="!$q.screen.lt.sm"> 
-      <div class="mx-5 py-2 sticky top-0" v-if="!settingsPage">
+      <div class="mx-5 py-2 sticky top-0" v-if="!settingsPage && !$q.screen.lt.md">
           <SearchBar dense />
       </div>
     </aside>
@@ -267,7 +268,9 @@ export default defineComponent({
     </nav>
 
     <div ref="spillButton" class="fixed z-20 box-shadow right-1 bg-theme rounded-lg" :style="{bottom: `${bottomNavHeight}px`}" v-if="isMobile() && $store.state.authenticated && $route.name !== 'view-spill'">
-      <q-btn size="16px" class="show btn-themed text-heading" round flat icon="add" @click="spill = true"/>
+      <q-btn size="16px" class="show btn-themed text-heading" round flat @click="spill = true">
+        <q-icon name="add" :color="$store.state.dark ? 'white' : 'black'"/>
+      </q-btn>
     </div>
     <q-dialog class="min-h-sm bg-blur-half w-full h-full" v-model="spill" position="top" persistent :maximized="true">
       <div class="mt-12 bg-theme box-shadow w-full h-full min-h-fit max-w-sm overflow-visible rounded-sm" >

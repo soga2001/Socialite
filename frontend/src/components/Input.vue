@@ -2,6 +2,7 @@
 import { defineComponent, ref } from 'vue';
 import { http } from '@/assets/http';
 import type { User } from '@/assets/interfaces';
+import { format, sub } from 'date-fns';
 
 
 export default defineComponent({
@@ -9,15 +10,19 @@ export default defineComponent({
         return {
             type: this.input_type,
             label: this.input_label,
-            val: this.defaultVal ?? '',
+            val: this.defaultVal ?? '' as String | Date,
             users: new Array<User>(),
             index: null,
             focused: false,
 
-            min: this.minDate,
-            max: this.maxDate,
+            min: this.minDate ?? '',
+            max: this.maxDate ?? '',
 
             currentDate: new Date(),
+            monthNames: [
+              'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
+              'November', 'December'
+            ]
         }
     },
     props: {
@@ -42,7 +47,7 @@ export default defineComponent({
             default: false,
         },
         defaultVal: {
-            type: String,
+            type: [String, Number, Date],
             default: '',
         },
         showCharCounts: {
@@ -63,10 +68,25 @@ export default defineComponent({
         },
     },
     created() {
+      if(this.input_type === 'date') {
+        this.max = format(this.currentDate, 'yyyy-MM-dd')
+        this.min = format(sub(this.currentDate, {
+          years: 120,
+        }), 'yyyy-MM-dd')
+        try {
+          const date = new Date(this.defaultVal).toUTCString()
+          const fullYear = new Date(date).getFullYear()
+          const month = new Date(date).getUTCMonth() < 10 ? '0' + (new Date(date).getUTCMonth() + 1) : new Date(date).getUTCMonth()
+          const day = new Date(date).getUTCDate() < 10 ? '0' + new Date(date).getUTCDate() : new Date(date).getUTCDate()
+          this.val = `${fullYear}-${month}-${day}`
+        }
+        catch (e) {
+
+        }
+      }
       
     },
     mounted() {
-      console.log(this.maxDate)
     },
     computed: {
       isFocused(): Boolean {
@@ -84,7 +104,7 @@ export default defineComponent({
     watch: {
       val: function(val: string) {
         this.$emit('update:val', val)
-      }
+      },
     }
 })
 
@@ -92,12 +112,13 @@ export default defineComponent({
 
 <template>
   <div class="input-box" :class="{focused: isFocused}" @click="inputClicked">
-    <input v-if="type === 'date'" :min="minDate" :max="maxDate" ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" :type="type" v-model="val" :class="{hasInput: val.length > 0}"  class="input text-heading">
-    <input v-else-if="type === 'tel'" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" :type="type" v-model="val" :class="{hasInput: val.length > 0}"  class="input text-heading">
-    <input v-else :maxlength="charLimit" ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" :type="type" v-model="val" :class="{hasInput: val.length > 0}"  class="input text-heading">
-    <label :class="{focused: isFocused,  hasInput: val.length > 0 || type === 'date'}" class="label cursor-text">{{label}}</label>
-    <span v-if="showCharCounts && (isFocused || val.length > 0)" @click="($refs.input as HTMLInputElement).focus()" :class="{focused: isFocused,  hasInput: val.length > 0}" class="char_count">{{ `${val.length} / ${charLimit}` }}</span>
+    <input v-if="type === 'date'" :min="min" :max="max" ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" :type="type" v-model="val" :class="{hasInput: (val as string).length > 0}"  class="input text-heading">
+    <input v-else-if="type === 'tel'" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" :type="type" v-model="val" :class="{hasInput: (val as string).length > 0}"  class="input text-heading">
+    <input v-else :maxlength="charLimit" ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" :type="type" v-model="val" :class="{hasInput: (val as string).length > 0}"  class="input text-heading">
+    <label :class="{focused: isFocused,  hasInput: (val as string).length > 0 || type === 'date'}" class="label cursor-text">{{label}}</label>
+    <span v-if="showCharCounts && (isFocused || (val as string).length > 0)" @click="($refs.input as HTMLInputElement).focus()" :class="{focused: isFocused,  hasInput: (val as string).length > 0}" class="char_count">{{ `${(val as string).length} / ${charLimit}` }}</span>
   </div>
+
 </template>
 
 <style scoped lang="scss">

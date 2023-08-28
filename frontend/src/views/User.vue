@@ -89,20 +89,21 @@ export default defineComponent({
         //     // this.websocketOpen()
         // }
         this.tab = this.$route.name as string
-        if(this.user.first_name) {
-            document.title = `${this.user.first_name} ${this.user.last_name}`
+        if(this.user.full_name) {
+            document.title = `${this.user.full_name}`
         }
     },
     components: { UserProfile, Search, UserPosted, UserLiked, Item },
     watch: {
         bannerIntersecting(bannerIntersecting) {
         },
-        usernameChanged(usernameChanged) {
+        usernameChanged() {
+            console.log('here')
             this.reloadData()
         },
         user(user) {
-            if(user.first_name) {
-                document.title = `${user.first_name} ${user.last_name}`
+            if(user.full_name) {
+                document.title = `${user.full_name}`
             }
         }
     },
@@ -117,7 +118,7 @@ export default defineComponent({
                         <q-btn size="16px" @click="$router.back" flat dense round class="text-heading" icon="arrow_back" />
                     </template>
                     <template #title>
-                        <h5 className="text-left">{{ user.first_name }} {{ user.last_name }}</h5>
+                        <h5 className="text-left">{{ user.full_name }}</h5>
                     </template>
                     <template #caption>
                         <div class="text-left">{{ user.total_posted }} Spills</div>
@@ -153,7 +154,7 @@ export default defineComponent({
                 <div class="w-full overflow-hidden">
                     <RouterView v-slot="{ Component }">
                         <KeepAlive :max="2" :include="['user-posted', 'user-liked']">
-                            <component :is="Component" :height="height" :scrollPosition="scrollPosition" :name="`${user.first_name} ${user.last_name}`"/>
+                            <component :is="Component" :height="height" :scrollPosition="scrollPosition" :name="user.full_name"/>
                         </KeepAlive>
                     </RouterView>
                 </div>

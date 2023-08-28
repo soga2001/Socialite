@@ -22,7 +22,8 @@ export default defineComponent({
             date: new Date(),
             date_posted: '',
             page: 0,
-            websocket: new WebSocket(`wss://localhost:8000/ws/spill/${this.$route.params.post_id}/`),
+            // websocket: new WebSocket(`wss://localhost:8000/ws/spill/${this.$route.params.post_id}/`),
+            websocket: ref<WebSocket | null>(new WebSocket(`wss://localhost:8000/ws/spill/${this.$route.params.post_id}/`)),
             dropdown: false,
             persistent: false,
             report: false,
@@ -125,31 +126,39 @@ export default defineComponent({
         },
         async websocketOpen() {
             this.websocket = new WebSocket(`wss://localhost:8000/ws/spill/${this.$route.params.post_id}/`)
-            this.websocket.onopen = (e) => {
-                console.log('Websocket opened')
+            if (this.websocket) {
+                this.websocket.onopen = (e) => {
+                    console.log('Websocket opened')
+                }
             }
+            
         },
         async websocketMessage() {
-            this.websocket.onmessage = async (e) => {
-                const data = JSON.parse(e.data)
-                if(data.type == "comment") {
-                    const newComment = JSON.parse(data.message) as Comment
+            if(this.websocket) {
+                this.websocket.onmessage = async (e) => {
+                    const data = JSON.parse(e.data)
+                    if(data.type == "comment") {
+                        const newComment = JSON.parse(data.message) as Comment
+                        console.log(newComment)
 
-                    if(this.comments.length !== 0) {
-                        this.comments = [newComment, ...this.comments];
-                        this.total_comments = this.comments.length
-                    }
-                    else {
-                        this.comments.push(newComment)
+                        if(this.comments.length !== 0) {
+                            this.comments = [newComment, ...this.comments];
+                            this.total_comments = this.comments.length
+                        }
+                        else {
+                            this.comments.push(newComment)
+                        }
                     }
                 }
             }
         },
         async websocketClose() {
-            this.websocket.close()
+            this.websocket && this.websocket.close()
 
-            this.websocket.onclose = (e) => {
-                console.log('Websocket closed')
+            if(this.websocket) {
+                this.websocket.onclose = (e) => {
+                    this.websocket = null
+                }
             }
         },
         deleteComment(index: number) {
@@ -190,16 +199,39 @@ export default defineComponent({
                 }, 500); // Add a delay before closing the menu (adjust this value as needed)
             }
         },
+        async copyLink() {
+            const text = `${window.location.origin}/${this.spill.user.username}/spill/${this.$route.params.post_id}`
+            try {
+                await navigator.clipboard.writeText(text);
+                this.$q.notify({
+                    message: `<span class="text-white weight-900">Link copied to clipboard!</span>`,
+                    color: "positive",
+                    position: "bottom",
+                    timeout: 1000,
+                    html: true,
+                })
+            } catch($e) {
+                this.$q.notify({
+                    message: `<span class="text-white weight-900">Link couldn't be copied to clipboard!</span>`,
+                    color: "negative",
+                    position: "bottom",
+                    timeout: 1000,
+                    html: true,
+                })
+            }
+            
+        }
     },
     mounted() {
-        this.websocketOpen()
         this.websocketMessage()
     },
     unmounted() {
         this.websocketClose()
     },
     activated() {
-        this.websocketOpen();
+        if(this.websocket === null) {
+            this.websocketOpen()
+        }
         this.websocketMessage()
     },
     deactivated() {
@@ -210,9 +242,9 @@ export default defineComponent({
         '$route'() {
             this.divExit()
         },
-        comments(comments) {
-            this.total_comments = comments.length;
-        },
+        // comments(comments) {
+        //     this.total_comments = comments.length;
+        // },
         spill(spill) {
             if(spill.user.username) {
                 document.title = `Spill by ${spill.user.full_name}`
@@ -371,7 +403,7 @@ export default defineComponent({
                 <div class="text-base no-decor w-fit px-2">
                     <Item dense>
                         <template #caption>
-                            <span class="text-base">
+                            <span class="text-xl">
                                 <MentionLink  :mention="spill.caption"/>
                             </span>
                         </template>
@@ -437,9 +469,9 @@ export default defineComponent({
                         </q-btn>
                     </div>
                     <div>
-                        <q-btn flat round :class="(liked ? 'liked' : '')"  @click.stop="">
+                        <q-btn flat round :class="(liked ? 'liked' : '')"  @click.stop="copyLink">
                             <q-tooltip :offset="[0,0]">
-                                Like
+                                Copy Link
                             </q-tooltip>
                             <i-share size="1.5rem" fill="var(--color-text)" stroke="var(--color-heading)" />
                         </q-btn>
@@ -449,7 +481,7 @@ export default defineComponent({
                 <div class="px-2 border-b" v-if="$store.state.authenticated">
                     <Spills placeholder="Reply to the spill" btnString="Reply" isComment :spillId="spill.id"/>
                 </div>
-                <div class="grid overflow-hidden w-100">
+                <div class="grid overflow-hidden w-100 p-2">
                     <TransitionGroup name="slide" mode="out-in" tag="div">
                         <div v-if="comments" v-for="(comment, index) in comments" :key="comment.id">
                             <CommentMap :comment="comment" @deleted="deleteComment(index)"/>

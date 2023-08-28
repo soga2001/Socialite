@@ -9,14 +9,14 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ('bugsreport', '0001_initial'),
         ('users', '0001_initial'),
-        ('posts', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='post',
+            model_name='bugsreport',
             name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_posted', to='users.user'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='users.user'),
         ),
     ]

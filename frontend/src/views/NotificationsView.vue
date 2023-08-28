@@ -41,7 +41,7 @@ export default defineComponent({
 <template>
   <div class="w-full relative">
     <div >
-      <div ref="router" class="w-full overflow-hidden min-h-viewport">
+      <div ref="router" :class="{'min-h-viewport': !$q.screen.lt.sm}" class="w-full overflow-hidden ">
         <RouterView v-slot="{ Component }">
             <KeepAlive :include="['all-notif', 'mentions']">
                 <component :is="Component"/>

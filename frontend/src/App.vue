@@ -77,13 +77,13 @@ export default defineComponent({
         this.$router.push(this.$route.redirectedFrom?.fullPath || '/home')
       }
       else if(!this.$store.state.authenticated){
+        // this.$router.push("/login")
         this.$router.go(0)
       }
     },
     '$route': {
         immediate: true,
         handler(to, from) {
-          console.log(document.title)
           document.title = to.meta.title || 'BasedBook';
         }
     },
@@ -94,10 +94,15 @@ export default defineComponent({
 
 <template>
   <!-- <h1>Potato</h1> -->
-  <div class="text-left w-full min-h-viewport" v-if="!$store.state.isLoading">
+  <div class="text-left w-full min-h-viewport" v-if="!$store.state.isLoading && $store.state.authenticated">
     <Main />
   </div>
-  <div class="flex items-center justify-center w-full h-viewport text-heading" v-else>
+  <div class="flex justify-center min-w-viewport max-w-viewport" v-if="!$store.state.isLoading && !$store.state.authenticated">
+    <div class="max-w-md w-full">
+      <router-view />
+    </div>
+  </div>
+  <div class="flex items-center justify-center w-full h-viewport text-heading" v-if="$store.state.isLoading">
     <Loading size="5rem">
       <template v-slot:text>
         <p class="text-5xl">Loading</p>

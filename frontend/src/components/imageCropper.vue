@@ -94,41 +94,38 @@
             <button class="button" @click="cropImage()">Crop image</button>
         </div>
     </div> -->
-    <div class="crop-image-dialog relative w-full h-full">
-        <q-dialog :dark="theme" v-model="showCropper" class="w-full h-full" persistent>
-            <q-card :dark="theme" class="w-full">
-                <q-card-section>
-                    <Item dense :vert-icon-center="true">
-                        <template #title>
-                            <div class="text-lg">Edit Window</div>
-                        </template>
-                        <template #icon>
-                            <i-close class="btn" :vert-icon-center="true" fill="var(--color-heading)" stroke="none"  size="2rem" @click="resetCropper"/>
-                        </template>
-                    </Item>
-                    
-                </q-card-section>
-                <q-card-section>
-                    <!-- <cropper ref="cropper" class="w-full" :aspect-ratio="aspectRatio" :guides="true" :background="false" :view-mode="3" drag-mode="move" @ready="" :src="chosenImg" alt="Image not available"/> -->
-                    <cropper
-                        ref="cropper"
-                        class="coodinates-cropper"
-                        :src="chosenImg"
-                        default-boundaries="fill"
-                        check-orientation
-                        :stencil-props="{
-                            aspectRatio: aspectRatio,
-                            previewClass: stencilClass
-                        }"
-                        :stencil-component="stencilComponent"
-                    />
-                </q-card-section>
-                <q-card-actions class="justify-center">
-                    <q-btn class="btn-themed" @click="cropImage" >Crop</q-btn>
-                </q-card-actions>
-            </q-card>
-        </q-dialog>
-    </div>
+    <q-dialog :dark="theme" v-model="showCropper" class="w-full"  :maximized="$q.screen.lt.sm ? true : false"  persistent>
+        <q-card :dark="theme" class="w-full h-fit">
+            <q-card-section>
+                <Item dense :vert-icon-center="true">
+                    <template #title>
+                        <div class="text-lg">Edit Window</div>
+                    </template>
+                    <template #icon>
+                        <i-close class="btn" :vert-icon-center="true" fill="var(--color-heading)" stroke="none"  size="2rem" @click="resetCropper"/>
+                    </template>
+                </Item>
+                
+            </q-card-section>
+            <div class="p-0 m-0">
+                <cropper
+                    ref="cropper"
+                    class="coodinates-cropper"
+                    :src="chosenImg"
+                    default-boundaries="fill"
+                    check-orientation
+                    :stencil-props="{
+                        aspectRatio: aspectRatio,
+                        previewClass: stencilClass
+                    }"
+                    :stencil-component="stencilComponent"
+                />
+                </div>
+            <q-card-actions class="justify-center">
+                <q-btn class="btn-themed" @click="cropImage" >Crop</q-btn>
+            </q-card-actions>
+        </q-card>
+    </q-dialog>
   </template>
   
   

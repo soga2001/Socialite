@@ -2709,7 +2709,7 @@
     /* background-color: var(--color-button-hover) !important; */
 }
 
-.btn-themed:hover {
+/* .btn-themed:hover {
     color: var(--color-heading) !important;
     background-color: var(--color-button-hover) !important;
 }
@@ -2717,7 +2717,7 @@
 .btn-themed-low-op {
     color: var(--color-heading) !important;
     background-color: var(--color-button-hover) !important;
-}
+} */
 
 .bg-web-theme {
     background-color: var(--color-theme) !important;
