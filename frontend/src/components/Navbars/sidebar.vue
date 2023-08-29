@@ -173,7 +173,7 @@ export default defineComponent({
                             <q-badge class="bg-web-theme" rounded floating />
                           </div> -->
                           <q-avatar class="relative p-0 m-0">
-                            <i-notif size="2rem" :fill="$route.matched[0].name == `notifications` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                            <i-notif size="2rem" :fill="$route.matched[0]?.name == `notifications` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                             <q-badge class="bg-web-theme" rounded floating />
                           </q-avatar>
                         </q-item-section>
@@ -184,7 +184,7 @@ export default defineComponent({
                         
                       </q-item>
                       <div class="show relative">
-                        <i-notif class="show" size="2rem" :fill="$route.matched[0].name == `notifications` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                        <i-notif class="show" size="2rem" :fill="$route.matched[0]?.name == `notifications` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                         <q-badge class="bg-web-theme" rounded floating />
                       </div>
                   </RouterLink>
@@ -192,7 +192,7 @@ export default defineComponent({
                   <RouterLink :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link" active-class="active" exact-active-class="exact-active">
                       <q-item class="hide">
                         <q-item-section avatar>
-                            <i-profile size="2rem" :fill="($route.path.startsWith(`/${$store.state.user.username}`) && $route.matched[0].name === 'user-profile') ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                            <i-profile size="2rem" :fill="($route.path.startsWith(`/${$store.state.user.username}`) && $route.matched[0]?.name === 'user-profile') ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                         </q-item-section>
 
                         <q-item-section class="bold">
@@ -200,14 +200,14 @@ export default defineComponent({
                         </q-item-section>
                       </q-item>
                       <div class="show p-2">
-                        <i-profile size="2rem" :fill="($route.path.startsWith(`/${$store.state.user.username}`) && $route.matched[0].name === 'user-profile') ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                        <i-profile size="2rem" :fill="($route.path.startsWith(`/${$store.state.user.username}`) && $route.matched[0]?.name === 'user-profile') ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                       </div>
                   </RouterLink>
 
                   <RouterLink to="/settings" v-if="$store.state.authenticated" class="nav__link" active-class="active">
                       <q-item class="hide">
                         <q-item-section avatar>
-                            <i-settings size="2rem" :fill="$route.matched[0].name == 'settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                            <i-settings size="2rem" :fill="$route.matched[0]?.name == 'settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
                         </q-item-section>
 
                         <q-item-section class="bold">
@@ -215,7 +215,7 @@ export default defineComponent({
                         </q-item-section>
                       </q-item>
                       <div class="show p-2">
-                        <i-settings size="2rem" :fill="$route.matched[0].name == 'settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />                        
+                        <i-settings size="2rem" :fill="$route.matched[0]?.name == 'settings' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />                        
                       </div>
                   </RouterLink>
                   <div class="nav__link" v-if="$store.state.authenticated">

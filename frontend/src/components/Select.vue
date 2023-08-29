@@ -11,28 +11,24 @@ export default defineComponent({
             type: this.input_type,
             label: this.input_label,
             val: ref<number | string | Date>(this.defaultVal),
-            users: new Array<User>(),
-            index: null,
+
+            min: this.minVal ?? '',
+            max: this.maxVal ?? '',
             focused: false,
-
-            min: ref<number | string | Date>(''),
-            max: ref<number | string | Date>(''),
-
-            currentDate: new Date(),
             monthNames: [
               'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
               'November', 'December'
             ],
 
-            year: '',
-            month: '',
+            years: [],
             day: '',
+
         }
     },
     props: {
         input_type: {
             type: String,
-            default: 'text'
+            default: 'year'
         },
         input_label: {
             type: String,
@@ -54,26 +50,6 @@ export default defineComponent({
             type: [String, Number, Date],
             default: '',
         },
-        showCharCounts: {
-            type: Boolean,
-            default: false,
-        },
-        charLimit: {
-            type: Number,
-            default: 255,
-        },
-        minDate: {
-            type: String,
-            default: ``,
-        },
-        maxDate: {
-            type: String,
-            default: ``,
-        },
-        numberType: {
-            type: String,
-            default: 'year',
-        },
         minVal: {
             type: Number,
             default: 0,
@@ -84,14 +60,19 @@ export default defineComponent({
         },
     },
     created() {
-      if(this.numberType === 'year') {
-        this.min = sub(new Date(), {years: 120}).getFullYear()
-        this.max = new Date().getFullYear()
-      }
-      if(this.numberType === 'day') {
-        this.min = 1
-        this.max = new Date().getDate();
-      }
+    //   if(this.input_type === 'year') {
+    //     this.min = sub(new Date(), {years: 120}).getFullYear()
+    //     this.max = new Date().getFullYear()
+    //   }
+    //   if(this.input_type === 'day') {
+    //     this.min = 1
+    //     this.max = new Date().getDate();
+    //   }
+
+        if(this.input_type === 'year'){
+            console.log('here')
+            this.range(new Date().getFullYear(), sub(new Date(), {years: 120}).getFullYear()) 
+        }
       
     },
     mounted() {
@@ -106,8 +87,16 @@ export default defineComponent({
         this.focused = false
       },
       inputClicked() {
-        (this.$refs.input as HTMLInputElement).focus()
-      }
+        (this.$refs.input as HTMLInputElement).focus();
+        (this.$refs.input as HTMLInputElement).click();
+      },
+      range: (start: number, end: number) =>{ 
+        const result = [];
+        for (let i = start; i <= end; i++) {
+            result.push(i);
+        }
+        return result;
+    },
     },
     watch: {
       val: function(val: string) {
@@ -120,29 +109,24 @@ export default defineComponent({
 
 <template>
   <div class="input-box" :class="{focused: isFocused}" @click="inputClicked">
-    <!-- <input v-if="type === 'date'" :min="(min as string)" :max="(max as string)" ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" :type="type" v-model.date="val" :class="{hasInput: (val as string).length > 0}"  class="input text-heading"> -->
-    
-    <input v-if="type === 'tel'" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" :type="type" v-model.tel="val" :class="{hasInput: (val as string).length > 0}"  class="input text-heading">
-    
-    <input v-else-if="type == 'number'" ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" :type="type" :min="(min as number)" :max="(max as number)" v-model.number="val" :class="{hasInput: (val as string).length > 0}"  class="input text-heading"/>
-    
-    <!-- <div class="grid" v-else-if="type==='date'">
-      <select :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" v-if="input_label==='Month' && input_type === 'year'" v-model="val" class="input text-heading ">
+    <select ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" v-if="input_type==='month'" v-model="val" class="input text-heading ">
         <option disabled value=""></option>
         <option class="text-sm" v-for="month in monthNames">{{ month }}</option>
-      </select>
+    </select>
 
-      <select :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" v-if="input_label==='Day' && input_type === 'year'" v-model="val" class="input text-heading ">
+    <select ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" v-if="input_type==='year'" v-model="val" class="input text-heading ">
+        <option disabled value=""></option>
+        <option class="text-sm" v-for="year in years">{{ years }}</option>
+    </select>
+
+    <select ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" v-if="input_type==='day'" v-model="val" class="input text-heading ">
         <option disabled value=""></option>
         <option class="text-sm" v-for="month in monthNames">{{ month }}</option>
-      </select>
-    </div> -->
-    
+    </select>
 
-    <input v-else :maxlength="charLimit" ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" :type="type" v-model="val" :class="{hasInput: (val as string).length > 0}"  class="input text-heading">
-    
+
+
     <label :class="{focused: isFocused,  hasInput: (val as string).length > 0 || type === 'date' || type === 'select' || type === 'number'}" class="label cursor-text">{{label}}</label>
-    <span v-if="showCharCounts && (isFocused || (val as string).length > 0)" @click="($refs.input as HTMLInputElement).focus()" :class="{focused: isFocused,  hasInput: (val as string).length > 0}" class="char_count">{{ `${(val as string).length} / ${charLimit}` }}</span>
   </div>
 
 </template>
@@ -169,9 +153,9 @@ export default defineComponent({
     font-size: 20px;
     line-height: 1rem;
     
-    -webkit-appearance: none;
-    -moz-appearance:    none;
-    appearance:         none;
+    // -webkit-appearance: none;
+    // -moz-appearance:    none;
+    // appearance:         none;
   }
 
   .input::-moz-placeholder {

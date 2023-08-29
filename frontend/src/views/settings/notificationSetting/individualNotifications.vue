@@ -6,12 +6,24 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
     name: 'individual-notif-settings',
+    props: {
+        scrollPosition: {
+            type: Number,
+            default: 0,
+        },
+        height: {
+            type: Number,
+            default: 0,
+        },
+    },
     data() {
         return {
             followed_users: Array<Following>(),
             loading: true,
             page: 0,
             hasMore: true,
+            userTimeStamp: new Date().toISOString(),
+
             settings: false,
             allNotifOff: false,
             unverifiedNotifOff: false,
@@ -21,7 +33,7 @@ export default defineComponent({
     methods: {
         async getFollowedUsers() {
             this.loading = true;
-            await http.get(`follow/get_following_users/${this.$store.state.user.username}/`).then((res) => {
+            await http.get(`follow/get_following_users/${this.userTimeStamp}/${this.page}/${this.$store.state.user.username}`).then((res) => {
                 if (res.data.error) {
                     return;
                 }

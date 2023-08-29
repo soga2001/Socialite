@@ -60,21 +60,21 @@ class Follow_User(APIView):
             return JsonResponse({"error": True, "message": 'An error occured while trying to change notification status. Please try again later.'}, safe=False)
 
 
-@api_view(["GET"])
-def get_followers(request, timestamp, page, user_id):
-    try:
-        followers = UserFollowingSerializer(UserFollowing.objects.filter(followed_user=user_id), many=True).data
-        return JsonResponse({"error": False, "followers": list(followers)}, safe=False)
-    except:
-        return JsonResponse({"error": True, "message": 'An error occured while trying to get followers. Please try again later.'}, safe=False)
+# @api_view(["GET"])
+# def get_followers(request, timestamp, page, user_id):
+#     try:
+#         followers = UserFollowingSerializer(UserFollowing.objects.filter(followed_user=user_id), many=True).data
+#         return JsonResponse({"error": False, "followers": list(followers)}, safe=False)
+#     except:
+#         return JsonResponse({"error": True, "message": 'An error occured while trying to get followers. Please try again later.'}, safe=False)
 
-@api_view(["GET"])
-def get_following(request, timestamp, page, user_id):
-    try:
-        following = UserFollowingSerializer(UserFollowing.objects.filter(following_user=user_id), many=True).data
-        return JsonResponse({"error": False, "following": list(following)}, safe=False)
-    except:
-        return JsonResponse({"error": True, "message": 'An error occured while trying to get following. Please try again later.'}, safe=False)
+# @api_view(["GET"])
+# def get_following(request, timestamp, page):
+#     try:
+#         following = UserFollowingSerializer(UserFollowing.objects.filter(following_user=user_id), many=True).data
+#         return JsonResponse({"error": False, "following": list(following)}, safe=False)
+#     except:
+#         return JsonResponse({"error": True, "message": 'An error occured while trying to get following. Please try again later.'}, safe=False)
 
 
 @api_view(["GET"])
@@ -90,26 +90,29 @@ def get_followed_by_id(request, user_id):
 # get followers
 class GetFollowers(APIView):
 
-    def get(self, request, username):
+    def get(self, request, timestamp, page, username):
         user = User.objects.get(username=username)
+        offset = int(page) * 20
         try:
-            followers = UserFollowerSerializer(UserFollowing.objects.filter(followed_user=user), context={"request": request}, many=True).data
-            return JsonResponse({"success": True, "users": followers})
+            followers = UserFollowerSerializer(UserFollowing.objects.filter(followed_user=user, followed_date__lt=timestamp)[offset:offset+20], context={"request": request}, many=True)
+            if(followers):
+                return JsonResponse({"success": True, "users": followers.data})
+            return JsonResponse({"success": True, "message": 'No more user following.'})
         except Exception as e:
-            print(e)
             return JsonResponse({"error": True})
     
 
 # get following
 class GetFollowing(APIView):
-        def get(self, request, username):
-
+        
+        def get(self, request, timestamp, page, username):
             try:
                 user = User.objects.get(username=username)
+                offset = int(page) * 20
+                following = UserFollowingSerializer(UserFollowing.objects.filter(following_user=user,followed_date__lt=timestamp)[offset:offset+20], context={"request": request}, many=True)
+                if(following):
+                    return JsonResponse({"success": True, "users": following.data})
 
-                following = UserFollowingSerializer(UserFollowing.objects.filter(following_user=user), context={"request": request}, many=True).data
-                print(following)
-                return JsonResponse({"success": True, "users": following})
+                return JsonResponse({"success": True, "message": 'No more user following.'})
             except Exception as e:
-                print(e)
-                return JsonResponse({"error": True})
+                return JsonResponse({"error": True, 'message': 'Error occured while getting user following'})

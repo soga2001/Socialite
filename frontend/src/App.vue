@@ -93,13 +93,17 @@ export default defineComponent({
 </script>
 
 <template>
-  <!-- <h1>Potato</h1> -->
   <div class="text-left w-full min-h-viewport" v-if="!$store.state.isLoading && $store.state.authenticated">
     <Main />
   </div>
-  <div class="flex justify-center min-w-viewport max-w-viewport" v-if="!$store.state.isLoading && !$store.state.authenticated">
-    <div class="max-w-md w-full">
-      <router-view />
+  <div class="no-auth h-viewport min-w-viewport max-w-viewport fixed" v-if="!$store.state.isLoading && !$store.state.authenticated">
+    <div class="h-full min-h-viewport flex items-center justify-center ">
+      <i-profile size="30rem"/>
+    </div>
+    <div class="flex items-center justify-center w-full">
+      <div class="rounded-sm max-w-sm w-full box-shadow">
+        <router-view />
+      </div>
     </div>
   </div>
   <div class="flex items-center justify-center w-full h-viewport text-heading" v-if="$store.state.isLoading">
@@ -166,8 +170,7 @@ export default defineComponent({
                         <div class="h-full min-w-full flex gap-1 items-center title">
                             <div class="ellipsis" >
                                   <span class="ellipsis text-lg text-heading weight-900" > 
-                                      {{ props.item.data.notification.actor.first_name}}
-                                      {{ props.item.data.notification.actor.last_name }}
+                                      {{ props.item.data.notification.actor.full_name}}
                                   </span>
                             </div>
 
@@ -207,9 +210,18 @@ export default defineComponent({
   </notifications>
 </template>
 
-<style>
+<style lang="scss">
 @import '@/assets/css/base.css';
 @import '@/assets/css/global.css';
 @import '@/assets/css/global.scss';
+
+.no-auth {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  .router-link-active {
+    color: var(--q-color-primary);
+  }
+}
+
 
 </style>

@@ -24,7 +24,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         )
 
     async def post_update(self, event):
-        print(event['message'])
         message = event.get('message')
         updateType = event.get('updateType')
         if message and updateType:

@@ -33,10 +33,10 @@ export default defineComponent({
             is_current_user: this.user.is_current_user,
             private: this.user.private,
             notification_on: this.user.notification_on,
-            phone: this.user.phone,
+            phone: this.user.phone ?? '',
             dob: this.user.dob ?? '',
-            link: this.user.link,
-            location: this.user.location,
+            link: this.user.link ?? '',
+            location: this.user.location ?? '',
 
 
             showAvatar: false,
@@ -53,6 +53,9 @@ export default defineComponent({
             newLink: '',
             newDob: '',
             newLocation: '',
+            newYear: '',
+            newDay: '',
+            newMonth: '',
             
             
             avatarFile: null,
@@ -78,10 +81,15 @@ export default defineComponent({
             monthNames: [
                 "January", "February", "March", "April", "May", "June",
                 "July", "August", "September", "October", "November", "December"
-            ]
+            ],
 
+            following_page: 0,
+            followers_page: 0,
+            following_hasMore: true,
+            followers_hasMore: true,
+            userTimestamp: new Date().toISOString(),
 
-
+            num: 20,
         };
     },
     methods: {
@@ -120,23 +128,31 @@ export default defineComponent({
             });
         },
 
-        getFollowers() {
+        async getFollowers() {
             if(this.user_followers.length) {
                 return
             }
             this.loading_follow = true;
-            http.get(`follow/get_followers_users/${this.username}`).then((res) => {
-                if(res.data.error) {
-                    return
+            await http.get(`follow/get_followers_users/${this.userTimestamp}/${this.followers_page}/${this.username}/`).then((res) => {
+                if (res.data.error) {
+                    return;
                 }
-                this.loading_follow = false
-                // setTimeout(() => {
-                //     this.loading_follow = false
-                // }, 3000)
-                this.user_followers = res.data.users
+                if(res.data.users) {
+                    console.log(res.data)
+                    this.user_followers = res.data.users
+                    if(res.data.users.length < 20) {
+                        this.followers_hasMore = false
+                    }
+                    else {
+                        this.followers_hasMore = true
+                    }
+                    this.user_followers = res.data.users
+                }
             }).catch((err) => {
-                console.log(err)
-            })
+                console.log(err);
+            });
+            this.loading_follow = false
+            
         },
 
         async getFollowing() {
@@ -144,14 +160,23 @@ export default defineComponent({
                 return
             }
             this.loading_follow = true;
-            await http.get(`follow/get_following_users/${this.username}/`).then((res) => {
-                if(res.data.error) {
-                    return
+            await http.get(`follow/get_following_users/${this.userTimestamp}/${this.followers_page}/${this.username}/`).then((res) => {
+                if (res.data.error) {
+                    return;
                 }
-                this.user_following = res.data.users
+                if(res.data.users) {
+                    this.user_followers = res.data.users
+                    if(res.data.users.length < 20) {
+                        this.following_hasMore = false
+                    }
+                    else {
+                        this.following_hasMore = true
+                    }
+                    this.user_following = res.data.users
+                }
             }).catch((err) => {
-                console.log(err)
-            })
+                console.log(err);
+            });
 
             this.loading_follow = false
         },
@@ -190,9 +215,9 @@ export default defineComponent({
             if (this.link !== this.newLink) {
                 formData.append('link', this.newLink)
             }
-            if (new Date(this.newDob).toUTCString() !== new Date(this.dob).toUTCString()) {
-                formData.append('dob', this.newDob)
-            }
+            // if (new Date(this.newDob).toUTCString() !== new Date(this.dob).toUTCString()) {
+            //     formData.append('dob', this.newDob)
+            // }
             if (this.location !== this.newLocation) {
                 formData.append('location', this.newLocation)
             }
@@ -226,8 +251,6 @@ export default defineComponent({
             this.link = user.link;
             this.phone = user.phone;
 
-            
-
             this.$store.commit('setUser', user);
 
         },
@@ -241,7 +264,7 @@ export default defineComponent({
                 const bannerDialogRef = this.$refs.bannerDialog as {
                     initCropper: (type: string | undefined, name: string | undefined) => void;
                 };
-                
+
                 // this.newBanner = await this.toBase64(file);
                 bannerDialogRef.initCropper(file?.type, file?.name);
 
@@ -322,6 +345,46 @@ export default defineComponent({
             });
 
             this.updatingNotifSettings = false
+        },
+        async onLoadFollowers(index: Number, done: CallableFunction) {
+            if(this.followers_hasMore) {
+                this.followers_page += 1
+                await this.getFollowers()
+                done()
+            }
+            else {
+                done()
+            }
+        },
+        async onLoadFollowing(index: Number, done: CallableFunction) {
+            if(this.following_hasMore) {
+                await this.getFollowing()
+                this.following_page += 1
+                done()
+            }
+            else {
+                done()
+            }
+        },
+        scrollFollowers() {
+            if(this.followers_hasMore) {
+                const scrollTop = (this.$refs.followers as HTMLDivElement).scrollTop;
+                const scrollHeight = (this.$refs.followers as HTMLDivElement).scrollHeight;
+                if(scrollTop + 500 >= scrollHeight) {
+                    this.followers_page += 1
+                    this.getFollowers()
+                }
+            }
+        },
+        scrollFollowing() {
+            if(this.following_hasMore) {
+                const scrollTop = (this.$refs.following as HTMLDivElement).scrollTop;
+                const scrollHeight = (this.$refs.following as HTMLDivElement).scrollHeight;
+                if(scrollTop + 500 >= scrollHeight) {
+                    this.following_page += 1
+                    this.getFollowing()
+                }
+            }
         },
     },
     created() {
@@ -409,9 +472,6 @@ export default defineComponent({
                                         <button class="border-none pointer btn-themed-low-op rounded-lg p-3 bg-gray-op" @click="toggleBanner">
                                             <q-icon color="purple-13" name="edit" size="2rem"/>
                                         </button>
-                                        <!-- <button class="border-none pointer btn-themed-low-op rounded-lg p-3 bg-gray-op" @click="toggleBanner">
-                                            <q-icon color="purple-13" name="close" size="2rem"/>
-                                        </button> -->
                                         <input ref="bannerUpload" type="file" id="file" @change="launchCropper" hidden/>
                                     </div>
                                     <div class=" hidden">
@@ -434,11 +494,25 @@ export default defineComponent({
                             </div>
                             <div class="user-profile__info flex flex-col gap-3 w-full">
                                 <Input showCharCounts :charLimit="30" :defaultVal="full_name" @update:val="new_FN = $event" input_type="text" input_label="First Name" id="first_name" class="w-full my-2" />
-                                <!-- <Input showCharCounts :charLimit="30" :defaultVal="last_name" @update:val="new_LN = $event" input_type="text" input_label="Last Name" id="last_name" class="w-full my-2" /> -->
                                 <Textarea showCharCounts :charLimit="160" maxHeight="176" height="200px" :defaultVal="bio" @update:val="newBio = $event" input_type="text" input_label="Bio" id="username" class="w-full my-2" />
-                                <!-- <Input showCharCounts :charLimit="10" :defaultVal="phone" @update:val="newPhone = $event" input_type="tel" input_label="Phone (###) ### ####" id="phone" class="w-full my-2" /> -->
                                 <Input showCharCounts :charLimit="30" :defaultVal="location" @update:val="newLocation = $event" input_type="text" input_label="Location" id="location" class="w-full my-2" />
-                                <Input :defaultVal="dob" @update:val="newDob = $event" input_type="date" input_label="Date of Birth" id="dob" class="w-full my-2" />
+                                <!-- <Input :defaultVal="dob" @update:val="newDob = $event" input_type="date" input_label="Date of Birth" id="dob" class="w-full my-2" /> -->
+
+                                <!-- <div class="grid"> -->
+                                    <!-- <Input :defaultVal="'June'" input_type="select" @update:val="newLocation = $event" input_label="Month" id="month" class="my-2"/>
+                                    <Input :defaultVal="'June'" input_type="select" numberType="day" @update:val="newLocation = $event" input_label="Day" id="dat" class="my-2"/>
+                                    <Input :defaultVal="'June'" input_type="select" numberType="year" @update:val="newLocation = $event" input_label="Day" id="dat" class="my-2"/> -->
+                                <!-- </div> -->
+
+                                <div class="grid">
+                                    <Select input_type="month" input_label="Month" id="month" />
+                                    <Select input_type="day" input_label="Day" id="day" />
+                                    <Select input_type="year" input_label="Year" id="year" />
+
+                                </div>
+                                
+
+                                <!-- <Input showCharCounts :charLimit="30" :defaultVal="phone" @update:val="newPhone = $event" input_type="text" input_label="Phone" id="phone" class="w-full my-2" /> -->
                                 <Input showCharCounts :charLimit="100" :defaultVal="link" @update:val="newLink = $event" input_type="text" input_label="Website" id="website" class="w-full my-2" />
                             </div>
                         </div>
@@ -514,7 +588,6 @@ export default defineComponent({
                                     <i-balloon size="2rem" fill="var(--color-heading)"/>
                                 </template>
                                 <template #title>
-                                    <!-- <Timeago class="text-lg text-body" :date="dob" date_type="any" /> -->
                                     <span class="text-lg text-body">
                                         {{ `${monthNames[new Date(dob).getMonth()]} ${new Date(dob).getUTCDate()}, ${new Date(dob).getFullYear()}` }}
                                     </span>
@@ -543,8 +616,8 @@ export default defineComponent({
                     </div>
 
                     <div class="relative w-full">
-                        <q-dialog class="w-full" v-model="show_followers" persistent :maximized="$q.screen.lt.sm ? true : false">
-                            <div :class="{'max-h-sm max-w-xs': !$q.screen.lt.sm, 'h-viewport': $q.screen.lt.sm}" class="bg-theme border w-full h-full">
+                        <q-dialog class="w-full" v-model="show_followers" :maximized="$q.screen.lt.sm ? true : false">
+                            <!-- <div ref="followers" :class="{'max-h-sm max-w-xs': !$q.screen.lt.sm, 'h-viewport': $q.screen.lt.sm}" class="bg-theme border w-full h-full">
                                 <div class="p-1">
                                     <Item>
                                         <template #title>
@@ -590,32 +663,102 @@ export default defineComponent({
                                         </template>
                                     </Item>
                                 </div>
-                            </div>
-                        </q-dialog>
-
-                        <q-dialog class="w-full" v-model="show_following" :maximized="$q.screen.lt.sm ? true : false">
-                            <div class="bg-theme border w-full max-w-xs h-full max-h-sm">
-                                <div class="p-1">
+                            </div> -->
+                            <div @scroll="scrollFollowers" ref="followers" :class="{'max-h-sm max-w-xs': !$q.screen.lt.sm, 'h-viewport': $q.screen.lt.sm}" class="bg-theme border w-full h-full">
+                                <div class="p-1 w-full sticky top-0 z-10 bg-theme-opacity bg-blur-half border-b h-fit">
                                     <Item>
                                         <template #title>
-                                            <div class="text-h6">Following</div>
+                                            <div class="text-2xl weight-900">Followers</div>
                                         </template>
                                         <template #icon>
-                                            <div class="btn" @click="show_following = !show_following">
+                                            <div class="pointer" @click="show_followers = !show_followers">
                                                 <i-close :vert-icon-center="true" fill="var(--color-heading)" stroke="none"  size="2rem"/>
                                             </div>
                                         </template>
                                     </Item>
                                 </div>
-
-                                <div>
-                                    <hr/>
+                                <div v-if="loading_follow" class="p-5 flex justify-center items-center">
+                                    <Loading/>
                                 </div>
-
-                                <div v-if="loading_follow" class="max-h-xs h-full flex justify-center items-center">
-                                    <Loading />
+                                <div v-else-if="!loading_follow && user_followers" class="h-fit w-full">
+                                    <div v-for="user in user_followers" :key="user.id" class="caption">
+                                        <Item clickable :to="{ name: 'user-profile', params: { username: user.following_user.username } }">
+                                            <template #avatar>
+                                                <img :src="user.following_user.avatar" alt="user profile pic"/>
+                                            </template>
+                                            <template #title>
+                                                <div class="text-heading weight-900">
+                                                    {{ user.following_user.full_name }}
+                                                    <q-icon v-if="user.following_user.private" name="lock" />
+                                                </div>
+                                            </template>
+                                            <template #caption>
+                                                <div class="text-body">@{{ user.following_user.username }}</div>
+                                            </template>
+                                            <template #icon>
+                                                <button @click.stop="" v-if="!user.following_user.is_following && !user.following_user.is_current_user" class="pointer bg-web-theme bg-web-theme-hover border-none text-heading weight-900 rounded px-5 py-2">
+                                                    Follow
+                                                </button>
+                                                <button v-else-if="!user.following_user.is_current_user" class="pointer bg-web-theme border-none text-heading weight-900 rounded px-5 py-2">
+                                                    Following
+                                                </button>
+                                            </template>
+                                        </Item>
+                                    </div>
                                 </div>
-                                <div class="results-even" v-else-if="!loading_follow && user_following" v-for="user in user_following">
+                                <!-- <q-infinite-scroll @load="onLoadFollowers" :offset="250" class="w-full h-full">
+                                    <div v-for="user in user_followers" :key="user.id" class="caption">
+                                        <Item clickable :to="{ name: 'user-profile', params: { username: user.following_user.username } }">
+                                            <template #avatar>
+                                                <img :src="user.following_user.avatar" alt="user profile pic"/>
+                                            </template>
+                                            <template #title>
+                                                <div class="text-heading weight-900">
+                                                    {{ user.following_user.full_name }}
+                                                    <q-icon v-if="user.following_user.private" name="lock" />
+                                                </div>
+                                            </template>
+                                            <template #caption>
+                                                <div class="text-body">{{ user.following_user.username }}</div>
+                                            </template>
+                                            <template #icon>
+                                                <button @click.stop="" v-if="!user.following_user.is_following && !user.following_user.is_current_user" class="pointer bg-web-theme bg-web-theme-hover border-none text-heading weight-900 rounded px-5 py-2">
+                                                    Follow
+                                                </button>
+                                                <button v-else-if="!user.following_user.is_current_user" class="pointer bg-web-theme border-none text-heading weight-900 rounded px-5 py-2">
+                                                    Following
+                                                </button>
+                                            </template>
+                                        </Item>
+                                    </div>
+                                    <template v-slot:loading>
+                                        <div class="row justify-center q-my-md">
+                                            <Loading />
+                                        </div>
+                                    </template>
+                                </q-infinite-scroll> -->
+                            </div>
+                            
+                        </q-dialog>
+
+                        <q-dialog class="w-full" v-model="show_following" :maximized="$q.screen.lt.sm ? true : false">
+                            <div @scroll="scrollFollowing" ref="following" class="bg-theme border w-full max-w-xs h-full max-h-sm">
+                                <div class="p-1 w-full sticky top-0 z-10 bg-theme-opacity bg-blur-half border-b h-fit">
+                                    <Item>
+                                        <template #title>
+                                            <div class="text-2xl weight-900">Following</div>
+                                        </template>
+                                        <template #icon>
+                                            <div class="pointer" @click="show_following = !show_following">
+                                                <i-close :vert-icon-center="true" fill="var(--color-heading)" stroke="none"  size="2rem"/>
+                                            </div>
+                                        </template>
+                                    </Item>
+                                </div>
+                                <div v-if="loading_follow" class="p-5 flex justify-center items-center">
+                                    <Loading/>
+                                </div>
+                                <!-- <div class="results-even" v-else-if="!loading_follow && user_following" v-for="user in user_following">
                                     <Item clickable :to="{ name: 'user-profile', params: { username: user.followed_user.username } }">
                                         <template #avatar>
                                             <img :src="user.followed_user.avatar" alt="user profile pic"/>
@@ -629,12 +772,33 @@ export default defineComponent({
                                         <template v-if="user.followed_user.is_following" #caption>
                                             <div class="text-body text-sm">Follows you</div>
                                         </template>
-                                        <!-- <template v-if="!user.follows_user" #icon>
-                                            <button>
-                                                Follow
-                                            </button>
-                                        </template> -->
                                     </Item>
+                                </div> -->
+                                <div class="h-fit w-full">
+                                    <div v-if="!loading_follow && user_following" v-for="user in user_following" :key="user.id" class="caption">
+                                        <Item clickable :to="{ name: 'user-profile', params: { username: user.followed_user.username } }">
+                                            <template #avatar>
+                                                <img :src="user.followed_user.avatar" alt="user profile pic"/>
+                                            </template>
+                                            <template #title>
+                                                <div class="text-heading weight-900">
+                                                    {{ user.followed_user.full_name }}
+                                                    <q-icon v-if="user.followed_user.private" name="lock" />
+                                                </div>
+                                            </template>
+                                            <template #caption>
+                                                <div class="text-body">@{{ user.followed_user.username }}</div>
+                                            </template>
+                                            <template #icon>
+                                                <button @click.stop="" v-if="!user.followed_user.is_following && !user.followed_user.is_current_user" class="pointer bg-web-theme bg-web-theme-hover border-none text-heading weight-900 rounded px-5 py-2">
+                                                    Follow
+                                                </button>
+                                                <button v-else-if="!user.followed_user.is_current_user" class="pointer bg-web-theme border-none text-heading weight-900 rounded px-5 py-2">
+                                                    Following
+                                                </button>
+                                            </template>
+                                        </Item>
+                                    </div>
                                 </div>
                             </div>
                         </q-dialog>
@@ -870,6 +1034,12 @@ export default defineComponent({
     position: absolute;
     bottom: -70px;
     border: 4px solid var(--color-background);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 2fr repeat(2, 1fr);
+    gap: 10px;
 }
 
     

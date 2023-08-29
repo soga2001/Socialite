@@ -5,8 +5,6 @@ import { Notify } from 'quasar'
 
 export const logout = async () => {
     await http.post("users/logout/").then((res) => {
-        store.commit("authenticate", false);
-        store.commit("setDefaultUser");
         Notify.create({
             message: `<span class="text-white weight-900">Logout successful</span>`,
             position: 'top-right',
@@ -14,7 +12,8 @@ export const logout = async () => {
             classes: 'bg-web-theme',
             html: true,
         })
-
+        store.commit("authenticate", false);
+        store.commit("setDefaultUser");
     }).catch((err) => {
     });
 }

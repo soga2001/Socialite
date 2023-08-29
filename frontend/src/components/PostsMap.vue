@@ -47,7 +47,8 @@ export default defineComponent({
             img_loading: true,
             avatar_loading: true,
             deleted: false,
-            persistent: ref(false),
+            deleteModal: ref(false),
+            deleting: false,
             report: ref(false),
             reason: ref(""),
             moment: moment,
@@ -132,8 +133,9 @@ export default defineComponent({
         setDelete() {
             this.deleted = true;
         },
-        deletePost() {
-            http.delete("posts/delete_post/", {
+        async deletePost() {
+            this.deleting = true;
+            await http.delete("posts/delete_post/", {
                 data: {
                     id: this.id
                 },
@@ -141,6 +143,12 @@ export default defineComponent({
                 // this.deleted = true
                 if(res.data.success) {
                     this.deleted = true
+                    this.$q.notify({
+                        message: res.data.message,
+                        color: "positive",
+                        position: "top-right",
+                        timeout: 1000
+                    })
                 }
                 else {
                     this.$notify({
@@ -153,6 +161,7 @@ export default defineComponent({
             }).catch((err) => {
                 console.log(err);
             });
+            this.deleting = false
         },
         onImgLoad() {
             this.img_loading = false;
@@ -353,12 +362,12 @@ export default defineComponent({
                                             <q-item-label>Report Post</q-item-label>
                                         </q-item-section>
                                     </q-item>
-                                    <q-item clickable v-close-popup @click="persistent = true" tabindex="0" v-if="post.is_owner || post.user.is_admin || post.user.is_staff">
+                                    <q-item class="danger-btn" clickable v-close-popup @click="deleteModal = true" tabindex="0" v-if="post.is_owner || post.user.is_admin || post.user.is_staff">
                                         <q-item-section avatar>
-                                            <q-icon class="danger__icon" name="delete_forever"/>
+                                            <q-icon color="red" class="danger__icon" name="delete_forever"/>
                                         </q-item-section>
                                         <q-item-section>
-                                            <q-item-label>Delete</q-item-label>
+                                            <q-item-label class="text-red weight-900">Delete</q-item-label>
                                         </q-item-section>
                                     </q-item>
                                     <q-item clickable v-close-popup v-if="post.is_owner">
@@ -373,7 +382,7 @@ export default defineComponent({
                             </q-menu>
 
                             
-                            <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
+                            <q-dialog v-model="deleteModal" persistent transition-show="scale" transition-hide="scale">
                                 <q-card class="card">
                                     <q-card-section class="row">
                                         <q-item>
@@ -383,15 +392,19 @@ export default defineComponent({
                                     <q-card-section>
                                         <q-item>
                                             <q-item-section avatar>
-                                            <q-avatar class="red" icon="warning"/>
+                                                <!-- <q-icon color="red" name="info_warning"/> -->
+                                                <q-icon color="red" name="warning" />
                                             </q-item-section>
-                                            <q-item-section class="red alert">This action is permanent and irreversible.</q-item-section>
+
+                                            <q-item-section class="text-red weight-900">
+                                                This action is permanent and irreversible.
+                                            </q-item-section>
                                         </q-item>
                                     </q-card-section>
 
                                     <q-card-actions align="right" class="buttons">
                                         <q-btn flat label="Cancel"  v-close-popup />
-                                        <q-btn flat label="Confirm" @click="deletePost" v-close-popup />
+                                        <q-btn flat label="Confirm" @click="deletePost" />
                                     </q-card-actions>
                                 </q-card>
                             </q-dialog>

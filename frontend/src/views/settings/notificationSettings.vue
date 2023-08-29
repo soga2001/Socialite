@@ -20,26 +20,10 @@ export default defineComponent({
         }
     },
     methods: {
-        getFollowedUsers() {
-            if(!this.hasMore) {
-                return
-            }
-            this.loading = true;
-            http.get(`follow/get_following_users/${this.$store.state.user.username}/`).then((res) => {
-                if(res.data.error) {
-                    return
-                }
-                this.loading = false
-                this.followed_users = res.data.users
-            }).catch((err) => {
-                console.log(err)
-            })
-        },
     },
     computed: {
     },
     created() {
-        this.getFollowedUsers()
     },
     mounted() {
     },

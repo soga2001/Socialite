@@ -98,9 +98,7 @@ export default defineComponent({
                   <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
                   <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                 </q-avatar>
-                <!-- <div v-if="$store.state.authenticated" @click="openNav" class="pointer">
-                  
-                </div> -->
+
               </template>
               <template v-if="['explore', 'search'].includes(($route.name)?.toString() || ' ')" #title>
                 <Search dense/>
@@ -120,12 +118,12 @@ export default defineComponent({
                 <q-btn flat round dense icon="settings" size="16px" class="border" @click.stop="" />
               </template>
               <template #icon  v-if="['all-notif', 'mentions'].includes(($route.name)?.toString() || ' ')">
-                <RouterLink @click="closeNav" :to="{name: 'notification-settings'}" :exact="true" class="nav__link w-full rounded p-2" active-class="active" exact-active-class="exact-active">
-                  <q-icon size="1.6rem" name="settings" />
+                <RouterLink @click="closeNav" :to="{name: 'notification-settings'}" :exact="true" class="nav__link w-full rounded" active-class="active" exact-active-class="exact-active">
+                  <q-icon size="2rem" name="settings" />
                 </RouterLink>
               </template>
               <template #icon v-else>
-
+                <q-btn flat round dense icon="" size="16px"  />
               </template>
 
             </Item>
@@ -141,7 +139,9 @@ export default defineComponent({
                 <span class="text-2xl weight-900">Notifications</span>
               </template>
               <template #icon>
-                <q-btn flat round dense icon="settings" size="16px" @click.stop="" />
+                <RouterLink @click="closeNav" :to="{name: 'notification-settings'}" :exact="true" class="nav__link w-full rounded p-2" active-class="active" exact-active-class="exact-active">
+                  <q-icon size="1.5rem" name="settings" />
+                </RouterLink>
               </template>
             </Item>
           </div>

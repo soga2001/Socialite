@@ -29,7 +29,7 @@ export default defineComponent({
           await http.get(`notifications/mentions/`, {
             params: {
               page: this.page,
-              userTimeStamp: this.userTimeStamp
+              timestamp: this.userTimeStamp
             }
           }).then((res) => {
             if(res.data.notifications) {

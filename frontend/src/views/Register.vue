@@ -111,17 +111,9 @@ export default defineComponent({
 <template>
 <div class="register grid">
     <div class="register__main">
-        <h1 class="register__header">Register</h1>
+        <h1 class="text-5xl weight-900 text-heading">Register</h1>
         <hr/>
         <form class="register__form" autocomplete="off" v-on:submit.prevent="register">
-            <!-- <Input
-              @update:val="fname = $event"
-              input_label="First Name*"
-              class="fname"
-              input_type="text" required
-              id="fname"
-              />
-            <Input @update:val="lname = $event" input_label="Last Name*" id="lname" class="lname" input_type="text" required/> -->
             <Input @update:val="full_name = $event" input_label="Full Name" id="fullname" class="fullname" input_type="text" required/>
             <Input @update:val="email = $event" input_label="Email" id="email" class="email" input_type="email" required/>
             <Input @update:val="username = $event" input_label="Username" id="username" class="username" input_type="text" required/>
@@ -130,19 +122,24 @@ export default defineComponent({
             <div class="col-span-8">
               <p class="w-full">By Registering to use Socialite, you agree to our Terms and Services and Cookie Policies.</p>
             </div>
-            <q-btn
-              :loading="registering"
-              dark-percentage
-              unelevated
-              class="submit"
-              type="submit"
-              style="width: 100px"
-              :disable="!disable"
-            >
-              <div class="text-capitalize text-xl weight-900 text-heading">
-                Register
-              </div>
-            </q-btn>
+              <q-btn
+                :loading="registering"
+                dark-percentage
+                unelevated
+                class="submit"
+                type="submit"
+                :disable="!disable"
+              >
+                <div class="text-capitalize text-xl weight-900 text-heading">
+                  Register
+                </div>
+                <template v-slot:loading>
+                  <Loading />
+                </template>
+              </q-btn>
+            <div class="submit">
+              <span>Already have an account? <RouterLink to="/login" class="text-theme no-decor hover-underline weight-900">Sign in</RouterLink></span>
+            </div>
         </form>
     </div>
 </div>
@@ -200,7 +197,7 @@ export default defineComponent({
     }
   
     .submit {
-      grid-column: 4 / span 2;
+      grid-column: auto / span 8;
     }
   
     .form__check {
@@ -237,9 +234,10 @@ export default defineComponent({
 } */
 
 button {
-  width: 10em;
+  // width: 10em;
+  width: 100%;
   position: relative;
-  height: 3.5em;
+  height: 3.5rem;
   border: 3px ridge #149CEA;
   outline: none;
   background-color: transparent;

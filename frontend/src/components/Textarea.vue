@@ -65,7 +65,7 @@ export default defineComponent({
       const textarea = this.$refs.textarea as HTMLInputElement
       const label = this.$refs.label as HTMLLabelElement
       this.textareaHeight = textarea?.offsetHeight
-      this.labelHeight = label?.offsetHeight + 25
+      this.labelHeight = label?.offsetHeight + 10
 
       this.autogrow()
     },
@@ -126,7 +126,7 @@ export default defineComponent({
     outline: none;
     border: none;
     background-color: transparent;
-    margin-top: 35px;
+    margin-top: 25px;
     padding: 0 10px;
     font-size: 20px;
   }

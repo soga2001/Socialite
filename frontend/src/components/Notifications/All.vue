@@ -24,7 +24,7 @@ export default defineComponent({
           hasMore: true,
 
           page: 0,
-          userTimeStamp: new Date().toUTCString()
+          userTimeStamp: new Date().toISOString()
       };
   },
   name: "all-notif",
@@ -43,7 +43,7 @@ export default defineComponent({
           await http.get(`notifications/all/`, {
             params: {
               page: this.page,
-              userTimeStamp: this.userTimeStamp
+              timestamp: this.userTimeStamp
             }
           }).then((res) => {
             if(res.data.notifications) {
@@ -67,6 +67,12 @@ export default defineComponent({
         this.page += 1;
         this.getNotification();
       }
+    },
+    '$store.state.allNotifications': function(val) {
+      if(val.length !== 0) {
+        this.notification = [...this.$store.state.allNotifications, ...this.notification]
+        this.$store.commit('resetNotifications')
+      }
     }
   },
   components: {Map},
@@ -74,7 +80,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <div v-if="notification.length > 0 && !loading" class="w-full min-h-viewport">
+    <div v-if="notification.length > 0 && !loading" class="w-full">
       <div v-for="notif in notification" :key="notif.id" class=" w-full border-b">
         <Map :notification="notif" />
       </div>
@@ -92,6 +98,6 @@ export default defineComponent({
     </div>
 </template>
 
-<script lang="scss" scoped>
+<style lang="scss" scoped>
 
-</script>
+</style>

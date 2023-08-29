@@ -52,7 +52,8 @@ import MentionLink from '@/components/MentionLink.vue';
 import Timeago from './components/Timeago.vue';
 import Spills from './components/Spills.vue';
 import Input from './components/Input.vue'
-import Textarea from './components/Textarea.vue'
+import Textarea from './components/Textarea.vue';
+import Select from './components/Select.vue'
 import CommentMap from '@/components/CommentMap.vue';
 import PostsMap from '@/components/PostsMap.vue'
 import Mention from './components/Mention.vue'
@@ -154,7 +155,9 @@ app.component('Item', Item);
 app.component('cropper', VueCropper);
 app.component('Input', Input);
 app.component('Textarea', Textarea);
-app.component('forgot-password', ForgotPassword)
+app.component('Select', Select);
+app.component('forgot-password', ForgotPassword);
+
 
 
 app.use(Quasar, {

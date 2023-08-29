@@ -17,14 +17,15 @@ class NotificationView(APIView):
         try:
             user = User.objects.get(pk=request.user.id)
             page = request.query_params['page']
-            timestamp = request.query_params['time_stamp']
+            timestamp = request.query_params['timestamp']
             offset = int(page) * 20
-            notif = user.notifications.filter(timestamp_gt=timestamp)[offset:offset+20]
-            notifications = NotificationSerializer(notif, context={'request': request}, many=True).data
+            notif = user.notifications.filter(timestamp__lt=timestamp)[offset:offset+20]
+            notifications = NotificationSerializer(notif, context={'request': request}, many=True)
             if(notifications):
-                return JsonResponse({"success": True, "message": "Notifications retrieved", "notifications": notifications})
+                return JsonResponse({"success": True, "message": "Notifications retrieved", "notifications": notifications.data})
             return JsonResponse({"success": True, "message": "You have no notification."})
         except Exception as e:
+            print(e)
             return JsonResponse({"error": True, "message": "An error occured while trying to retrieve notifications. Please try again later."}, safe=False)
         
     def delete(self, request):
@@ -44,7 +45,7 @@ class Mentions(APIView):
             page = request.query_params['page']
             timestamp = request.query_params['time_stamp']
             offset = int(page) * 20
-            notifications = NotificationSerializer(user.notifications.filter(verb="mention", timestamp_gt=timestamp)[offset:offset+20], many=True)
+            notifications = NotificationSerializer(user.notifications.filter(verb="mention", timestamp__lt=timestamp)[offset:offset+20], many=True)
             if(notifications):
                 return JsonResponse({"success": True, "message": "Mentioned notifications retrieved", "notifications": notifications.data})
             return JsonResponse({"success": True, "message":"You have not been mentioned by any users"})

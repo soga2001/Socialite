@@ -39,11 +39,14 @@ export default defineComponent({
             }, {
             }).then(async (res) => {
                 if (res.data.error === true) {
-                    this.$notify({
-                      title: 'Error!',
-                      text: res.data.message,
-                      type: 'error',
-                      group: 'error',
+                    this.$q.notify({
+                      message: `<span class="text-white weight-900">${res.data.message}</span>`,
+                      position: 'top-right',
+                      type: 'negative',
+                      iconColor: 'white',
+                      timeout: 2000,
+                      // classes: 'bg-web-theme',
+                      html: true,
                     })
                 }
                 else {
@@ -109,7 +112,8 @@ export default defineComponent({
 <template>
 
 <div class="form-container text-heading w-full">
-	<p class="title">Login</p>
+	<h1 class="text-5xl weight-900 text-heading">Login</h1>
+  <hr/>
 	<form class="form" autocomplete="off" v-on:submit.prevent="login">
         <Input @update:val="username = $event" input_type="text" input_label="Username" id="username" class="w-full my-2" />
         <Input @update:val="password = $event" input_type="password" input_label="Password" id="1" />
@@ -123,9 +127,9 @@ export default defineComponent({
     <forgot-password @update:forgotpass="forgotPass = $event" />
   </q-dialog>
 
-	<p class="signup mt-5">Don't have an account?
-		<RouterLink to="/register" class="hover-text-heading weight-bold">Sign up</RouterLink>
-	</p>
+  <div class="signup mt-5">
+      <span>Don't have an account? <RouterLink to="/register" class="text-theme no-decor hover-underline weight-900">Sign up</RouterLink></span>
+    </div>
 </div>
 </template>
 

@@ -62,8 +62,6 @@ export default defineComponent({
 
   },
   mounted() {
-    const element = this.$refs.mainDiv as HTMLDivElement
-    element.addEventListener("scroll", this.scroll)
     if(this.$refs.bottomBar) {
       this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 0
 
@@ -82,7 +80,7 @@ export default defineComponent({
     },
   },
   methods: {
-    scroll() {
+    scrolling() {
       const element = this.$refs.mainDiv as HTMLDivElement;
       if(this.lastScrollPos < element.scrollTop ) {
         this.hideTopNav = true
@@ -125,7 +123,9 @@ export default defineComponent({
         if(data.type === 'posted') {
           const message = JSON.parse(data.message) as Notifications
 
-          this.$store.commit('setNotifications', message)
+          console.log(message)
+
+          this.$store.commit('setAllNotifications', message)
 
           this.$notify({
             group: 'notify',
@@ -233,7 +233,7 @@ export default defineComponent({
 
 <template>
   <!-- :class="!isMobile() ? 'main' : 'fixed w-full h-viewport overflow-y-scroll'" -->
-  <div ref="mainDiv" :class="{'main': !isMobile(), 'fixed w-full h-viewport overflow-y-scroll': isMobile(), 'settings_page': settingsPage}">
+  <div @scroll="scrolling" ref="mainDiv" :class="{'main': !isMobile(), 'fixed w-full h-viewport overflow-y-scroll': isMobile(), 'settings_page': settingsPage}">
     <div v-if="!$q.screen.lt.sm" class="min-h-viewport sticky top-0 h-full w-full">
       <Sidebar/>
     </div>

@@ -194,9 +194,7 @@ export default defineComponent({
                   <span class="text-white text-base weight-900 text-capitalize">{{ btnString }}</span>
                 </div>
                 <template v-slot:loading>
-                  <q-spinner
-                    color="grey-1"
-                  />
+                  <q-spinner />
                 </template>
               </q-btn> 
               <circular-progress v-if="chars" :val="chars" size="30px" :showVal="true" />
