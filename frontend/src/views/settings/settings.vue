@@ -59,7 +59,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <div :class="{'large-screen': !$q.screen.lt.sm}" class="grid w-full h-full max-h-viewport p-0">
+    <div :class="{'large-screen': !$q.screen.lt.sm, 'min-h-viewport': !$q.screen.lt.sm}" class="grid w-full h-full">
         <header class="border-r h-full w-full bg-theme" v-if="($route.matched[0].name === 'settings' && ($route.matched[1] === undefined || !$q.screen.lt.sm))">
             <div v-if="!$q.screen.lt.sm">
                 <Item>
@@ -123,28 +123,11 @@ export default defineComponent({
                         </template>
                     </Item>
                 </RouterLink>
-                <!-- <RouterLink :to="{name: 'privacy-settings'}" active-class="active">
-                    <Item :captionLineClamp="3" clickable class="child">
-                        <template #title>
-                            <span class="text-xl text-heading weight-800 text-capitalize">
-                                Privacy and Safety
-                            </span>
-                        </template>
-                        <template #caption>
-                            <span class="text-sm text-body weight-700 text-nodecor">
-                                Make Account Private
-                            </span>
-                        </template>
-                        <template #icon>
-                            <q-icon size="2rem" name="navigate_next" class="text-heading"/>
-                        </template>
-                    </Item>
-                </RouterLink> -->
             </nav>
         </header>
         <div class="w-full">
             <RouterView v-slot="{Component}" >
-                <KeepAlive :max="4" :include="['notification-settings', 'individual-notif-settings']" >
+                <KeepAlive :max="4" :include="['notification-settings', 'individual-notif-settings', 'sessions']" >
                     <component :is="Component" :key="$route.fullPath"  :height="height" :scrollPosition="scrollPosition" />
                 </KeepAlive>
             </RouterView>
@@ -159,7 +142,6 @@ export default defineComponent({
 }
 
 .active {
-    
     .child {
         background-color: var(--color-background-mute);
     }
@@ -168,6 +150,5 @@ export default defineComponent({
 .large-screen {
     display: grid;
     grid-template-columns: 1fr 1.5fr;
-    grid-template-areas: "header main";
 }
 </style>

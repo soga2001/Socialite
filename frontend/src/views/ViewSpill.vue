@@ -258,7 +258,7 @@ export default defineComponent({
     <div class="grid">
         <div>
             <header class="sticky top-0 bg-theme-opacity bg-blur-1 z-1">
-                <Item dense>
+                <Item>
                     <template #avatar>
                         <q-btn size="16px" @click="$router.back" flat dense round class="text-heading" icon="arrow_back" />
                     </template>
@@ -271,14 +271,6 @@ export default defineComponent({
                 <div>
                     <Item align-items="start" avatar-size="3.5rem">
                         <template #avatar>
-                            <!-- <user-card :user-prop="user">
-                                <template #text>
-                                    <div class="hover-darker pointer" @click.stop="$router.push({name: 'user-profile', params: { username: spill.user.username }})">
-                                        <img v-if="spill.user.avatar" :src="spill.user.avatar" alt="User Avatar" class="rounded-full" />
-                                        <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
-                                    </div>
-                                </template>
-                            </user-card> -->
                             <user-card :user-prop="user">
                                 <template #text>
                                     <q-avatar :size="$q.screen.lt.sm ? '2.8rem' : '3.5rem'" class="hover-darker relative pointer" @click.stop="$router.push({name: 'user-profile', params: { username: user.username }})">
@@ -414,23 +406,6 @@ export default defineComponent({
                     <zoomImg v-if="imgZoom" :img="spill.img_url" :open="imgZoom" @update:open="imgZoom = $event"/>
                     <Timeago class="text-base text-lighter" :date="spill.date_posted" date_type="absolute" html/>
                 </div>
-                <!-- <div class="q-pa-md q-gutter-sm relative" style="height: 80px">
-                    <q-avatar
-                        v-for="(user, index) in spill.all_liked_users"
-                        :key="user.id"
-                        size="40px"
-                        class="absolute"
-                        :style="`left: ${Number(index) * 25}px`"
-                        >
-                        <img :src="user.avatar">
-                    </q-avatar>
-                    <div v-for="user in spill.all_liked_users">
-                        {{ user.avatar }}
-                        <q-tooltip :offset="[0,0]">
-                            <span class="text-sm">{{ user.first_name }} {{ user.last_name }}</span>
-                        </q-tooltip>
-                    </div>
-                </div> -->
                 <hr class="m-2"/>
                 <div class="flex flex-row p-3 gap-5 text-base">
                     <div>
@@ -481,7 +456,7 @@ export default defineComponent({
                 <div class="px-2 border-b" v-if="$store.state.authenticated">
                     <Spills placeholder="Reply to the spill" btnString="Reply" isComment :spillId="spill.id"/>
                 </div>
-                <div class="grid overflow-hidden w-100 p-2">
+                <div class="grid overflow-hidden w-100">
                     <TransitionGroup name="slide" mode="out-in" tag="div">
                         <div v-if="comments" v-for="(comment, index) in comments" :key="comment.id">
                             <CommentMap :comment="comment" @deleted="deleteComment(index)"/>

@@ -62,7 +62,7 @@ export default defineComponent({
       },
       closeNav() {
         this.navSlideIn = false
-      }
+      },
   },
   created() {
       this.theme = this.cookies.get("theme") === "dark";
@@ -89,15 +89,18 @@ export default defineComponent({
       <div class="bg-theme-opacity bg-blur-1">
         <div ref="topNav" class="topNav bg-transparent p-2" v-if="$q.screen.lt.sm">
           <div class="dropdown-btn w-full">
-            <Item align-items="center" dense class="w-full bg-transparent">
+            <Item align-items="center" avatar-size="2.5rem" dense class="w-full bg-transparent">
               <template #avatar v-if="['settings'].includes(($route.matched[0].name)?.toString() || ' ') && $route.name?.toString() !== 'settings'">
                 <q-btn flat round color="red" icon="arrow_back " @click="$router.back"/>
               </template>
               <template #avatar v-else>
-                <div v-if="$store.state.authenticated" @click="openNav" class="pointer">
+                <q-avatar size="2.5rem" v-if="$store.state.authenticated" @click="openNav" class="pointer">
                   <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
                   <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
-                </div>
+                </q-avatar>
+                <!-- <div v-if="$store.state.authenticated" @click="openNav" class="pointer">
+                  
+                </div> -->
               </template>
               <template v-if="['explore', 'search'].includes(($route.name)?.toString() || ' ')" #title>
                 <Search dense/>
@@ -116,8 +119,13 @@ export default defineComponent({
               <template #icon v-if="['explore', 'search'].includes(($route.name)?.toString() || ' ')">
                 <q-btn flat round dense icon="settings" size="16px" class="border" @click.stop="" />
               </template>
-              <template #icon  v-else>
-                
+              <template #icon  v-if="['all-notif', 'mentions'].includes(($route.name)?.toString() || ' ')">
+                <RouterLink @click="closeNav" :to="{name: 'notification-settings'}" :exact="true" class="nav__link w-full rounded p-2" active-class="active" exact-active-class="exact-active">
+                  <q-icon size="1.6rem" name="settings" />
+                </RouterLink>
+              </template>
+              <template #icon v-else>
+
               </template>
 
             </Item>
@@ -202,7 +210,9 @@ export default defineComponent({
               
               <Item class="item">
                 <template #title>
-                  {{ $store.state.user.first_name + ' ' + $store.state.user.last_name }}
+                  <span class="weight-900"> 
+                    {{ $store.state.user.full_name }}
+                  </span>
                 </template>
                 <template #caption>
                   @{{ $store.state.user.username }}
@@ -258,11 +268,15 @@ export default defineComponent({
 </template>
 
 
-<style scoped>
-/* .nav {
-  transition-delay: .25s;
-  transition: backdrop-filter .25s linear;
-} */
+<style scoped lang='scss'>
+
+.active {
+
+  span {
+    color: var(--color-heading);
+    font-weight: 900;
+  }
+}
 
 
 .topNav .dropdown-btn img {

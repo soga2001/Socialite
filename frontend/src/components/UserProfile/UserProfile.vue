@@ -96,7 +96,7 @@ export default defineComponent({
                 }
                 this.followed = !this.followed;
                 
-                if (!this.followed && this.following != 0) {
+                if (!this.followed && this.following !== 0) {
                     this.followers -= 1;
                 }
                 else {
@@ -148,11 +148,6 @@ export default defineComponent({
                 if(res.data.error) {
                     return
                 }
-                // this.loading_follow = false
-                // setTimeout(() => {
-                //     this.loading_follow = false
-                // }, 3000)
-                console.log(res.data.users)
                 this.user_following = res.data.users
             }).catch((err) => {
                 console.log(err)
@@ -183,22 +178,22 @@ export default defineComponent({
             if (this.bannerFile) {
                 formData.append('banner', this.bannerFile)
             }
-            if (this.new_FN && this.full_name != this.new_FN) {
+            if (this.new_FN && this.full_name !== this.new_FN) {
                 formData.append('full_name', this.new_FN)
             }
-            if (this.bio != this.newBio) {
+            if (this.bio !== this.newBio) {
                 formData.append('bio', this.newBio)
             }
-            if (this.phone != this.newPhone) {
+            if (this.phone !== this.newPhone) {
                 formData.append('phone', this.newPhone)
             }
-            if (this.link != this.newLink) {
+            if (this.link !== this.newLink) {
                 formData.append('link', this.newLink)
             }
-            if (this.dob != this.newDob) {
+            if (new Date(this.newDob).toUTCString() !== new Date(this.dob).toUTCString()) {
                 formData.append('dob', this.newDob)
             }
-            if (this.location != this.newLocation) {
+            if (this.location !== this.newLocation) {
                 formData.append('location', this.newLocation)
             }
             
@@ -246,6 +241,7 @@ export default defineComponent({
                 const bannerDialogRef = this.$refs.bannerDialog as {
                     initCropper: (type: string | undefined, name: string | undefined) => void;
                 };
+                
                 // this.newBanner = await this.toBase64(file);
                 bannerDialogRef.initCropper(file?.type, file?.name);
 
@@ -329,7 +325,6 @@ export default defineComponent({
         },
     },
     created() {
-        console.log(new Date(this.dob))
     },
     async mounted() {
         await this.$nextTick()
@@ -341,9 +336,6 @@ export default defineComponent({
         },
     },
     watch: {
-        newDob(newDob) {
-            console.log(newDob)
-        }
     },
     components: { Timeago }
 })

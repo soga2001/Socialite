@@ -43,19 +43,15 @@ export default defineComponent({
         notification: {} as Notifications,
         settingsPage: false,
         arr: ['settings'],
-        settingsNested: ['account']
+        settingsNested: ['account'],
+        settingLink: '',
         
 
 
 
       };
   },
-  name: 'Main',
-  setup() {
-    const toast = useToast()
-    return { toast}
-  },
-  created() {
+  name: 'Main',ted() {
     if(this.arr.includes((this.$route.name ?? '') as string) || this.arr.includes((this.$route.matched[0]?.name ?? '') as string)) {
       this.settingsPage = true
     }
@@ -245,7 +241,7 @@ export default defineComponent({
     <div id="main-div" class="w-full min-h-viewport h-full">
       <div>
         <div ref="topNav" v-if="!hideNavBar" id="top-nav" :class="{'border-b': ($route.matched[0]?.name as string || '') != 'notification'}" class="sticky top-0 w-full h-fit bg-transparent bg-blur-1 z-20">
-          <TopNav @update:navHeight="topNavHeight = $event"/>
+          <TopNav  @update:navHeight="topNavHeight = $event"/>
         </div>
         <div :style="{paddingBottom: `${bottomNavHeight - 10}px`, minHeight: `calc(100vh - ${(($refs.topNav as HTMLElement)?.offsetHeight) ?? 0}px)`}"  class="w-full h-full border-l border-r">
           <RouterView v-slot="{Component}" >

@@ -134,11 +134,11 @@ def post_by_followed_users(request, timestamp, page):
         posts = Post.objects.filter(user__in=followed_list).filter(date_posted__lt=timestamp)[offset:offset+10]
         if posts:
             posts = PostSerializer(posts, context={'request': request}, many=True)
-            return JsonResponse({"posts": posts.data}, safe=False)
+            return JsonResponse({"success": True,"posts": posts.data}, safe=False)
         else:
             if offset == 0:
-                return JsonResponse({"message": "You are not following anyone"})
-            return JsonResponse({"message": "You have reached the end."})
+                return JsonResponse({"error": True, "message": "You are not following anyone"})
+            return JsonResponse({"error": True,"message": "You have reached the end."})
     except Exception as e:
         return JsonResponse({"error": True, "message": str(e)})
 

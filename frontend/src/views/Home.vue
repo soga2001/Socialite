@@ -43,13 +43,13 @@ export default defineComponent({
     async getData() {
       this.loading = true
       await http.get(`posts/posts_by_followed_users/${this.user_timestap}/${this.page}/`).then((res) => {
-        if(res.data.posts.length === 10) {
-          this.hasMore = true
-        }
-        else {
-          this.hasMore = false
-        }
-        if((res.data.posts).length > 0){
+        if(res.data.posts){
+          if(res.data.posts.length === 10) {
+            this.hasMore = true
+          }
+          else {
+            this.hasMore = false
+          }
           this.posts = [...this.posts, ...res.data.posts]
         }
       }).catch((err) => {

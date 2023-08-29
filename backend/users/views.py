@@ -291,7 +291,9 @@ class UpdateProfile(APIView):
                 try:
                     check_image = Image.open(avatar)
                     check_image.verify()
+                    user.avatar = avatar
                 except Exception as e:
+                    print(e)
                     return JsonResponse({"error": True, "message": "Invalid image file."})
 
             if 'banner' in request.FILES:
@@ -299,8 +301,9 @@ class UpdateProfile(APIView):
                 try:
                     check_image = Image.open(banner)
                     check_image.verify()
-
+                    user.banner = banner
                 except Exception as e:
+                    print(e)
                     return JsonResponse({"error": True, "message": "Invalid image file."})
                 
             
@@ -320,7 +323,6 @@ class UpdateProfile(APIView):
                 dob = request.POST['dob']
                 user.dob = str(dob)
             user.save()
-            print(user.dob)
             updatedUser = UserSerializer(user).data
             return JsonResponse({"success": True, "user": updatedUser,  "message": "Profile Updated."})
         except ValidationError as e:

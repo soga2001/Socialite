@@ -7,35 +7,69 @@ import type {Notifications} from '@/assets/interfaces'
 import Map from './map.vue'
 
 export default defineComponent({
-    data() {
-        return {
-            notification: new Array<Notifications>(),
-            loading: true,
-        };
+  props: {
+    scrollPosition: {
+      type: Number,
+      default: 0,
     },
-    props: {},
-    name: "all-notif",
-    created() {
-        this.getNotification();
-    },
-    activated() {
-      if(this.$store.state.allNotifications.length !== 0) {
-        this.notification = [...this.$store.state.allNotifications, ...this.notification]
-        this.$store.commit('resetNotifications')
-      }
-    },
-    methods: {
-        async getNotification() {
-            this.loading = true;
-            await http.get(`notifications/all/`).then((res) => {
+    height: {
+      type: Number,
+      default: 0,
+    }
+  },
+  data() {
+      return {
+          notification: new Array<Notifications>(),
+          loading: true,
+          hasMore: true,
+
+          page: 0,
+          userTimeStamp: new Date().toUTCString()
+      };
+  },
+  name: "all-notif",
+  created() {
+      this.getNotification();
+  },
+  activated() {
+    if(this.$store.state.allNotifications.length !== 0) {
+      this.notification = [...this.$store.state.allNotifications, ...this.notification]
+      this.$store.commit('resetNotifications')
+    }
+  },
+  methods: {
+      async getNotification() {
+          this.loading = true;
+          await http.get(`notifications/all/`, {
+            params: {
+              page: this.page,
+              userTimeStamp: this.userTimeStamp
+            }
+          }).then((res) => {
+            if(res.data.notifications) {
+              if((res.data.notifications).length < 20) {
+                this.hasMore = false
+              }
               this.notification = [...this.notification, ...res.data.notifications];
-            }).catch((err) => {
-                console.log(err);
-            });
-            this.loading = false;
-        }
-    },
-    components: {Map},
+            }
+            else {
+              this.hasMore = false
+            }
+          }).catch((err) => {
+            this.hasMore = false
+          });
+          this.loading = false;
+      }
+  },
+  watch: {
+    scrollPosition: function(val) {
+      if((val > this.height - 500) && this.hasMore) {
+        this.page += 1;
+        this.getNotification();
+      }
+    }
+  },
+  components: {Map},
 });
 </script>
 

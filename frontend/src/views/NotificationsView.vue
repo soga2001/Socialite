@@ -8,8 +8,6 @@ export default defineComponent({
   name: 'notifications',
   data() {
     return {
-      scrollPos: this.scrollPosition || 0,
-      scrollHeight: this.scrollHeight || 0,
     };
   },
   props: {
@@ -44,7 +42,7 @@ export default defineComponent({
       <div ref="router" :class="{'min-h-viewport': !$q.screen.lt.sm}" class="w-full overflow-hidden ">
         <RouterView v-slot="{ Component }">
             <KeepAlive :include="['all-notif', 'mentions']">
-                <component :is="Component"/>
+                <component :is="Component" :scrollPosition="scrollPosition" :height="height"/>
             </KeepAlive>
         </RouterView>
       </div> 

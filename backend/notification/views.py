@@ -16,8 +16,10 @@ class NotificationView(APIView):
     def get(self, request):
         try:
             user = User.objects.get(pk=request.user.id)
-            print('there')
-            notif = user.notifications.all()[:20]
+            page = request.query_params['page']
+            timestamp = request.query_params['time_stamp']
+            offset = int(page) * 20
+            notif = user.notifications.filter(timestamp_gt=timestamp)[offset:offset+20]
             notifications = NotificationSerializer(notif, context={'request': request}, many=True).data
             if(notifications):
                 return JsonResponse({"success": True, "message": "Notifications retrieved", "notifications": notifications})
@@ -39,7 +41,10 @@ class Mentions(APIView):
     def get(self, request):
         try:
             user = User.objects.get(pk=request.user.id)
-            notifications = NotificationSerializer(user.notifications.filter(verb="mention"), many=True)
+            page = request.query_params['page']
+            timestamp = request.query_params['time_stamp']
+            offset = int(page) * 20
+            notifications = NotificationSerializer(user.notifications.filter(verb="mention", timestamp_gt=timestamp)[offset:offset+20], many=True)
             if(notifications):
                 return JsonResponse({"success": True, "message": "Mentioned notifications retrieved", "notifications": notifications.data})
             return JsonResponse({"success": True, "message":"You have not been mentioned by any users"})
@@ -48,7 +53,7 @@ class Mentions(APIView):
         
 
 
-class DisableNotificationsFromFollowedUser(APIView):
+class NotificationsFromFollowedUser(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = (CustomAuthentication,)
 
@@ -69,23 +74,22 @@ class DisableNotificationsFromFollowedUser(APIView):
             return JsonResponse({"error": True, "message": "An error occured while trying to enable notifications for this user. Please try again later."}, safe=False)
         
     
-class FromUnverifiedUsers(APIView):
+class NotificationsFromUnverifiedUsers(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = (CustomAuthentication,)
 
-
+    # enable
     def post(self, request):
         try:
-            # user = User.objects.get(pk=request.user.id)
             user = request.user
             user.following.filter(followed_user__verified=False, followed_user__notification=False).update(notification=True)
             return JsonResponse({"success": True, "message": "Notifications enabled for unverified users"})
         except Exception as e:
             return JsonResponse({"error": True, "message": "An error occured while trying to enabling notifications for unverified users. Please try again later."}, safe=False)
         
+    # disable
     def delete(self, request):
         try:
-            # user = User.objects.get(pk=request.user.id)
             user = request.user
             user.following.filter(followed_user__verified=False, followed_user__notification=True).update(notification=False)
             return JsonResponse({"success": True, "message": "Notifications enabled for this user"})

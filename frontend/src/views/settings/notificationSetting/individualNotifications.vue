@@ -66,7 +66,7 @@ export default defineComponent({
             </div>
             <div v-else-if="!loading && followed_users.length == 0" class="mt-5">
                 <div class="text-center">
-                    <span class="text-2xl weight-900 text-heading">You don't follow any users</span>
+                    <span class="text-xl weight-900 text-body">You don't follow any users</span>
                 </div>
             </div>
             <div class="p-3" v-if="loading">

@@ -15,7 +15,6 @@ export default defineComponent({
         page: ref(0),
         hasMore: false,
         message: '',
-        offset: 0,
         searchModal: false,
         loading: true,
       };
@@ -40,7 +39,6 @@ export default defineComponent({
       await http.get(`posts/explore/${this.user_timestap}/${this.page}/`).then((res) => {
         if(res.data.posts) {
             this.posts = [...this.posts, ...res.data.posts]
-            this.offset = (this.posts).length
 
             if(res.data.posts.length === 10) {
               this.hasMore = true

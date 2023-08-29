@@ -4,6 +4,7 @@ import { http } from '@/assets/http';
 import type { Sessions } from '@/assets/interfaces';
 
 export default defineComponent({
+    name: 'sessions',
     data() {
         return {
             loading: true,
@@ -84,7 +85,7 @@ export default defineComponent({
                                     <template #title>
                                         <span class="text-heading text-lg weight-900 flex flex-row gap-3 items-center">
                                             {{ session.device }}
-                                            <span class="text-xs text-black bg-web-theme px-3 py-1 rounded">Active Now</span>
+                                            <span class="text-xs text-heading bg-web-theme px-3 py-1 rounded">Active Now</span>
                                         </span>
                                     </template>
                                     <template #caption>

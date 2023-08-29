@@ -38,14 +38,14 @@ def rename_banner(instance, filename):
     format = str(instance.id) + '-' + str(uuid.uuid4()) + str(file_extension)
     return os.path.join(path, format)
 
-def compress(image, height, width):
-    im = Image.open(image)
-    im_io = BytesIO()
-    im.resize((width, height))
-    im.save(im_io, 'JPEG', quality=60) 
+# def compress(image, height, width):
+#     im = Image.open(image)
+#     im_io = BytesIO()
+#     im.resize((width, height))
+#     im.save(im_io, 'JPEG', quality=60) 
 
-    new_image = File(im_io, name=image.name)
-    return new_image
+#     new_image = File(im_io, name=image.name)
+#     return new_image
 
 # Create your models here.
 class User(AbstractUser):
@@ -65,13 +65,6 @@ class User(AbstractUser):
 
 
     def save(self, *args, **kwargs):
-        # if self.dob and self.dob > datetime.datetime.now():
-        #     raise ValidationError("The date cannot be in the future!")
-        # # date cannot be passed 100 years ago
-        # if self.dob and self.dob < datetime.datetime.now() - datetime.timedelta(days=365*120):
-        #     raise ValidationError("The date cannot be more than 100 years ago!")
-        # if self.dob and self.dob > datetime.datetime.now() - datetime.timedelta(days=365*13):
-        #     raise ValidationError("The date cannot be less than 13 years ago!")
         if(len(self.full_name) == 0):
             raise ValidationError("You cannot leave the name field empty")
         
@@ -130,8 +123,8 @@ def auto_delete_files_on_change(sender, instance, **kwargs):
 # # make sure first_name and last_name aren't empty 
 # @receiver(pre_save, sender=User)
 # def check_name(sender, instance, **kwargs):
-#     if instance.first_name == '' or instance.last_name == '':
-#         raise ValueError('Please enter your name')
+#     if instance.full_name:
+#         raise ValidationError('Please enter your name')
     
 
 

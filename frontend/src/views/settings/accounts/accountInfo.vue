@@ -58,7 +58,7 @@ export default defineComponent({
 <template>
     <div>
         <div>
-            <header class="pb-2">
+            <header class="">
                 <Item v-if="!$q.screen.lt.sm">
                     <template #avatar>
                         <q-btn flat icon="arrow_back" @click="$router.back"/>
@@ -71,12 +71,12 @@ export default defineComponent({
                     <div class="text-xl text-heading weight-900">
                         Confirm your password
                     </div>
-                    <div class="text-sm text-body weight-700 text-nodecor">
+                    <div class="text-sm text-body weight-500 text-nodecor">
                         Please enter your password to continue
                     </div>
                 </div>
             </header>
-            <div class="w-full flex flex-row justify-center px-2 py-2" v-if="!verified">
+            <div class="w-full flex flex-row justify-center px-2" v-if="!verified">
                 <form class="w-full flex flex-col gap-1" @submit.prevent="submit">
                     <Input @update:val="password = $event" input_type="password" input_label="Password" id="1" />
                     <span @click="forgotPass = true" class=" w-fit pointer hover-underline no-decor weight-800 text-theme text-base">
@@ -101,7 +101,7 @@ export default defineComponent({
                         </q-avatar>
                     </template>
                     <template #title>
-                        <span v-if="!editName" class="text-left text-xl text-heading weight-700">{{ user.full_name }}</span>
+                        <span v-if="!editName" class="text-left text-xl text-heading weight-500">{{ user.full_name }}</span>
                     </template>
                     <template #icon>
                         <q-btn flat round name="edit">
@@ -116,7 +116,7 @@ export default defineComponent({
                         </q-avatar>
                     </template>
                     <template #title>
-                        <span class="text-left text-xl text-heading weight-700">{{ user.email }}</span>
+                        <span class="text-left text-xl text-heading weight-500">{{ user.email }}</span>
                     </template>
                     <template #icon>
                         <q-btn flat round name="edit">
@@ -131,7 +131,7 @@ export default defineComponent({
                         </q-avatar>
                     </template>
                     <template #title>
-                        <span class="text-left text-xl text-heading weight-700">{{ user.username }}</span>
+                        <span class="text-left text-xl text-heading weight-500">{{ user.username }}</span>
                     </template>
                     <template #icon>
                         <q-btn flat round name="edit">
@@ -142,12 +142,12 @@ export default defineComponent({
                 <Item>
                     <template #avatar>
                         <q-avatar>
-                            <q-icon name="phone" :color="$store.state.dark ? 'white' : 'black'"/>
+                            <q-icon name="smartphone" :color="$store.state.dark ? 'white' : 'black'"/>
                         </q-avatar>
                     </template>
                     <template #title>
-                        <span v-if="user.phone" class="text-left text-xl text-heading weight-700">{{ user.phone}}</span>
-                        <span v-else class="text-left text-xl text-heading weight-700">No Phone Number</span>
+                        <span v-if="user.phone" class="text-left text-xl text-heading weight-500">{{ user.phone}}</span>
+                        <span v-else class="text-left text-xl text-heading weight-500">No Phone Number</span>
                     </template>
                     <template #icon>
                         <q-btn flat round name="edit">
@@ -162,7 +162,10 @@ export default defineComponent({
                         </q-avatar>
                     </template>
                     <template #title>
-                        <span class="text-left text-xl text-heading weight-700">{{ user.dob ?? 'N/A' }}</span>
+                        <span v-if="user.dob" class="text-left text-xl text-heading weight-500">
+                            {{ `${monthNames[new Date(user.dob).getMonth()]} ${new Date(user.dob).getUTCDate()}, ${new Date(user.dob).getFullYear()}` }}
+                        </span>
+                        <span v-else class="text-left text-xl text-heading weight-500">Date of Birth not set</span>
                     </template>
                     <template #icon>
                         <q-btn flat round name="edit">
@@ -177,8 +180,8 @@ export default defineComponent({
                         </q-avatar>
                     </template>
                     <template #title>
-                        <span v-if="user.bio" class="text-left text-xl text-heading weight-700">{{ user.bio}}</span>
-                        <span v-else class="text-left text-xl text-heading weight-700">No Bio</span>
+                        <span v-if="user.bio" class="text-left text-xl text-heading weight-500">{{ user.bio}}</span>
+                        <span v-else class="text-left text-xl text-heading weight-500">No Bio</span>
                     </template>
                     <template #icon>
                         <q-btn flat round name="edit">
@@ -194,9 +197,9 @@ export default defineComponent({
                         </q-avatar>
                     </template>
                     <template #title>
-                        <!-- <span class="text-left text-xl text-heading weight-700">{{ user.bio ?? 'N/A' }}</span> -->
+                        <!-- <span class="text-left text-xl text-heading weight-500">{{ user.bio ?? 'N/A' }}</span> -->
                         <q-img class="w-full" v-if="user.banner" :src="user.banner" />
-                        <div class="text-left text-xl text-heading weight-700" v-else>No banner</div>
+                        <div class="text-left text-xl text-heading weight-500" v-else>No banner</div>
                     </template>
                     <template #icon>
                         <q-btn flat round name="edit">
@@ -212,7 +215,7 @@ export default defineComponent({
                     </template>
                     <template #title>
                         <q-img class="aspect-ratio-1-1" v-if="user.avatar" :src="user.avatar" />
-                        <div class="text-left text-xl text-heading weight-700" v-else>No avatar</div>
+                        <div class="text-left text-xl text-heading weight-500" v-else>No avatar</div>
                     </template>
                     <template #icon>
                         <q-btn flat round name="edit">
@@ -220,7 +223,22 @@ export default defineComponent({
                         </q-btn>
                     </template>
                 </Item>
-                
+                <Item>
+                    <template #avatar>
+                        <q-avatar>
+                            <q-icon size="2rem" name="lock" :color="$store.state.dark ? 'white' : 'black'"/>
+                        </q-avatar>
+                    </template>
+                    <template #title>
+                        <div v-if="user.private" class="text-left text-xl text-heading weight-500">Private</div>
+                        <div v-else class="text-left text-xl text-heading weight-500">Public</div>
+                    </template>
+                    <template #icon>
+                        <q-btn flat round name="edit">
+                            <q-icon name="edit" :color="$store.state.dark ? 'white' : 'black'"/>
+                        </q-btn>
+                    </template>
+                </Item>
             </div>
         </div>
     </div>

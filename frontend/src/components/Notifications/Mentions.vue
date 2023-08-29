@@ -12,6 +12,10 @@ export default defineComponent({
         return {
             notification: new Array<Notifications>(),
             loading: true,
+
+            hasMore: true,
+            page: 0,
+            userTimeStamp: new Date()
         };
     },
     props: {},
@@ -21,16 +25,26 @@ export default defineComponent({
     },
     methods: {
         async getNotification() {
-            this.loading = true;
-            http.get(`notifications/mentions/`).then((res) => {
-                this.notification = [...this.notification, ...res.data.notifications];
-            }).catch((err) => {
-                console.log(err);
-            });
-            setTimeout(() => {
-                this.loading = false;
-            }, 3000);
-            // this.loading = false;
+          this.loading = true;
+          await http.get(`notifications/mentions/`, {
+            params: {
+              page: this.page,
+              userTimeStamp: this.userTimeStamp
+            }
+          }).then((res) => {
+            if(res.data.notifications) {
+              if((res.data.notifications).length < 20) {
+                this.hasMore = false
+              }
+              this.notification = [...this.notification, ...res.data.notifications];
+            }
+            else {
+              this.hasMore = false
+            }
+          }).catch((err) => {
+            this.hasMore = false
+          });
+          this.loading = false;
         }
     },
     components: {Map},
