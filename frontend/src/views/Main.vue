@@ -1,16 +1,11 @@
 <script lang="ts">
-import {defineComponent, ref, type CSSProperties} from 'vue';
+import {defineComponent} from 'vue';
 import { useQuasar } from 'quasar';
 import Sidebar from '@/components/Navbars/sidebar.vue';
 import TopNav from '@/components/Navbars/topnav.vue';
 import BottomNav from '@/components/Navbars/bottomnav.vue';
 import Unauthenticated from '@/components/unauthenticated.vue';
-import { useRoute, useRouter } from 'vue-router';
-import convertTime from '@/assets/convertTime'
 
-
-import { useToast } from "vue-toastification";
-import type { POSITION } from 'vue-toastification/src/ts/constants'
 
 import type { Notifications } from '@/assets/interfaces';
 import notification from '@/components/Cards/notification.vue';
@@ -123,9 +118,7 @@ export default defineComponent({
         if(data.type === 'posted') {
           const message = JSON.parse(data.message) as Notifications
 
-          console.log(message)
-
-          this.$store.commit('setAllNotifications', message)
+          this.$store.commit('setNotifications', message)
 
           this.$notify({
             group: 'notify',

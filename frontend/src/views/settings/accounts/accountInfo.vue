@@ -67,7 +67,7 @@ export default defineComponent({
                         <span class="text-left text-2xl text-heading weight-900">Account Information</span>
                     </template>
                 </Item>
-                <div class="ml-2" v-if="!verified">
+                <div :class="{'mt-3': $q.screen.lt.sm}" class="ml-2" v-if="!verified">
                     <div class="text-xl text-heading weight-900">
                         Confirm your password
                     </div>
@@ -76,7 +76,7 @@ export default defineComponent({
                     </div>
                 </div>
             </header>
-            <div class="w-full flex flex-row justify-center px-2" v-if="!verified">
+            <div :class="{'mt-3': $q.screen.lt.sm}" class="w-full flex flex-row justify-center px-2" v-if="!verified">
                 <form class="w-full flex flex-col gap-1" @submit.prevent="submit">
                     <Input @update:val="password = $event" input_type="password" input_label="Password" id="1" />
                     <span @click="forgotPass = true" class=" w-fit pointer hover-underline no-decor weight-800 text-theme text-base">

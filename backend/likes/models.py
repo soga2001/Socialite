@@ -29,7 +29,7 @@ class PostLikes(models.Model):
 def create_notification(sender, instance, created, **kwargs):
     if created and instance.post.user != instance.user:
         link = '{}/spill/{}'.format(instance.post.user.username, instance.post.id)
-        notify.send(instance.user, recipient=instance.post.user, verb='liked', action_object=instance, description=f'{instance.user.username} liked your post', target=instance.post, url=link, text=instance.post.caption)
+        notify.send(instance.user, recipient=instance.post.user, verb='liked', action_object=instance, description='liked your post', target=instance.post, url=link, text=instance.post.caption)
 
 
 

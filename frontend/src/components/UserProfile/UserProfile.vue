@@ -53,9 +53,10 @@ export default defineComponent({
             newLink: '',
             newDob: '',
             newLocation: '',
-            newYear: '',
-            newDay: '',
-            newMonth: '',
+
+            newYear: 0,
+            newDay: 0,
+            newMonth: 0,
             
             
             avatarFile: null,
@@ -498,17 +499,11 @@ export default defineComponent({
                                 <Input showCharCounts :charLimit="30" :defaultVal="location" @update:val="newLocation = $event" input_type="text" input_label="Location" id="location" class="w-full my-2" />
                                 <!-- <Input :defaultVal="dob" @update:val="newDob = $event" input_type="date" input_label="Date of Birth" id="dob" class="w-full my-2" /> -->
 
-                                <!-- <div class="grid"> -->
-                                    <!-- <Input :defaultVal="'June'" input_type="select" @update:val="newLocation = $event" input_label="Month" id="month" class="my-2"/>
-                                    <Input :defaultVal="'June'" input_type="select" numberType="day" @update:val="newLocation = $event" input_label="Day" id="dat" class="my-2"/>
-                                    <Input :defaultVal="'June'" input_type="select" numberType="year" @update:val="newLocation = $event" input_label="Day" id="dat" class="my-2"/> -->
-                                <!-- </div> -->
 
                                 <div class="grid">
-                                    <Select input_type="month" input_label="Month" id="month" />
-                                    <Select input_type="day" input_label="Day" id="day" />
-                                    <Select input_type="year" input_label="Year" id="year" />
-
+                                    <Select @update:val="newMonth = $event" :defaultVal="newMonth" :pickedYear="newYear" input_type="month" input_label="Month" id="month" />
+                                    <Select @update:val="newDay = $event"  :defaultVal="newDay" :pickedMonth="newMonth" :pickedYear="newYear" input_type="day" input_label="Day" id="day" />
+                                    <Select @update:val="newYear = $event" :defaultVal="newYear" input_type="year" input_label="Year" id="year" />
                                 </div>
                                 
 

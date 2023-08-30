@@ -60,9 +60,9 @@ export default defineComponent({
     <div>
         <div>
             <header class="sticky top-0 border-b" v-if="!$q.screen.lt.sm">
-                <Item>
+                <Item dense class="p-1">
                     <template #avatar>
-                        <q-btn flat round @click="$router.back">
+                        <q-btn dense flat round @click="$router.back">
                             <q-icon name="arrow_back" />
                         </q-btn>
                     </template>

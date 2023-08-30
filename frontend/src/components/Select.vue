@@ -4,12 +4,14 @@ import { http } from '@/assets/http';
 import type { User } from '@/assets/interfaces';
 import { format, sub } from 'date-fns';
 
+interface Years {
+    year: number
+}
+
 
 export default defineComponent({
     data() {
         return {
-            type: this.input_type,
-            label: this.input_label,
             val: ref<number | string | Date>(this.defaultVal),
 
             min: this.minVal ?? '',
@@ -20,8 +22,8 @@ export default defineComponent({
               'November', 'December'
             ],
 
-            years: [],
-            day: '',
+            years: ref<number[]>(),
+            totalDays: ref<number>(0),
 
         }
     },
@@ -58,22 +60,35 @@ export default defineComponent({
             type: Number,
             default: 0,
         },
+        pickedMonth: {
+            type: [String, Number],
+            default: '',
+        },
+        pickedYear: {
+            type: [String, Number],
+            default: '',
+        },
     },
     created() {
-    //   if(this.input_type === 'year') {
-    //     this.min = sub(new Date(), {years: 120}).getFullYear()
-    //     this.max = new Date().getFullYear()
-    //   }
-    //   if(this.input_type === 'day') {
-    //     this.min = 1
-    //     this.max = new Date().getDate();
-    //   }
 
         if(this.input_type === 'year'){
-            console.log('here')
-            this.range(new Date().getFullYear(), sub(new Date(), {years: 120}).getFullYear()) 
+            const endYear = new Date()
+            const startYear = sub(endYear, {years: 120}).getFullYear()
+
+            this.years = this.range(startYear, endYear.getFullYear())
         }
-      
+
+        if(this.input_type === 'day' && !this.pickedYear && this.pickedMonth) {
+            this.totalDays = new Date(new Date().getFullYear() as number, this.pickedMonth as number, 0).getDate() || 31
+        }
+
+        else if(this.input_type === 'day' && this.pickedYear && !this.pickedMonth) {
+            this.totalDays = 31
+        }
+
+        else if(this.input_type === 'day' && !this.pickedYear && !this.pickedMonth) {
+            this.totalDays = 31
+        }
     },
     mounted() {
     },
@@ -83,25 +98,38 @@ export default defineComponent({
       }
     },
     methods: {
-      unfocus() {
-        this.focused = false
-      },
-      inputClicked() {
-        (this.$refs.input as HTMLInputElement).focus();
-        (this.$refs.input as HTMLInputElement).click();
-      },
-      range: (start: number, end: number) =>{ 
-        const result = [];
-        for (let i = start; i <= end; i++) {
-            result.push(i);
-        }
-        return result;
-    },
+        unfocus() {
+            this.focused = false
+        },
+        inputClicked() {
+            (this.$refs.input as HTMLInputElement).focus();
+            (this.$refs.input as HTMLInputElement).click();
+        },
+        range: (start: number, end: number) => { 
+            return Array(end - start + 1).fill(0).map((_, idx) => end - idx)
+        },
+
     },
     watch: {
-      val: function(val: string) {
-        this.$emit('update:val', val)
-      },
+        val: function(val: string) {
+            this.$emit('update:val', val)
+        },
+        pickedMonth: function(val: any) {
+            console.log(this.pickedYear)
+            const year = (this.pickedYear as number ) || new Date().getFullYear() as number
+            console.log(year)
+            this.totalDays = new Date(year, (this.monthNames.indexOf(val) + 1), 0).getDate() || 31
+            if(this.input_type === 'day' && this.totalDays < (this.defaultVal as number)) {
+                this.val = ''
+            }
+        },
+        pickedYear: function(val: any) {
+            
+            this.totalDays = new Date(val as number, ((this.monthNames.indexOf(this.pickedMonth as string) + 1) as number) || (new Date().getMonth() + 1), 0).getDate() || 31
+            if(this.input_type === 'day' && this.totalDays < (this.defaultVal as number)) {
+                this.val = ''
+            }
+        },
     }
 })
 
@@ -110,23 +138,23 @@ export default defineComponent({
 <template>
   <div class="input-box" :class="{focused: isFocused}" @click="inputClicked">
     <select ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" v-if="input_type==='month'" v-model="val" class="input text-heading ">
-        <option disabled value=""></option>
+        <option value=""></option>
         <option class="text-sm" v-for="month in monthNames">{{ month }}</option>
     </select>
 
-    <select ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" v-if="input_type==='year'" v-model="val" class="input text-heading ">
-        <option disabled value=""></option>
-        <option class="text-sm" v-for="year in years">{{ years }}</option>
+    <select ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" v-if="input_type==='year' && years && years.length > 0" v-model.number="val" class="input text-heading ">
+        <option value=""></option>
+        <option class="text-sm" v-for="year in years">{{ year }}</option>
     </select>
 
-    <select ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" v-if="input_type==='day'" v-model="val" class="input text-heading ">
-        <option disabled value=""></option>
-        <option class="text-sm" v-for="month in monthNames">{{ month }}</option>
+    <select ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" v-if="input_type==='day'" v-model.number="val" class="input text-heading ">
+        <option value=""></option>
+        <option class="text-sm" v-for="day in totalDays">{{ day }}</option>
     </select>
 
 
 
-    <label :class="{focused: isFocused,  hasInput: (val as string).length > 0 || type === 'date' || type === 'select' || type === 'number'}" class="label cursor-text">{{label}}</label>
+    <label :class="{focused: isFocused}" class="label cursor-text">{{input_label}}</label>
   </div>
 
 </template>
@@ -144,12 +172,12 @@ export default defineComponent({
   }
 
   .input {
-    width: 100%;
+    width: 95%;
     outline: none;
     border: none;
     background-color: transparent;
     margin-top: 25px;
-    padding: 0 10px;
+    padding-left: 5px;
     font-size: 20px;
     line-height: 1rem;
     
@@ -168,32 +196,27 @@ export default defineComponent({
 }
 
 .label {
-  position: absolute;
-  top: 50%;
-  left: 15px;
-  transform: translate(0, -50%);
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--color-body) !important;
+    position: absolute;
+    top: 2px;
+    left: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-body) !important;
 
   &.focused {
     color: var(--color-theme) !important;
-    top: 15px;
-    left: 10px;
-    font-size: .875rem;
-    font-weight: 700;
   }
 
-  &.hasInput {
-    top: 15px;
-    left: 10px;
-    font-size: .875rem;
-    font-weight: 700;
+//   &.hasInput {
+//     top: 15px;
+//     left: 10px;
+//     font-size: .875rem;
+//     font-weight: 700;
 
-    & ~ .input {
-      padding: 1.5rem 10x .5rem 10px !important;
-    }
-  }
+//     & ~ .input {
+//       padding: 1.5rem 10x .5rem 10px !important;
+//     }
+//   }
 
 }
 

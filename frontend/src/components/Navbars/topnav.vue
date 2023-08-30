@@ -85,7 +85,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <nav class="border-l border-r">
+    <nav class="">
       <div class="bg-theme-opacity bg-blur-1">
         <div ref="topNav" class="topNav bg-transparent p-2" v-if="$q.screen.lt.sm">
           <div class="dropdown-btn w-full">

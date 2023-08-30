@@ -26,7 +26,8 @@ class UserFollowing(models.Model):
 @receiver(post_save, sender=UserFollowing)
 def create_notification(sender, instance, created, **kwargs):
     if created:
-        notify.send(instance.following_user, recipient=instance.followed_user, verb='followed', action_object=instance, description=f'{instance.following_user.username} followed you', target=instance.followed_user)
+        link = f'{instance.following_user.username}'
+        notify.send(instance.following_user, recipient=instance.followed_user, verb='followed', action_object=instance, description='followed you', target=instance.followed_user, url=link)
 
 
 # post delete
@@ -35,6 +36,5 @@ def delete_notification(sender, instance, **kwargs):
     try:
         Notification.objects.filter(actor_object_id=instance.following_user.id, recipient=instance.followed_user, verb='followed').delete()
     except Exception as e:
-        print(e)
         pass
     # notify.send(instance.following_user, recipient=instance.followed_user, verb='unfollowed you', action_object=instance, description=f'{instance.following_user.username} unfollowed you', target=instance.followed_user)

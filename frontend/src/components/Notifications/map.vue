@@ -59,9 +59,9 @@ export default defineComponent({
                         <q-badge class="absolute bottom-0 right-0 bg-theme" style="border-radius: 50%; width: 25px; height: 25px">
                         <q-badge class="absolute-center bg-web-theme" style="border-radius: 50%; width: 20px; height: 20px">
                             <i-mention fill="white" :style="{transform: 'scale(1.7)'}" v-if="notification.verb == 'mention'"/>
-                            <i-profile stroke="none" fill="white" :style="{transform: 'scale(1.7)'}" v-else-if="notification.verb === 'follow'" />
-                            <i-comment fill="white" stroke="none" :style="{transform: 'scale(1.5)'}" v-else-if="notification.verb === 'commented'" />
-                            <i-heart  fill="white" stroke="none" :style="{transform: 'scale(1.5)'}" v-else-if="notification.verb === 'liked'"/>
+                            <i-profile stroke="none" fill="white" :style="{transform: 'scale(1.7)'}" v-else-if="notification.verb === 'followed'" />
+                            <i-comment fill="white" stroke="none" :style="{transform: 'scale(1.7)'}" v-else-if="notification.verb === 'commented'" />
+                            <i-heart  fill="white" stroke="none" :style="{transform: 'scale(1.7)'}" v-else-if="notification.verb === 'liked'"/>
                         </q-badge>
                         </q-badge>
                     </q-avatar>
