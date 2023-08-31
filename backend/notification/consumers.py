@@ -3,26 +3,27 @@ import json
 
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.user_id = self.scope['url_route'].get('kwargs', {}).get('user_id')
-        
-        if not self.user_id:
+        if(self.scope['user'].is_anonymous):
             await self.close()
-            return
+        else:
+            self.user_id = self.scope['user'].id
+            self.room_group_name = f'notification_room_{self.user_id}'
 
-        self.room_group_name = f'notification_room_{self.user_id}'
+            # group add
+            await self.channel_layer.group_add(
+                self.room_group_name,
+                self.channel_name
+            )
 
-        # group add
-        await self.channel_layer.group_add(
-            self.room_group_name,
-            self.channel_name
-        )
+            await self.accept()
 
-        await self.accept()
+       
     async def disconnect(self, code):
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
-        )
+        if hasattr(self, 'room_group_name'):
+            await self.channel_layer.group_discard(
+                self.room_group_name,
+                self.channel_name
+            )
 
     async def post_update(self, event):
         message = event.get('message')

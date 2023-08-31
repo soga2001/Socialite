@@ -32,7 +32,6 @@ export default defineComponent({
         hideTopNav: false,
 
         websocket: null as WebSocket | null,
-        // websocket: new WebSocket(`wss://localhost:8000/ws/user_notif/${this.$store.state.user.id}/`),
 
         newNotification: false,
         notification: {} as Notifications,
@@ -61,7 +60,8 @@ export default defineComponent({
       this.bottomNavHeight = ((this.$refs.bottomBar as HTMLDivElement)?.offsetHeight + 10) || 0
 
     }
-    if(this.$store.state.authenticated) this.websocketOpen()
+    // if(this.$store.state.authenticated) this.websocketOpen()
+    this.websocketOpen()
   },
   activated() {
   },
@@ -95,7 +95,7 @@ export default defineComponent({
       return this.$q.screen.lt.sm
     },
     async websocketOpen() {
-      this.websocket = new WebSocket(`wss://localhost:8000/ws/user_notif/${this.$store.state.user.id}/`)
+      this.websocket = new WebSocket(`wss://localhost:8000/ws/user_notif/`)
       this.websocket.onopen = () => {
         console.log('connected')
       }
