@@ -35,6 +35,9 @@ export default defineComponent({
             notification_on: this.user.notification_on,
             phone: this.user.phone ?? '',
             dob: this.user.dob ?? '',
+            dobYear: this.user.dob ? new Date(this.user.dob).getFullYear() : null,
+            dobMonth: '',
+            dobDay: this.user.dob ? new Date(this.user.dob).getUTCDate() : null,
             link: this.user.link ?? '',
             location: this.user.location ?? '',
 
@@ -54,9 +57,9 @@ export default defineComponent({
             newDob: '',
             newLocation: '',
 
-            newYear: 0,
-            newDay: 0,
-            newMonth: 0,
+            newYear: null,
+            newDay: null,
+            newMonth: '',
             
             
             avatarFile: null,
@@ -209,6 +212,16 @@ export default defineComponent({
             }
             if (this.bio !== this.newBio) {
                 formData.append('bio', this.newBio)
+            }
+            const year = this.newYear !== 0 ? this.newYear : this.dobYear
+            const month = this.newMonth ? (this.monthNames.indexOf(this.newMonth)) : this.monthNames.indexOf(this.dobMonth)
+            const day = this.newDay !== 0 ? this.newDay : this.dobDay
+            console.log(year || month || day)
+            if((year || month || year) !== -1) {
+                const newDate = format(new Date(year as number, month as number, day as number), 'yyyy-MM-dd')
+                if(this.dob !== newDate) {
+                    formData.append('dob', newDate)
+                }
             }
             if (this.phone !== this.newPhone) {
                 formData.append('phone', this.newPhone)
@@ -389,6 +402,7 @@ export default defineComponent({
         },
     },
     created() {
+        this.dobMonth = this.monthNames[new Date(this.dob).getMonth()] ?? ''
     },
     async mounted() {
         await this.$nextTick()
@@ -400,6 +414,13 @@ export default defineComponent({
         },
     },
     watch: {
+        dob: function(val) {
+            if(val) {
+                this.dobMonth = this.monthNames[new Date(val).getMonth()]
+                this.dobDay = new Date(val).getUTCDate()
+                this.dobYear = new Date(val).getFullYear()
+            }
+        }
     },
     components: { Timeago }
 })
@@ -445,7 +466,7 @@ export default defineComponent({
             </div>
 
             <div class="h-full">
-                <q-dialog class="h-full w-full p-0 m-0" v-model="editProfile" persistent :maximized="$q.screen.lt.sm ? true : false">
+                <q-dialog v-if="editProfile" class="h-full w-full p-0 m-0" v-model="editProfile" persistent :maximized="$q.screen.lt.sm ? true : false">
                     <div :class="{'max-h-md': !$q.screen.lt.sm, 'h-viewport': $q.screen.lt.sm}" class="bg-theme border fixed w-full">
                         <div class="sticky top-0 z-10 bg-theme-opacity bg-blur-half border-b">
                             <Item>
@@ -497,13 +518,14 @@ export default defineComponent({
                                 <Input showCharCounts :charLimit="30" :defaultVal="full_name" @update:val="new_FN = $event" input_type="text" input_label="First Name" id="first_name" class="w-full my-2" />
                                 <Textarea showCharCounts :charLimit="160" maxHeight="176" height="200px" :defaultVal="bio" @update:val="newBio = $event" input_type="text" input_label="Bio" id="username" class="w-full my-2" />
                                 <Input showCharCounts :charLimit="30" :defaultVal="location" @update:val="newLocation = $event" input_type="text" input_label="Location" id="location" class="w-full my-2" />
-                                <!-- <Input :defaultVal="dob" @update:val="newDob = $event" input_type="date" input_label="Date of Birth" id="dob" class="w-full my-2" /> -->
 
-
+                                <div class="px-2 text-xl weight-900 text-heading">
+                                    Date of Birth
+                                </div>
                                 <div class="grid">
-                                    <Select @update:val="newMonth = $event" :defaultVal="newMonth" :pickedYear="newYear" input_type="month" input_label="Month" id="month" />
-                                    <Select @update:val="newDay = $event"  :defaultVal="newDay" :pickedMonth="newMonth" :pickedYear="newYear" input_type="day" input_label="Day" id="day" />
-                                    <Select @update:val="newYear = $event" :defaultVal="newYear" input_type="year" input_label="Year" id="year" />
+                                    <Select @update:val="newMonth = $event" :defaultVal="dobMonth" :pickedYear="newYear" input_type="month" input_label="Month" id="month" />
+                                    <Select @update:val="newDay = $event"  :defaultVal="dobDay" :pickedMonth="newMonth" :pickedYear="newYear" input_type="day" input_label="Day" id="day" />
+                                    <Select @update:val="newYear = $event" :defaultVal="dobYear" input_type="year" input_label="Year" id="year" />
                                 </div>
                                 
 
@@ -584,7 +606,7 @@ export default defineComponent({
                                 </template>
                                 <template #title>
                                     <span class="text-lg text-body">
-                                        {{ `${monthNames[new Date(dob).getMonth()]} ${new Date(dob).getUTCDate()}, ${new Date(dob).getFullYear()}` }}
+                                        {{ `${dobMonth} ${dobDay}, ${dobYear}` }}
                                     </span>
                                 </template>
                             </Item>
@@ -1033,7 +1055,7 @@ export default defineComponent({
 
 .grid {
     display: grid;
-    grid-template-columns: 2fr repeat(2, 1fr);
+    grid-template-columns: 2fr .7fr 1fr;
     gap: 10px;
 }
 

@@ -53,11 +53,11 @@ export default defineComponent({
             <span class="text-heading text-lg weight-700">Onto planned features of Socialite</span>
             <ul class="text-heading">
                 <li>Real-time Trending Topics</li>
-                <li>Real-time update on <span class="text-heading weight-900">Home</span> and <span class="text-heading weight-900">Explore</span>page</li>
+                <li>Real-time update on <span class="text-heading weight-900">Home</span> and <span class="text-heading weight-900">Explore</span> page</li>
                 <li>Real-time update on <span class="text-heading weight-900">Profile</span> page</li>
                 <li>Move over to Server Side rendering using Nuxtjs or Nextjs</li>
                 <li>(Real-time) Chatting</li>
-                <li>Optiming backend calls</li>
+                <li>Optimizing backend calls</li>
                 <li>Caching queries for better optimization</li>
                 <li>Posting spills with <span class="text-heading weight-900">GIFS</span>, <span class="text-heading weight-900">Videos</span>, and <span class="text-heading weight-900">Polls</span></li>
                 <li>Posting spills with <span class="text-heading weight-900">Hastags</span> using <i class="text-heading weight-900">#hashtag</i></li>

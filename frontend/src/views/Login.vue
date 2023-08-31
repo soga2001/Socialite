@@ -33,7 +33,8 @@ export default defineComponent({
                 })
                 return;
             }
-            http.post("users/login/", {
+            this.loading = true
+            await http.post("users/login/", {
                 username: this.username,
                 password: this.password,
             }, {
@@ -70,9 +71,11 @@ export default defineComponent({
             }).catch((err) => {
                 console.log(err);
             });
+            this.loading = false
         },
-        updateDisableState(username: string, password:string) {
-            this.disable = !(username.length >= 1 && password.length >= 1);
+        async updateDisableState() {
+          let disableBtn = !(this.username.length >= 1 && this.password.length >= 1);
+          this.disable = disableBtn;
         },
         async sendEmail() {
           await http.post('users/send_reset_password_email/', {
@@ -97,10 +100,10 @@ export default defineComponent({
     components: { Input },
     watch: {
         username(username) {
-            this.updateDisableState(username, this.password);
+            this.updateDisableState();
         },
         password(password) {
-            this.updateDisableState(this.username, password);
+            this.updateDisableState();
         }
     },
     computed: {
@@ -120,7 +123,21 @@ export default defineComponent({
         <div class="forgot my-4">
             <span class="text-base weight-900 pointer no-decor hover-underline text-theme" @click="forgotPass = true">Forgot Password?</span>
         </div>
-		<button type="submit" :disabled="disable" class="w-full rounded text-xl py-2 bg-transparent border-brighter-2 bg-hover-soft pointer">Sign in</button>
+		    <q-btn
+          :loading="loading"
+          dark-percentage
+          unelevated
+          class="submit"
+          type="submit"
+          :disable="disable"
+        >
+          <div class="text-capitalize text-xl weight-900 text-heading">
+            Sign in
+          </div>
+          <template v-slot:loading>
+            <Loading size="2rem" />
+          </template>
+        </q-btn>
 	</form>
 
   <q-dialog v-model="forgotPass">
@@ -212,102 +229,17 @@ export default defineComponent({
   
   .signup {
     text-align: center;
-    font-size: 0.75rem;
     line-height: 1rem;
     color: rgba(156, 163, 175, 1);
   }
 }
 
-
-</style>
-
-<!-- <style scoped lang="scss">
-
-
-@import '@/assets/base.css';
-
-.login {
-  height: 100%;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  text-align: center;
-  
-  &__main {
-    min-width: fit-content;
-    border-radius: 10px;
-  }
-  
-  &__header {
-    font-size: 70px;
-    color: var(--color-heading);
-  }
-  
-  &__form {
-    display: grid;
-    gap: 10px;
-    grid-template-columns: repeat(8, 1fr);
-    width: 100%;
-    margin: auto;
-    padding: 10px;
-    
-    .username, .password {
-      grid-column: auto / span 8;
-    }
-  
-    .errMsg {
-      background-color: rgba(255, 0, 0, 0.566);
-      grid-column: auto / span 8;
-      padding: 10px;
-      border-radius: 10px;
-      color: var(--color-heading);
-    }
-  
-    .submit {
-      grid-column: 4 / span 2;
-    }
-  }
-  
-  &__links {
-    grid-column: 2 / span 6;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    
-    a {
-      text-decoration: none;
-      padding: 10px;
-      border: 1px solid var(--color-text);
-      color: var(--color-text);
-      
-      &:hover {
-        background-color: var(--color-text);
-        color: var(--color-background);
-      }
-    }
-  }
-}
-
-a {
-  padding: 10px;
-}
-
-/* input {
-  margin: 10px 20px;
-  font-size: 20px;
-  padding: 10px;
-  background-color: var(--color-background);
-  color: var(--color-text);
-  border: var(--color-border);
-  border-radius: 10px;
-} */
-
 button {
-  width: 10em;
+  // width: 10em;
+  width: 100%;
   position: relative;
-  height: 3.5em;
-  border: 3px ridge #149CEA;
+  height: 3.5rem;
+  border: 3px ridge #ff00ff;
   outline: none;
   background-color: transparent;
   color: var(--color-text);
@@ -315,7 +247,7 @@ button {
   border-radius: 0.3em;
   font-size: 16px;
   font-weight: bold;
-  
+
   &::after {
     content: "";
     position: absolute;
@@ -327,7 +259,7 @@ button {
     transition: 0.5s;
     transform-origin: center;
   }
-  
+
   &::before {
     content: "";
     transform-origin: center;
@@ -339,25 +271,15 @@ button {
     background-color: var(--color-background);
     transition: 0.5s;
   }
-  
+
   &:hover::before, &:hover::after {
     transform: scale(0);
   }
-  
+
   &:hover {
-    box-shadow: inset 0px 0px 25px #1479EA;
+    box-shadow: inset 0px 0px 25px rgba(255, 0, 255, 1);
   }
 }
 
-::placeholder {
-  color: var(--color-text);
-}
 
-hr {
-  width: 50%;
-  margin: auto;
-}
-
-
-
-</style> -->
+</style>

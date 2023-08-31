@@ -2955,6 +2955,9 @@
     resize: none !important;
 }
 
+:slotted(*:deep(a:hover)) {
+    text-decoration: underline;
+}
 
 
 /* scroll bar */

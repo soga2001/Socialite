@@ -223,16 +223,5 @@ export default defineComponent({
   :slotted(*:deep(a:hover)) {
     text-decoration: underline;
   }
-
-  /* .post__caption:deep(a) {
-    font-weight: 900;
-    text-decoration: none;
-    color: #FE4A4A;
-    color: #FF7373;
-    color: rgb(250, 89, 164); 
-    color: #b16af4;
-    color: rgb(37, 192, 114);
-    color: rgb(0, 191, 255);
-  } */
 </style>
   

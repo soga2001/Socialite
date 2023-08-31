@@ -9,6 +9,7 @@ import { store } from './store/store';
 import { da } from 'date-fns/locale';
 import TimeagoVue from './components/Timeago.vue';
 import convertTime from './assets/convertTime';
+import MentionLink from './components/MentionLink.vue';
 
 
 export default defineComponent({
@@ -70,7 +71,7 @@ export default defineComponent({
   mounted() {
     window.onresize = this.checkOS
   },
-  components: { Main, Loading, TimeagoVue },
+  components: { Main, Loading, TimeagoVue, MentionLink },
   watch: {
     '$store.state.authenticated': function() {
       if(this.$store.state.authenticated && (this.$route.meta.hideForAuth && this.$route.meta.hideForAuth != undefined) ) {
@@ -96,12 +97,12 @@ export default defineComponent({
   <div class="text-left w-full min-h-viewport" v-if="!$store.state.isLoading && $store.state.authenticated">
     <Main />
   </div>
-  <div class="no-auth h-viewport min-w-viewport max-w-viewport fixed" v-if="!$store.state.isLoading && !$store.state.authenticated">
-    <div class="h-full min-h-viewport flex items-center justify-center ">
-      <i-profile size="30rem"/>
+  <div :class="{'flex': !$q.screen.lt.sm || !$q.screen.lt.md, 'flex-col': !$q.screen.lt.sm}" class="h-viewport min-w-viewport max-w-viewport fixed justify-center items-center" v-if="!$store.state.isLoading && !$store.state.authenticated">
+    <div class="w-half h-full min-h-viewport flex items-center justify-end" v-if="!$q.screen.lt.sm || !$q.screen.lt.md">
+      <i-spill size="35rem" fill="var(--color-theme-opacity)" stroke="none"/>
     </div>
-    <div class="flex items-center justify-center w-full">
-      <div class="rounded-sm max-w-sm w-full box-shadow">
+    <div :class="{'w-half': !$q.screen.lt.sm}"  class="flex items-center justify-center">
+      <div :class="{'box-shadow': !$q.screen.lt.sm}" class="rounded-sm max-w-sm w-full">
         <router-view />
       </div>
     </div>
@@ -156,7 +157,7 @@ export default defineComponent({
       </div>
     </template>
   </notifications>
-  <notifications :max="2" group="notify" class=" w-full max-w-xs z-100" position="bottom center">
+  <notifications :max="1" group="notify" class=" w-full  z-100" :class="{'max-w-xs': !$q.screen.lt.sm}" :position="$q.screen.lt.sm ? 'bottom' : 'bottom center'">
     <template #body="props">
       <div @click="props.close" class="my-notification bg-theme box-shadow rounded-sm m-2 text-left">
         <Item clickable :to="`/${props.item.data.notification.data.url}`" >
@@ -199,7 +200,9 @@ export default defineComponent({
                   {{ props.item.data.notification.description}}
               </span>
           </template>
-          <template #caption>{{ props.item.data.notification.data.text}}</template>
+          <template #caption>
+            <MentionLink :mention="props.item.data.notification.data.text" />
+          </template>
         </Item>
       </div>
       <!-- <div class="bg-theme text-heading">
@@ -215,13 +218,10 @@ export default defineComponent({
 @import '@/assets/css/global.css';
 @import '@/assets/css/global.scss';
 
-.no-auth {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  .router-link-active {
-    color: var(--q-color-primary);
-  }
-}
+// .no-auth {
+//   display: grid;
+//   grid-template-columns: 1fr 1fr;
+// }
 
 
 </style>

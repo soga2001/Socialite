@@ -139,10 +139,10 @@ export default defineComponent({
     </div> -->
     
 
-    <input v-else :maxlength="charLimit" ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" :type="type" v-model="val" :class="{hasInput: (val as string).length > 0}"  class="input text-heading">
+    <input v-else :maxlength="charLimit" ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" :type="type" v-model="val" :class="{hasInput: val}"  class="input text-heading">
     
-    <label :class="{focused: isFocused,  hasInput: (val as string).length > 0 || type === 'date' || type === 'select' || type === 'number'}" class="label cursor-text">{{label}}</label>
-    <span v-if="showCharCounts && (isFocused || (val as string).length > 0)" @click="($refs.input as HTMLInputElement).focus()" :class="{focused: isFocused,  hasInput: (val as string).length > 0}" class="char_count">{{ `${(val as string).length} / ${charLimit}` }}</span>
+    <label :class="{focused: isFocused,  hasInput: val || type === 'date' || type === 'select' || type === 'number'}" class="label cursor-text">{{label}}</label>
+    <span v-if="showCharCounts && (isFocused || val)" @click="($refs.input as HTMLInputElement).focus()" :class="{focused: isFocused,  hasInput: val}" class="char_count">{{ `${(val ? (val as string).length : 0)} / ${charLimit}` }}</span>
   </div>
 
 </template>

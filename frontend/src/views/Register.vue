@@ -120,7 +120,7 @@ export default defineComponent({
             <Input @update:val="password = $event" input_label="Password" id="password" class="password" input_type="password" required/>
             <Input @update:val="cPass = $event" input_label="Confirm Password" id="c_password" class="c_password" input_type="password" required/>
             <div class="col-span-8">
-              <p class="w-full">By Registering to use Socialite, you agree to our Terms and Services and Cookie Policies.</p>
+              <p class="w-full">By Registering to use Socialite, you agree Sociliate using cookies to persist your data.</p>
             </div>
               <q-btn
                 :loading="registering"
@@ -238,7 +238,7 @@ button {
   width: 100%;
   position: relative;
   height: 3.5rem;
-  border: 3px ridge #149CEA;
+  border: 3px ridge #ff00ff;
   outline: none;
   background-color: transparent;
   color: var(--color-text);
@@ -276,7 +276,7 @@ button {
   }
 
   &:hover {
-    box-shadow: inset 0px 0px 25px #1479EA;
+    box-shadow: inset 0px 0px 25px rgba(255, 0, 255, 1);
   }
 }
 

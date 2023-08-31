@@ -122,7 +122,7 @@ def get_liked_post(request, timestamp, page, username):
             except UserFollowing.DoesNotExist as e:
                 return JsonResponse({"error": True, "message": "User is private. Please follow them to see the posts they have liked posts."})
         posts = PostLikes.objects.filter(user=user, date_liked__lt=timestamp).select_related('post')[offset:offset+10]
-        liked_posts = [PostSerializer(p.post).data for p in posts]
+        liked_posts = [PostSerializer(p.post, context={'request': request}).data for p in posts]
 
 
         return JsonResponse({"success": True, "posts": liked_posts}, safe=False)

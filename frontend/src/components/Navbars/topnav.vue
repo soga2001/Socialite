@@ -98,6 +98,9 @@ export default defineComponent({
                   <img v-if="$store.state.user.avatar" :src="$store.state.user.avatar"/>
                   <img v-else src="https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg" alt="John Doe" class="rounded-full" />
                 </q-avatar>
+                <q-avatar v-else size="2.5rem">
+                  <i-spill size="2rem" />
+                </q-avatar>
 
               </template>
               <template v-if="['explore', 'search'].includes(($route.name)?.toString() || ' ')" #title>

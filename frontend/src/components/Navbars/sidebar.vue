@@ -3,7 +3,6 @@ import { useCookies } from 'vue3-cookies';
 import { defineComponent } from 'vue'
 import {http} from '../../assets/http'
 import { RouterLink } from 'vue-router';
-import router from '../../router';
 import Spills from '../Spills.vue';
 import {logout} from '@/composables/logout'
 export default defineComponent({
@@ -124,17 +123,17 @@ export default defineComponent({
         <nav class="nav" :style="navStyle">
             <q-list class="list text-2xl">
                 <div class="pt-2">
-                  <RouterLink to="/" class="nav__link">
+                  <RouterLink to="/" class="">
                       <q-item :clickable="false" class="hide">
-                        <q-item-section avatar>
+                        <q-item-section avatar class="">
                           <q-btn flat round>
-                            <i-home size="2rem" :fill="$route.fullPath == '/home' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                            <i-spill size="2rem" />
                           </q-btn>
                         </q-item-section>
                       </q-item>
 
                       <div class="show p-2">
-                        <i-home size="2rem" :fill="$route.fullPath == '/home' ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                        <i-spill size="2rem" />
                       </div>
                   </RouterLink>
                   <RouterLink to="/home" class="nav__link" active-class="active text-heading" v-if="$store.state.authenticated">
@@ -174,7 +173,7 @@ export default defineComponent({
                           </div> -->
                           <q-avatar class="relative p-0 m-0">
                             <i-notif size="2rem" :fill="$route.matched[0]?.name == `notifications` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
-                            <q-badge class="bg-web-theme" rounded floating />
+                            <q-badge v-if="$store.state.allNotifications.length > 0" class="bg-web-theme" rounded floating />
                           </q-avatar>
                         </q-item-section>
 
@@ -185,7 +184,7 @@ export default defineComponent({
                       </q-item>
                       <div class="show relative">
                         <i-notif class="show" size="2rem" :fill="$route.matched[0]?.name == `notifications` ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
-                        <q-badge class="bg-web-theme" rounded floating />
+                        <q-badge v-if="$store.state.allNotifications.length > 0" class="bg-web-theme" rounded floating />
                       </div>
                   </RouterLink>
 

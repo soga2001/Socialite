@@ -4,6 +4,7 @@ import json
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.user_id = self.scope['url_route'].get('kwargs', {}).get('user_id')
+        
         if not self.user_id:
             await self.close()
             return

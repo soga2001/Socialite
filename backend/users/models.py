@@ -60,7 +60,7 @@ class User(AbstractUser):
     link = models.URLField(max_length=100, blank=True, null=True)
     location = models.CharField(max_length=30, blank=True, null=True)
     full_name = models.CharField(max_length=30, blank=False, null=False, default='Suyogya Poudel')
-    dob = models.DateTimeField(default=None, blank=True, null=True)
+    dob = models.DateField(default=None, blank=True, null=True)
     phone = PhoneField(blank=True, help_text='Contact phone number')
 
 

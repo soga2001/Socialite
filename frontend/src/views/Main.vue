@@ -118,7 +118,7 @@ export default defineComponent({
         if(data.type === 'posted') {
           const message = JSON.parse(data.message) as Notifications
 
-          this.$store.commit('setNotifications', message)
+          this.$store.commit('setAllNotifications', message)
 
           this.$notify({
             group: 'notify',
@@ -233,7 +233,7 @@ export default defineComponent({
 
     <div id="main-div" class="w-full min-h-viewport h-full">
       <div>
-        <div ref="topNav" v-if="!hideNavBar" id="top-nav" :class="{'border-b': ($route.matched[0]?.name as string || '') != 'notification'}" class="sticky top-0 w-full h-fit bg-transparent bg-blur-1 z-20">
+        <div ref="topNav" v-if="!hideNavBar" id="top-nav" :class="{'border-b': ($route.matched[0]?.name as string || '') != 'notification'}" class="sticky top-0 w-full h-fit bg-transparent bg-blur-1 z-20 border-r border-l">
           <TopNav  @update:navHeight="topNavHeight = $event"/>
         </div>
         <div :style="{paddingBottom: `${bottomNavHeight - 10}px`, minHeight: `calc(100vh - ${(($refs.topNav as HTMLElement)?.offsetHeight) ?? 0}px)`}"  class="w-full h-full border-l border-r">

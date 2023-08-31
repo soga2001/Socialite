@@ -137,18 +137,18 @@ export default defineComponent({
 
 <template>
   <div class="input-box" :class="{focused: isFocused}" @click="inputClicked">
-    <select ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" v-if="input_type==='month'" v-model="val" class="input text-heading ">
-        <option value=""></option>
+    <select ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" v-if="input_type==='month'" v-model="val" class="input text-heading pointer">
+        <option disabled value=""></option>
         <option class="text-sm" v-for="month in monthNames">{{ month }}</option>
     </select>
 
-    <select ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" v-if="input_type==='year' && years && years.length > 0" v-model.number="val" class="input text-heading ">
-        <option value=""></option>
+    <select ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" v-if="input_type==='year' && years && years.length > 0" v-model.number="val" class="input text-heading pointer">
+        <option disabled value=""></option>
         <option class="text-sm" v-for="year in years">{{ year }}</option>
     </select>
 
-    <select ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" v-if="input_type==='day'" v-model.number="val" class="input text-heading ">
-        <option value=""></option>
+    <select ref="input" :autofocus="autofocus" @focus="focused = true" @blur="unfocus" :required="required" v-if="input_type==='day'" v-model.number="val" class="input text-heading pointer">
+        <option disabled value=""></option>
         <option class="text-sm" v-for="day in totalDays">{{ day }}</option>
     </select>
 

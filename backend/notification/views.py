@@ -6,6 +6,7 @@ from .serializer import NotificationSerializer
 
 from .models import Notification
 from backend.authenticate import *
+import json
 
 
 
@@ -34,6 +35,32 @@ class NotificationView(APIView):
         except Exception as e:
             return JsonResponse({"error": True, "message": "An error occured while trying to clear notifications. Please try again later."}, safe=False)
         
+    
+class MarkAllAsRead(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = (CustomAuthentication,)
+
+    def post(self, request):
+        try:
+            user = User.objects.get(pk=request.user.id)
+            user.notifications.filter(unread=True).update(unread=False)
+            return JsonResponse({"success": True, "message": "Notifications marked as read"})
+        except Exception as e:
+            return JsonResponse({"error": True, "message": "An error occured while trying to mark notifications as read. Please try again later."}, safe=False)
+        
+class MarkAsRead(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = (CustomAuthentication,)
+
+    def put(self, request):
+        try:
+            data = json.loads(request.body)
+            notification_id = data['id']
+            user = User.objects.get(pk=request.user.id)
+            user.notifications.filter(pk=notification_id).update(unread=False)
+            return JsonResponse({"success": True, "message": "Notification marked as read"})
+        except Exception as e:
+            return JsonResponse({"error": True, "message": "An error occured while trying to mark notification as read. Please try again later."}, safe=False)
 
 class Mentions(APIView):
     permission_classes = [IsAuthenticated]
@@ -43,13 +70,15 @@ class Mentions(APIView):
         try:
             user = User.objects.get(pk=request.user.id)
             page = request.query_params['page']
-            timestamp = request.query_params['time_stamp']
+            timestamp = request.query_params['timestamp']
+            print(timestamp)
             offset = int(page) * 20
             notifications = NotificationSerializer(user.notifications.filter(verb="mention", timestamp__lt=timestamp)[offset:offset+20], many=True)
             if(notifications):
                 return JsonResponse({"success": True, "message": "Mentioned notifications retrieved", "notifications": notifications.data})
             return JsonResponse({"success": True, "message":"You have not been mentioned by any users"})
         except Exception as e:
+            print(e)
             return JsonResponse({"error": True, "message": "An error occured while trying to retrieve notification types. Please try again later."}, safe=False)
         
 

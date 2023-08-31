@@ -321,6 +321,7 @@ class UpdateProfile(APIView):
                 user.location = escape(location)
             if 'dob' in request.POST:
                 dob = request.POST['dob']
+                print(dob)
                 user.dob = str(dob)
             user.save()
             updatedUser = UserSerializer(user).data
