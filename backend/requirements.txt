@@ -45,6 +45,7 @@ elasticsearch-dsl==7.4.1
 entrypoints==0.4
 executing==1.0.0
 frozenlist==1.4.0
+geoip2==4.7.0
 google-crc32c==1.5.0
 gunicorn==20.1.0
 httplib2==0.20.4
