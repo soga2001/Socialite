@@ -38,11 +38,11 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="h-full min-h-viewport p-10 flex justify-center h-full text-center">
+    <div class="h-full p-10 flex justify-center h-full text-center">
         <div v-if="loading" class="">
             <Loading />
         </div>
-        <div v-else-if="!loading && success" class="flex flex-col items-center justify-center h-full text-lg weight-900">
+        <div v-else-if="!loading && success" class="flex flex-col items-center justify-center h-full text-lg weight-900 gap-2">
             <span class="text-3xl weight-900 text-heading">
                 Verification Successful!
             </span>
@@ -53,6 +53,11 @@ export default defineComponent({
             <span class="text-heading weight-700">
                 Your email has been verified. You can login now and continue using Socialite.
             </span>
+            <div class="text-xl mt-5 text-heading">
+              <RouterLink to="/login" class="no-decor text-heading hover-underline hover-text-theme">Login</RouterLink>
+               to have access to Socialite.
+            </div>
+            
         </div>
         <div v-else-if="!loading && !success" class="flex flex-col items-center justify-center h-full text-lg weight-900">
             <span class="text-3xl weight-900 text-heading">
@@ -65,6 +70,7 @@ export default defineComponent({
             <span class="text-heading weight-700">
                 Your email could not be verified because <span class="text-heading weight-700 text-lowercase">{{ message }}</span>. Please try again later.
             </span>
+            
         </div>
     </div>
 </template>

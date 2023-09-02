@@ -104,15 +104,16 @@ export default defineComponent({
             this.loading_follow_request = true
             await http.post(`follow/follow_user/${this.id}/`).then((res) => {
                 if (res.data.error) {
+                    console.log(res.data.error)
                     return;
                 }
-                this.followed = !this.followed;
+                this.followed = res.data.followed
                 
-                if (!this.followed && this.following !== 0) {
-                    this.followers -= 1;
+                if(res.data.followed) {
+                    this.followers += 1;
                 }
                 else {
-                    this.followers += 1;
+                    this.followers -= 1;
                 }
             }).catch((err) => {
             });
@@ -334,6 +335,7 @@ export default defineComponent({
 
             await http.put(`follow/follow_user/${this.user.id}/`).then((res) => {
                 if (res.data.error) {
+                    console.log(res.data.error)
                     this.$q.notify({
                         message: `<span class="text-white">${res.data.message}</span>`,
                         color: 'negative',
@@ -447,7 +449,7 @@ export default defineComponent({
                         <q-icon :color="$store.state.dark ? 'white' : 'black'" v-if="notification_on" size="1.5rem" name="notifications" />
                         <q-icon :color="$store.state.dark ? 'white' : 'black'" v-else size="1.5rem" name="notifications_off" />
                         <template v-slot:loading>
-                            <Loading />
+                            <Loading size="2.5rem"/>
                         </template>
                         <q-tooltip :delay="500">
                             {{ notification_on ? 'Notification' : 'Notification Off' }}
@@ -459,7 +461,7 @@ export default defineComponent({
                     <button v-if="!is_current_user" :class="{'followed': followed}" class="border w-8 pointer bg-hover-soft rounded-lg px-6 text-heading bg-theme weight-900" @click="follow" :disabled="!$store.state.authenticated || loading_follow_request">
                         <span class="weight-900 text-heading"  v-if="!loading_follow_request">{{ followed ? 'Following' : 'Follow' }}</span>
                         <span class="p-0" v-if="loading_follow_request">
-                            <Loading size="1.3rem" />
+                            <Loading size="1.5rem" />
                         </span>
                     </button>
                 </div>
@@ -578,10 +580,10 @@ export default defineComponent({
                                 <template #title>
                                     <div class="flex items-center text-lg">
                                         <span class="text-body mr-1">Joined</span> 
-                                        <!-- <Timeago class="text-body" size="1rem" :date="date_joined" date_type="any" /> -->
-                                        <span class="text-lg text-body">
+                                        <Timeago class="text-body" size="1rem" :date="date_joined" date_type="any" />
+                                        <!-- <span class="text-lg text-body">
                                             {{ `${monthNames[new Date(date_joined).getMonth()]} ${new Date(date_joined).getUTCDate()}, ${new Date(date_joined).getFullYear()}` }}
-                                        </span>
+                                        </span> -->
                                     </div>
                                 </template>
                             </Item>
@@ -1012,7 +1014,7 @@ export default defineComponent({
 .edit-profile {
 
     button {
-        padding: 10px;
+        padding: 7px;
         border: 1px solid var(--color-heading);
         color: var(--color-text);
         border: none;

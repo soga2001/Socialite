@@ -15,8 +15,7 @@ import MentionLink from './components/MentionLink.vue';
 export default defineComponent({
   data() {
     return {
-      theme: false,
-      dark_mode: false,
+      dark_mode: this.$store.state.dark,
       include: ['home', 'explore'],
       class: 'app',
       loading: true,
@@ -40,12 +39,11 @@ export default defineComponent({
   },
   methods: {
     switchTheme(e: any) {
-      if(this.theme) {
+      if(this.dark_mode) {
         Cookies.set('theme', 'dark')
         document.documentElement.setAttribute('data-theme', 'dark')
       }
       else {
-        // this.cookies.set('theme', 'light')
         Cookies.set('theme', 'light')
         document.documentElement.setAttribute('data-theme', 'light')
       }
@@ -64,9 +62,14 @@ export default defineComponent({
    
   },
   created() {
-    this.theme = Cookies.get('theme') === 'dark'
-    this.$store.commit('setTheme', this.theme)
-    document.documentElement.setAttribute('data-theme', this.theme ? 'dark': 'light')
+    if(Cookies.get('theme')) { 
+      this.dark_mode = Cookies.get('theme') === 'dark'
+      this.$store.commit('setTheme', this.dark_mode)
+    }
+    else {
+      this.dark_mode = this.$store.state.dark
+    }
+    document.documentElement.setAttribute('data-theme', this.dark_mode ? 'dark': 'light')
   },
   mounted() {
     window.onresize = this.checkOS
@@ -77,10 +80,9 @@ export default defineComponent({
       if(this.$store.state.authenticated && (this.$route.meta.hideForAuth && this.$route.meta.hideForAuth != undefined) ) {
         this.$router.push(this.$route.redirectedFrom?.fullPath || '/home')
       }
-      else if(!this.$store.state.authenticated){
-        // this.$router.push("/login")
-        this.$router.go(0)
-      }
+      // else if(!this.$store.state.authenticated){
+      //   this.$router.go(0)
+      // }
     },
     '$route': {
         immediate: true,
@@ -97,12 +99,12 @@ export default defineComponent({
   <div class="text-left w-full min-h-viewport" v-if="!$store.state.isLoading && $store.state.authenticated">
     <Main />
   </div>
-  <div :class="{'flex': !$q.screen.lt.sm || !$q.screen.lt.md, 'flex-col': !$q.screen.lt.sm}" class="h-viewport min-w-viewport max-w-viewport fixed justify-center items-center" v-if="!$store.state.isLoading && !$store.state.authenticated">
+  <div :class="{'flex': !$q.screen.lt.sm || !$q.screen.lt.md, 'flex-col': !$q.screen.lt.sm}" class="h-viewport min-w-viewport fixed justify-center items-center" v-if="!$store.state.isLoading && !$store.state.authenticated">
     <div class="w-half h-full min-h-viewport flex items-center justify-end" v-if="!$q.screen.lt.sm || !$q.screen.lt.md">
-      <i-spill size="35rem" fill="var(--color-theme-opacity)" stroke="none"/>
+      <i-spill size="35rem" :fill="$store.state.dark ? 'var(--color-theme-soft)' : 'var(--color-theme-opacity)'" stroke="none"/>
     </div>
-    <div :class="{'w-half': !$q.screen.lt.sm}"  class="flex items-center justify-center">
-      <div :class="{'box-shadow': !$q.screen.lt.sm}" class="rounded-sm max-w-sm w-full">
+    <div :class="{'w-half': !$q.screen.lt.sm}"  class="flex items-center justify-center overflow-scroll">
+      <div :class="{'box-shadow': !$q.screen.lt.sm, 'm-2 px-10': !$q.screen.lt.sm}" class="rounded-sm max-w-md w-full text-left ">
         <router-view />
       </div>
     </div>

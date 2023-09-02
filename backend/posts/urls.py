@@ -12,7 +12,7 @@ urlpatterns = [
     re_path(r'^view_posts/(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z)/(?P<page>\w+)/$', views.view_posts, name='view_posts'),
     # re_path(r'^user_posted/(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z)/(?P<user_id>\d+)/$', views.user_posted, name='view_posts'),
     re_path(r'^user_posted/(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z)/(?P<page>\w+)/(?P<username>\w+)/$', views.user_posted, name='view_liked'),
-    re_path(r'^user_posted_total/(?P<user_id>\d+)/$', views.total_user_posted, name='total_user_posted'),
+    re_path(r'^user_posted_total/(?P<user_id>[0-9a-f-]+)/$', views.total_user_posted, name='total_user_posted'),
     path('delete_all_posts/', views.delete_all_posts, name="delete_all_posts"),
     # re_path(r'^delete_post/(?P<post_id>\d+)/$', views.Delete_Post.as_view(), name="delete_post"),
 ]

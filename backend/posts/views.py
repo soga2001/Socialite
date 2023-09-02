@@ -51,23 +51,38 @@ class Post_Content(APIView):
 
     def post(self, request):
         try:
-            image = request.FILES['image']
-            caption = request.POST['caption']
-            # The following two lines make sure the file uploaded is actually an image
-            check_image = Image.open(image)
-            check_image.verify()
-            caption = escape(caption)
-            regex = r'@(\w+)'
-            # caption = re.sub(r'@(\w+)', r'<a href="/users/\1/">@\1</a>', caption)
+            try:
+                image = request.FILES['image']
+            except:
+                image = None
+            
+            try:
+                caption = request.POST['caption']
+            except:
+                caption = None
+            
             user_list = []
-            caption = re.sub(regex, lambda val: replaceMention(val, user_list), caption)
-            caption = replaceLink(caption)
+            # The following two lines make sure the file uploaded is actually an image
+            if(image):
+                try:
+                    check_image = Image.open(image)
+                    check_image.verify()
+                except:
+                    return JsonResponse({"error": True, "message": "Invalid Image"}, status=400)
+            if(caption):
+                caption = escape(caption)
+                regex = r'@(\w+)'
+                caption = re.sub(regex, lambda val: replaceMention(val, user_list), caption)
+                caption = replaceLink(caption)
+
             user = User.objects.get(pk=request.user.id)
             post = Post(
                 user = user,
-                img_url = image,
-                caption=caption
             )
+            if(image):
+                post.img_url = image
+            if(caption):
+                post.caption = caption
             post.save()
             link = "{}/spill/{}".format(user.username, post.id)
 
@@ -77,7 +92,8 @@ class Post_Content(APIView):
                 user_list.remove(post.user.username)
 
             if(user_list): 
-                notify.send(user, recipient=user_list, verb='mention', action_object=post, target=post, description="mentioned you on a spill", url=link, text=post.caption)
+                text = 'Image' if (not post.caption) else post.caption
+                notify.send(user, recipient=user_list, verb='mention', action_object=post, target=post, description="mentioned you on a spill", url=link, text=text)
 
 
             group_name = f'user_{post.user.username}'

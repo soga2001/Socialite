@@ -2790,15 +2790,15 @@
 }
 
 .hover-text-heading:hover {
-    color: var(--color-heading);
+    color: var(--color-heading) !important;
 }
 
 .hover-text-body:hover {
-    color: var(--color-body);
+    color: var(--color-body) !important;
 }
 
 .hover-text-theme:hover {
-    color: var(--color-theme);
+    color: var(--color-theme) !important;
 }
 
 
@@ -2915,6 +2915,26 @@
 
 /* line clamp */
 
+.pre {
+    white-space: pre !important;
+}
+
+.pre-line {
+    white-space: pre-line !important;
+}
+
+.pre-wrap {
+    white-space: pre-wrap !important;
+}
+
+.overflow-wrap-break {
+    overflow-wrap: break-word;
+}
+
+.overflow-wrap-wrap {
+    overflow-wrap: anywhere;
+}
+
 .ellipsis {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -2946,6 +2966,13 @@
 .line-clamp-4 {
     display: -webkit-box;
     -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+
+.line-clamp-5 {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;  
     overflow: hidden;
 }

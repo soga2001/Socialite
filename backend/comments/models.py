@@ -1,8 +1,10 @@
+import uuid
 from django.db import models
 from users.models import User
 from posts.models import Post
 
 class Comment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     user = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE, related_name="user_comments")
     post = models.ForeignKey(Post, blank=False, null=False, on_delete=models.CASCADE, related_name="post_comments")
     comment = models.TextField(max_length=255, null=False, blank=False, editable=True)

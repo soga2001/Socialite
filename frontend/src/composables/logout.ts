@@ -12,8 +12,9 @@ export const logout = async () => {
             classes: 'bg-web-theme',
             html: true,
         })
-        store.commit("authenticate", false);
-        store.commit("setDefaultUser");
+        router.go(0)
+        // store.commit("authenticate", false);
+        // store.commit("setDefaultUser");
     }).catch((err) => {
     });
 }

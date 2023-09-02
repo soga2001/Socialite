@@ -11,6 +11,7 @@ class CommentSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     username = serializers.CharField(source="user.username")
     user_avatar = serializers.FileField(source="user.avatar")
+    id = serializers.UUIDField()
     post = serializers.UUIDField()
     
     class Meta:

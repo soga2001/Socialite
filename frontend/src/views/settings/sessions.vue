@@ -32,7 +32,9 @@ export default defineComponent({
             if(this.sessions.length > 1)
             http.delete('users/user_sessions/').then((res) => {
                 if(res.data.success) {
-                    this.sessions = new Array<Sessions>()
+                    this.sessions = this.sessions.filter((session) => {
+                        return session.current_session
+                    })
                 }
             })
         }

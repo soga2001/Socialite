@@ -247,7 +247,7 @@ export default defineComponent({
     },
     async mounted() {
         await this.$nextTick()
-        const observer = createIntersectObserver(this.$el, this.viewed, {threshold: .75})
+        // const observer = createIntersectObserver(this.$el, this.viewed, {threshold: .75})
     },
     
     watch: {
@@ -352,7 +352,7 @@ export default defineComponent({
                     <template #icon>
                         <div>
                             <q-btn @click.stop="dropdown = !dropdown" size="10px" class="more__vert" flat round icon="more_horiz" />
-                            <q-menu class=" bg-theme rounded-xs border-brighter" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" cover anchor="top right">
+                            <q-menu class="bg-theme box-shadow rounded-xs border" v-model="dropdown" transition-show="jump-down" transition-hide="jump-up" cover anchor="top right">
                                 <q-list class="more__option box-shadow" >
                                     <q-item clickable v-close-popup @click="report = true" v-if="!post.is_owner">
                                         <q-item-section avatar>
@@ -383,7 +383,7 @@ export default defineComponent({
 
                             
                             <q-dialog v-model="deleteModal" persistent transition-show="scale" transition-hide="scale">
-                                <q-card class="card">
+                                <q-card class="card bg-theme border-brighter">
                                     <q-card-section class="row">
                                         <q-item>
                                             <q-item-section class="title">Are you sure you want to delete this post?</q-item-section>
@@ -392,7 +392,6 @@ export default defineComponent({
                                     <q-card-section>
                                         <q-item>
                                             <q-item-section avatar>
-                                                <!-- <q-icon color="red" name="info_warning"/> -->
                                                 <q-icon color="red" name="warning" />
                                             </q-item-section>
 
@@ -411,7 +410,7 @@ export default defineComponent({
 
 
                             <q-dialog v-model="report" persistent>
-                                <q-card class="bg-theme min-w-68 w-full">
+                                <q-card class="bg-theme min-w-68 w-full box-shadow">
                                     <q-card-section>
                                         <q-item>
                                             <q-item-section class="text-2xl text-heading weight-900">Report</q-item-section>
@@ -451,12 +450,12 @@ export default defineComponent({
                 </Item>
 
             </template>
-            <template #subtitle>
-                <div class="text-base w-fit "  >
-                    <MentionLink  :mention="caption"/>
+            <template #subtitle v-if="caption">
+                <div class="text-base w-full pre-line"  >
+                    <MentionLink :mention="caption"/>
                 </div>
             </template>
-            <template #body>
+            <template #body v-if="img_url">
                 <div class="w-full relative h-full">
                     <q-img @click.stop="imgZoom = true" class="rounded-sm cursor-zoom hover-darker img" :src="img_url"/>
                     <zoomImg v-if="imgZoom" :img="img_url" :open="imgZoom" @update:open="imgZoom = $event" />
@@ -512,7 +511,7 @@ export default defineComponent({
                             </div>
                         </q-dialog>
                     </div>
-                    <div class="flex justify-center items-center gap-1">
+                    <!-- <div class="flex justify-center items-center gap-1">
                         <div>
                             <q-btn round flat @click.stop="">
                                 <q-tooltip :offset="[0,0]" v-if="!$q.screen.lt.sm">
@@ -525,7 +524,7 @@ export default defineComponent({
                             <span class="text-heading weight-900" v-if="total_views % 2 == 0">{{ abbreviateViews }}</span>
                             <span class="text-heading weight-900" v-else>{{ abbreviateViews }}</span>
                         </transition>
-                    </div>
+                    </div> -->
 
                     <q-btn round flat @click.stop="copyLink">
                         <q-tooltip v-if="!$q.screen.lt.sm" :delay="500" :offset="[0,0]">

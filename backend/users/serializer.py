@@ -9,7 +9,7 @@ from django.contrib.gis.geoip2 import GeoIP2
 g = GeoIP2()
 
 class UserSerializer(serializers.ModelSerializer):
-
+    id = serializers.UUIDField()
 
     class Meta:
         model = User

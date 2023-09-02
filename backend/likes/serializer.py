@@ -6,7 +6,9 @@ from users.serializer import UserSerializer
 
 class PostLikesSerializer(serializers.ModelSerializer):
     # user = serializers.PrimaryKeyRelatedField(read_only=True, default=UserSerializer())
-    user = serializers.SerializerMethodField()
+    user = UserSerializer()
+    id = serializers.UUIDField()
+    post = serializers.UUIDField()
 
     class Meta:
         model = PostLikes
@@ -15,14 +17,14 @@ class PostLikesSerializer(serializers.ModelSerializer):
     # def get_user(self, obj):
     #     return obj.user
 
-    def get_user(self, obj):
+    # def get_user(self, obj):
         # Get the user instance from the UserFollowing object
-        user_instance = obj.user
+        # user_instance = obj.user
         
         # Serialize the user data using the UserSerializer
-        user_serializer = UserSerializer(user_instance, context=self.context)
+        # user_serializer = UserSerializer(user_instance, context=self.context)
         
         # Return the serialized user data
-        return user_serializer.data
+        # return user_serializer.data
 
     

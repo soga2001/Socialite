@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from users.models import User
 
@@ -8,6 +9,7 @@ from django.forms import ValidationError
 
 # Create your models here.
 class BugsReport(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
     bug = models.CharField(max_length=30, null=False, blank=False)
     replication = models.TextField(max_length=255, null=False, blank=False)

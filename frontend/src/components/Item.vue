@@ -80,11 +80,11 @@ export default defineComponent({
       default: "0 0 0 0"
     },
     titleLineClamp: {
-      type: Number,
+      type: [Number, String],
       default: 1
     },
     captionLineClamp: {
-      type: Number || String,
+      type: [Number, String],
       default: 1
     },
     avatarSize: {

@@ -115,7 +115,7 @@ export default defineComponent({
 <template>
 
 <div class="form-container text-heading w-full">
-	<h1 class="text-5xl weight-900 text-heading">Login</h1>
+	<h1 class="text-5xl weight-900 text-heading text-center">Login</h1>
   <hr/>
 	<form class="form" autocomplete="off" v-on:submit.prevent="login">
         <Input @update:val="username = $event" input_type="text" input_label="Username" id="username" class="w-full my-2" />

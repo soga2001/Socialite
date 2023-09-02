@@ -26,7 +26,7 @@ application = ProtocolTypeRouter({
         "websocket": AuthMiddlewareStack(
             URLRouter([
                 re_path(r'^ws/spill/(?P<post_id>[0-9a-f-]+)/$', SpillConsumer.as_asgi()),
-                re_path(r'^ws/comment/(?P<comment_id>\d+)/$', CommentConsumer.as_asgi()),
+                re_path(r'^ws/comment/(?P<comment_id>[0-9a-f-]+)/$', CommentConsumer.as_asgi()),
                 re_path(r'^ws/user_consumer/(?P<username>\w+)/$', UserConsumer.as_asgi()),
                 re_path(r'^ws/user_notif/$', NotificationConsumer.as_asgi()),
             ])

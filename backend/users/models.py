@@ -28,14 +28,14 @@ from phone_field import PhoneField
 
 def rename_avatar(instance, filename):
     file, file_extension = os.path.splitext(filename)
-    path = 'media/avatar/'
-    format = str(instance.id) + '-' + str(uuid.uuid4()) + str(file_extension)
+    path = 'media/{}/avatar'.format(instance.id)
+    format = str(uuid.uuid4()) + str(file_extension)
     return os.path.join(path, format)
 
 def rename_banner(instance, filename):
     file, file_extension = os.path.splitext(filename)
-    path = 'media/banner/'
-    format = str(instance.id) + '-' + str(uuid.uuid4()) + str(file_extension)
+    path = 'media/{}/banner'.format(instance.id)
+    format = str(uuid.uuid4()) + str(file_extension)
     return os.path.join(path, format)
 
 # def compress(image, height, width):
@@ -49,6 +49,7 @@ def rename_banner(instance, filename):
 
 # Create your models here.
 class User(AbstractUser):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     bio = models.CharField(max_length=160, null=True, blank=True, editable=True)
     avatar = models.FileField(upload_to=rename_avatar, blank=True, null=True, editable=True)
     banner = models.FileField(upload_to=rename_banner, blank=True, null=True, editable=True)

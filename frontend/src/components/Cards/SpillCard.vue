@@ -87,7 +87,7 @@ export default defineComponent({
 }
 
 .sub, .body :slotted(*) {
-    white-space: pre;
+    white-space: pre-line;
 }
 
 .body :slotted(img) {
@@ -110,9 +110,8 @@ export default defineComponent({
   }
 
 .action {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: stretch;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
     position: relative;
 }
 

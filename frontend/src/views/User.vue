@@ -111,7 +111,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <div :class="'user__main '" v-if="Object.keys(user).length > 0">
+    <div class="user__main min-h-viewport" v-if="Object.keys(user).length > 0">
         <header ref="header" :style="{background: (!bannerIntersecting ? `url(${user.banner}) center / cover no-repeat ` : 'none')}" class="user__name aspect-ratio- z-5 w-full">
             <Item :class="bannerIntersecting ? 'bg-blur-1': 'bg-blur-xs'" class="w-full bg-theme-opacity pl-2" dense :vert-icon-center="true">
                     <template #avatar>

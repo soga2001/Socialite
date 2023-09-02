@@ -9,7 +9,6 @@ export interface State {
   authenticated: boolean,
   user: User,
   dark: boolean,
-  posts_main: Array<Post>,
   desktop: boolean,
   csrf: string,
   isLoading: boolean,
@@ -22,8 +21,7 @@ export const key: InjectionKey<Store<State>> = Symbol()
 export const store = createStore<State>({
   state: {
     authenticated: false,
-    dark: false,
-    posts_main: Array<Post>(),
+    dark: true,
     user: {} as User,
     desktop: true,
     csrf: "",
@@ -43,9 +41,6 @@ export const store = createStore<State>({
     },
     setTheme(state, payload) {
       state.dark = payload
-    },
-    setMainPosts(state, payload) {
-      state.posts_main = [...state.posts_main, ...payload]
     },
     setDesktop(state, payload) {
       state.desktop = payload

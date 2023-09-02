@@ -316,12 +316,12 @@ export default defineComponent({
                                                 <q-item-label>Report Post</q-item-label>
                                             </q-item-section>
                                         </q-item>
-                                        <q-item clickable v-close-popup @click="persistent = true" tabindex="0" v-if="spill.is_owner">
+                                        <q-item class="danger-btn" clickable v-close-popup @click="persistent = true" tabindex="0" v-if="spill.is_owner">
                                             <q-item-section avatar>
-                                                <q-icon class="danger__icon" name="delete_forever"/>
+                                                <q-icon color="red" class="danger__icon" name="delete_forever"/>
                                             </q-item-section>
                                             <q-item-section>
-                                                <q-item-label>Delete</q-item-label>
+                                                <q-item-label class="text-red weight-900">Delete</q-item-label>
                                             </q-item-section>
                                         </q-item>
                                         <q-item clickable v-close-popup v-if="spill.is_owner">
@@ -337,7 +337,7 @@ export default defineComponent({
 
 
                                 <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
-                                    <q-card class="card">
+                                    <q-card class="card bg-theme">
                                         <q-card-section class="row">
                                             <q-item>
                                                 <q-item-section class="title">Are you sure you want to delete this post?</q-item-section>
@@ -346,9 +346,12 @@ export default defineComponent({
                                         <q-card-section>
                                             <q-item>
                                                 <q-item-section avatar>
-                                                <q-avatar class="red" icon="warning"/>
+                                                    <q-icon color="red" name="warning" />
                                                 </q-item-section>
-                                                <q-item-section class="red alert">This action is permanent and irreversible.</q-item-section>
+
+                                                <q-item-section class="text-red weight-900">
+                                                    This action is permanent and irreversible.
+                                                </q-item-section>
                                             </q-item>
                                         </q-card-section>
 
@@ -392,17 +395,17 @@ export default defineComponent({
                         </template>
                     </Item>
                 </div>
-                <div class="text-base no-decor w-fit px-2">
-                    <Item dense>
+                <div class="text-base no-decor w-fit px-2 my-2">
+                    <Item dense captionLineClamp="none">
                         <template #caption>
-                            <span class="text-xl">
-                                <MentionLink  :mention="spill.caption"/>
+                            <span class="text-xl pre-line">
+                                <MentionLink class="text-xl"  :mention="spill.caption"/>
                             </span>
                         </template>
                     </Item>
                 </div>
                 <div class="w-full p-2 flex flex-col gap-3">
-                    <q-img @click="imgZoom = true" class="w-full rounded border hover-darker  cursor-zoom" :src="spill.img_url" />
+                    <q-img v-if="spill.img_url" @click="imgZoom = true" class="w-full rounded border hover-darker  cursor-zoom" :src="spill.img_url" />
                     <zoomImg v-if="imgZoom" :img="spill.img_url" :open="imgZoom" @update:open="imgZoom = $event"/>
                     <Timeago class="text-base text-lighter" :date="spill.date_posted" date_type="absolute" html/>
                 </div>

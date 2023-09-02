@@ -37,6 +37,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
+    '3.230.139.135',
 ]
 
 
@@ -114,10 +115,10 @@ DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
 
 # GEOIP_PATH = os.path.join(BASE_DIR, 'geoip')
 GEOIP_PATH = '/Users/Suyogya/Projects/BasedBook/backend/geoip'
-GEOIP_COUNTRY = 'GeoLite2-Country.mmdb'
-GEOIP_CITY = 'GeoLite2-City.mmdb'
-# GEOIP_COUNTRY='dbip-country-lite.mmdb'
-# GEOIP_CITY='dbip-city-lite.mmdb'
+# GEOIP_COUNTRY = 'GeoLite2-Country.mmdb'
+# GEOIP_CITY = 'GeoLite2-City.mmdb'
+GEOIP_COUNTRY='dbip-country-lite.mmdb'
+GEOIP_CITY='dbip-city-lite.mmdb'
 
 
 

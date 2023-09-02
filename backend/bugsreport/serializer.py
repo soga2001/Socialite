@@ -6,6 +6,7 @@ from users.serializer import *
 
 class BugsReportSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    id = serializers.UUIDField()
     
     class Meta:
         model = BugsReport

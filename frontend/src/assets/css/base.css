@@ -136,6 +136,7 @@
 body {
   color: var(--color-text);
   background: var(--color-background);
+  transition: none !important;
   /* transition: all .3s; */
   line-height: 1.6;
   font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,

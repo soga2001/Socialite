@@ -130,8 +130,6 @@ def user_by_username(request, username, multiple = True):
 def user_register(request):
     try:
         data = json.loads(request.body)
-        print(data)
-
         user = User.objects.create_user(
             full_name=data['full_name'],
             username=data['username'], 
@@ -197,18 +195,42 @@ def email_forgot_password_link(request):
     user = User.objects.get(email=data['email'])
     try:
         expires_at = datetime.datetime.now() + datetime.timedelta(minutes=10)
-        token = Tokens.objects.create(user=user, expires_at=expires_at)
+        token = Tokens.objects.create(user=user, expires_at=expires_at, type='reset_password')
     except User.DoesNotExist:
         return JsonResponse({"error": True, "message": "User does not exist."})
     except IntegrityError as e:
-        token = Tokens.objects.get(user=user)
-        token.delete()
-        token = Token.objects.create(user=user)
+        token = Tokens.objects.get(user=user).update(expires_at = datetime.datetime.now() + datetime.timedelta(minutes=10))
+        # token.delete()
+        # token = Token.objects.create(user=user)
     except Exception as e:
         print('exception',e)
         return JsonResponse({"error": True, "message": "An error occurred."}, safe=False)
     subject = 'Reset your password'
     html_message = render_to_string('emails/reset_password.html', {'reset_link': settings.RESET_PASSWORD_URL + token.key, 'first_name': user.first_name})
+    plain_message = strip_tags(html_message)
+    from_email = settings.EMAIL_HOST_USER
+    recipient_list = [user.email]
+    send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+    return JsonResponse({"success": True})
+
+@api_view(["POST"])
+def resend_email_verification_link(request):
+    data = json.loads(request.body)
+    user = User.objects.get(email=data['email'])
+    try:
+        expires_at = datetime.datetime.now() + datetime.timedelta(minutes=10)
+        token = Tokens.objects.create(user=user, expires_at=expires_at)
+    except User.DoesNotExist:
+        return JsonResponse({"error": True, "message": "User does not exist."})
+    except IntegrityError as e:
+        token = Tokens.objects.get(user=user).update(expires_at = datetime.datetime.now() + datetime.timedelta(minutes=10))
+        # token.delete()
+        # token = Token.objects.create(user=user)
+    except Exception as e:
+        print('exception',e)
+        return JsonResponse({"error": True, "message": "An error occurred."}, safe=False)
+    subject = 'Reset your password'
+    html_message = render_to_string('emails/verify_email.html', {'verification_link': settings.EMAIL_VERIFY_URL + token.key, 'full_name': user.full_name})
     plain_message = strip_tags(html_message)
     from_email = settings.EMAIL_HOST_USER
     recipient_list = [user.email]
@@ -541,7 +563,7 @@ class SpecificSession(APIView):
             session.delete()
             return JsonResponse({'success': True, 'message': 'Logged out of session'}, status=200)
         except:
-            return JsonResponse({"error": True})
+            return JsonResponse({"error": True, 'message': "Session doesn't exist"})
         
 
 

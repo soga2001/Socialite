@@ -7,7 +7,6 @@ declare module '@vue/runtime-core' {
     authenticated: boolean
     user: User
     dark: boolean,
-    posts_main: Array<Post>,
     desktop: boolean,
     csrf: string,
     isLoading: boolean,

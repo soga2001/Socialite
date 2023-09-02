@@ -24,7 +24,7 @@ class Follow_User(APIView):
 
     def post(self, request, user_id):
         try:
-            if(int(request.user.id) == int(user_id)):
+            if(request.user.id == user_id):
                 return JsonResponse({"error": True, "message": 'You cannot follow yourself.'}, safe=False)
         except:
             return JsonResponse({"error": True, "message": 'Invalid User Id'}, safe=False)
@@ -41,10 +41,10 @@ class Follow_User(APIView):
 
             link=f'{request.user.username}'
             
-            return JsonResponse({"success": True, "message": "User followed"}, safe=False)
+            return JsonResponse({"followed": True, "message": "User followed"}, safe=False)
         except IntegrityError as e:
-            unfollow = UserFollowing.objects.filter(followed_user=user_id, following_user=request.user.id).delete()
-            return JsonResponse({"success": True, "message": 'User unfollowed.'}, safe=False)
+            unfollow = UserFollowing.objects.filter(followed_user=followed_user, following_user=request.user.id).delete()
+            return JsonResponse({"followed": False, "message": 'User unfollowed.'}, safe=False)
         except Exception as e:
             return JsonResponse({"error": True, "message": 'An error occured while trying to follow this user. Please try again later.'}, safe=False)
         

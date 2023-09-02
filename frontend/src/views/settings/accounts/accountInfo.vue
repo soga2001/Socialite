@@ -9,6 +9,7 @@ export default defineComponent({
     data() {
         return {
             verified: false,
+            verifying: false,
             password: '',
             user: {} as User,
             input: '',
@@ -21,11 +22,14 @@ export default defineComponent({
             monthNames: [
                 "January", "February", "March", "April", "May", "June",
                 "July", "August", "September", "October", "November", "December"
-            ]
+            ],
+            updating: false,
+
         };
     },
     methods: {
         async submit() {
+            this.verifying = true
             await http.get('users/get_user_info/', {
                 params: {
                     password: this.password,
@@ -45,6 +49,7 @@ export default defineComponent({
                 }
             }).catch((err) => {
             })
+            this.verifying = false
         }
     },
     mounted() {
@@ -86,7 +91,15 @@ export default defineComponent({
                         <forgot-password @update:forgotpass="forgotPass = $event" />
                     </q-dialog>
                     <div class="flex w-full">
-                        <input :disable="password.length == 0" type="submit" value="Confirm" class="pointer ml-auto w-fit rounded text-base text-heading weight-900 px-10 py-2 bg-web-theme border-none" />
+                        <!-- <input :disable="password.length == 0" type="submit" value="Confirm" /> -->
+                        <q-btn type="submit" dense :loading="verifying" flat class="pointer ml-auto w-fit rounded  px-10 py-2 bg-web-theme border-none">
+                            <div class="text-capitalize text-base text-heading weight-900">
+                                Confirm
+                            </div>
+                            <template v-slot:loading>
+                                <q-spinner />
+                            </template>
+                        </q-btn>
                     </div>
                 </form>
             </div>
@@ -239,6 +252,16 @@ export default defineComponent({
                         </q-btn>
                     </template>
                 </Item>
+            </div>
+            <div class="w-full">
+                <q-btn type="submit" dense :loading="verifying" flat class="pointer float-right rounded  px-10 py-2 border mr-2">
+                    <div class="text-capitalize text-base text-heading weight-900">
+                        Coming Soon
+                    </div>
+                    <template v-slot:loading>
+                        <q-spinner />
+                    </template>
+                </q-btn>
             </div>
         </div>
     </div>

@@ -53,7 +53,11 @@ export default defineComponent({
         rows: {
           type: Number,
           default: 1,
-        }
+        },
+        autofocus: {
+          type: Boolean,
+          default: false,
+        },
     },
     components: {Item},
     created() {
@@ -290,7 +294,7 @@ export default defineComponent({
 <template>
   <div class="main " ref="mentionDiv">
     <div class="relative w-full" ref="div">
-        <textarea ref="textarea" :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars" @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input textl-xl"/>
+        <textarea :autofocus="autofocus" ref="textarea" :rows="rows" :placeholder="placeholder" :required="required"  autocomplete="off" @input="mention" @mouseup="checkSavedUsers" :maxlength="maxChars" @keyup="checkSavedUsers" v-model="val"  :type="type" id="input" class="input textl-xl"/>
           <div v-if="caretPosition.top" :style="resultStyle"  ref="results" class="results fixed bg-theme box-shadow-soft flex flex-col shrink rounded-sm">
             <div>
               <div v-if="users.length > 0" @click="replaceMention(user.username)" class=" pointer w-full" v-for="user in users" :key="user.id">

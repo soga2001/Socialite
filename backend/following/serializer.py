@@ -7,6 +7,7 @@ from users.serializer import UserSerializer
 class UserFollowingSerializer(serializers.ModelSerializer):
     followed_user = UserSerializer()
     follows_user = serializers.SerializerMethodField()
+    id = serializers.UUIDField()
 
 
     class Meta:

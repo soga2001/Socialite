@@ -1,4 +1,5 @@
 from tkinter import CASCADE
+import uuid
 from django.db import models
 # from django.contrib.auth.models import User
 from users.models import User
@@ -12,6 +13,7 @@ from notification.models import Notification
 
 # Create your models here.
 class PostLikes(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, null=False, blank=False, related_name='post_likes')
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False, related_name='user_liked')
     date_liked = models.DateTimeField(auto_now_add=True, null=False, blank=False)
@@ -29,16 +31,20 @@ class PostLikes(models.Model):
 def create_notification(sender, instance, created, **kwargs):
     if created and instance.post.user != instance.user:
         link = '{}/spill/{}'.format(instance.post.user.username, instance.post.id)
-        notify.send(instance.user, recipient=instance.post.user, verb='liked', action_object=instance, description='liked your post', target=instance.post, url=link, text=instance.post.caption)
+        try:
+            notify.send(instance.user, recipient=instance.post.user, verb='liked', action_object=instance, description='liked your post', target=instance.post, url=link, text=instance.post.caption)
+        except Exception as e:
+            print('post_save',e)
+            pass
 
 
 
-# post delete
+# # post delete
 @receiver(post_delete, sender=PostLikes)
 def delete_notification(sender, instance, **kwargs):
     try:
         if(instance.post.user != instance.user):
-            Notification.objects.filter(actor_object_id=instance.user.id, recipient=instance.post.user, verb='liked').delete()
+            Notification.objects.filter(actor_object_id=instance.user, recipient=str(instance.post.user.id), verb='liked').delete()
     except Exception as e:
         print(e)
         pass

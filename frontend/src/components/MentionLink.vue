@@ -9,12 +9,19 @@ export default{
         mention: {
             type: String,
             required: true
+        },
+        class: {
+            type: String,
+            default: 'text-base pre-line'
         }
     },
     data() {
         return {
             date: new Date().toISOString()
         }
+    },
+    created() {
+        console.log(this.mention)
     },
     methods: {
         cleanText() {
@@ -38,19 +45,16 @@ export default{
     },
    render () {
         // const Timeago = resolveComponent('timeago')
-        // return h('div', { class: 'my-class' }, [
-            // h('h1', 'This is a heading.'),
-            // h(compile(this.mention)),
-            // h(Timeago, {
-            //     date: this.date,
-            //     date_type: 'absolute',
-            //     size: '20px',
-            //     class: 'text-xs',
-            // } )
-        // ]); 
+        return h('span', { class: this.class, }, [
+            h(compile(this.mention), {class: this.class}),
+        ]); 
 
-        return h(compile(this.mention))
+        // return h(compile(this.mention))
         
    }
 }
 </script>
+
+<style scoped lang="scss">
+
+</style>

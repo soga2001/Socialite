@@ -40,11 +40,11 @@ export default defineComponent({
                 <li>Real-time new comment update on Spills that user is viewing</li>
                 <li>Mention users on Spills and comments using <i class="weight-900 text-heading">@username</i></li>
                 <li>Upload user avatar and banner</li>
-                <li>Update name, username, email, bio, etc...</li>
+                <li>Update name, username, email, bio, dob, etc...</li>
                 <li>Search for users using their username</li>
                 <li>Verify/Unverify User (can only be done by Staff/Admin)</li>
                 <li>Turn a user to staff or Remove a user from staff (can only be done by Admin)</li>
-                <li>Admin/Staff can delete other users Spill as long as they are the former are higher in hierarchy.</li>
+                <li>Admin/Staff can delete other users Spill as long as the deleter is of higher hierarchy</li>
                 <li>Turn on/off notifications from user you follow</li>
                 <li>Allow user to logout of all browsers using Session Management</li>
             </ul>
@@ -65,6 +65,14 @@ export default defineComponent({
                 <li>Build Machine Learning Algorithm to learn user's surfing habits on Socialite and create a <span class="text-heading weight-900">For you</span> page with spills that will be to a user's liking.</li>
                 <li>Implement fuzzy search for better results when searching Socialite for users or spills. </li>
             </ul>
+        </div>
+        <div class="flex flex-row gap-10 justify-center">
+            <RouterLink to="/login" class="px-10 py-2 text-heading no-decor hover-underline hover-text-theme weight-900 text-xl">
+                Login
+            </RouterLink>
+            <RouterLink to="/register" class="px-10 py-2 text-heading no-decor hover-underline hover-text-theme weight-900 text-xl">
+                Register
+            </RouterLink>
         </div>
     </div>
 </template>

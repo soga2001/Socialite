@@ -46,7 +46,8 @@ export default defineComponent({
             }).then((res) => {
                 if (res.data.error) {
                     this.$q.notify({
-                        message: `<span class="text-heading weight-900">${res.data.message}</span>`,
+                        message: `<span class="text-white weight-900">${res.data.message}</span>`,
+                        classes: 'bg-web-theme text-white',
                         html: true,
                     })
                 }

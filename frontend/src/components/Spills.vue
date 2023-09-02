@@ -39,6 +39,10 @@ export default defineComponent({
       rows: {
         type: Number,
         default: 1,
+      },
+      autofocus: {
+        type: Boolean,
+        default: false,
       }
     },
     computed: {
@@ -54,9 +58,9 @@ export default defineComponent({
             const mention = this.$refs.input as {
                   reset: () => void;
             };
-            if (this.image) {
-              formData.append("caption", this.caption.trim());
-              formData.append("image", this.image);
+            if (!this.isComment) {
+              if(this.caption) formData.append("caption", this.caption.trim());
+              if(this.image) formData.append("image", this.image);
               http.post("posts/post_content/", formData, {
                   headers: {
                       "Content-Type": "multipart/form-data",
@@ -90,10 +94,6 @@ export default defineComponent({
               });
             }
             else {
-              if(!this.isComment) {
-                this.submitting = false;
-                return
-              }
               formData.append("comment", this.caption.trim());
               http.post(`comments/comment/${this.spillId}/`, formData, {
                   headers: {
@@ -106,7 +106,8 @@ export default defineComponent({
                   console.log(err);
               });
             }
-        },
+          },
+        // },
         async getImage(e: Event) {
             const target = e.target as HTMLInputElement;
             const file = target.files?.[0];
@@ -137,7 +138,9 @@ export default defineComponent({
             }
             return
           }
-          if(this.image === null || this.chars > 255) {
+
+          if((this.image === null && !this.caption) || this.chars > 255) {
+            console.log('here')
             this.disabled = true;
           }
           else {
@@ -172,7 +175,7 @@ export default defineComponent({
       <div class="grid gap-3">
         <form class="relative w-full cols-5 grid gap-2 px-2" autocorrect="on" autocomplete="off" @submit.prevent="submit">
           <div class="flex col-span-5 flex-rows caption-div">
-            <Mention ref="input" @update:charsLeft="chars = $event" :rows="rows" @update:val="caption = $event" :value="caption" input_type="text" id="caption" :placeholder="placeholder" class="post__caption w-full" />
+            <Mention ref="input" :autofocus="autofocus" @update:charsLeft="chars = $event" :rows="rows" @update:val="caption = $event" :value="caption" input_type="text" id="caption" :placeholder="placeholder" class="post__caption w-full" />
             <div v-if="imgURL" class="mr-3">
               <uploadedImg :img-url="imgURL" @update:delete="deleteImg()"/>
             </div>

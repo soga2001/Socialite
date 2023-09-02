@@ -21,6 +21,10 @@ export default defineComponent({
           iconSize: "5rem",
           navSlideIn: false,
           screen: this.$q.screen.lt.sm,
+
+          report_bug: false,
+          bug: '',
+          bug_replication: '',
       };
   },
   setup() {
@@ -43,15 +47,16 @@ export default defineComponent({
   },
   methods: {
       switchTheme(e: any) {
-          if (this.theme) {
-              this.cookies.set("theme", "light");
-              document.documentElement.setAttribute("data-theme", "light");
-          }
-          else {
-              this.cookies.set("theme", "dark");
-              document.documentElement.setAttribute("data-theme", "dark");
-          }
-          this.$store.commit("setTheme", !this.$store.state.dark);
+        if (this.theme) {
+                this.cookies.set("theme", "light");
+                document.documentElement.setAttribute("data-theme", "light");
+            }
+            else {
+                this.cookies.set("theme", "dark");
+                document.documentElement.setAttribute("data-theme", "dark");
+            }
+            this.theme = !this.theme;
+            this.$store.commit("setTheme", !this.$store.state.dark);
       },
       logout() {
           logout()
@@ -62,6 +67,41 @@ export default defineComponent({
       },
       closeNav() {
         this.navSlideIn = false
+      },
+      onCancel() {
+        this.report_bug = false;
+        this.bug = '',
+        this.bug_replication = ''
+      },
+      async reportBug() {
+        await http.post('bugs/report_bugs/', {
+          bug: this.bug,
+          bug_replication: this.bug_replication
+        }).then((res) => {
+          if(res.data.success) {
+            this.bug = ''
+            this.bug_replication = ''
+            this.report_bug = false
+            this.$q.notify({
+              type: 'positive',
+              message: `<span class="text-white text-xl">${res.data.message}</span>`,
+              icon: 'info',
+              iconColor: 'white',
+              html: true,
+            })
+          }
+          else {
+            this.$q.notify({
+              type: 'negative',
+              message: `<span class="text-white text-xl">${res.data.message}</span>`,
+              icon: 'error',
+              iconColor: 'white',
+              html: true,
+            })
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
       },
   },
   created() {
@@ -135,16 +175,19 @@ export default defineComponent({
             </div>
           </div>
         </div>
-        <header v-if="$route.matched[0]?.name == 'notifications' && $store.state.authenticated" ref="header" class="w-full z-5">
-          <div :style="{height: '66px'}" v-if="!$q.screen.lt.sm" >
+        <header v-if="$route.matched[0]?.name == 'notifications' && $store.state.authenticated" ref="header" class="sticky top-0 m-0 max-h-12 overflow-visible bg-theme-opacity">
+          <div :style="{height: '64px'}" v-if="!$q.screen.lt.sm" >
             <Item>
               <template #title>
                 <span class="text-2xl weight-900">Notifications</span>
               </template>
-              <template #icon>
+              <!-- <template #icon>
                 <RouterLink @click="closeNav" :to="{name: 'notification-settings'}" :exact="true" class="nav__link w-full rounded p-2" active-class="active" exact-active-class="exact-active">
                   <q-icon size="1.5rem" name="settings" />
                 </RouterLink>
+              </template> -->
+              <template #icon>
+                <q-btn :to="{name: 'notification-settings'}" flat round dense icon="settings" size="16px" class="border" @click.stop="" />
               </template>
             </Item>
           </div>
@@ -226,7 +269,6 @@ export default defineComponent({
                 <span class="text-body btn"><span class="text-heading weight-900">{{ $store.state.user.total_following }} </span> Following</span>
               </div>
                     
-
               <RouterLink @click="closeNav" :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link w-full rounded-none" active-class="active" exact-active-class="exact-active">
                 <q-item>
                   <q-item-section avatar>
@@ -238,9 +280,97 @@ export default defineComponent({
                   </q-item-section>
                 </q-item>
               </RouterLink>
+              <q-item clickable tabindex="0" @click.stop="report_bug = true">
+                  <q-item-section avatar>
+                    <q-avatar size="3.5rem">
+                      <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="o_bug_report" />
+                    </q-avatar>
+                  </q-item-section>
+                  <q-item-section>
+                  <q-item-label class="text-2xl text-body weight-700">Report Bugs</q-item-label>
+                  </q-item-section>
+              </q-item>
+              <q-item clickable tabindex="0" v-on:click="switchTheme">
+                  <q-item-section avatar>
+                    <q-avatar size="3.5rem">
+                      <Transition>
+                        <q-icon v-if="$store.state.dark" size="2rem" color="white" name="o_dark_mode" />
+                        <q-icon v-else size="2rem" color="black" name="o_light_mode" />
+                      </Transition>
+                    </q-avatar>
+                  </q-item-section>
+                  <q-item-section>
+                  <q-item-label class="text-2xl text-body weight-700">Theme</q-item-label>
+                  </q-item-section>
+              </q-item>
+
+              <!-- <q-list class="bg-theme rounded-sm" dense>
+                <RouterLink @click="closeNav" :to="{name: 'user-profile', params: {username: $store.state.user.username}}" :exact="true" v-if="$store.state.authenticated" class="nav__link w-full rounded-none" active-class="active" exact-active-class="exact-active">
+                  <q-item>
+                    <q-item-section avatar>
+                        <i-profile size="2rem" :fill="$route.path.startsWith(`/${$store.state.user.username}`) ? 'var(--color-heading)' : 'none'" :stroke="'var(--color-heading)'" />
+                    </q-item-section>
+
+                    <q-item-section class="bold">
+                        Profile
+                    </q-item-section>
+                  </q-item>
+                </RouterLink>
+                <q-item clickable tabindex="0" @click.stop="report_bug = true">
+                    <q-item-section avatar>
+                      <q-avatar size="3.5rem">
+                        <q-icon size="2rem" :color="$store.state.dark ? 'white' : 'black'" name="o_bug_report" />
+                      </q-avatar>
+                    </q-item-section>
+                    <q-item-section>
+                    <q-item-label class="text-2xl text-body weight-700">Report Bugs</q-item-label>
+                    </q-item-section>
+                </q-item>
+                <q-item clickable tabindex="0" v-on:click="switchTheme">
+                    <q-item-section avatar>
+                      <q-avatar size="3.5rem">
+                        <Transition>
+                          <q-icon v-if="$store.state.dark" size="2rem" color="white" name="o_dark_mode" />
+                          <q-icon v-else size="2rem" color="black" name="o_light_mode" />
+                        </Transition>
+                      </q-avatar>
+                    </q-item-section>
+                    <q-item-section>
+                    <q-item-label class="text-2xl text-body weight-700">Theme</q-item-label>
+                    </q-item-section>
+                </q-item>
+              </q-list> -->
             </div>
+            <q-dialog :class="{'min-h-sm': !$q.screen.lt.sm}" v-model="report_bug" position="top" persistent :maximized="$q.screen.lt.sm">
+                    <div :class="{'mt-12': !$q.screen.lt.sm, 'h-fit': !$q.screen.lt.sm, 'min-h-viewport': $q.screen.lt.sm}" class="bg-theme box-shadow w-full h-full min-h-fit max-w-sm  overflow-visible rounded-sm" >
+                      <div class="p-2">
+                        <Item dense :vert-icon-center="true">
+                          <template #title>
+                            <div class="text-2xl weight-900">Bug Report</div>
+                          </template>
+                          <template #icon>
+                            <i-close size="2rem" class="pointer" @click="onCancel"/>
+                          </template>
+                        </Item>
+                      </div>
+                      <hr class="border"/>
+                      <div class="">
+                        <form @submit.prevent="" class="flex flex-col gap-2 p-2">
+                          <!-- <input class="w-full p-2 text-xl text-heading" type="text" placeholder="Bug"/> -->
+                          <Input showCharCounts :charLimit="30" @update:val="bug = $event" input_type="text" input_label="Bug" id="first_name" class="w-full my-2" />
+                          <Textarea showCharCounts :charLimit="255" maxHeight="176" height="200px" @update:val="bug_replication = $event" input_type="text" input_label="How to replicate" id="username" class="w-full my-2" />
+                        </form>
+                      </div>
+                      <div class="flex flex-rows sticky bottom-0">
+                        <div class="flex flex-rows gap-2 p-2 ml-auto">
+                          <button class="px-7 py-2 border-none rounded text-base text-heading weight-900" @click="onCancel">Cancel</button>
+                          <button class="px-7 py-2 border-none pointer bg-web-theme rounded text-base text-heading weight-900" @click="reportBug">Submit</button>
+                        </div>
+                      </div>
+                    </div>
+                   </q-dialog>
             <div class="pb-3 w-full">
-              <q-item>
+              <!-- <q-item>
                   <q-item-section avatar top>
                     <theme-toggle/>
                   </q-item-section>
@@ -254,7 +384,7 @@ export default defineComponent({
                       <span class="text-body weight-800">{{ $store.state.dark ? 'Dark' : 'Light' }}</span>
                     </q-item-label>
                   </q-item-section>
-                </q-item>
+                </q-item> -->
               <q-item class="logout" clickable v-close-popup @click="logout">
                 <q-item-section avatar>
                   <i-logout size="3rem" fill="none" stroke="var(--color-heading)" />
