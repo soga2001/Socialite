@@ -1,4 +1,3 @@
-from tkinter import CASCADE
 import uuid
 from django.db import models
 # from django.contrib.auth.models import User
@@ -30,9 +29,10 @@ class PostLikes(models.Model):
 @receiver(post_save, sender=PostLikes)
 def create_notification(sender, instance, created, **kwargs):
     if created and instance.post.user != instance.user:
-        link = '{}/spill/{}'.format(instance.post.user.username, instance.post.id)
         try:
-            notify.send(instance.user, recipient=instance.post.user, verb='liked', action_object=instance, description='liked your post', target=instance.post, url=link, text=instance.post.caption)
+            link = '{}/spill/{}'.format(instance.post.user.username, instance.post.id)
+            text = 'Image' if not instance.post.caption else instance.post.caption
+            notify.send(instance.user, recipient=instance.post.user, verb='liked', action_object=instance, description='liked your post', target=instance.post, url=link, text=text)
         except Exception as e:
             print('post_save',e)
             pass
@@ -43,10 +43,18 @@ def create_notification(sender, instance, created, **kwargs):
 @receiver(post_delete, sender=PostLikes)
 def delete_notification(sender, instance, **kwargs):
     try:
-        if(instance.post.user != instance.user):
-            Notification.objects.filter(actor_object_id=instance.user, recipient=str(instance.post.user.id), verb='liked').delete()
+        user_id = instance.user.id
+        post_user_id = instance.post.user.id
+
+        if user_id is not None and post_user_id is not None and user_id != post_user_id:
+            notifications_to_delete = Notification.objects.filter(
+                actor_object_id=str(user_id),
+                recipient=str(post_user_id),
+                verb='liked'
+            )
+            notifications_to_delete.delete()
     except Exception as e:
-        print(e)
+        print('here',e)
         pass
     # notify.send(instance.user, recipient=instance.post.user, verb='unliked your post', action_object=instance, description=f'{instance.user.username} unliked your post', target=instance.post)
     
