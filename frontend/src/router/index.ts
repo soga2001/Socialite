@@ -1,14 +1,7 @@
-import { nextDay } from 'date-fns';
-import { scroll } from 'quasar';
 import { createRouter, createWebHistory } from 'vue-router'
-import type {RouterScrollBehavior, RouteRecordRaw, Router, NavigationGuard} from 'vue-router' 
-// import type { ScrollPositionNormalized }from 'vue-router'
-// import Vue from 'vue'
-import { useCookies } from 'vue3-cookies'
+import type {Router} from 'vue-router'
 import { store } from '../store/store'
-import type { Sessions } from '@/assets/interfaces';
 
-const { cookies }  = useCookies();
 
 
 const router: Router = createRouter({

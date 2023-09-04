@@ -3,9 +3,6 @@ import {store, key} from './store/store'
 import App from './App.vue'
 import router from './router'
 import { vue3Debounce } from 'vue-debounce'
-import VueCropper from 'vue-cropperjs';
-import 'cropperjs/dist/cropper.css';
-
 
 import Notifications from '@kyvg/vue3-notification'
  
@@ -13,7 +10,7 @@ import Notifications from '@kyvg/vue3-notification'
 
 
 
-import { Quasar, Dialog, Notify } from 'quasar'
+import { Quasar, Dialog, Notify, Cookies } from 'quasar'
 // Import icon libraries
 import '@quasar/extras/material-icons/material-icons.css'
 import '@quasar/extras/material-icons-outlined/material-icons-outlined.css'
@@ -142,7 +139,7 @@ app.component('SearchBar', SearchBar)
 app.component('zoomImg', zoomImg)
 app.component('user-card', hoverUserData)
 app.component('Item', Item);
-app.component('cropper', VueCropper);
+// app.component('cropper', VueCropper);
 app.component('Input', Input);
 app.component('Textarea', Textarea);
 app.component('Select', Select);
@@ -151,7 +148,7 @@ app.component('forgot-password', ForgotPassword);
 
 
 app.use(Quasar, {
-    plugins: {Dialog, Notify },
+    plugins: {Dialog, Notify, Cookies },
     config: {
     }
 })

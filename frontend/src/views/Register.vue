@@ -2,8 +2,6 @@
 import { defineComponent, ref } from 'vue';
 import { http } from '@/assets/http';
 
-import { useToast } from "vue-toastification";
-
 export default defineComponent({
     data() {
         return {
@@ -18,8 +16,6 @@ export default defineComponent({
         };
     },
     setup() {
-      const toast = useToast()
-      return { toast}
     },
     methods: {
         checkEmail() {

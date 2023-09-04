@@ -1,5 +1,4 @@
 <script lang="ts">
-import { useCookies } from 'vue3-cookies';
 import { defineComponent } from 'vue'
 import { RouterLink } from 'vue-router';
 
@@ -12,10 +11,6 @@ export default defineComponent({
           iconSize: "5rem",
           navSlideIn: false
       };
-  },
-  setup() {
-      const { cookies } = useCookies();
-      return { cookies };
   },
   computed: {
     navStyle(): {justifyContent: string} {

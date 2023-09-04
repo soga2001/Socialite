@@ -1,11 +1,7 @@
 <script lang="ts">
-import { useCookies } from 'vue3-cookies';
 import { defineComponent } from 'vue'
 import {http} from '../assets/http'
-import { RouterLink, RouterView } from 'vue-router';
-import router from '../router';
-import { useStore } from '../store/store';
-import Item from './Item.vue';
+import { RouterLink } from 'vue-router';
 
 
 export default defineComponent({
@@ -28,10 +24,6 @@ export default defineComponent({
           navSlideIn: false
       };
   },
-  setup() {
-      const { cookies } = useCookies();
-      return { cookies };
-  },
   computed: {
     navStyle(): {justifyContent: string} {
       return {
@@ -49,11 +41,11 @@ export default defineComponent({
   methods: {
       switchTheme(e: any) {
           if (this.theme) {
-              this.cookies.set("theme", "light");
+              this.$q.cookies.set("theme", "light");
               document.documentElement.setAttribute("data-theme", "light");
           }
           else {
-              this.cookies.set("theme", "dark");
+              this.$q.cookies.set("theme", "dark");
               document.documentElement.setAttribute("data-theme", "dark");
           }
           this.$store.commit("setTheme", !this.$store.state.dark);
@@ -63,7 +55,7 @@ export default defineComponent({
             this.navSlideIn = false
             this.$store.commit("authenticate", false);
             this.$store.commit("setDefaultUser");
-            router.push("/login");
+            this.$router.push("/login");
           }).catch((err) => {
               console.log(err);
           });
@@ -76,7 +68,7 @@ export default defineComponent({
       }
   },
   created() {
-      this.theme = this.cookies.get("theme") === "dark";
+      this.theme = this.$q.cookies.get("theme") === "dark";
       this.$store.commit("setTheme", this.theme);
       document.documentElement.setAttribute("data-theme", this.theme ? "dark" : "light");
   },
@@ -84,7 +76,6 @@ export default defineComponent({
   },
   watch: {
   },
-  components: { Item }
 })
 
 </script>
@@ -181,9 +172,6 @@ export default defineComponent({
             </div>
           </div>
       </div>
-      
-      
-      
     </nav>
   </header>
 </template>

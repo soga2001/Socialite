@@ -2,14 +2,9 @@
 import { defineComponent, ref } from 'vue';
 import type { Post } from '@/assets/interfaces';
 import { http } from '@/assets/http';
-import moment from 'moment'
 import Timeago from './Timeago.vue';
-import { useCookies } from 'vue3-cookies';
 import Heart from './Heart.vue';
-import Item from './Item.vue';
 import MentionLink from './MentionLink.vue';
-import ToolTips from './ToolTips.vue';
-import HeartIcon from '@/icons/i-heart.vue';
 import { AbbreviateNumber } from '@/assets/abbreviate';
 import createIntersectObserver from '@/assets/intersectionObserver'
 
@@ -23,10 +18,6 @@ import convertTime from '@/assets/convertTime';
 export default defineComponent({
     props: {
         post: { type: Object as () => Post, required: true }
-    },
-    setup() {
-        const {cookies} = useCookies();
-        return {cookies}
     },
     data() {
         return {
@@ -51,7 +42,6 @@ export default defineComponent({
             deleting: false,
             report: ref(false),
             reason: ref(""),
-            moment: moment,
             showComments: false,
 
             is_following: this.post.user.is_following,
@@ -271,7 +261,7 @@ export default defineComponent({
             this.divExit()
         },
     },
-    components: { Timeago, Heart, Item, MentionLink, ToolTips, HeartIcon, SpillCard, Favorite }
+    components: { Timeago, Heart, MentionLink, SpillCard, Favorite }
 })
 </script>
 

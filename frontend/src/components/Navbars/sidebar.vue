@@ -1,5 +1,4 @@
 <script lang="ts">
-import { useCookies } from 'vue3-cookies';
 import { defineComponent } from 'vue'
 import {http} from '../../assets/http'
 import { RouterLink } from 'vue-router';
@@ -23,10 +22,6 @@ export default defineComponent({
 
         };
     },
-    setup() {
-        const { cookies } = useCookies();
-        return { cookies };
-    },
     computed: {
         navStyle(): {
             justifyContent: string;
@@ -46,11 +41,11 @@ export default defineComponent({
     methods: {
         switchTheme(e: any) {
             if (this.theme) {
-                this.cookies.set("theme", "light");
+                this.$q.cookies.set("theme", "light");
                 document.documentElement.setAttribute("data-theme", "light");
             }
             else {
-                this.cookies.set("theme", "dark");
+                this.$q.cookies.set("theme", "dark");
                 document.documentElement.setAttribute("data-theme", "dark");
             }
             this.theme = !this.theme;
@@ -102,7 +97,7 @@ export default defineComponent({
         }
     },
     created() {
-        this.theme = this.cookies.get("theme") === "dark";
+        this.theme = this.$q.cookies.get("theme") === "dark";
         this.$store.commit("setTheme", this.theme);
         document.documentElement.setAttribute("data-theme", this.theme ? "dark" : "light");
     },
