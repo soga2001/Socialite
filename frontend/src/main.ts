@@ -84,9 +84,6 @@ import LinkIcon from '@/icons/i-link.vue';
 import BannerIcon from '@/icons/i-banner.vue';
 
 
-
-
-
 const app = createApp(App)
 
 
@@ -94,8 +91,6 @@ const app = createApp(App)
 app.use(Notifications);
 app.use(router);
 app.use(store, key);
-// app.component('adv-cropper', Cropper);
-// icon components
 app.component('i-home', HomeIcon);
 app.component('i-explore', ExploreIcon);
 app.component('i-profile', ProfileIcon);
@@ -139,7 +134,6 @@ app.component('SearchBar', SearchBar)
 app.component('zoomImg', zoomImg)
 app.component('user-card', hoverUserData)
 app.component('Item', Item);
-// app.component('cropper', VueCropper);
 app.component('Input', Input);
 app.component('Textarea', Textarea);
 app.component('Select', Select);
