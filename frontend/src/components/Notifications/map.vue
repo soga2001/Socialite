@@ -40,6 +40,7 @@ export default defineComponent({
         }
     },
     async mounted() {
+
         const observer = createIntersectionObserver(this.$el, this.mark_read, {threshold: 1})
     },
     watch: {

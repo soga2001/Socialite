@@ -1,11 +1,10 @@
 <script lang="ts">
-import {defineComponent, ref, getCurrentInstance} from 'vue';
+import {defineComponent, ref} from 'vue';
 import  type {Post} from '@/assets/interfaces';
 import { http } from '@/assets/http';
 import PostsMap from '../components/PostsMap.vue';
 import Spills from '../components/Spills.vue';
 import Search from './Search.vue';
-import { useStore } from '@/store/store';
 
 export default defineComponent({
   title: 'Home',
@@ -29,9 +28,6 @@ export default defineComponent({
       type: Number,
       default: 0,
     }
-  },
-  setup() {
-    const store = useStore()
   },
   created() {
     this.getData();

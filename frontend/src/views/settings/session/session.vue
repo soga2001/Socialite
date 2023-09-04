@@ -1,6 +1,6 @@
 <script lang="ts">
 
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import type { Sessions } from '@/assets/interfaces';
 import { http } from '@/assets/http';
 import Timeago from '@/components/Timeago.vue';

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { http } from '@/assets/http';
-import type { Following, User } from '@/assets/interfaces';
+import type { Following } from '@/assets/interfaces';
 import UserNotificationCard from '@/components/Notifications/userNotificationCard.vue';
 import { defineComponent } from 'vue';
 

@@ -1,13 +1,8 @@
 <script lang="ts">
-import { defineComponent, ref, toHandlers } from 'vue';
-import {useCookies} from 'vue3-cookies'
-import { RouterLink, RouterView } from 'vue-router';
+import { defineComponent} from 'vue';
+import { RouterLink } from 'vue-router';
 import { http } from '@/assets/http';
-import {useStore} from '../store/store'
-import Input from '@/components/Input.vue';
 import type { User } from '@/assets/interfaces';
-// import { AES } from 'crypto-ts';
-// import { get_user_from_cookie } from '@/assets/userFromCookie';
 
 export default defineComponent({
     data() {
@@ -97,7 +92,6 @@ export default defineComponent({
     },
     created() {
     },
-    components: { Input },
     watch: {
         username(username) {
             this.updateDisableState();

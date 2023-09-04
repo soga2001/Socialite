@@ -1,7 +1,7 @@
 <script lang="ts">
 import { http } from '@/assets/http';
 import Input from '@/components/Input.vue';
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
     data() {

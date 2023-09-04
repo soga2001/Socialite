@@ -1,9 +1,8 @@
 <script lang="ts">
 import { http } from '@/assets/http';
-import { defineComponent, ref, toHandlers, type Ref, getCurrentInstance, type ComponentInternalInstance } from 'vue';
+import { defineComponent, ref, type ComponentInternalInstance } from 'vue';
 import type { User } from '@/assets/interfaces';
 import { useStore } from '../store/store';
-import Item from '../components/Item.vue';
 
 import SearchBar from '@/components/SearchBar.vue';
 export default defineComponent({
@@ -104,7 +103,7 @@ export default defineComponent({
         this.resetInput()
       },
     },
-    components: { Item, SearchBar },
+    components: { SearchBar },
     watch: {
         input(input) {
             if(input === "" || input == undefined) {

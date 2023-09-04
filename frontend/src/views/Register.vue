@@ -1,11 +1,8 @@
 <script lang="ts">
-import {useCookies} from 'vue3-cookies'
 import { defineComponent, ref } from 'vue';
 import { http } from '@/assets/http';
-import Input from '@/components/Input.vue';
 
 import { useToast } from "vue-toastification";
-import type { POSITION } from 'vue-toastification/src/ts/constants'
 
 export default defineComponent({
     data() {
@@ -87,7 +84,6 @@ export default defineComponent({
     },
     created() {
     },
-    components: { Input },
     watch: {
       full_name() {
         this.updateDisableState()

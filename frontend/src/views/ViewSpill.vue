@@ -1,7 +1,6 @@
 <script lang="ts">
 import { http } from '@/assets/http';
 import type { Post, Comment, User } from '@/assets/interfaces';
-import PostsMap from '@/components/PostsMap.vue';
 import { defineComponent, ref } from 'vue';
 import { AbbreviateNumber } from '@/assets/abbreviate';
 import convertTime from '@/assets/convertTime';

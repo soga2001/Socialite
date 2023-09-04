@@ -92,7 +92,7 @@ export interface Notifications {
     target_content_type?: string;
     action_object_content_type?: string;
     created: string;
-    data?: NotificationDataAsset;
+    data: NotificationDataAsset;
 }
 
 export interface Following {

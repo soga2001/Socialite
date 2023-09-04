@@ -1,6 +1,5 @@
 <script lang="ts">
-import { http } from '@/assets/http';
-import type { Following, User } from '@/assets/interfaces';
+import type { Following } from '@/assets/interfaces';
 import { defineComponent } from 'vue';
 
 export default defineComponent({

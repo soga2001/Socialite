@@ -1,14 +1,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { Cookies } from 'quasar';
-import Main from './views/Main.vue';
-import { get_user_from_cookie } from './assets/userFromCookie';
-import Loading from './components/Loading.vue';
 import { http } from './assets/http';
 import { store } from './store/store';
-import { da } from 'date-fns/locale';
+import Main from './views/Main.vue';
+import Loading from './components/Loading.vue';
 import TimeagoVue from './components/Timeago.vue';
-import convertTime from './assets/convertTime';
 import MentionLink from './components/MentionLink.vue';
 
 

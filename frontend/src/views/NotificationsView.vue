@@ -1,9 +1,6 @@
 <script lang="ts">
 import { http } from '@/assets/http';
 import { defineComponent } from 'vue';
-import type { Notifications } from '@/assets/interfaces';
-
-import TimeagoVue from '@/components/Timeago.vue';
 export default defineComponent({
   name: 'notifications',
   data() {

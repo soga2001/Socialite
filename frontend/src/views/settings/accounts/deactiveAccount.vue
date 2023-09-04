@@ -1,5 +1,4 @@
 <script lang="ts">
-// import Input from '@/components/Input.vue';
 import { defineComponent } from 'vue'
 export default defineComponent({
     name: 'deactive-account',

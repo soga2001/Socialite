@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import { http } from '@/assets/http';
 import type { Sessions } from '@/assets/interfaces';
 
@@ -67,7 +67,7 @@ export default defineComponent({
                             Sessions are the devices you are using or that have used your Socialite account. These are the sessions where your account is currently logged in. You can log out of each session.
                         </span>
                     </div>
-                    <div class="flex flex-col gap-3">
+                    <div class="flex flex-col gap-1">
                         <div class="text-heading text-lg weight-900 px-3">
                             Current active session
                         </div>
@@ -154,22 +154,20 @@ export default defineComponent({
                                 </template>
                                 <template #caption>
                                     <span class="text-body text-sm weight-700 flex flex-row gap-2 items-center">
-                                        <div class="flex flex-row gap-2 items-center" v-if="session.location">
-                                            <span class="text-sm text-heading" v-if="session.location.city">
-                                                {{ session.location.city }} {{ session.location.region && ',' }}
-                                            </span>
-                                            <span v-if="session.location.region">
-                                                {{ session.location.region }}
-                                            </span>
-                                            <span v-if="!session.location.region || !session.location.city">
-                                                {{ session.location.country_name }}
-                                            </span>
+                                        <div class="flex flex-row gap-1 items-center" v-if="session.location">
+                                                <span class="text-sm text-heading" v-if="session.location.city">
+                                                    {{ session.location.city}}{{ session.location.region && ', ' }}
+                                                </span>
+                                                <span v-if="session.location.region">
+                                                    {{ session.location.region }}
+                                                </span>
+                                                <span v-if="!session.location.region || !session.location.city">
+                                                    {{ session.location.country_name }}
+                                                </span>
                                             <span class="text-base weight-900 text-heading" v-if="session.location.city || session.location.region">
                                                 &#183;
                                             </span>
                                         </div>
-                                        
-                                       
                                         <Timeago spanClass="weight-900 text-heading" class="text-heading text-sm" html :date="session.last_activity" />
                                     </span>
                                 </template>

@@ -1,13 +1,9 @@
 <script lang="ts">
-import { defineComponent, ref, getCurrentInstance } from 'vue';
+import { defineComponent } from 'vue';
 import { http } from '@/assets/http';
-import UserProfile from '../components/UserProfile/UserProfile.vue';
 import type { User } from '@/assets/interfaces';
+import UserProfile from '../components/UserProfile/UserProfile.vue';
 import Search from './Search.vue';
-import UserPosted from '../components/UserProfile/UserPosted.vue';
-import UserLiked from '../components/UserProfile/UserLiked.vue';
-import Item from '@/components/Item.vue';
-import type { RouteRecordName } from 'vue-router';
 
 export default defineComponent({
     name: 'user-profile',
@@ -93,7 +89,7 @@ export default defineComponent({
             document.title = `${this.user.full_name}`
         }
     },
-    components: { UserProfile, Search, UserPosted, UserLiked, Item },
+    components: { UserProfile, Search},
     watch: {
         bannerIntersecting(bannerIntersecting) {
         },

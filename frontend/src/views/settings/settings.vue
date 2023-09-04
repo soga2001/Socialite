@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { routerKey } from 'vue-router'
 export default defineComponent({
     name: 'settings',
     props:{

@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { Notify } from 'quasar'
 import { store } from '@/store/store';
-import router from '@/router';
 
 export const http = axios.create({
-  baseURL: `https://localhost:8000/`,
+  // baseURL: `https://localhost:8000/`,
+  baseURL: 'https://api.suyogyapoudel.com/',
   withCredentials: true,
 })
 

@@ -3,23 +3,17 @@ import {store, key} from './store/store'
 import App from './App.vue'
 import router from './router'
 import { vue3Debounce } from 'vue-debounce'
-import Vue3MobileDetection from "vue3-mobile-detection";
 import VueCropper from 'vue-cropperjs';
 import 'cropperjs/dist/cropper.css';
 
-import { Cropper } from 'vue-advanced-cropper';
-import 'vue-advanced-cropper/dist/style.css';
 
-import Toast, {type ToastInterface, createToastInterface} from "vue-toastification";
-// Import the CSS or use your own!
-import "vue-toastification/dist/index.css";
 import Notifications from '@kyvg/vue3-notification'
  
 
 
 
 
-import { Quasar, Cookies, Dialog, Notify } from 'quasar'
+import { Quasar, Dialog, Notify } from 'quasar'
 // Import icon libraries
 import '@quasar/extras/material-icons/material-icons.css'
 import '@quasar/extras/material-icons-outlined/material-icons-outlined.css'
@@ -103,10 +97,6 @@ const app = createApp(App)
 app.use(Notifications);
 app.use(router);
 app.use(store, key);
-app.use(Toast, {
-  maxToasts: 1,
-  newestOnTop: true,
-});
 // app.component('adv-cropper', Cropper);
 // icon components
 app.component('i-home', HomeIcon);
@@ -163,16 +153,6 @@ app.component('forgot-password', ForgotPassword);
 app.use(Quasar, {
     plugins: {Dialog, Notify },
     config: {
-      // extras: [
-      //   'material-icons',
-      //   'mdi-v6',
-      //   'ionicons-v4',
-      //   'eva-icons',
-      //   'fontawesome-v6',
-      //   'themify',
-      //   'line-awesome',
-      //   'bootstrap-icons'
-      // ],
     }
 })
 app.directive('debounce', vue3Debounce({ lock: true }))

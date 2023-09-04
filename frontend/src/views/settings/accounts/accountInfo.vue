@@ -1,5 +1,4 @@
 <script lang="ts">
-// import Input from '@/components/Input.vue';
 import { http } from '@/assets/http';
 import type { User } from '@/assets/interfaces';
 import Input from '@/components/Input.vue';
