@@ -33,11 +33,20 @@ MEDIA_URL = '/media/'
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
     '3.230.139.135',
+    'api.suyogyapoudel.com',
+    'suyogyapoudel.com',
+    '172.31.41.52',
+    # '172.31.64.0',
+    # '172.31.16.0',
+    # '172.31.48.0',
+    # '172.31.0.0',
+    # '172.31.32.0',
+    # '172.31.80.0',
 ]
 
 
@@ -80,11 +89,20 @@ MIDDLEWARE = [
     'user_sessions.middleware.SessionMiddleware',
     # 'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     # 'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CORS_ALLOW_ALL_ORIGINS = False
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'https://localhost:3000',
+    'https://127.0.0.1:3000',
 ]
 
 
@@ -98,7 +116,7 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 
 # CSRF_TRUSTED_ORIGINS = [
-#     'http://localhost:3000'
+#    'http://localhost:3000'
 # ]
 
 CORS_ALLOW_METHODS = [
@@ -113,12 +131,12 @@ CORS_ALLOW_METHODS = [
 NOTIFICATIONS_NOTIFICATION_MODEL = 'notification.Notification'
 DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
 
-# GEOIP_PATH = os.path.join(BASE_DIR, 'geoip')
-GEOIP_PATH = '/Users/Suyogya/Projects/BasedBook/backend/geoip'
-# GEOIP_COUNTRY = 'GeoLite2-Country.mmdb'
-# GEOIP_CITY = 'GeoLite2-City.mmdb'
-GEOIP_COUNTRY='dbip-country-lite.mmdb'
-GEOIP_CITY='dbip-city-lite.mmdb'
+GEOIP_PATH = os.path.join(BASE_DIR, 'geoip')
+# GEOIP_PATH = '/Users/Suyogya/Projects/BasedBook/backend/geoip'
+GEOIP_COUNTRY = 'GeoLite2-Country.mmdb'
+GEOIP_CITY = 'GeoLite2-City.mmdb'
+# GEOIP_COUNTRY='dbip-country-lite.mmdb'
+# GEOIP_CITY='dbip-city-lite.mmdb'
 
 
 
@@ -211,7 +229,7 @@ CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
 
 
-SECURE_SSL_REDIRECT = True
+# SECURE_SSL_REDIRECT = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_HSTS_SECONDS = 3600
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
