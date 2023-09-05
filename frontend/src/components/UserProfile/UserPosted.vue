@@ -47,6 +47,8 @@ export default defineComponent({
             deletedMsg: '',
 
             errMsg: '',
+
+            title: this.name,
         };
     },
     setup() {
@@ -74,14 +76,6 @@ export default defineComponent({
 
             this.loading = false
         },
-        // async websocketMessage() {
-        //     this.websocket.onmessage = (e) => {
-        //         const data = JSON.parse(e.data)
-        //         if(data.type == "posted") {
-        //             this.user_posted.unshift(JSON.parse(data.message))
-        //         }
-        //     }
-        // },
         deleteSpill(index: number) {
             this.user_posted.splice(index, 1)
         }
@@ -89,14 +83,14 @@ export default defineComponent({
 
     created() {
         this.getUserPosted()
-        document.title = this.name
+        document.title = this.title
         // this.websocketMessage()
     },
     mounted() {
     },
     activated() {
         // this.websocketMessage()
-        document.title = this.name
+        document.title = this.title
     },
     deactivated() {
     },

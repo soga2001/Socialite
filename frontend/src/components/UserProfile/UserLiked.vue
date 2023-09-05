@@ -40,6 +40,7 @@ export default defineComponent({
             // avatar: this.user_avatar
 
             errMsg: '',
+            title: this.name,
         };
     },
     methods: {
@@ -79,10 +80,10 @@ export default defineComponent({
     },
     created() {
         this.getUserLiked()
-        document.title = this.name
+        document.title = this.title
     },
     activated() {
-        document.title = this.name
+        document.title = this.title
     },
     components: { UserPostedMap, Loading },
     watch: {
