@@ -1,6 +1,7 @@
 import re
 from time import time
 from django.db import DatabaseError
+from django.forms import ValidationError
 from django.http import JsonResponse
 from django.utils.html import escape
 from rest_framework.views import APIView
@@ -84,7 +85,8 @@ class Post_Content(APIView):
             if(caption):
                 post.caption = caption
             post.save()
-            link = "{}/spill/{}".format(user.username, post.id)
+            link = "{}/spill/{}".format(user.username, str(post.id))
+            print('6')
 
             
             
@@ -103,8 +105,11 @@ class Post_Content(APIView):
                 "message": json.dumps(PostSerializer(post, context={'request': request}).data)
             })
             return JsonResponse({"success": True, "message": "Posted Successfully"}, safe=False)
-        except Exception as e:
+        except ValidationError as e:
             print(e)
+            return JsonResponse({"error": True, "message": e.message}, status=400)
+        except Exception as e:
+            print(str(e))
             return JsonResponse({"error": True}, safe=False)
 
     def delete(self, request):
