@@ -84,7 +84,7 @@ export default defineComponent({
     '$route': {
         immediate: true,
         handler(to, from) {
-          document.title = to.meta.title || 'BasedBook';
+          document.title = to.meta.title || 'Socialite';
         }
     },
   }
@@ -96,7 +96,7 @@ export default defineComponent({
   <div class="text-left w-full min-h-viewport" v-if="!$store.state.isLoading && $store.state.authenticated">
     <Main />
   </div>
-  <div :class="{'flex': !$q.screen.lt.sm || !$q.screen.lt.md, 'flex-col': !$q.screen.lt.sm}" class="h-viewport min-w-viewport fixed justify-center items-center" v-if="!$store.state.isLoading && !$store.state.authenticated">
+  <div :class="{'flex': !$q.screen.lt.sm || !$q.screen.lt.md, 'flex-col': !$q.screen.lt.sm}" class="h-viewport min-w-viewport fixed justify-center items-center overflow-scroll" v-if="!$store.state.isLoading && !$store.state.authenticated">
     <div class="w-half h-full min-h-viewport flex items-center justify-end" v-if="!$q.screen.lt.sm || !$q.screen.lt.md">
       <i-spill size="35rem" :fill="$store.state.dark ? 'var(--color-theme-soft)' : 'var(--color-theme-opacity)'" stroke="none"/>
     </div>
