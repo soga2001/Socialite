@@ -16,6 +16,7 @@ from pathlib import Path
 from datetime import timedelta
 import environ
 import os
+import dj_database_url
 
 env = environ.Env()
 environ.Env.read_env()
@@ -163,33 +164,26 @@ ASGI_APPLICATION = "backend.asgi.application"
 DATABASE_ROUTERS = ["backend.routers.CustomRouter"]
 
 DATABASES = {
-
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('DATABASE_NAME'),
-        'USER': env('DATABASE_USERNAME'),
-        'PASSWORD': env('DATABASE_PASSWORD'),
-        'HOST': 'localhost',
-    },
-
-    # 'default' : {                                   
-    #     'ENGINE' : 'django.db.backends.postgresql',
-    #     'NAME' : 'postgres',
-    #     'HOST' : env('SUPABASE_HOST'),
-    #     'PASSWORD': env('SUPABASE_PW'),
-    #     'PORT': 5432,
-    #     'USER': 'postgres',
-    #     'CERT' : 'prod-ca-2021.crt',             # download this from database/settings and put in your main app folder
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': env('DATABASE_NAME'),
+    #     'USER': env('DATABASE_USERNAME'),
+    #     'PASSWORD': env('DATABASE_PASSWORD'),
+    #     'HOST': env('DATABASE_HOST'),
+    #     'PORT': env('DATABASE_PORT'),
     # },
 
-    'channels_postgres': {
-		'ENGINE': 'django.db.backends.postgresql_psycopg2',
-		'NAME': env('DATABASE_NAME'),
-        'USER': env('DATABASE_USERNAME'),
-        'PASSWORD': env('DATABASE_PASSWORD'),
-        'HOST': 'localhost',
-	}
+    # 'channels_postgres': {
+	# 	'ENGINE': 'django.db.backends.postgresql',
+	# 	'NAME': env('DATABASE_NAME'),
+    #     'USER': env('DATABASE_USERNAME'),
+    #     'PASSWORD': env('DATABASE_PASSWORD'),
+    #     'HOST': 'localhost',
+	# }
 
+    "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
+
+    'channels_postgres': dj_database_url.parse(os.environ.get("DATABASE_URL")),
 }
 
 CHANNEL_LAYERS = {

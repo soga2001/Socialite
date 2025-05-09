@@ -18,4 +18,4 @@ database.py
 
 prod-ca-2021.crt
 
-geoip/
+backend/geoip/
