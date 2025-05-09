@@ -140,33 +140,57 @@ def user_register(request):
         return JsonResponse({"error": True, "message":" Username or email is taken."}, safe=False)
 
 @api_view(["POST"])
-def  user_login(request):
-    data = json.loads(request.body)
-    user = authenticate(username=data['username'], password=data['password'])
-    if(user and user.email_verified):
-        login(request, user)
-        token = RefreshToken.for_user(user)
-        request.session.set_test_cookie()
+def user_login(request):
+    try:
+        username = request.data.get('username')
+        password = request.data.get('password')
 
+        if not username or not password:
+            return JsonResponse({"error": True, "message": "Username and password are required."}, status=400)
 
-        response = JsonResponse({"success": True, "user": UserSerializer(user).data}, status=200)
-        # response.set_cookie("testing", "true", secure=True, httponly=True)
-        response.set_cookie(
-                    key = settings.SIMPLE_JWT['AUTH_COOKIE'], 
-                    value = str(token.access_token),
-                    expires = settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
-                    secure = settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
-                    httponly = settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-                    samesite = settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
-        )
-        # response.set_cookie('access_token', str(token.access_token), expires=str(token.access_token.lifetime.days) + "d", secure=True, httponly=True)
-        response.set_cookie('refresh_token', str(token), expires=str(token.lifetime.days)+ "d", secure=True, httponly=True)
-        return response
-    elif user and not user.email_verified:
-        return JsonResponse({"error": True, "message": "Please verify your email."}, safe=False)
-    else:
-        return JsonResponse({"error": True, "message": "Invalid credentials."}, safe=False)
-    # return JsonResponse({"error": True}, safe=False)
+        user = authenticate(username=username, password=password)
+
+        if user:
+            if user.email_verified:
+                login(request, user)
+                refresh = RefreshToken.for_user(user)
+                access_token = refresh.access_token
+
+                response = JsonResponse({
+                    "success": True,
+                    "user": UserSerializer(user).data
+                }, status=200)
+
+                access_expiry = settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME']
+                refresh_expiry = settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME']
+
+                response.set_cookie(
+                    key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+                    value=str(access_token),
+                    expires=access_expiry,
+                    secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                    httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+                    samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+                )
+
+                response.set_cookie(
+                    key='refresh_token',
+                    value=str(refresh),
+                    expires=refresh_expiry,
+                    secure=False,
+                    httponly=True,
+                    samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+                )
+
+                return response
+            else:
+                return JsonResponse({"error": True, "message": "Please verify your email."}, status=403)
+        else:
+            return JsonResponse({"error": True, "message": "Invalid credentials."}, status=401)
+
+    except Exception as e:
+        return JsonResponse({"error": True, "message": str(e)}, status=500)
+
 
 @api_view(["POST"])
 def verify_email(request):

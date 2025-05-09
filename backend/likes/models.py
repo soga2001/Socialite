@@ -54,7 +54,6 @@ def delete_notification(sender, instance, **kwargs):
             )
             notifications_to_delete.delete()
     except Exception as e:
-        print('here',e)
         pass
     # notify.send(instance.user, recipient=instance.post.user, verb='unliked your post', action_object=instance, description=f'{instance.user.username} unliked your post', target=instance.post)
     

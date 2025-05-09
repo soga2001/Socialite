@@ -118,7 +118,6 @@ class Post_Content(APIView):
             post = Post.objects.get(id=data["id"])
             user = request.user
             if(post.user == user):
-                print('here')
                 post.delete()
             elif user.is_staff:
                 print(post.user.is_admin, user.is_admin)

@@ -164,26 +164,26 @@ ASGI_APPLICATION = "backend.asgi.application"
 DATABASE_ROUTERS = ["backend.routers.CustomRouter"]
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #     'NAME': env('DATABASE_NAME'),
-    #     'USER': env('DATABASE_USERNAME'),
-    #     'PASSWORD': env('DATABASE_PASSWORD'),
-    #     'HOST': env('DATABASE_HOST'),
-    #     'PORT': env('DATABASE_PORT'),
-    # },
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USERNAME'),
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': env('DATABASE_HOST'),
+        'PORT': env('DATABASE_PORT'),
+    },
 
-    # 'channels_postgres': {
-	# 	'ENGINE': 'django.db.backends.postgresql',
-	# 	'NAME': env('DATABASE_NAME'),
-    #     'USER': env('DATABASE_USERNAME'),
-    #     'PASSWORD': env('DATABASE_PASSWORD'),
-    #     'HOST': 'localhost',
-	# }
+    'channels_postgres': {
+		'ENGINE': 'django.db.backends.postgresql',
+		'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USERNAME'),
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': 'localhost',
+	}
 
-    "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
+    # "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
 
-    'channels_postgres': dj_database_url.parse(os.environ.get("DATABASE_URL")),
+    # 'channels_postgres': dj_database_url.parse(os.environ.get("DATABASE_URL")),
 }
 
 CHANNEL_LAYERS = {
@@ -208,7 +208,7 @@ CHANNEL_LAYERS = {
 SESSION_ENGINE = 'user_sessions.backends.db'
 SESSION_COOKIE_NAME = 'sessionid'
 SESSION_COOKIE_SECURE = False
-SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = True
 
@@ -317,7 +317,7 @@ SIMPLE_JWT = {
     'AUTH_COOKIE_SECURE': False,    # Whether the auth cookies should be secure (https:// only).
     'AUTH_COOKIE_HTTP_ONLY' : True, # Http only cookie flag.It's not fetch by javascript.
     'AUTH_COOKIE_PATH': '/',        # The path of the auth cookie.
-    'AUTH_COOKIE_SAMESITE': 'None',  # Whether to set the flag restricting cookie leaks on cross-site requests. This can be 'Lax', 'Strict', or None to disable the flag.
+    'AUTH_COOKIE_SAMESITE': 'Lax',  # Whether to set the flag restricting cookie leaks on cross-site requests. This can be 'Lax', 'Strict', or None to disable the flag.
 }
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

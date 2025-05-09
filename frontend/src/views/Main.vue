@@ -61,7 +61,7 @@ export default defineComponent({
 
     }
     // if(this.$store.state.authenticated) this.websocketOpen()
-    this.websocketOpen()
+    // this.websocketOpen()
   },
   activated() {
   },
@@ -94,60 +94,60 @@ export default defineComponent({
       this.mobile = this.$q.screen.lt.sm
       return this.$q.screen.lt.sm
     },
-    async websocketOpen() {
-      this.websocket = new WebSocket(`wss://localhost:8000/ws/user_notif/`)
-      this.websocket.onopen = () => {
-        console.log('connected')
-      }
-      this.websocketMessage()
+    // async websocketOpen() {
+    //   this.websocket = new WebSocket(`wss://localhost:8000/ws/user_notif/`)
+    //   this.websocket.onopen = () => {
+    //     console.log('connected')
+    //   }
+    //   this.websocketMessage()
 
-    },
-    async websocketClose() {
-      if(!this.websocket) {
-        return
-      }
-      this.websocket.close()
-    },
-    async websocketMessage() {
-      if(!this.websocket) {
-        return
-      }
-      this.websocket.onmessage = (e) => {
-        const data = JSON.parse(e.data)
-        console.log(data)
-        if(data.type === 'posted') {
-          const message = JSON.parse(data.message) as Notifications
+    // },
+    // async websocketClose() {
+    //   if(!this.websocket) {
+    //     return
+    //   }
+    //   this.websocket.close()
+    // },
+    // async websocketMessage() {
+    //   if(!this.websocket) {
+    //     return
+    //   }
+    //   this.websocket.onmessage = (e) => {
+    //     const data = JSON.parse(e.data)
+    //     console.log(data)
+    //     if(data.type === 'posted') {
+    //       const message = JSON.parse(data.message) as Notifications
 
-          this.$store.commit('setAllNotifications', message)
+    //       this.$store.commit('setAllNotifications', message)
 
-          this.$notify({
-            group: 'notify',
-            duration: 5000,
-            data: {
-              notification: message,
-            },
-            closeOnClick: true,
-          });
+    //       this.$notify({
+    //         group: 'notify',
+    //         duration: 5000,
+    //         data: {
+    //           notification: message,
+    //         },
+    //         closeOnClick: true,
+    //       });
           
-        }
-        else if(data.type === 'message') {
-          this.$store.commit('setMessages', data.message)
-        }
-      }
-    },
+    //     }
+    //     else if(data.type === 'message') {
+    //       this.$store.commit('setMessages', data.message)
+    //     }
+    //   }
+    // },
     alert() {
       console.log('here')
     }
   },
   components: { Sidebar, TopNav, BottomNav, Unauthenticated, notification, Search },
   watch: {
-    '$store.state.authenticated': function () {
-      if(this.$store.state.authenticated) {
-        this.websocketOpen()
-      } else {
-        this.websocketClose();
-      }
-    },
+    // '$store.state.authenticated': function () {
+    //   if(this.$store.state.authenticated) {
+    //     this.websocketOpen()
+    //   } else {
+    //     this.websocketClose();
+    //   }
+    // },
     $route: {
       immediate: true,
       handler(newRoute) {

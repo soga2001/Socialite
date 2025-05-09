@@ -26,7 +26,7 @@ export default defineComponent({
             tab: this.$route.name as string,
             loading: true,
             docState: 'saved',
-            websocket: new WebSocket(`wss://localhost:8000/ws/user_consumer/${this.$route.params.username}/`),
+            // websocket: new WebSocket(`wss://localhost:8000/ws/user_consumer/${this.$route.params.username}/`),
             headerHeight: '' || 0,
             bannerIntersecting: true,
         };
@@ -34,27 +34,28 @@ export default defineComponent({
     methods: {
         async userInfo() {
             this.loading = true
-            await http.get(`users/username/${this.$route.params.username}/${false}/`).then(async (res) => {
+            await http.get(`users/username/${this.$route.params.username}/`).then(async (res) => {
                 if (res.data.success) {
-                    this.user = res.data.users;
+                    this.user = res.data.users[0] as User;
                     this.avatar = this.user.avatar || '';
                 }
             }).catch((err) => {
                 // console.log(err);
             });
-            await this.getHeightOfHeader()
+            console.log(this.user)
             this.loading = false
+            await this.getHeightOfHeader()
         },
-        async websocketOpen() {
-            this.websocket = new WebSocket(`wss://localhost:8000/ws/user_consumer/${this.$route.params.username}/`)
-        },
-        async websocketClose() {
-            this.websocket.close()
+        // async websocketOpen() {
+        //     this.websocket = new WebSocket(`wss://localhost:8000/ws/user_consumer/${this.$route.params.username}/`)
+        // },
+        // async websocketClose() {
+        //     this.websocket.close()
 
-            this.websocket.onclose = (e) => {
-                console.log('Websocket closed')
-            }
-        },
+        //     this.websocket.onclose = (e) => {
+        //         console.log('Websocket closed')
+        //     }
+        // },
         getHeightOfHeader() {
             if (this.$refs.header) {
                 const headerElement: HTMLDivElement = this.$refs.header as HTMLDivElement;
@@ -107,58 +108,60 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="user__main min-h-viewport" v-if="Object.keys(user).length > 0">
-        <header ref="header" :style="{background: (!bannerIntersecting ? `url(${user.banner}) center / cover no-repeat ` : 'none')}" class="user__name aspect-ratio- z-5 w-full">
-            <Item :class="bannerIntersecting ? 'bg-blur-1': 'bg-blur-xs'" class="w-full bg-theme-opacity pl-2" dense :vert-icon-center="true">
-                    <template #avatar>
-                        <q-btn size="16px" @click="$router.back" flat dense round class="text-heading" icon="arrow_back" />
-                    </template>
-                    <template #title>
-                        <h5 className="text-left">{{ user.full_name }}</h5>
-                    </template>
-                    <template #caption>
-                        <div class="text-left">{{ user.total_posted }} Spills</div>
-                    </template>
-            </Item>
-        </header>
-
-        
-        
-
-        <div ref="profile" >
-            <UserProfile @update:intersecting="bannerIntersecting = $event" :user="user"/>
-        </div>
-
-        <div>
+    <div v-if="loading" class="pt-5">
+        <Loading />
+    </div>
+    <div v-else>
+        <div class="user__main min-h-viewport" v-if="Object.keys(user).length > 0">
+            <header ref="header" :style="{background: (!bannerIntersecting ? `url(${user.banner}) center / cover no-repeat ` : 'none')}" class="user__name aspect-ratio- z-5 w-full">
+                <Item :class="bannerIntersecting ? 'bg-blur-1': 'bg-blur-xs'" class="w-full bg-theme-opacity pl-2" dense :vert-icon-center="true">
+                        <template #avatar>
+                            <q-btn size="16px" @click="$router.back" flat dense round class="text-heading" icon="arrow_back" />
+                        </template>
+                        <template #title>
+                            <h5 className="text-left">{{ user.full_name }}</h5>
+                        </template>
+                        <template #caption>
+                            <div class="text-left">{{ user.total_posted ?? 0 }} Spills</div>
+                        </template>
+                </Item>
+            </header>
+    
+            
+            
+    
+            <div ref="profile" >
+                <UserProfile @update:intersecting="bannerIntersecting = $event" :user="user"/>
+            </div>
+    
             <div>
-                <nav :style="{top: `${headerHeight - .4}px`}" class="w-full sticky z-5 m-0">
-                    <q-tabs
-                        class="bg-theme bg-blur-half w-full text-lg text-capitalize border-b"
-                        active-class="text-heading"
-                        v-model="tab"
-                        indicator-color="purple-13"
-                    
-                    >
-                        <q-route-tab name="user-posted" class="text-capitalize text-body bg-transparent" active-class="active" :to="{name: 'user-posted', params: {username: username}}" exact replace>
-                            <span class="text-shadow ">Spills</span>
-                        </q-route-tab>
-                        <q-route-tab name="user-liked" class="text-capitalize text-body bg-transparent" active-class="active"  :to="{name: 'user-liked', params: {username: username}}" exact replace>
-                            <span class="text-shadow ">Likes</span>
-                        </q-route-tab>
-                    </q-tabs>
-                </nav>
-                <div class="w-full overflow-hidden">
-                    <RouterView v-slot="{ Component }">
-                        <KeepAlive :max="2" :include="['user-posted', 'user-liked']">
-                            <component :is="Component" :height="height" :scrollPosition="scrollPosition" :name="user.full_name"/>
-                        </KeepAlive>
-                    </RouterView>
+                <div>
+                    <nav :style="{top: `${headerHeight - .4}px`}" class="w-full sticky z-5 m-0">
+                        <q-tabs
+                            class="bg-theme bg-blur-half w-full text-lg text-capitalize border-b"
+                            active-class="text-heading"
+                            v-model="tab"
+                            indicator-color="purple-13"
+                        
+                        >
+                            <q-route-tab name="user-posted" class="text-capitalize text-body bg-transparent" active-class="active" :to="{name: 'user-posted', params: {username: username}}" exact replace>
+                                <span class="text-shadow ">Spills</span>
+                            </q-route-tab>
+                            <q-route-tab name="user-liked" class="text-capitalize text-body bg-transparent" active-class="active"  :to="{name: 'user-liked', params: {username: username}}" exact replace>
+                                <span class="text-shadow ">Likes</span>
+                            </q-route-tab>
+                        </q-tabs>
+                    </nav>
+                    <div class="w-full overflow-hidden">
+                        <RouterView v-slot="{ Component }">
+                            <KeepAlive :max="2" :include="['user-posted', 'user-liked']">
+                                <component :is="Component" :height="height" :scrollPosition="scrollPosition" :name="user.full_name"/>
+                            </KeepAlive>
+                        </RouterView>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div v-if="loading" class="pt-5">
-        <Loading />
     </div>
 </template>
 

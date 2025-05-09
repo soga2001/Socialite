@@ -1,8 +1,8 @@
 source venv/Scripts/activate
 cd backend
-# python3 manage.py runserver
+python manage.py runserver
 # python3 run_daphne.py runserver
-daphne -b 0.0.0.0 -p 8000 backend.asgi:application  -v2
+# daphne -b 0.0.0.0 -p 8000 backend.asgi:application  -v2
 # export DJANGO_SETTINGS_MODULE=backend.settings
 # daphne -e ssl:8000:privateKey=/Users/Suyogya/Projects/BasedBook/localhost-key.pem:certKey=/Users/Suyogya/Projects/BasedBook/localhost.pem backend.asgi:application
 # python manage.py runserver -v2
