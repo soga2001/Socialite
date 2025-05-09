@@ -4,12 +4,17 @@ import type { Post, Comment, User } from '@/assets/interfaces';
 import { defineComponent, ref } from 'vue';
 import { AbbreviateNumber } from '@/assets/abbreviate';
 import convertTime from '@/assets/convertTime';
+import { useRoute, useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
     name: "view-spill",
     data() {
         return {
             spill: {} as Post,
+            $route: useRoute(),
+            $q: useQuasar(),
+            $router: useRouter(),
             user: {} as User,
             comments: new Array<Comment>(),
             loading_post: true,
@@ -21,8 +26,8 @@ export default defineComponent({
             date: new Date(),
             date_posted: '',
             page: 0,
-            // websocket: new WebSocket(`wss://localhost:8000/ws/spill/${this.$route.params.post_id}/`),
-            websocket: ref<WebSocket | null>(new WebSocket(`wss://localhost:8000/ws/spill/${this.$route.params.post_id}/`)),
+            websocket: ref<WebSocket | null>(new WebSocket(`wss://localhost:8000/ws/spill/`)),
+            // websocket: ref<WebSocket | null>(new WebSocket(`wss://localhost:8000/ws/spill/${this.$route.params.post_id}/`)),
             dropdown: false,
             persistent: false,
             report: false,
