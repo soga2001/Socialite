@@ -1,5 +1,5 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.web.json",
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
   "include": ["env.d.ts", "src/**/*", "src/**/*.tsx", "src/**/*.vue"],
   "compilerOptions": {
     "typeRoots": ["./node_modules/@types", "./types"],
@@ -11,9 +11,4 @@
     "importsNotUsedAsValues": "remove",
     "verbatimModuleSyntax": true,
   },
-  "references": [
-    {
-      "path": "./tsconfig.config.json"
-    }
-  ]
 }

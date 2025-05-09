@@ -2,9 +2,10 @@ import { createApp } from 'vue'
 import {store, key} from './store/store'
 import App from './App.vue'
 import router from './router'
-import { vue3Debounce } from 'vue-debounce'
+import { vueDebounce } from 'vue-debounce'
 
 import Notifications from '@kyvg/vue3-notification'
+import "@/assets/css/base.css"
  
 
 
@@ -146,7 +147,7 @@ app.use(Quasar, {
     config: {
     }
 })
-app.directive('debounce', vue3Debounce({ lock: true }))
+app.directive('debounce', vueDebounce({ lock: true }))
 
 
 app.mount('#app')

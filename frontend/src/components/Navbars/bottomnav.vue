@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRoute } from 'vue-router';
 
 export default defineComponent({
   data() {
@@ -9,7 +9,8 @@ export default defineComponent({
           dark_mode: false,
           include: ["home", "explore"],
           iconSize: "5rem",
-          navSlideIn: false
+          navSlideIn: false,
+          $route: useRoute()
       };
   },
   computed: {
@@ -32,6 +33,7 @@ export default defineComponent({
   components: {}
 })
 </script>
+
 
 <template>
     <nav>
@@ -188,7 +190,7 @@ a {
   text-decoration: none;
   transition: 0.2s;
   width: 100%;
-  font-size: calc(.8em + 1vw);;
+  font-size: calc(.8em + 1vw);
 }
 
 .nav__link {

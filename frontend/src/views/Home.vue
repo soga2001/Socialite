@@ -5,6 +5,8 @@ import { http } from '@/assets/http';
 import PostsMap from '../components/PostsMap.vue';
 import Spills from '../components/Spills.vue';
 import Search from './Search.vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
   title: 'Home',
@@ -16,6 +18,9 @@ export default defineComponent({
         page: ref(0),
         hasMore: false,
         loading: true,
+        $router: useRouter(),
+        $route: useRoute(),
+        $q: useQuasar(),
       };
   },
   name: 'home',
@@ -64,7 +69,7 @@ export default defineComponent({
       done()
     },
     update() {
-      this.$router.push(this.$router.currentRoute.value)
+      this.$router.push(this.$route)
     }
   },
   watch: {
@@ -92,14 +97,9 @@ export default defineComponent({
   <div class="home" id="home">
     <div class="home__center">
       <div class="">
-        <div class="border-b" v-if="$store.state.authenticated && !$q.screen.lt.sm">
+        <div class="border-b w-full" v-if="$store.state.authenticated && !$q.screen.lt.sm">
           <Spills :rows="1" />
         </div>
-        <!-- <q-infinite-scroll class="grid" id="infinite-scroll" @load="onLoad" :debounce="2" :offset="10" :disable="!hasMore"> -->
-          <!-- <div class="post_map" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
-            <PostsMap :post="post" />
-          </div> -->
-        <!-- </q-infinite-scroll> -->
         <div>
           <div class="post_map" v-if="posts.length > 0" v-for="(post, index) in posts" :id="post.id.toString" :key="post.id">
             <PostsMap :post="post" />

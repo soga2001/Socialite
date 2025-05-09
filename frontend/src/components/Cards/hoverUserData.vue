@@ -4,6 +4,8 @@ import type { User } from '@/assets/interfaces';
 
 import UserProfile from '../UserProfile/UserProfile.vue';
 import { http } from '@/assets/http';
+import { useQuasar } from 'quasar'
+import { useRoute, useRouter } from 'vue-router';
 export default defineComponent({
     props: {
         userProp: {
@@ -21,6 +23,14 @@ export default defineComponent({
             followers: this.userProp.total_followers,
             following: this.userProp.total_following,
         };
+    },
+    setup() {
+        const $q = useQuasar();
+        const $router = useRouter();
+        return {
+            $q,
+            $router,
+        }
     },
     methods: {
         async follow() {

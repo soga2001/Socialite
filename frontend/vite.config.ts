@@ -1,6 +1,7 @@
 import { fileURLToPath, URL } from 'url'
 
 import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
 
@@ -11,8 +12,11 @@ export default defineConfig({
       template: { transformAssetUrls }
     }),
     quasar({
-      sassVariables: 'src/quasar-variables.sass'
+       sassVariables: fileURLToPath(
+        new URL('src/quasar-variables.sass', import.meta.url)
+      )
     }),
+    tailwindcss(),
     // mkcert(),
   ],
   resolve: {
@@ -21,14 +25,10 @@ export default defineConfig({
       'vue': 'vue/dist/vue.esm-bundler',
     },
   },
-  css: {
-    preprocessorOptions: {
-      // scss: {
-      //   additionalData: `@import 'src/quasar-variables.scss';`, // Add the import statement here
-      // },
-    },
-  },
   build: {
     sourcemap: false,
   },
+  server: {
+    port: 3000,
+  }
 })

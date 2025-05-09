@@ -1,7 +1,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import {http} from '../assets/http'
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
 
 
 export default defineComponent({
@@ -17,11 +18,14 @@ export default defineComponent({
   },
   data() {
       return {
-          theme: false,
-          dark_mode: false,
-          include: ["home", "explore"],
-          iconSize: "5rem",
-          navSlideIn: false
+        $q: useQuasar(),
+        $route: useRoute(),
+        $router: useRouter(),
+        theme: false,
+        dark_mode: false,
+        include: ["home", "explore"],
+        iconSize: "5rem",
+        navSlideIn: false
       };
   },
   computed: {
@@ -327,7 +331,7 @@ a {
   text-decoration: none;
   transition: 0.2s;
   width: 100%;
-  font-size: calc(.8em + 1vw);;
+  font-size: calc(.8em + 1vw);
 }
 
 .nav__link {

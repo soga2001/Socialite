@@ -1,6 +1,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue';
 import { useQuasar } from 'quasar';
+import { useRoute, useRouter } from 'vue-router';
 import Sidebar from '@/components/Navbars/sidebar.vue';
 import TopNav from '@/components/Navbars/topnav.vue';
 import BottomNav from '@/components/Navbars/bottomnav.vue';
@@ -17,6 +18,8 @@ export default defineComponent({
   data() {
       return {
         $q: useQuasar(),
+        $route: useRoute(),
+        $router: useRouter(),
         scrollY: 0,
         topNavHeight: (this.$refs.topNav as HTMLDivElement)?.offsetHeight,
         bottomNavHeight: (this.$refs.bottomBar as HTMLDivElement)?.offsetHeight,
@@ -225,8 +228,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <!-- :class="!isMobile() ? 'main' : 'fixed w-full h-viewport overflow-y-scroll'" -->
-  <div @scroll="scrolling" ref="mainDiv" :class="{'main': !isMobile(), 'fixed w-full h-viewport overflow-y-scroll': isMobile(), 'settings_page': settingsPage}">
+  <div @scroll="scrolling" ref="mainDiv" class="w-screen" :class="{'main': !isMobile(), 'fixed w-full min-w-screen h-screen overflow-y-auto': isMobile(), 'settings_page': settingsPage}">
     <div v-if="!$q.screen.lt.sm" class="min-h-viewport sticky top-0 h-full w-full">
       <Sidebar/>
     </div>
@@ -246,8 +248,8 @@ export default defineComponent({
       </div>
     </div>
 
-    <aside class="sticky top-0" v-if="!$q.screen.lt.sm"> 
-      <div class="mx-5 py-2 sticky top-0" v-if="!settingsPage && !$q.screen.lt.md">
+    <aside class="sticky top-0 !my-5 !px-10" v-if="!$q.screen.lt.sm"> 
+      <div class="mx-5 py-2 px-10 sticky top-0" v-if="!settingsPage && !$q.screen.lt.md">
           <SearchBar dense />
       </div>
     </aside>
@@ -279,11 +281,7 @@ export default defineComponent({
         </div>
       </div>
     </q-dialog>
-      
-      
   </div>
-
-  
 </template>
 
 <style scoped lang="scss">
@@ -300,7 +298,7 @@ export default defineComponent({
   width: 100%;
   position: fixed;
   height: 100%;
-  grid-template-columns: auto 600px minmax(auto, 400px);
+  grid-template-columns: minmax(0, auto) minmax(600px, 800px) minmax(0, auto) !important;
   overflow: scroll;
   overflow-y: scroll;
 

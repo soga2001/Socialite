@@ -7,6 +7,8 @@ import Main from './views/Main.vue';
 import Loading from './components/Loading.vue';
 import TimeagoVue from './components/Timeago.vue';
 import MentionLink from './components/MentionLink.vue';
+import { useQuasar } from 'quasar';
+import { useRouter, useRoute } from 'vue-router';
 
 
 export default defineComponent({
@@ -33,6 +35,15 @@ export default defineComponent({
     }
   },
   setup() {
+    const $q = useQuasar()
+    const $router = useRouter()
+    const $route = useRoute()
+
+    return {
+      $router,
+      $route,
+      $q
+    }
   },
   methods: {
     switchTheme(e: any) {
@@ -96,20 +107,20 @@ export default defineComponent({
   <div class="text-left w-full min-h-viewport" v-if="!$store.state.isLoading && $store.state.authenticated">
     <Main />
   </div>
-  <div :class="{'flex': !$q.screen.lt.sm || !$q.screen.lt.md, 'flex-col': !$q.screen.lt.sm}" class="h-viewport min-w-viewport fixed justify-center items-center overflow-scroll" v-if="!$store.state.isLoading && !$store.state.authenticated">
+  <div :class="{'flex': !$q.screen.lt.sm || !$q.screen.lt.md, 'flex-col': !$q.screen.lt.sm}" class="h-viewport min-w-[600px] w-full fixed justify-center items-center overflow-scroll" v-if="!$store.state.isLoading && !$store.state.authenticated">
     <div class="w-half h-full min-h-viewport flex items-center justify-end" v-if="!$q.screen.lt.sm || !$q.screen.lt.md">
       <i-spill size="35rem" :fill="$store.state.dark ? 'var(--color-theme-soft)' : 'var(--color-theme-opacity)'" stroke="none"/>
     </div>
-    <div :class="{'w-half': !$q.screen.lt.sm}"  class="flex items-center justify-center overflow-scroll">
+    <div :class="{'w-half': !$q.screen.lt.sm}"  class="flex items-center justify-center overflow-y-scroll w-full">
       <div :class="{'box-shadow': !$q.screen.lt.sm, 'm-2 px-10': !$q.screen.lt.sm}" class="rounded-sm max-w-md w-full text-left ">
         <router-view />
       </div>
     </div>
   </div>
-  <div class="flex items-center justify-center w-full h-viewport text-heading" v-if="$store.state.isLoading">
+  <div class="flex items-center justify-center w-full h-screen text-heading" v-if="$store.state.isLoading">
     <Loading size="5rem">
       <template v-slot:text>
-        <p class="text-5xl">Loading</p>
+        <p class="text-5xl p-5">Loading</p>
       </template>
     </Loading>
   </div>
@@ -214,7 +225,6 @@ export default defineComponent({
 
 <style lang="scss">
 @import '@/assets/css/base.css';
-@import '@/assets/css/global.css';
 @import '@/assets/css/global.scss';
 
 // .no-auth {

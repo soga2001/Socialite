@@ -1,25 +1,39 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import {http} from '../../assets/http'
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
 
 import Search from '@/views/Search.vue';
 import { logout } from '@/composables/logout';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
   data() {
       return {
-          theme: false,
-          dark_mode: false,
-          include: ["home", "explore"],
-          iconSize: "5rem",
-          navSlideIn: false,
-          screen: this.$q.screen.lt.sm,
+        $q: useQuasar(),
+        $router: useRouter(),
+        $route: useRoute(),
+        $store: this.$store,
+        theme: false,
+        dark_mode: false,
+        include: ["home", "explore"],
+        iconSize: "5rem",
+        navSlideIn: false,
+        screen: {},
 
-          report_bug: false,
-          bug: '',
-          bug_replication: '',
+        report_bug: false,
+        bug: '',
+        bug_replication: '',
       };
+  },
+  setup() {
+    const $q = useQuasar()
+    const screen = $q.screen
+
+    return {
+      $q,
+      screen
+    }
   },
   computed: {
     navStyle(): {justifyContent: string} {
@@ -94,11 +108,11 @@ export default defineComponent({
         })
       },
   },
-  // created() {
-  //     this.theme = this.$q.cookies.get("theme") === "dark";
-  //     this.$store.commit("setTheme", this.theme);
-  //     document.documentElement.setAttribute("data-theme", this.theme ? "dark" : "light");
-  // },
+  created() {
+      this.theme = this.$q.cookies.get("theme") === "dark";
+      this.$store.commit("setTheme", this.theme);
+      document.documentElement.setAttribute("data-theme", this.theme ? "dark" : "light");
+  },
   mounted() {
     const topNav = this.$refs.topNav as HTMLDivElement;
     this.$emit('update:navHeight', topNav?.offsetHeight)
@@ -470,7 +484,7 @@ a {
   text-decoration: none;
   transition: 0.2s;
   width: 100%;
-  font-size: calc(.8em + 1vw);;
+  font-size: calc(.8em + 1vw);
 }
 
 .nav__link {

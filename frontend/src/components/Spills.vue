@@ -5,6 +5,7 @@ import type { User } from '../assets/interfaces';
 import Mention from './Mention.vue';
 import ProfileIcon from '@/icons/i-profile.vue';
 import uploadedImg from './uploadedImg.vue';
+import { useQuasar } from 'quasar';
 
 
 export default defineComponent({
@@ -17,6 +18,7 @@ export default defineComponent({
             chars: 0,
             imgURL: '',
             disabled: true,
+            $q: useQuasar(),
         };
     },
     props: {
@@ -215,10 +217,7 @@ export default defineComponent({
   background-color: red;
   position: relative;
   width: 100%;
-  max-width: 600px;
-  /* max-height: calc(100vh - 110px); */
   max-height: calc(100vh - 60px);
-  /* max-height: 100vh; */
   position: relative;
 }
 .post__container {
@@ -229,10 +228,6 @@ export default defineComponent({
   position: relative;
   width: 100%;
 }
-
-/* textarea {
-  
-} */
 
 .post__avatar {
   margin: 10px;
