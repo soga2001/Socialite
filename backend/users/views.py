@@ -77,9 +77,7 @@ def flush_session(request):
     request.session.flush()
     return JsonResponse({'success': True})
 
-# @api_view(["GET"])
-# @authentication_classes([CustomAuthentication])
-# @permission_classes([IsAdmin,])
+
 class AllUsers(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     authentication_classes = [CustomAuthentication,]
@@ -142,7 +140,7 @@ def user_register(request):
         return JsonResponse({"error": True, "message":" Username or email is taken."}, safe=False)
 
 @api_view(["POST"])
-def user_login(request):
+def  user_login(request):
     data = json.loads(request.body)
     user = authenticate(username=data['username'], password=data['password'])
     if(user and user.email_verified):

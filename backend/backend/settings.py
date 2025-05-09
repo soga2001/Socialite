@@ -40,13 +40,7 @@ ALLOWED_HOSTS = [
     '3.230.139.135',
     'api.suyogyapoudel.com',
     'suyogyapoudel.com',
-    '172.31.41.52',
-    # '172.31.64.0',
-    # '172.31.16.0',
-    # '172.31.48.0',
-    # '172.31.0.0',
-    # '172.31.32.0',
-    # '172.31.80.0',
+    "127.0.0.1"
 ]
 
 
@@ -111,7 +105,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:3000',
     'https://localhost:3000',
     'https://127.0.0.1:3000',
-    'https://socialite.suyogyapoudel.com/',
+    'https://socialite.suyogyapoudel.com',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -170,29 +164,23 @@ DATABASE_ROUTERS = ["backend.routers.CustomRouter"]
 
 DATABASES = {
 
-    # 'default': {
-
-    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-
-    #     'NAME': env('DATABASE_NAME'),
-
-    #     'USER': env('DATABASE_USERNAME'),
-
-    #     'PASSWORD': env('DATABASE_PASSWORD'),
-
-    #     'HOST': 'localhost',
-
-    # },
-
-    'default' : {                                   
-        'ENGINE' : 'django.db.backends.postgresql',
-        'NAME' : 'postgres',
-        'HOST' : env('SUPABASE_HOST'),
-        'PASSWORD': env('SUPABASE_PW'),
-        'PORT': 5432,
-        'USER': 'postgres',
-        'CERT' : 'prod-ca-2021.crt',             # download this from database/settings and put in your main app folder
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USERNAME'),
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': 'localhost',
     },
+
+    # 'default' : {                                   
+    #     'ENGINE' : 'django.db.backends.postgresql',
+    #     'NAME' : 'postgres',
+    #     'HOST' : env('SUPABASE_HOST'),
+    #     'PASSWORD': env('SUPABASE_PW'),
+    #     'PORT': 5432,
+    #     'USER': 'postgres',
+    #     'CERT' : 'prod-ca-2021.crt',             # download this from database/settings and put in your main app folder
+    # },
 
     'channels_postgres': {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -225,9 +213,9 @@ CHANNEL_LAYERS = {
 # SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_ENGINE = 'user_sessions.backends.db'
 SESSION_COOKIE_NAME = 'sessionid'
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = False
 SESSION_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = True
 
 
@@ -288,7 +276,7 @@ JWT_AUTH = {
 }
 
 JWT_AUTH_COOKIE = 'access_token'
-JWT_AUTH_COOKIE_SECURE = True
+JWT_AUTH_COOKIE_SECURE = False
 JWT_AUTH_COOKIE_HTTPONLY = True
 
 
@@ -332,7 +320,7 @@ SIMPLE_JWT = {
 
     'AUTH_COOKIE': 'access_token',  # Cookie name. Enables cookies if value is set.
     'AUTH_COOKIE_DOMAIN': None,     # A string like "example.com", or None for standard domain cookie.
-    'AUTH_COOKIE_SECURE': True,    # Whether the auth cookies should be secure (https:// only).
+    'AUTH_COOKIE_SECURE': False,    # Whether the auth cookies should be secure (https:// only).
     'AUTH_COOKIE_HTTP_ONLY' : True, # Http only cookie flag.It's not fetch by javascript.
     'AUTH_COOKIE_PATH': '/',        # The path of the auth cookie.
     'AUTH_COOKIE_SAMESITE': 'None',  # Whether to set the flag restricting cookie leaks on cross-site requests. This can be 'Lax', 'Strict', or None to disable the flag.

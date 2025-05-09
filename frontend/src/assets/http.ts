@@ -3,8 +3,8 @@ import { Notify } from 'quasar'
 import { store } from '@/store/store';
 
 export const http = axios.create({
-  // baseURL: `https://localhost:8000/`,
-  baseURL: 'https://api.suyogyapoudel.com/',
+  baseURL: 'http://localhost:8000/',
+  // baseURL: 'https://api.suyogyapoudel.com/',
   withCredentials: true,
 })
 

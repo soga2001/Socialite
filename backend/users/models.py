@@ -129,15 +129,15 @@ def auto_delete_files_on_change(sender, instance, **kwargs):
     
 
 
-@receiver(post_save, sender=User)
-def send_user_verification(sender, instance, created=False, **kwargs):
-    if created:
-        subject = 'Verify Your Email'
-        expires_at = datetime.datetime.now() + datetime.timedelta(days=1)
-        token = Tokens.objects.create(user=instance, expires_at=expires_at)
-        html_message = render_to_string('emails/verify_email.html', {'verification_link': settings.EMAIL_VERIFY_URL + token.key, 'full_name': instance.full_name})
-        plain_message = strip_tags(html_message)
-        from_email = settings.EMAIL_HOST_USER  # Change this to your email
-        recipient_list = [instance.email]
-        send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
-        instance.emailed_user = True
+# @receiver(post_save, sender=User)
+# def send_user_verification(sender, instance, created=False, **kwargs):
+#     if created:
+#         subject = 'Verify Your Email'
+#         expires_at = datetime.datetime.now() + datetime.timedelta(days=1)
+#         token = Tokens.objects.create(user=instance, expires_at=expires_at)
+#         html_message = render_to_string('emails/verify_email.html', {'verification_link': settings.EMAIL_VERIFY_URL + token.key, 'full_name': instance.full_name})
+#         plain_message = strip_tags(html_message)
+#         from_email = settings.EMAIL_HOST_USER  # Change this to your email
+#         recipient_list = [instance.email]
+#         send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+#         instance.emailed_user = True
